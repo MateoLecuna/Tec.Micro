@@ -1,4 +1,4 @@
-# Tecnología del microprocesamiento
+# Tecnologías del microprocesamiento
 Repositorio general de la asignatura
 
 ## Índice
