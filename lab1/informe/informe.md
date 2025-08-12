@@ -1,7 +1,8 @@
 # Informe - Laboratorio 1
 
 ## Integrantes
-- Tu nombre
+- Mateo Lecuna (mateo.lecuna@estuiantes.utec.edu.uy)
+- Hector Pereira (hector.pereira@estudiantes.utec.edu.uy)
 
 ## Introducción
 Contexto y objetivos.
