@@ -1,6 +1,5 @@
 # Tecnología del microprocesamiento
-
-Repositorio de los laboratorios de "Tecnologías de Microprocesamiento".
+Repositorio general de la asignatura
 
 ## Índice
 - [Laboratorio 1](lab1/README.md)
