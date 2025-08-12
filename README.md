@@ -1,2 +1,1 @@
-# Tec.Micro
-Laboratorios de Tecnologías de Microprocesamiento
+# Laboratorio 1
