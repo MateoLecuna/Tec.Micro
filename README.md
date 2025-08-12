@@ -1,6 +1,6 @@
 # Tec.Micro
 
-Repositorio de laboratorios de Tecnologías de Microprocesamiento.
+Repositorio de los laboratorios de "Tecnologías de Microprocesamiento".
 
 ## Índice
 - [Laboratorio 1](lab1/README.md)
