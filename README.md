@@ -1,4 +1,4 @@
-# Tec.Micro
+# Tecnología del microprocesamiento
 
 Repositorio de los laboratorios de "Tecnologías de Microprocesamiento".
 
