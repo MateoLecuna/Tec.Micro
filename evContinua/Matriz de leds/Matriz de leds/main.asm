@@ -22,6 +22,12 @@ RESET:
 	ldi r16, low(RAMEND)  out SPL, r16 
 	sei
 
+	; Config timer 1
+	ldi R16, (1<<CS10)|(1<<CS12)  ; Prescaler = 1024
+	sts TCCR1B, r16  
+	ldi r16, (1<<OCIE1A)
+    sts TIMSK1, r16
+
 	; Disable usart
 	ldi r16, 0
 	sts UCSR0B, r16
@@ -79,6 +85,16 @@ RESET:
 	; Dibujar lo que se quiera dibujar
 	; -----------------------------------------------------
 	ldi XL, LOW(ANIMATION_FRAMES) ldi XH, HIGH(ANIMATION_FRAMES)
+	
+	ldi r16, 0b00011000 st X+, r16
+	ldi r16, 0b00100100 st X+, r16
+	ldi r16, 0b00100100 st X+, r16
+	ldi r16, 0b00100100 st X+, r16
+	ldi r16, 0b01100110 st X+, r16
+	ldi r16, 0b10011001 st X+, r16
+	ldi r16, 0b10011001 st X+, r16
+	ldi r16, 0b01100110 st X+, r16
+
 	ldi r16, 0b00011000 st X+, r16
 	ldi r16, 0b00100100 st X+, r16
 	ldi r16, 0b00100100 st X+, r16
@@ -97,56 +113,19 @@ RESET:
 	ldi r16, 0b00000011 out DDRC, r16
 
 
-	
-	
 
+	ldi XL, LOW(ANIMATION_FRAMES) ldi XH, HIGH(ANIMATION_FRAMES) ; X = FRAME MASK
 	JMP MAIN
 
 MAIN:
-	
-	ldi XL, LOW(ANIMATION_FRAMES) ldi XH, HIGH(ANIMATION_FRAMES) ; X = FRAME MASK
-	ldi r17, 0 next_row: ;Next animation row | r17 = vertical coordinate
-		
-		ld r22, X+ ; FRAME MASK (with increase)
-		ldi r23, 0b10000000
-		ldi r18, 0  ; r18 = Horizontal coordinate
-		
-			
-		next_pin:
-		rcall CLEAR_MATRIX ; Clear matrix
-		mov r24, r23 ; Copy pin mask
-
-		and r24, r22 ; And animation mask with pin mask
-		cpi r24, 0 ; Compare with 0
-		brne write_led ; Write led
-
-		lsr r23 ; shift right pin mask
-		inc r18 ; increase horizontal coordinate
-		cpi r18, 8 ; Check if end of  loop
-		brne next_pin ; Loop over
-		
-		rjmp loop_end ; end loop
-
-		write_led:
-		mov r20, r17 mov r21, r18
-		rcall SET_LED rcall DELAY1
-		
-		lsr r23 
-		inc r18 
-		cpi r18, 8 
-		brne next_pin
-
-		loop_end:
-	
-	inc r17 cpi r17, 8 brne next_row
-
-	
+	rcall DRAW_ANIMATION_FRAME
 	rjmp MAIN
 	
 	
 
 TIM1_OVF:
 	RETI
+
 
 
 CLEAR_MATRIX:
@@ -246,6 +225,47 @@ SET_LED:
 	mov ZL, r9  mov ZH, r10  
 
 
+	ret
+
+; PARAMETROS:
+; r16 -> animation frame pointer low 
+; r17 -> animation frame pointer high
+DRAW_ANIMATION_FRAME: 
+	mov XL, r16 mov XH, r17 ; X = FRAME MASK
+	ldi r17, 0 next_row: ;Next animation row | r17 = vertical coordinate
+		
+		ld r22, X+ ; FRAME MASK (with increase)
+		ldi r23, 0b10000000 ;
+		ldi r18, 0  ; r18 = Horizontal coordinate
+		
+			
+		next_pin:
+		rcall CLEAR_MATRIX ; Clear matrix
+		mov r24, r23 ; Copy pin mask
+
+		and r24, r22 ; And animation mask with pin mask
+		cpi r24, 0 ; Compare with 0
+		brne write_led ; Write led
+
+		lsr r23 ; shift right pin mask
+		inc r18 ; increase horizontal coordinate
+		cpi r18, 8 ; Check if end of  loop
+		brne next_pin ; Loop over
+		
+		rjmp loop_end ; end loop
+
+		write_led:
+		mov r20, r17 mov r21, r18
+		rcall SET_LED rcall DELAY1
+		
+		lsr r23 
+		inc r18 
+		cpi r18, 8 
+		brne next_pin
+
+		loop_end:
+	
+	inc r17 cpi r17, 8 brne next_row
 	ret
 
 ;-------------------------------- PARKING

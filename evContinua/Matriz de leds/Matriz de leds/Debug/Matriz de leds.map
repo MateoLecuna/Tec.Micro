@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm Tue Sep 02 21:31:12 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm Tue Sep 02 22:46:29 2025
 
 
 EQU  SIGNATURE_000 0000001e
@@ -701,17 +701,18 @@ EQU  COL_PORTS    00000220
 EQU  COL_PINS     00000230
 EQU  ANIMATION_FRAMES 00000240
 CSEG RESET        00000021
-CSEG TIM1_OVF     000000a8
-CSEG MAIN         0000008c
-CSEG next_row     0000008f
-CSEG next_pin     00000092
-CSEG CLEAR_MATRIX 000000a9
-CSEG write_led    0000009c
-CSEG loop_end     000000a4
-CSEG SET_LED      000000d7
-CSEG DELAY1       000000b2
-CSEG L1           000000b8
-CSEG DELAY2       000000c3
-CSEG L2           000000c9
-CSEG rows         000000e7
-CSEG cols         000000f3
+CSEG TIM1_OVF     000000a6
+CSEG MAIN         000000a4
+CSEG DRAW_ANIMATION_FRAME 00000104
+CSEG CLEAR_MATRIX 000000a7
+CSEG DELAY1       000000b0
+CSEG L1           000000b6
+CSEG DELAY2       000000c1
+CSEG L2           000000c7
+CSEG SET_LED      000000d5
+CSEG rows         000000e5
+CSEG cols         000000f1
+CSEG next_row     00000105
+CSEG next_pin     00000108
+CSEG write_led    00000112
+CSEG loop_end     0000011a
