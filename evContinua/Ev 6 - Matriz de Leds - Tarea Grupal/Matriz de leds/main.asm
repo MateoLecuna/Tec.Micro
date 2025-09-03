@@ -158,7 +158,7 @@ SET_LED:
 
 	pop ZH  pop ZL  pop XH  pop XL
 	pop r21 pop r20 pop r19 pop r18
-	pop r16 pop r17
+	pop r17 pop r16
 
 	ret
 
