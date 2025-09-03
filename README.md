@@ -1,5 +1,5 @@
 # Tecnologías del microprocesamiento
-Repositorio general de la asignatura
+Repositorio general de la asignatura para tareas en equipo
 
 ## Índice
 - [Laboratorio 1](lab1/README.md)
