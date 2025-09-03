@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm Wed Sep 03 15:54:06 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm Wed Sep 03 16:12:06 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
@@ -987,13 +987,13 @@ AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evConti
                                  
                                  ; Save ports in array
                                  
-                                 .equ TIMER1_START = 54286
+                                 .equ TIMER1_START = 59286
                                  .equ TIMER2_START = 0
                                  
                                  .cseg
-000000 c247                      .org 0x0000 RJMP RESET
-000012 c266                      .org 0x0012 RJMP TIM2_OVF
-000020 c250                      .org 0x0020 RJMP TIM1_OVF
+000000 c24b                      .org 0x0000 RJMP RESET
+000012 c26a                      .org 0x0012 RJMP TIM2_OVF
+000020 c254                      .org 0x0020 RJMP TIM1_OVF
                                  
                                  .org 0x0200
                                  ROW_PORTS:
@@ -1020,243 +1020,249 @@ AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evConti
 000232 2010
 000233 0201                      	.db 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b00000001, 0b00000010
                                  
+                                 
+                                 ; -----------------------------------------------------
+                                 ; Secuencia de leds izquierda derecha
+                                 ; -----------------------------------------------------
+                                 
                                  .org 0x0240
                                  ANIMATION_FRAMES:
-000240 2418
-000241 2424
-000242 9966
-000243 6799                          .db 0b00011000, 0b00100100, 0b00100100, 0b00100100, 0b01100110, 0b10011001, 0b10011001, 0b01100111
-000244 2418
-000245 2424
-000246 9966
-000247 6699                          .db 0b00011000, 0b00100100, 0b00100100, 0b00100100, 0b01100110, 0b10011001, 0b10011001, 0b01100110
+000240 4080
+000241 1020
+000242 0408
+000243 0102                          .db 0b10000000, 0b01000000, 0b00100000, 0b00010000, 0b00001000, 0b00000100, 0b00000010, 0b00000001
+000244 0402
+000245 1008
+000246 4020
+000247 4080                          .db 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b01000000, 0b10000000, 0b01000000
+000248 1020
+000249 0408
+00024a 0102
+00024b 0402                      	.db 0b00100000, 0b00010000, 0b00001000, 0b00000100, 0b00000010, 0b00000001, 0b00000010, 0b00000100
                                  
                                  
                                  
-                                 ; -----------------------------------------------------
-                                 ; Presionar control f 
-                                 ; Escribir para buscar "1"
-                                 ; Dibujar lo que se quiera dibujar
-                                 ; -----------------------------------------------------
+                                 
                                  
                                  
                                  
                                  
                                  RESET:
                                  	; INICIAR STACK ------------------
-000248 94f8                      	cli 
-000249 e008
-00024a bf0e                      	ldi r16, high(RAMEND) out SPH, r16
-00024b ef0f
-00024c bf0d                      	ldi r16, low(RAMEND)  out SPL, r16 
-00024d 9478                      	sei
+00024c 94f8                      	cli 
+00024d e008
+00024e bf0e                      	ldi r16, high(RAMEND) out SPH, r16
+00024f ef0f
+000250 bf0d                      	ldi r16, low(RAMEND)  out SPL, r16 
+000251 9478                      	sei
                                  
                                  	; Config timer 1 ---------------------------------------------------
-00024e e005
-00024f 9300 0081                 	ldi R16, (1<<CS10)|(1<<CS12) sts TCCR1B, r16 ; 1024 prescaler
-000251 e001
-000252 9300 006f                 	ldi r16, (1<<TOIE1)			 sts TIMSK1, r16 ; Enable overflow interrupts
-000254 e00e
-000255 9300 0084                 	ldi r16, LOW(TIMER1_START)   sts TCNT1L, r16 ; Timer start
-000257 ed04
-000258 9300 0085                 	ldi r16, HIGH(TIMER1_START)  sts TCNT1H, r16 ; -
+000252 ee07
+000253 9300 0085                 	ldi r16, HIGH(TIMER1_START)  sts TCNT1H, r16 ; Timer start
+000255 e906
+000256 9300 0084                 	ldi r16, LOW(TIMER1_START)   sts TCNT1L, r16 ; -
+000258 e001
+000259 9300 006f                 	ldi r16, (1<<TOIE1)			 sts TIMSK1, r16 ; Enable overflow interrupts
+00025b e005
+00025c 9300 0081                 	ldi R16, (1<<CS10)|(1<<CS12) sts TCCR1B, r16 ; 1024 prescaler
+                                 
                                  
                                  	; Config timer 2 ---------------------------------------------------
-00025a e007
-00025b 9300 00b1                 	ldi r16, 0b00000111   sts TCCR2B, r16 ; 1024 prescaler
-00025d e001
-00025e 9300 0070                 	ldi r16, (1<<TOIE2)   sts TIMSK2, r16 ; Enable overflow interrupt
-000260 e000
-000261 9300 00b2                 	ldi r16, TIMER2_START sts TCNT2, r16  ; Timer start
+00025e e000
+00025f 9300 00b2                 	ldi r16, TIMER2_START sts TCNT2, r16  ; Timer start
+000261 e007
+000262 9300 00b1                 	ldi r16, 0b00000111   sts TCCR2B, r16 ; 1024 prescaler
+000264 e001
+000265 9300 0070                 	ldi r16, (1<<TOIE2)   sts TIMSK2, r16 ; Enable overflow interrupt
                                  
                                  
                                  
                                  
                                  	; PORT CONFIG ----------------------
                                  	; Rows are negative, columns positive
-000263 ef0f
-000264 b90a                      	ldi r16, 0b11111111 out DDRD, r16
-000265 e30f
-000266 b904                      	ldi r16, 0b00111111 out DDRB, r16
-000267 e003
-000268 b907                      	ldi r16, 0b00000011 out DDRC, r16
+000267 ef0f
+000268 b90a                      	ldi r16, 0b11111111 out DDRD, r16
+000269 e30f
+00026a b904                      	ldi r16, 0b00111111 out DDRB, r16
+00026b e003
+00026c b907                      	ldi r16, 0b00000011 out DDRC, r16
                                  
                                  
-000269 e800
-00026a 2eb0                      	ldi r16, LOW(ANIMATION_FRAMES<<1)  mov r11, r16
-00026b e004
-00026c 2ec0                      	ldi r16, HIGH(ANIMATION_FRAMES<<1) mov r12, r16 
+00026d e800
+00026e 2eb0                      	ldi r16, LOW(ANIMATION_FRAMES<<1)  mov r11, r16
+00026f e004
+000270 2ec0                      	ldi r16, HIGH(ANIMATION_FRAMES<<1) mov r12, r16 
                                  
-00026d 940c 026f                 	JMP MAIN
+000271 940c 0273                 	JMP MAIN
                                  
                                  MAIN:
-00026f d04b                      	rcall DRAW_ANIMATION_FRAME
-000270 cffe                      	rjmp MAIN
+000273 d04b                      	rcall DRAW_ANIMATION_FRAME
+000274 cffe                      	rjmp MAIN
                                  	
                                  	
                                  
                                  TIM1_OVF:
                                  
-000271 94b3                      	inc r11 ;Increase animation frame
+000275 94b3                      	inc r11 ;Increase animation frame
                                  	
                                  	; Reset timer starting point
-000272 e00e
-000273 9300 0084                 	ldi r16, LOW(TIMER1_START)  sts TCNT1L, r16
-000275 ed04
-000276 9300 0085                 	ldi r16, HIGH(TIMER1_START) sts TCNT1H, r16
-000278 9518                      	RETI
+000276 e906
+000277 9300 0084                 	ldi r16, LOW(TIMER1_START)  sts TCNT1L, r16
+000279 ee07
+00027a 9300 0085                 	ldi r16, HIGH(TIMER1_START) sts TCNT1H, r16
+00027c 9518                      	RETI
                                  
                                  
                                  TIM2_OVF:
                                  	; Reset timer starting point
-000279 e000
-00027a 9300 00b2                 	ldi r16, LOW(TIMER2_START)  sts TCNT2, r16
-00027c 9518                      	RETI
+00027d e000
+00027e 9300 00b2                 	ldi r16, LOW(TIMER2_START)  sts TCNT2, r16
+000280 9518                      	RETI
                                  
                                  
                                  
                                  CLEAR_MATRIX:
-00027d 930f                      	push r16
-00027e ef0f
-00027f b90b                      	ldi r16, 0xFF out PORTD, r16
-000280 e000
-000281 b905                      	ldi r16, 0x00 out PORTB, r16
-000282 e000
-000283 b908                      	ldi r16, 0x00 out PORTC, r16
-000284 910f                      	pop r16
-000285 9508                      	ret
+000281 930f                      	push r16
+000282 ef0f
+000283 b90b                      	ldi r16, 0xFF out PORTD, r16
+000284 e000
+000285 b905                      	ldi r16, 0x00 out PORTB, r16
+000286 e000
+000287 b908                      	ldi r16, 0x00 out PORTC, r16
+000288 910f                      	pop r16
+000289 9508                      	ret
                                  
                                  ;---------------------------------------
                                  ; r20 = row
                                  ; r21 = column
                                  ;---------------------------------------
                                  SET_LED:
-000286 930f
-000287 931f
-000288 932f                      	push r16 push r17 push r18
-000289 933f
-00028a 934f
-00028b 935f                      	push r19 push r20 push r21
-00028c 93af
-00028d 93bf                      	push XL  push XH
-00028e 93ef
-00028f 93ff                      	push ZL  push ZH  
+00028a 930f
+00028b 931f
+00028c 932f                      	push r16 push r17 push r18
+00028d 933f
+00028e 934f
+00028f 935f                      	push r19 push r20 push r21
+000290 93af
+000291 93bf                      	push XL  push XH
+000292 93ef
+000293 93ff                      	push ZL  push ZH  
                                  
-000290 e0b4
-000291 e0a0                      	ldi XH, high(ROW_PORTS<<1) ldi XL, low(ROW_PORTS<<1)  ; Point X to PORTS
-000292 e0f4
-000293 e2e0                      	ldi ZH, high(ROW_PINS<<1) ldi ZL, low(ROW_PINS<<1) ; Point Z to PINS
+000294 e0b4
+000295 e0a0                      	ldi XH, high(ROW_PORTS<<1) ldi XL, low(ROW_PORTS<<1)  ; Point X to PORTS
+000296 e0f4
+000297 e2e0                      	ldi ZH, high(ROW_PINS<<1) ldi ZL, low(ROW_PINS<<1) ; Point Z to PINS
                                  	
-000294 9543                      	inc r20
-000295 9553                      	inc r21
+000298 9543                      	inc r20
+000299 9553                      	inc r21
                                  
                                  
                                  	rows:
-000296 d016                      		rcall read_loop
-000297 954a
-000298 f7e9                      	dec r20 brne rows
+00029a d016                      		rcall read_loop
+00029b 954a
+00029c f7e9                      	dec r20 brne rows
                                  
-000299 8318                      	st Y, r17
+00029d 8318                      	st Y, r17
                                  	
-00029a e0b4
-00029b e4a0                      	ldi XH, high(COL_PORTS<<1) ldi XL, low(COL_PORTS<<1)  ; Point X to PORTS
-00029c e0f4
-00029d e6e0                      	ldi ZH, high(COL_PINS<<1) ldi ZL, low(COL_PINS<<1) ; Point Z to PINS
+00029e e0b4
+00029f e4a0                      	ldi XH, high(COL_PORTS<<1) ldi XL, low(COL_PORTS<<1)  ; Point X to PORTS
+0002a0 e0f4
+0002a1 e6e0                      	ldi ZH, high(COL_PINS<<1) ldi ZL, low(COL_PINS<<1) ; Point Z to PINS
                                  	
                                  	cols:
-00029e d00e                      		rcall read_loop
-00029f 955a
-0002a0 f7e9                      	dec r21 brne cols
+0002a2 d00e                      		rcall read_loop
+0002a3 955a
+0002a4 f7e9                      	dec r21 brne cols
                                  
-0002a1 8318                      	st Y, r17
+0002a5 8318                      	st Y, r17
                                  
-0002a2 91ff
-0002a3 91ef
-0002a4 91bf
-0002a5 91af                      	pop ZH  pop ZL  pop XH  pop XL
-0002a6 915f
-0002a7 914f
-0002a8 913f
-0002a9 912f                      	pop r21 pop r20 pop r19 pop r18
-0002aa 911f
-0002ab 910f                      	pop r17 pop r16
+0002a6 91ff
+0002a7 91ef
+0002a8 91bf
+0002a9 91af                      	pop ZH  pop ZL  pop XH  pop XL
+0002aa 915f
+0002ab 914f
+0002ac 913f
+0002ad 912f                      	pop r21 pop r20 pop r19 pop r18
+0002ae 911f
+0002af 910f                      	pop r17 pop r16
                                  
-0002ac 9508                      	ret
+0002b0 9508                      	ret
                                  
                                  read_loop:
-0002ad 2e1f
-0002ae 2e2e                      	mov r1, ZH mov r2, ZL ; Store prev. Z in r2 and r2
-0002af 2fea
-0002b0 2ffb                      	mov ZL, XL mov ZH, XH ; Move X to Z
-0002b1 9105                      	lpm r16, Z+ ; Retrieve program memory and increase Z
-0002b2 2fae
-0002b3 2fbf                      	mov XL, ZL mov XH, ZH ; Move increased Z to X
-0002b4 2df1
-0002b5 2de2                      	mov ZH, r1 mov ZL, r2 ; Retrieve original. Z
+0002b1 2e1f
+0002b2 2e2e                      	mov r1, ZH mov r2, ZL ; Store prev. Z in r2 and r2
+0002b3 2fea
+0002b4 2ffb                      	mov ZL, XL mov ZH, XH ; Move X to Z
+0002b5 9105                      	lpm r16, Z+ ; Retrieve program memory and increase Z
+0002b6 2fae
+0002b7 2fbf                      	mov XL, ZL mov XH, ZH ; Move increased Z to X
+0002b8 2df1
+0002b9 2de2                      	mov ZH, r1 mov ZL, r2 ; Retrieve original. Z
                                  
-0002b6 e020                      	ldi r18, 0x00
-0002b7 2fc0
-0002b8 2fd2                      	mov YL, r16 mov YH, r18
-0002b9 9115                      	lpm r17, Z+
-0002ba 9508                      	ret
+0002ba e020                      	ldi r18, 0x00
+0002bb 2fc0
+0002bc 2fd2                      	mov YL, r16 mov YH, r18
+0002bd 9115                      	lpm r17, Z+
+0002be 9508                      	ret
                                  
                                  ; PARAMETROS:
                                  ; r11 -> animation frame pointer low 
                                  ; r12 -> animation frame pointer high
                                  DRAW_ANIMATION_FRAME: 
-0002bb 2deb
-0002bc 2dfc                      	mov ZL, r11 mov ZH, r12 ; X = FRAME MASK
-0002bd e010                      	ldi r17, 0 next_row: ;Next animation row | r17 = vertical coordinate
+0002bf 2deb
+0002c0 2dfc                      	mov ZL, r11 mov ZH, r12 ; X = FRAME MASK
+0002c1 e010                      	ldi r17, 0 next_row: ;Next animation row | r17 = vertical coordinate
                                  		
-0002be 9165                      		lpm r22, Z+ ; FRAME MASK (with increase)
-0002bf e870                      		ldi r23, 0b10000000 ;
-0002c0 e020                      		ldi r18, 0  ; r18 = Horizontal coordinate
+0002c2 9165                      		lpm r22, Z+ ; FRAME MASK (with increase)
+0002c3 e870                      		ldi r23, 0b10000000 ;
+0002c4 e020                      		ldi r18, 0  ; r18 = Horizontal coordinate
                                  			
                                  		next_pin:
-0002c1 dfbb                      		rcall CLEAR_MATRIX ; Clear matrix
-0002c2 2f87                      		mov r24, r23 ; Copy pin mask
+0002c5 dfbb                      		rcall CLEAR_MATRIX ; Clear matrix
+0002c6 2f87                      		mov r24, r23 ; Copy pin mask
                                  
-0002c3 2386                      		and r24, r22 ; And animation mask with pin mask
-0002c4 3080                      		cpi r24, 0 ; Compare with 0
-0002c5 f429                      		brne write_led ; Write led
+0002c7 2386                      		and r24, r22 ; And animation mask with pin mask
+0002c8 3080                      		cpi r24, 0 ; Compare with 0
+0002c9 f429                      		brne write_led ; Write led
                                  
-0002c6 9576                      		lsr r23 ; shift right pin mask
-0002c7 9523                      		inc r18 ; increase horizontal coordinate
-0002c8 3028                      		cpi r18, 8 ; Check if end of  loop
-0002c9 f7b9                      		brne next_pin ; Loop over
+0002ca 9576                      		lsr r23 ; shift right pin mask
+0002cb 9523                      		inc r18 ; increase horizontal coordinate
+0002cc 3028                      		cpi r18, 8 ; Check if end of  loop
+0002cd f7b9                      		brne next_pin ; Loop over
                                  		
-0002ca c008                      		rjmp loop_end ; end loop
+0002ce c008                      		rjmp loop_end ; end loop
                                  
                                  		write_led:
-0002cb 2f41
-0002cc 2f52                      		mov r20, r17 mov r21, r18
-0002cd dfb8
-0002ce d008                      		rcall SET_LED  rcall DELAY
+0002cf 2f41
+0002d0 2f52                      		mov r20, r17 mov r21, r18
+0002d1 dfb8
+0002d2 d008                      		rcall SET_LED  rcall DELAY
                                  		
-0002cf 9576                      		lsr r23 
-0002d0 9523                      		inc r18 
-0002d1 3028                      		cpi r18, 8 
-0002d2 f771                      		brne next_pin
+0002d3 9576                      		lsr r23 
+0002d4 9523                      		inc r18 
+0002d5 3028                      		cpi r18, 8 
+0002d6 f771                      		brne next_pin
                                  
                                  		loop_end:
                                  	
-0002d3 9513
-0002d4 3018
-0002d5 f741                      	inc r17 cpi r17, 8 brne next_row
-0002d6 9508                      	ret
+0002d7 9513
+0002d8 3018
+0002d9 f741                      	inc r17 cpi r17, 8 brne next_row
+0002da 9508                      	ret
                                  
                                  DELAY:
-0002d7 2e12
-0002d8 2e23                      	mov r1, r18 mov r2, r19
-0002d9 e023                          ldi  r18, 3
-0002da e133                          ldi  r19, 19
-0002db 953a                      L1: dec  r19
-0002dc f7f1                          brne L1
-0002dd 952a                          dec  r18
-0002de f7e1                          brne L1
-0002df 2d21
-0002e0 2d32                      	mov r18, r1 mov r19, r2
-0002e1 9508                      	ret
+0002db 2e12
+0002dc 2e23                      	mov r1, r18 mov r2, r19
+0002dd e023                          ldi  r18, 3
+0002de e133                          ldi  r19, 19
+0002df 953a                      L1: dec  r19
+0002e0 f7f1                          brne L1
+0002e1 952a                          dec  r18
+0002e2 f7e1                          brne L1
+0002e3 2d21
+0002e4 2d32                      	mov r18, r1 mov r19, r2
+0002e5 9508                      	ret
                                  
                                  ;-------------------------------- PARKING
                                  
@@ -1309,7 +1315,7 @@ Instructions used: 21 out of 113 (18.6%)
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0005c4    314     48    362   32768   1.1%
+[.cseg] 0x000000 0x0005cc    314     56    370   32768   1.1%
 [.dseg] 0x000100 0x000100      0      0      0    2048   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

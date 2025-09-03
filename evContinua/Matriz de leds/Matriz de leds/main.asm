@@ -1,7 +1,7 @@
 
 ; Save ports in array
 
-.equ TIMER1_START = 54286
+.equ TIMER1_START = 59286
 .equ TIMER2_START = 0
 
 .cseg
@@ -22,18 +22,20 @@ ROW_PINS:
 COL_PINS:
 	.db 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b00000001, 0b00000010
 
+
+; -----------------------------------------------------
+; Secuencia de leds izquierda derecha
+; -----------------------------------------------------
+
 .org 0x0240
 ANIMATION_FRAMES:
-    .db 0b00011000, 0b00100100, 0b00100100, 0b00100100, 0b01100110, 0b10011001, 0b10011001, 0b01100111
-    .db 0b00011000, 0b00100100, 0b00100100, 0b00100100, 0b01100110, 0b10011001, 0b10011001, 0b01100110
+    .db 0b10000000, 0b01000000, 0b00100000, 0b00010000, 0b00001000, 0b00000100, 0b00000010, 0b00000001
+    .db 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b01000000, 0b10000000, 0b01000000
+	.db 0b00100000, 0b00010000, 0b00001000, 0b00000100, 0b00000010, 0b00000001, 0b00000010, 0b00000100
 
 
 
-; -----------------------------------------------------
-; Presionar control f 
-; Escribir para buscar "1"
-; Dibujar lo que se quiera dibujar
-; -----------------------------------------------------
+
 
 
 
@@ -46,15 +48,16 @@ RESET:
 	sei
 
 	; Config timer 1 ---------------------------------------------------
-	ldi R16, (1<<CS10)|(1<<CS12) sts TCCR1B, r16 ; 1024 prescaler
+	ldi r16, HIGH(TIMER1_START)  sts TCNT1H, r16 ; Timer start
+	ldi r16, LOW(TIMER1_START)   sts TCNT1L, r16 ; -
 	ldi r16, (1<<TOIE1)			 sts TIMSK1, r16 ; Enable overflow interrupts
-	ldi r16, LOW(TIMER1_START)   sts TCNT1L, r16 ; Timer start
-	ldi r16, HIGH(TIMER1_START)  sts TCNT1H, r16 ; -
+	ldi R16, (1<<CS10)|(1<<CS12) sts TCCR1B, r16 ; 1024 prescaler
+
 
 	; Config timer 2 ---------------------------------------------------
+	ldi r16, TIMER2_START sts TCNT2, r16  ; Timer start
 	ldi r16, 0b00000111   sts TCCR2B, r16 ; 1024 prescaler
 	ldi r16, (1<<TOIE2)   sts TIMSK2, r16 ; Enable overflow interrupt
-	ldi r16, TIMER2_START sts TCNT2, r16  ; Timer start
 
 
 
