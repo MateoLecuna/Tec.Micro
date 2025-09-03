@@ -1,49 +1,31 @@
 
 ; Save ports in array
 
-
-.dseg
-
-.equ ROW_PORTS	= 0x0200
-.equ ROW_PINS	= 0x0210
-.equ COL_PORTS  = 0x0220
-.equ COL_PINS	= 0x0230
-.equ ANIMATION_FRAMES	= 0x0240
 .equ TIMER1_START = 54286
 .equ TIMER2_START = 0
-
-.org 0x0240
-	.db 0b00011000
-	.db 0b00100100 
-	.db 0b00100100
-	.db 0b00100100 
-	.db 0b01100110 
-	.db 0b10011001 
-	.db 0b10011001
-	.db 0b01100110
-
-	.db 0b00011000 
-	.db 0b00100100
-	.db 0b00100100 
-	.db 0b00100100 
-	.db 0b01100110 
-	.db 0b10011001 
-	.db 0b10011001 
-	.db 0b01100110
-
-.org ROW_PORTS
-	.db 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B
-.org COL_PORTS
-	.db 0x25, 0x25, 0x25, 0x25, 0x25, 0x25, 0x28, 0x28 
-.org ROW_PINS
-	.db 0b11111110, 0b11111101, 0b11111011, 0b11110111, 0b11101111, 0b11011111, 0b10111111, 0b01111111
-.org COL_PINS
-	.db 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b00000001, 0b00000010
 
 .cseg
 .org 0x0000 RJMP RESET
 .org 0x0012 RJMP TIM2_OVF
 .org 0x0020 RJMP TIM1_OVF
+
+.org 0x0200
+ROW_PORTS:
+	.db 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B
+.org 0x0220
+COL_PORTS:
+	.db 0x25, 0x25, 0x25, 0x25, 0x25, 0x25, 0x28, 0x28 
+.org 0x0210
+ROW_PINS:
+	.db 0b11111110, 0b11111101, 0b11111011, 0b11110111, 0b11101111, 0b11011111, 0b10111111, 0b01111111
+.org 0x0230
+COL_PINS:
+	.db 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b00000001, 0b00000010
+
+.org 0x0240
+ANIMATION_FRAMES:
+    .db 0b00011000, 0b00100100, 0b00100100, 0b00100100, 0b01100110, 0b10011001, 0b10011001, 0b01100111
+    .db 0b00011000, 0b00100100, 0b00100100, 0b00100100, 0b01100110, 0b10011001, 0b10011001, 0b01100110
 
 
 
@@ -74,9 +56,7 @@ RESET:
 	ldi r16, (1<<TOIE2)   sts TIMSK2, r16 ; Enable overflow interrupt
 	ldi r16, TIMER2_START sts TCNT2, r16  ; Timer start
 
-	; Disable usart
-	ldi r16, 0
-	sts UCSR0B, r16
+
 
 
 	; PORT CONFIG ----------------------
@@ -85,8 +65,9 @@ RESET:
 	ldi r16, 0b00111111 out DDRB, r16
 	ldi r16, 0b00000011 out DDRC, r16
 
-	ldi r16, LOW(ANIMATION_FRAMES)  mov r11, r16
-	ldi r16, HIGH(ANIMATION_FRAMES) mov r12, r16 
+
+	ldi r16, LOW(ANIMATION_FRAMES<<1)  mov r11, r16
+	ldi r16, HIGH(ANIMATION_FRAMES<<1) mov r12, r16 
 
 	JMP MAIN
 
@@ -103,7 +84,6 @@ TIM1_OVF:
 	; Reset timer starting point
 	ldi r16, LOW(TIMER1_START)  sts TCNT1L, r16
 	ldi r16, HIGH(TIMER1_START) sts TCNT1H, r16
-
 	RETI
 
 
@@ -115,11 +95,11 @@ TIM2_OVF:
 
 
 CLEAR_MATRIX:
-	mov r1, r16
+	push r16
 	ldi r16, 0xFF out PORTD, r16
 	ldi r16, 0x00 out PORTB, r16
 	ldi r16, 0x00 out PORTC, r16
-	mov r16, r1 
+	pop r16
 	ret
 
 ;---------------------------------------
@@ -127,59 +107,61 @@ CLEAR_MATRIX:
 ; r21 = column
 ;---------------------------------------
 SET_LED:
-	mov r1, r16 mov r2, r17 mov r3, r18
-	mov r4, r19 mov r5, r20 mov r6, r21
-	mov r7, XL  mov r8, XH
-	mov r9, ZL  mov r10, ZH  
+	push r16 push r17 push r18
+	push r19 push r20 push r21
+	push XL  push XH
+	push ZL  push ZH  
 
-	ldi XH, high(ROW_PORTS) ldi XL, low(ROW_PORTS)  ; Point X to PORTS
-	ldi ZH, high(ROW_PINS) ldi ZL, low(ROW_PINS) ; Point Z to PINS
-
+	ldi XH, high(ROW_PORTS<<1) ldi XL, low(ROW_PORTS<<1)  ; Point X to PORTS
+	ldi ZH, high(ROW_PINS<<1) ldi ZL, low(ROW_PINS<<1) ; Point Z to PINS
 	
 	inc r20
 	inc r21
 
 
 	rows:
-		ld r16, X+ 
-		ldi r18, 0x00
-		mov YL, r16 mov YH, r18
-		ld r17, Z+
+		rcall read_loop
 	dec r20 brne rows
 
 	st Y, r17
 	
-	ldi XH, high(COL_PORTS) ldi XL, low(COL_PORTS)  ; Point X to PORTS
-	ldi ZH, high(COL_PINS) ldi ZL, low(COL_PINS) ; Point Z to PINS
+	ldi XH, high(COL_PORTS<<1) ldi XL, low(COL_PORTS<<1)  ; Point X to PORTS
+	ldi ZH, high(COL_PINS<<1) ldi ZL, low(COL_PINS<<1) ; Point Z to PINS
 	
 	cols:
-		ld r16, X+ 
-		ldi r18, 0x00
-		mov YL, r16 mov YH, r18
-		ld r17, Z+
+		rcall read_loop
 	dec r21 brne cols
 
 	st Y, r17
 
-	mov r16, r1 mov r17, r2 mov r18, r3
-	mov r19, r4 mov r20, r5 mov r21, r6
-	mov XL, r7  mov XH, r8
-	mov ZL, r9  mov ZH, r10  
+	pop ZH  pop ZL  pop XH  pop XL
+	pop r21 pop r20 pop r19 pop r18
+	pop r17 pop r16
 
+	ret
 
+read_loop:
+	mov r1, ZH mov r2, ZL ; Store prev. Z in r2 and r2
+	mov ZL, XL mov ZH, XH ; Move X to Z
+	lpm r16, Z+ ; Retrieve program memory and increase Z
+	mov XL, ZL mov XH, ZH ; Move increased Z to X
+	mov ZH, r1 mov ZL, r2 ; Retrieve original. Z
+
+	ldi r18, 0x00
+	mov YL, r16 mov YH, r18
+	lpm r17, Z+
 	ret
 
 ; PARAMETROS:
 ; r11 -> animation frame pointer low 
 ; r12 -> animation frame pointer high
 DRAW_ANIMATION_FRAME: 
-	mov XL, r11 mov XH, r12 ; X = FRAME MASK
+	mov ZL, r11 mov ZH, r12 ; X = FRAME MASK
 	ldi r17, 0 next_row: ;Next animation row | r17 = vertical coordinate
 		
-		ld r22, X+ ; FRAME MASK (with increase)
+		lpm r22, Z+ ; FRAME MASK (with increase)
 		ldi r23, 0b10000000 ;
 		ldi r18, 0  ; r18 = Horizontal coordinate
-		
 			
 		next_pin:
 		rcall CLEAR_MATRIX ; Clear matrix
@@ -198,7 +180,7 @@ DRAW_ANIMATION_FRAME:
 
 		write_led:
 		mov r20, r17 mov r21, r18
-		rcall SET_LED rcall DELAY
+		rcall SET_LED  rcall DELAY
 		
 		lsr r23 
 		inc r18 
