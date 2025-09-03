@@ -7,10 +7,45 @@
 .equ COL_PINS	= 0x0230
 .equ ANIMATION_FRAMES	= 0x0240
 
+.dseg
+.org 0x0240
+	.db 0b00011000
+	.db 0b00100100 
+	.db 0b00100100
+	.db 0b00100100 
+	.db 0b01100110 
+	.db 0b10011001 
+	.db 0b10011001
+	.db 0b01100110
+
+	.db 0b00011000 
+	.db 0b00100100
+	.db 0b00100100 
+	.db 0b00100100 
+	.db 0b01100110 
+	.db 0b10011001 
+	.db 0b10011001 
+	.db 0b01100110
+
+.org ROW_PORTS
+	.db 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B
+.org COL_PORTS
+	.db 0x25, 0x25, 0x25, 0x25, 0x25, 0x25, 0x28, 0x28 
+.org ROW_PINS
+	.db 0b11111110, 0b11111101, 0b11111011, 0b11110111, 0b11101111, 0b11011111, 0b10111111, 0b01111111
+.org COL_PINS
+	.db 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b00000001, 0b00000010
+
 .cseg
 .org 0x0000 RJMP RESET
 .org 0x0020 RJMP TIM1_OVF
 
+
+; -----------------------------------------------------
+; Presionar control f 
+; Escribir para buscar "1"
+; Dibujar lo que se quiera dibujar
+; -----------------------------------------------------
 
 
 
@@ -28,81 +63,14 @@ RESET:
 	ldi r16, (1<<OCIE1A)
     sts TIMSK1, r16
 
+	ldi r16, LOW(34286)
+	sts TCNT1L, r16
+	ldi r16, HIGH(34286)
+	sts TCNT1H, r16
+
 	; Disable usart
 	ldi r16, 0
 	sts UCSR0B, r16
-
-	; PORT RAM ORGANIZATION ----------------------
-
-	; Row port list
-	ldi XL, LOW(ROW_PORTS) ldi XH, HIGH(ROW_PORTS)
-	ldi r16, 0x2B st X+, r16
-	ldi r16, 0x2B st X+, r16
-	ldi r16, 0x2B st X+, r16
-	ldi r16, 0x2B st X+, r16
-	ldi r16, 0x2B st X+, r16
-	ldi r16, 0x2B st X+, r16
-	ldi r16, 0x2B st X+, r16
-	ldi r16, 0x2B st X+, r16
-
-	; Column port list
-	ldi XL, LOW(COL_PORTS) ldi XH, HIGH(COL_PORTS)
-	ldi r16, 0x25 st X+, r16
-	ldi r16, 0x25 st X+, r16
-	ldi r16, 0x25 st X+, r16
-	ldi r16, 0x25 st X+, r16
-	ldi r16, 0x25 st X+, r16
-	ldi r16, 0x25 st X+, r16
-	ldi r16, 0x28 st X+, r16 
-	ldi r16, 0x28 st X+, r16
-
-	; Row pin masks
-	ldi XL, LOW(ROW_PINS) ldi XH, HIGH(ROW_PINS)
-	ldi r16, 0b11111110 st X+, r16
-	ldi r16, 0b11111101 st X+, r16
-	ldi r16, 0b11111011 st X+, r16
-	ldi r16, 0b11110111 st X+, r16
-	ldi r16, 0b11101111 st X+, r16
-	ldi r16, 0b11011111 st X+, r16
-	ldi r16, 0b10111111 st X+, r16
-	ldi r16, 0b01111111 st X+, r16
-
-	; Column pin masks
-	ldi XL, LOW(COL_PINS) ldi XH, HIGH(COL_PINS)
-	ldi r16, 0b00000001 st X+, r16
-	ldi r16, 0b00000010 st X+, r16
-	ldi r16, 0b00000100 st X+, r16
-	ldi r16, 0b00001000 st X+, r16
-	ldi r16, 0b00010000 st X+, r16
-	ldi r16, 0b00100000 st X+, r16
-	ldi r16, 0b00000001 st X+, r16
-	ldi r16, 0b00000010 st X+, r16
-
-	; Animation frames
-	; -----------------------------------------------------
-	; Presionar control f 
-	; Escribir para buscar "1"
-	; Dibujar lo que se quiera dibujar
-	; -----------------------------------------------------
-	ldi XL, LOW(ANIMATION_FRAMES) ldi XH, HIGH(ANIMATION_FRAMES)
-	
-	ldi r16, 0b00011000 st X+, r16
-	ldi r16, 0b00100100 st X+, r16
-	ldi r16, 0b00100100 st X+, r16
-	ldi r16, 0b00100100 st X+, r16
-	ldi r16, 0b01100110 st X+, r16
-	ldi r16, 0b10011001 st X+, r16
-	ldi r16, 0b10011001 st X+, r16
-	ldi r16, 0b01100110 st X+, r16
-
-	ldi r16, 0b00011000 st X+, r16
-	ldi r16, 0b00100100 st X+, r16
-	ldi r16, 0b00100100 st X+, r16
-	ldi r16, 0b00100100 st X+, r16
-	ldi r16, 0b01100110 st X+, r16
-	ldi r16, 0b10011001 st X+, r16
-	ldi r16, 0b10011001 st X+, r16
-	ldi r16, 0b01100110 st X+, r16
 
 
 
@@ -114,16 +82,24 @@ RESET:
 
 
 
-	ldi XL, LOW(ANIMATION_FRAMES) ldi XH, HIGH(ANIMATION_FRAMES) ; X = FRAME MASK
 	JMP MAIN
 
 MAIN:
+	ldi XL, LOW(ANIMATION_FRAMES) ldi XH, HIGH(ANIMATION_FRAMES) ; X = FRAME MASK
+	mov r16, XL mov r17, XH
 	rcall DRAW_ANIMATION_FRAME
 	rjmp MAIN
 	
 	
 
 TIM1_OVF:
+	
+	; Reset timer starting point
+	ldi r16, LOW(34286)
+	sts TCNT1L, r16
+	ldi r16, HIGH(34286)
+	sts TCNT1H, r16
+
 	RETI
 
 
@@ -182,8 +158,6 @@ L2: dec  r20
 ; r20 = row
 ; r21 = column
 ;---------------------------------------
-
-
 SET_LED:
 	mov r1, r16 mov r2, r17 mov r3, r18
 	mov r4, r19 mov r5, r20 mov r6, r21

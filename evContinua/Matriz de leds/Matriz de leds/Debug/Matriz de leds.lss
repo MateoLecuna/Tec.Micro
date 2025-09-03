@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm Tue Sep 02 22:46:29 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm Wed Sep 03 13:03:26 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
@@ -993,10 +993,73 @@ AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evConti
                                  .equ COL_PINS	= 0x0230
                                  .equ ANIMATION_FRAMES	= 0x0240
                                  
+                                 .dseg
+                                 .org 0x0240
+000240 18                        	.db 0b00011000
+000241 24                        	.db 0b00100100 
+000242 24                        	.db 0b00100100
+000243 24                        	.db 0b00100100 
+000244 66                        	.db 0b01100110 
+000245 99                        	.db 0b10011001 
+000246 99                        	.db 0b10011001
+000247 66                        	.db 0b01100110
+                                 
+000248 18                        	.db 0b00011000 
+000249 24                        	.db 0b00100100
+00024a 24                        	.db 0b00100100 
+00024b 24                        	.db 0b00100100 
+00024c 66                        	.db 0b01100110 
+00024d 99                        	.db 0b10011001 
+00024e 99                        	.db 0b10011001 
+00024f 66                        	.db 0b01100110
+                                 
+                                 .org ROW_PORTS
+000200 2b
+000201 2b
+000202 2b
+000203 2b
+000204 2b
+000205 2b
+000206 2b
+000207 2b                        	.db 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B
+                                 .org COL_PORTS
+000220 25
+000221 25
+000222 25
+000223 25
+000224 25
+000225 25
+000226 28
+000227 28                        	.db 0x25, 0x25, 0x25, 0x25, 0x25, 0x25, 0x28, 0x28 
+                                 .org ROW_PINS
+000210 fe
+000211 fd
+000212 fb
+000213 f7
+000214 ef
+000215 df
+000216 bf
+000217 7f                        	.db 0b11111110, 0b11111101, 0b11111011, 0b11110111, 0b11101111, 0b11011111, 0b10111111, 0b01111111
+                                 .org COL_PINS
+000230 01
+000231 02
+000232 04
+000233 08
+000234 10
+000235 20
+000236 01
+000237 02                        	.db 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b00000001, 0b00000010
+                                 
                                  .cseg
 000000 c020                      .org 0x0000 RJMP RESET
-000020 c085                      .org 0x0020 RJMP TIM1_OVF
+000020 c023                      .org 0x0020 RJMP TIM1_OVF
                                  
+                                 
+                                 ; -----------------------------------------------------
+                                 ; Presionar control f 
+                                 ; Escribir para buscar "1"
+                                 ; Dibujar lo que se quiera dibujar
+                                 ; -----------------------------------------------------
                                  
                                  
                                  
@@ -1016,331 +1079,220 @@ AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evConti
 00002a e002                      	ldi r16, (1<<OCIE1A)
 00002b 9300 006f                     sts TIMSK1, r16
                                  
+00002d ee0e                      	ldi r16, LOW(34286)
+00002e 9300 0084                 	sts TCNT1L, r16
+000030 e805                      	ldi r16, HIGH(34286)
+000031 9300 0085                 	sts TCNT1H, r16
+                                 
                                  	; Disable usart
-00002d e000                      	ldi r16, 0
-00002e 9300 00c1                 	sts UCSR0B, r16
-                                 
-                                 	; PORT RAM ORGANIZATION ----------------------
-                                 
-                                 	; Row port list
-000030 e0a0
-000031 e0b2                      	ldi XL, LOW(ROW_PORTS) ldi XH, HIGH(ROW_PORTS)
-000032 e20b
-000033 930d                      	ldi r16, 0x2B st X+, r16
-000034 e20b
-000035 930d                      	ldi r16, 0x2B st X+, r16
-000036 e20b
-000037 930d                      	ldi r16, 0x2B st X+, r16
-000038 e20b
-000039 930d                      	ldi r16, 0x2B st X+, r16
-00003a e20b
-00003b 930d                      	ldi r16, 0x2B st X+, r16
-00003c e20b
-00003d 930d                      	ldi r16, 0x2B st X+, r16
-00003e e20b
-00003f 930d                      	ldi r16, 0x2B st X+, r16
-000040 e20b
-000041 930d                      	ldi r16, 0x2B st X+, r16
-                                 
-                                 	; Column port list
-000042 e2a0
-000043 e0b2                      	ldi XL, LOW(COL_PORTS) ldi XH, HIGH(COL_PORTS)
-000044 e205
-000045 930d                      	ldi r16, 0x25 st X+, r16
-000046 e205
-000047 930d                      	ldi r16, 0x25 st X+, r16
-000048 e205
-000049 930d                      	ldi r16, 0x25 st X+, r16
-00004a e205
-00004b 930d                      	ldi r16, 0x25 st X+, r16
-00004c e205
-00004d 930d                      	ldi r16, 0x25 st X+, r16
-00004e e205
-00004f 930d                      	ldi r16, 0x25 st X+, r16
-000050 e208
-000051 930d                      	ldi r16, 0x28 st X+, r16 
-000052 e208
-000053 930d                      	ldi r16, 0x28 st X+, r16
-                                 
-                                 	; Row pin masks
-000054 e1a0
-000055 e0b2                      	ldi XL, LOW(ROW_PINS) ldi XH, HIGH(ROW_PINS)
-000056 ef0e
-000057 930d                      	ldi r16, 0b11111110 st X+, r16
-000058 ef0d
-000059 930d                      	ldi r16, 0b11111101 st X+, r16
-00005a ef0b
-00005b 930d                      	ldi r16, 0b11111011 st X+, r16
-00005c ef07
-00005d 930d                      	ldi r16, 0b11110111 st X+, r16
-00005e ee0f
-00005f 930d                      	ldi r16, 0b11101111 st X+, r16
-000060 ed0f
-000061 930d                      	ldi r16, 0b11011111 st X+, r16
-000062 eb0f
-000063 930d                      	ldi r16, 0b10111111 st X+, r16
-000064 e70f
-000065 930d                      	ldi r16, 0b01111111 st X+, r16
-                                 
-                                 	; Column pin masks
-000066 e3a0
-000067 e0b2                      	ldi XL, LOW(COL_PINS) ldi XH, HIGH(COL_PINS)
-000068 e001
-000069 930d                      	ldi r16, 0b00000001 st X+, r16
-00006a e002
-00006b 930d                      	ldi r16, 0b00000010 st X+, r16
-00006c e004
-00006d 930d                      	ldi r16, 0b00000100 st X+, r16
-00006e e008
-00006f 930d                      	ldi r16, 0b00001000 st X+, r16
-000070 e100
-000071 930d                      	ldi r16, 0b00010000 st X+, r16
-000072 e200
-000073 930d                      	ldi r16, 0b00100000 st X+, r16
-000074 e001
-000075 930d                      	ldi r16, 0b00000001 st X+, r16
-000076 e002
-000077 930d                      	ldi r16, 0b00000010 st X+, r16
-                                 
-                                 	; Animation frames
-                                 	; -----------------------------------------------------
-                                 	; Presionar control f 
-                                 	; Escribir para buscar "1"
-                                 	; Dibujar lo que se quiera dibujar
-                                 	; -----------------------------------------------------
-000078 e4a0
-000079 e0b2                      	ldi XL, LOW(ANIMATION_FRAMES) ldi XH, HIGH(ANIMATION_FRAMES)
-                                 	
-00007a e108
-00007b 930d                      	ldi r16, 0b00011000 st X+, r16
-00007c e204
-00007d 930d                      	ldi r16, 0b00100100 st X+, r16
-00007e e204
-00007f 930d                      	ldi r16, 0b00100100 st X+, r16
-000080 e204
-000081 930d                      	ldi r16, 0b00100100 st X+, r16
-000082 e606
-000083 930d                      	ldi r16, 0b01100110 st X+, r16
-000084 e909
-000085 930d                      	ldi r16, 0b10011001 st X+, r16
-000086 e909
-000087 930d                      	ldi r16, 0b10011001 st X+, r16
-000088 e606
-000089 930d                      	ldi r16, 0b01100110 st X+, r16
-                                 
-00008a e108
-00008b 930d                      	ldi r16, 0b00011000 st X+, r16
-00008c e204
-00008d 930d                      	ldi r16, 0b00100100 st X+, r16
-00008e e204
-00008f 930d                      	ldi r16, 0b00100100 st X+, r16
-000090 e204
-000091 930d                      	ldi r16, 0b00100100 st X+, r16
-000092 e606
-000093 930d                      	ldi r16, 0b01100110 st X+, r16
-000094 e909
-000095 930d                      	ldi r16, 0b10011001 st X+, r16
-000096 e909
-000097 930d                      	ldi r16, 0b10011001 st X+, r16
-000098 e606
-000099 930d                      	ldi r16, 0b01100110 st X+, r16
+000033 e000                      	ldi r16, 0
+000034 9300 00c1                 	sts UCSR0B, r16
                                  
                                  
                                  
                                  	; PORT CONFIG ----------------------
                                  	; Rows are negative, columns positive
-00009a ef0f
-00009b b90a                      	ldi r16, 0b11111111 out DDRD, r16
-00009c e30f
-00009d b904                      	ldi r16, 0b00111111 out DDRB, r16
-00009e e003
-00009f b907                      	ldi r16, 0b00000011 out DDRC, r16
+000036 ef0f
+000037 b90a                      	ldi r16, 0b11111111 out DDRD, r16
+000038 e30f
+000039 b904                      	ldi r16, 0b00111111 out DDRB, r16
+00003a e003
+00003b b907                      	ldi r16, 0b00000011 out DDRC, r16
                                  
                                  
                                  
-0000a0 e4a0
-0000a1 e0b2                      	ldi XL, LOW(ANIMATION_FRAMES) ldi XH, HIGH(ANIMATION_FRAMES) ; X = FRAME MASK
-0000a2 940c 00a4                 	JMP MAIN
+00003c 940c 003e                 	JMP MAIN
                                  
                                  MAIN:
-0000a4 d05f                      	rcall DRAW_ANIMATION_FRAME
-0000a5 cffe                      	rjmp MAIN
+00003e e4a0
+00003f e0b2                      	ldi XL, LOW(ANIMATION_FRAMES) ldi XH, HIGH(ANIMATION_FRAMES) ; X = FRAME MASK
+000040 2f0a
+000041 2f1b                      	mov r16, XL mov r17, XH
+000042 d065                      	rcall DRAW_ANIMATION_FRAME
+000043 cffa                      	rjmp MAIN
                                  	
                                  	
                                  
                                  TIM1_OVF:
-0000a6 9518                      	RETI
+                                 	
+                                 	; Reset timer starting point
+000044 ee0e                      	ldi r16, LOW(34286)
+000045 9300 0084                 	sts TCNT1L, r16
+000047 e805                      	ldi r16, HIGH(34286)
+000048 9300 0085                 	sts TCNT1H, r16
+                                 
+00004a 9518                      	RETI
                                  
                                  
                                  
                                  CLEAR_MATRIX:
-0000a7 2e10                      	mov r1, r16
-0000a8 ef0f
-0000a9 b90b                      	ldi r16, 0xFF out PORTD, r16
-0000aa e000
-0000ab b905                      	ldi r16, 0x00 out PORTB, r16
-0000ac e000
-0000ad b908                      	ldi r16, 0x00 out PORTC, r16
-0000ae 2d01                      	mov r16, r1 
-0000af 9508                      	ret
+00004b 2e10                      	mov r1, r16
+00004c ef0f
+00004d b90b                      	ldi r16, 0xFF out PORTD, r16
+00004e e000
+00004f b905                      	ldi r16, 0x00 out PORTB, r16
+000050 e000
+000051 b908                      	ldi r16, 0x00 out PORTC, r16
+000052 2d01                      	mov r16, r1 
+000053 9508                      	ret
                                  
                                  DELAY1:
-0000b0 2e12                      	mov r1, r18
-0000b1 2e23                      	mov r2, r19
-0000b2 2e34                      	mov r3, r20
+000054 2e12                      	mov r1, r18
+000055 2e23                      	mov r2, r19
+000056 2e34                      	mov r3, r20
                                  
-0000b3 e021                          ldi  r18, 1
-0000b4 e03a                          ldi  r19, 10
-0000b5 e841                          ldi  r20, 129
-0000b6 954a                      L1: dec  r20
-0000b7 f7f1                          brne L1
-0000b8 953a                          dec  r19
-0000b9 f7e1                          brne L1
-0000ba 952a                          dec  r18
-0000bb f7d1                          brne L1
-0000bc 0000                          nop
+000057 e021                          ldi  r18, 1
+000058 e03a                          ldi  r19, 10
+000059 e841                          ldi  r20, 129
+00005a 954a                      L1: dec  r20
+00005b f7f1                          brne L1
+00005c 953a                          dec  r19
+00005d f7e1                          brne L1
+00005e 952a                          dec  r18
+00005f f7d1                          brne L1
+000060 0000                          nop
                                  
-0000bd 2d21                      	mov r18, r1 
-0000be 2d32                      	mov r19, r2 
-0000bf 2d43                      	mov r20, r3 
-0000c0 9508                      	ret
+000061 2d21                      	mov r18, r1 
+000062 2d32                      	mov r19, r2 
+000063 2d43                      	mov r20, r3 
+000064 9508                      	ret
                                  
                                  DELAY2:
-0000c1 2e12                      	mov r1, r18
-0000c2 2e23                      	mov r2, r19
-0000c3 2e34                      	mov r3, r20
+000065 2e12                      	mov r1, r18
+000066 2e23                      	mov r2, r19
+000067 2e34                      	mov r3, r20
                                  
-0000c4 e029                          ldi  r18, 9
-0000c5 e13e                          ldi  r19, 30
-0000c6 ee45                          ldi  r20, 229
-0000c7 954a                      L2: dec  r20
-0000c8 f7f1                          brne L2
-0000c9 953a                          dec  r19
-0000ca f7e1                          brne L2
-0000cb 952a                          dec  r18
-0000cc f7d1                          brne L2
-0000cd 0000                          nop
+000068 e029                          ldi  r18, 9
+000069 e13e                          ldi  r19, 30
+00006a ee45                          ldi  r20, 229
+00006b 954a                      L2: dec  r20
+00006c f7f1                          brne L2
+00006d 953a                          dec  r19
+00006e f7e1                          brne L2
+00006f 952a                          dec  r18
+000070 f7d1                          brne L2
+000071 0000                          nop
                                  
-0000ce 2d21
-0000cf 2411                      	mov r18, r1 clr r1
-0000d0 2d32
-0000d1 2422                      	mov r19, r2 clr r2
-0000d2 2d43
-0000d3 2433                      	mov r20, r3 clr r3
-0000d4 9508                      	ret
+000072 2d21
+000073 2411                      	mov r18, r1 clr r1
+000074 2d32
+000075 2422                      	mov r19, r2 clr r2
+000076 2d43
+000077 2433                      	mov r20, r3 clr r3
+000078 9508                      	ret
                                  
                                  ;---------------------------------------
                                  ; r20 = row
                                  ; r21 = column
                                  ;---------------------------------------
-                                 
-                                 
                                  SET_LED:
-0000d5 2e10
-0000d6 2e21
-0000d7 2e32                      	mov r1, r16 mov r2, r17 mov r3, r18
-0000d8 2e43
-0000d9 2e54
-0000da 2e65                      	mov r4, r19 mov r5, r20 mov r6, r21
-0000db 2e7a
-0000dc 2e8b                      	mov r7, XL  mov r8, XH
-0000dd 2e9e
-0000de 2eaf                      	mov r9, ZL  mov r10, ZH  
+000079 2e10
+00007a 2e21
+00007b 2e32                      	mov r1, r16 mov r2, r17 mov r3, r18
+00007c 2e43
+00007d 2e54
+00007e 2e65                      	mov r4, r19 mov r5, r20 mov r6, r21
+00007f 2e7a
+000080 2e8b                      	mov r7, XL  mov r8, XH
+000081 2e9e
+000082 2eaf                      	mov r9, ZL  mov r10, ZH  
                                  
-0000df e0b2
-0000e0 e0a0                      	ldi XH, high(ROW_PORTS) ldi XL, low(ROW_PORTS)  ; Point X to PORTS
-0000e1 e0f2
-0000e2 e1e0                      	ldi ZH, high(ROW_PINS) ldi ZL, low(ROW_PINS) ; Point Z to PINS
+000083 e0b2
+000084 e0a0                      	ldi XH, high(ROW_PORTS) ldi XL, low(ROW_PORTS)  ; Point X to PORTS
+000085 e0f2
+000086 e1e0                      	ldi ZH, high(ROW_PINS) ldi ZL, low(ROW_PINS) ; Point Z to PINS
                                  
                                  	
-0000e3 9543                      	inc r20
-0000e4 9553                      	inc r21
+000087 9543                      	inc r20
+000088 9553                      	inc r21
                                  
                                  
                                  	rows:
-0000e5 910d                      		ld r16, X+ 
-0000e6 e020                      		ldi r18, 0x00
-0000e7 2fc0
-0000e8 2fd2                      		mov YL, r16 mov YH, r18
-0000e9 9111                      		ld r17, Z+
-0000ea 954a
-0000eb f7c9                      	dec r20 brne rows
+000089 910d                      		ld r16, X+ 
+00008a e020                      		ldi r18, 0x00
+00008b 2fc0
+00008c 2fd2                      		mov YL, r16 mov YH, r18
+00008d 9111                      		ld r17, Z+
+00008e 954a
+00008f f7c9                      	dec r20 brne rows
                                  
-0000ec 8318                      	st Y, r17
+000090 8318                      	st Y, r17
                                  	
-0000ed e0b2
-0000ee e2a0                      	ldi XH, high(COL_PORTS) ldi XL, low(COL_PORTS)  ; Point X to PORTS
-0000ef e0f2
-0000f0 e3e0                      	ldi ZH, high(COL_PINS) ldi ZL, low(COL_PINS) ; Point Z to PINS
+000091 e0b2
+000092 e2a0                      	ldi XH, high(COL_PORTS) ldi XL, low(COL_PORTS)  ; Point X to PORTS
+000093 e0f2
+000094 e3e0                      	ldi ZH, high(COL_PINS) ldi ZL, low(COL_PINS) ; Point Z to PINS
                                  	
                                  	cols:
-0000f1 910d                      		ld r16, X+ 
-0000f2 e020                      		ldi r18, 0x00
-0000f3 2fc0
-0000f4 2fd2                      		mov YL, r16 mov YH, r18
-0000f5 9111                      		ld r17, Z+
-0000f6 955a
-0000f7 f7c9                      	dec r21 brne cols
+000095 910d                      		ld r16, X+ 
+000096 e020                      		ldi r18, 0x00
+000097 2fc0
+000098 2fd2                      		mov YL, r16 mov YH, r18
+000099 9111                      		ld r17, Z+
+00009a 955a
+00009b f7c9                      	dec r21 brne cols
                                  
-0000f8 8318                      	st Y, r17
+00009c 8318                      	st Y, r17
                                  
-0000f9 2d01
-0000fa 2d12
-0000fb 2d23                      	mov r16, r1 mov r17, r2 mov r18, r3
-0000fc 2d34
-0000fd 2d45
-0000fe 2d56                      	mov r19, r4 mov r20, r5 mov r21, r6
-0000ff 2da7
-000100 2db8                      	mov XL, r7  mov XH, r8
-000101 2de9
-000102 2dfa                      	mov ZL, r9  mov ZH, r10  
+00009d 2d01
+00009e 2d12
+00009f 2d23                      	mov r16, r1 mov r17, r2 mov r18, r3
+0000a0 2d34
+0000a1 2d45
+0000a2 2d56                      	mov r19, r4 mov r20, r5 mov r21, r6
+0000a3 2da7
+0000a4 2db8                      	mov XL, r7  mov XH, r8
+0000a5 2de9
+0000a6 2dfa                      	mov ZL, r9  mov ZH, r10  
                                  
                                  
-000103 9508                      	ret
+0000a7 9508                      	ret
                                  
                                  ; PARAMETROS:
                                  ; r16 -> animation frame pointer low 
                                  ; r17 -> animation frame pointer high
                                  DRAW_ANIMATION_FRAME: 
-000104 e010                      	ldi r17, 0 next_row: ;Next animation row | r17 = vertical coordinate
+0000a8 2fa0
+0000a9 2fb1                      	mov XL, r16 mov XH, r17 ; X = FRAME MASK
+0000aa e010                      	ldi r17, 0 next_row: ;Next animation row | r17 = vertical coordinate
                                  		
-000105 916d                      		ld r22, X+ ; FRAME MASK (with increase)
-000106 e870                      		ldi r23, 0b10000000 ;
-000107 e020                      		ldi r18, 0  ; r18 = Horizontal coordinate
+0000ab 916d                      		ld r22, X+ ; FRAME MASK (with increase)
+0000ac e870                      		ldi r23, 0b10000000 ;
+0000ad e020                      		ldi r18, 0  ; r18 = Horizontal coordinate
                                  		
                                  			
                                  		next_pin:
-000108 df9e                      		rcall CLEAR_MATRIX ; Clear matrix
-000109 2f87                      		mov r24, r23 ; Copy pin mask
+0000ae df9c                      		rcall CLEAR_MATRIX ; Clear matrix
+0000af 2f87                      		mov r24, r23 ; Copy pin mask
                                  
-00010a 2386                      		and r24, r22 ; And animation mask with pin mask
-00010b 3080                      		cpi r24, 0 ; Compare with 0
-00010c f429                      		brne write_led ; Write led
+0000b0 2386                      		and r24, r22 ; And animation mask with pin mask
+0000b1 3080                      		cpi r24, 0 ; Compare with 0
+0000b2 f429                      		brne write_led ; Write led
                                  
-00010d 9576                      		lsr r23 ; shift right pin mask
-00010e 9523                      		inc r18 ; increase horizontal coordinate
-00010f 3028                      		cpi r18, 8 ; Check if end of  loop
-000110 f7b9                      		brne next_pin ; Loop over
+0000b3 9576                      		lsr r23 ; shift right pin mask
+0000b4 9523                      		inc r18 ; increase horizontal coordinate
+0000b5 3028                      		cpi r18, 8 ; Check if end of  loop
+0000b6 f7b9                      		brne next_pin ; Loop over
                                  		
-000111 c008                      		rjmp loop_end ; end loop
+0000b7 c008                      		rjmp loop_end ; end loop
                                  
                                  		write_led:
-000112 2f41
-000113 2f52                      		mov r20, r17 mov r21, r18
-000114 dfc0
-000115 df9a                      		rcall SET_LED rcall DELAY1
+0000b8 2f41
+0000b9 2f52                      		mov r20, r17 mov r21, r18
+0000ba dfbe
+0000bb df98                      		rcall SET_LED rcall DELAY1
                                  		
-000116 9576                      		lsr r23 
-000117 9523                      		inc r18 
-000118 3028                      		cpi r18, 8 
-000119 f771                      		brne next_pin
+0000bc 9576                      		lsr r23 
+0000bd 9523                      		inc r18 
+0000be 3028                      		cpi r18, 8 
+0000bf f771                      		brne next_pin
                                  
                                  		loop_end:
                                  	
-00011a 9513
-00011b 3018
-00011c f741                      	inc r17 cpi r17, 8 brne next_row
-00011d 9508                      	ret
+0000c0 9513
+0000c1 3018
+0000c2 f741                      	inc r17 cpi r17, 8 brne next_row
+0000c3 9508                      	ret
                                  
                                  ;-------------------------------- PARKING
                                  
@@ -1361,10 +1313,10 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega328P" register use summary:
-x  :  51 y  :   2 z  :   2 r0 :   0 r1 :   9 r2 :   7 r3 :   7 r4 :   2 
+x  :   3 y  :   2 z  :   2 r0 :   0 r1 :   9 r2 :   7 r3 :   7 r4 :   2 
 r5 :   2 r6 :   2 r7 :   2 r8 :   2 r9 :   2 r10:   2 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16: 126 r17:  10 r18:  20 r19:  10 r20:  13 
-r21:   5 r22:   2 r23:   4 r24:   3 r25:   0 r26:  10 r27:  10 r28:   2 
+r13:   0 r14:   0 r15:   0 r16:  40 r17:  12 r18:  20 r19:  10 r20:  13 
+r21:   5 r22:   2 r23:   4 r24:   3 r25:   0 r26:   7 r27:   7 r28:   2 
 r29:   2 r30:   4 r31:   4 
 Registers used: 28 out of 35 (80.0%)
 
@@ -1379,22 +1331,22 @@ clc   :   0 clh   :   0 cli   :   1 cln   :   0 clr   :   3 cls   :   0
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
 cpi   :   4 cpse  :   0 dec   :   8 eor   :   0 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   5 jmp   :   1 
-ld    :   5 ldd   :   0 ldi   :  90 lds   :   0 lpm   :   0 lsl   :   0 
-lsr   :   2 mov   :  41 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
+ld    :   5 ldd   :   0 ldi   :  36 lds   :   0 lpm   :   0 lsl   :   0 
+lsr   :   2 mov   :  45 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
 neg   :   0 nop   :   2 or    :   0 ori   :   0 out   :   8 pop   :   0 
 push  :   0 rcall :   4 ret   :   5 reti  :   1 rjmp  :   4 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :  50 std   :   0 sts   :   3 
+sez   :   0 sleep :   0 spm   :   0 st    :   2 std   :   0 sts   :   7 
 sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
 Instructions used: 21 out of 113 (18.6%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00023c    510      0    510   32768   1.6%
-[.dseg] 0x000100 0x000100      0      0      0    2048   0.0%
+[.cseg] 0x000000 0x000188    330      0    330   32768   1.0%
+[.dseg] 0x000100 0x000250      0     48     48    2048   2.3%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
 Assembly complete, 0 errors, 0 warnings
