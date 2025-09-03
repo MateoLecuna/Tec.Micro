@@ -1,0 +1,41 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.8</VERSION>
+ <DEVICE>"ATmega328P"</DEVICE>
+ <WORKING_DIR>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\Debug\Matriz de leds.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>Matriz de leds.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>Matriz de leds.map</FILE>
+  <FILE>Matriz de leds.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <RESET><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>18</LINE></RESET>
+  <TIM1_OVF><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>148</LINE></TIM1_OVF>
+  <MAIN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>105</LINE></MAIN>
+  <next_row><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>108</LINE></next_row>
+  <next_pin><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>115</LINE></next_pin>
+  <CLEAR_MATRIX><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>152</LINE></CLEAR_MATRIX>
+  <write_led><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>130</LINE></write_led>
+  <loop_end><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>139</LINE></loop_end>
+  <SET_LED><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>208</LINE></SET_LED>
+  <DELAY1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>160</LINE></DELAY1>
+  <L1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>168</LINE></L1>
+  <DELAY2><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>181</LINE></DELAY2>
+  <L2><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>189</LINE></L2>
+  <rows><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>222</LINE></rows>
+  <cols><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>234</LINE></cols>
+ </LABELS>
+</ASSEMBLER_INFO>
