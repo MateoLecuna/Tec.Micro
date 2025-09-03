@@ -22,21 +22,20 @@
   <FILE>Matriz de leds.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <RESET><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>53</LINE></RESET>
-  <TIM1_OVF><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>95</LINE></TIM1_OVF>
-  <MAIN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>87</LINE></MAIN>
-  <DRAW_ANIMATION_FRAME><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>207</LINE></DRAW_ANIMATION_FRAME>
-  <CLEAR_MATRIX><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>107</LINE></CLEAR_MATRIX>
-  <DELAY1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>115</LINE></DELAY1>
-  <L1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>123</LINE></L1>
-  <DELAY2><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>136</LINE></DELAY2>
-  <L2><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>144</LINE></L2>
-  <SET_LED><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>161</LINE></SET_LED>
-  <rows><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>175</LINE></rows>
-  <cols><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>187</LINE></cols>
-  <next_row><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>209</LINE></next_row>
-  <next_pin><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>216</LINE></next_pin>
-  <write_led><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>231</LINE></write_led>
-  <loop_end><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>240</LINE></loop_end>
+  <RESET><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>59</LINE></RESET>
+  <TIM2_OVF><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>110</LINE></TIM2_OVF>
+  <TIM1_OVF><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>99</LINE></TIM1_OVF>
+  <MAIN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>93</LINE></MAIN>
+  <DRAW_ANIMATION_FRAME><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>175</LINE></DRAW_ANIMATION_FRAME>
+  <CLEAR_MATRIX><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>117</LINE></CLEAR_MATRIX>
+  <SET_LED><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>129</LINE></SET_LED>
+  <rows><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>143</LINE></rows>
+  <cols><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>155</LINE></cols>
+  <next_row><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>177</LINE></next_row>
+  <next_pin><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>184</LINE></next_pin>
+  <write_led><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>199</LINE></write_led>
+  <loop_end><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>208</LINE></loop_end>
+  <DELAY><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>213</LINE></DELAY>
+  <L1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Matriz de leds\Matriz de leds\main.asm</FILE><LINE>217</LINE></L1>
  </LABELS>
 </ASSEMBLER_INFO>

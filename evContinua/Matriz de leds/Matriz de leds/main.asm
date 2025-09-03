@@ -1,13 +1,17 @@
 
 ; Save ports in array
 
+
+.dseg
+
 .equ ROW_PORTS	= 0x0200
 .equ ROW_PINS	= 0x0210
 .equ COL_PORTS  = 0x0220
 .equ COL_PINS	= 0x0230
 .equ ANIMATION_FRAMES	= 0x0240
+.equ TIMER1_START = 54286
+.equ TIMER2_START = 0
 
-.dseg
 .org 0x0240
 	.db 0b00011000
 	.db 0b00100100 
@@ -38,7 +42,9 @@
 
 .cseg
 .org 0x0000 RJMP RESET
+.org 0x0012 RJMP TIM2_OVF
 .org 0x0020 RJMP TIM1_OVF
+
 
 
 ; -----------------------------------------------------
@@ -57,21 +63,20 @@ RESET:
 	ldi r16, low(RAMEND)  out SPL, r16 
 	sei
 
-	; Config timer 1
-	ldi R16, (1<<CS10)|(1<<CS12)  ; Prescaler = 1024
-	sts TCCR1B, r16  
-	ldi r16, (1<<OCIE1A)
-    sts TIMSK1, r16
+	; Config timer 1 ---------------------------------------------------
+	ldi R16, (1<<CS10)|(1<<CS12) sts TCCR1B, r16 ; 1024 prescaler
+	ldi r16, (1<<TOIE1)			 sts TIMSK1, r16 ; Enable overflow interrupts
+	ldi r16, LOW(TIMER1_START)   sts TCNT1L, r16 ; Timer start
+	ldi r16, HIGH(TIMER1_START)  sts TCNT1H, r16 ; -
 
-	ldi r16, LOW(34286)
-	sts TCNT1L, r16
-	ldi r16, HIGH(34286)
-	sts TCNT1H, r16
+	; Config timer 2 ---------------------------------------------------
+	ldi r16, 0b00000111   sts TCCR2B, r16 ; 1024 prescaler
+	ldi r16, (1<<TOIE2)   sts TIMSK2, r16 ; Enable overflow interrupt
+	ldi r16, TIMER2_START sts TCNT2, r16  ; Timer start
 
 	; Disable usart
 	ldi r16, 0
 	sts UCSR0B, r16
-
 
 
 	; PORT CONFIG ----------------------
@@ -80,26 +85,31 @@ RESET:
 	ldi r16, 0b00111111 out DDRB, r16
 	ldi r16, 0b00000011 out DDRC, r16
 
-
+	ldi r16, LOW(ANIMATION_FRAMES)  mov r11, r16
+	ldi r16, HIGH(ANIMATION_FRAMES) mov r12, r16 
 
 	JMP MAIN
 
 MAIN:
-	ldi XL, LOW(ANIMATION_FRAMES) ldi XH, HIGH(ANIMATION_FRAMES) ; X = FRAME MASK
-	mov r16, XL mov r17, XH
 	rcall DRAW_ANIMATION_FRAME
 	rjmp MAIN
 	
 	
 
 TIM1_OVF:
+
+	inc r11 ;Increase animation frame
 	
 	; Reset timer starting point
-	ldi r16, LOW(34286)
-	sts TCNT1L, r16
-	ldi r16, HIGH(34286)
-	sts TCNT1H, r16
+	ldi r16, LOW(TIMER1_START)  sts TCNT1L, r16
+	ldi r16, HIGH(TIMER1_START) sts TCNT1H, r16
 
+	RETI
+
+
+TIM2_OVF:
+	; Reset timer starting point
+	ldi r16, LOW(TIMER2_START)  sts TCNT2, r16
 	RETI
 
 
@@ -110,48 +120,6 @@ CLEAR_MATRIX:
 	ldi r16, 0x00 out PORTB, r16
 	ldi r16, 0x00 out PORTC, r16
 	mov r16, r1 
-	ret
-
-DELAY1:
-	mov r1, r18
-	mov r2, r19
-	mov r3, r20
-
-    ldi  r18, 1
-    ldi  r19, 10
-    ldi  r20, 129
-L1: dec  r20
-    brne L1
-    dec  r19
-    brne L1
-    dec  r18
-    brne L1
-    nop
-
-	mov r18, r1 
-	mov r19, r2 
-	mov r20, r3 
-	ret
-
-DELAY2:
-	mov r1, r18
-	mov r2, r19
-	mov r3, r20
-
-    ldi  r18, 9
-    ldi  r19, 30
-    ldi  r20, 229
-L2: dec  r20
-    brne L2
-    dec  r19
-    brne L2
-    dec  r18
-    brne L2
-    nop
-
-	mov r18, r1 clr r1
-	mov r19, r2 clr r2
-	mov r20, r3 clr r3
 	ret
 
 ;---------------------------------------
@@ -202,10 +170,10 @@ SET_LED:
 	ret
 
 ; PARAMETROS:
-; r16 -> animation frame pointer low 
-; r17 -> animation frame pointer high
+; r11 -> animation frame pointer low 
+; r12 -> animation frame pointer high
 DRAW_ANIMATION_FRAME: 
-	mov XL, r16 mov XH, r17 ; X = FRAME MASK
+	mov XL, r11 mov XH, r12 ; X = FRAME MASK
 	ldi r17, 0 next_row: ;Next animation row | r17 = vertical coordinate
 		
 		ld r22, X+ ; FRAME MASK (with increase)
@@ -230,7 +198,7 @@ DRAW_ANIMATION_FRAME:
 
 		write_led:
 		mov r20, r17 mov r21, r18
-		rcall SET_LED rcall DELAY1
+		rcall SET_LED rcall DELAY
 		
 		lsr r23 
 		inc r18 
@@ -240,6 +208,17 @@ DRAW_ANIMATION_FRAME:
 		loop_end:
 	
 	inc r17 cpi r17, 8 brne next_row
+	ret
+
+DELAY:
+	mov r1, r18 mov r2, r19
+    ldi  r18, 3
+    ldi  r19, 19
+L1: dec  r19
+    brne L1
+    dec  r18
+    brne L1
+	mov r18, r1 mov r19, r2
 	ret
 
 ;-------------------------------- PARKING
