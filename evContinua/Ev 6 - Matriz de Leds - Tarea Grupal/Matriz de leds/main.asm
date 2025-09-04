@@ -4,6 +4,13 @@
 .equ TIMER1_START = 39286
 .equ TIMER2_START = 0
 
+; Selector de tipo de matriZ
+.equ MATRIX_NORMAL = 0
+.equ MATRIX_DOOLANG = 1
+.def matrix_type = r22   ; [ Registro selector de tipo de matriz ]
+
+
+
 .cseg
 .org 0x0000 RJMP RESET
 .org 0x0012 RJMP TIM2_OVF
@@ -76,10 +83,15 @@ ANIMATION_FRAMES:
 
 RESET:
 	; INICIAR STACK ------------------
-	cli 
+	cli
 	ldi r16, high(RAMEND) out SPH, r16
 	ldi r16, low(RAMEND)  out SPL, r16 
 	sei
+
+	; [ Seleccionar tipo de matriz ]
+	ldi matrix_type, MATRIX_NORMAL   		  ; [ Default ]
+	; ldi matrix_type, MATRIX_DOOLANG 		  ; [ Sacar " ; " al inicio para usar matriz Doolang (y poner ; en la anterior línea) ]
+
 
 	; Config timer 1 ---------------------------------------------------
 	ldi r16, HIGH(TIMER1_START)  sts TCNT1H, r16 ; Timer start
@@ -144,38 +156,67 @@ CLEAR_MATRIX:
 ; r21 = column
 ;---------------------------------------
 SET_LED:
-	push r16 push r17 push r18
-	push r19 push r20 push r21
-	push XL  push XH
-	push ZL  push ZH  
+    push r16 push r17 push r18
+    push r19 push r20 push r21
+    push XL  push XH
+    push ZL  push ZH  
 
-	ldi XH, high(ROW_PORTS<<1) ldi XL, low(ROW_PORTS<<1)  ; Point X to PORTS
-	ldi ZH, high(ROW_PINS<<1) ldi ZL, low(ROW_PINS<<1) ; Point Z to PINS
-	
-	inc r20
-	inc r21
+    ; Ajustar índices
+    inc r20
+    inc r21
 
+    ;-----------------------------------
+    ; Selección de fila según tipo
+    ;-----------------------------------
+    cpi matrix_type, MATRIX_NORMAL   ; ¿Es matriz normal?
+    breq NormalMatrix
+    rjmp DoolangMatrix
 
-	rows:
-		rcall read_loop
-	dec r20 brne rows
+NormalMatrix:
+    ; Usa las tablas predefinidas de ROW_PORTS / ROW_PINS
+    ldi XH, high(ROW_PORTS<<1)
+    ldi XL, low(ROW_PORTS<<1)        ; X -> PORTS
+    ldi ZH, high(ROW_PINS<<1)
+    ldi ZL, low(ROW_PINS<<1)         ; Z -> PINS
+    
+    rows_loop:
+        rcall read_loop              ; Busca la máscara
+    dec r20
+    brne rows_loop
 
-	st Y, r17
-	
-	ldi XH, high(COL_PORTS<<1) ldi XL, low(COL_PORTS<<1)  ; Point X to PORTS
-	ldi ZH, high(COL_PINS<<1) ldi ZL, low(COL_PINS<<1) ; Point Z to PINS
-	
-	cols:
-		rcall read_loop
-	dec r21 brne cols
+    st Y, r17                        ; Aplica máscara de fila
+    rjmp EndMatrixSelect
 
-	st Y, r17
+DoolangMatrix:
+    ; En Doolang, la fila se representa en binario en PORTC
+    mov r17, r20
+    out PORTC, r17
+    rjmp EndMatrixSelect
 
-	pop ZH  pop ZL  pop XH  pop XL
-	pop r21 pop r20 pop r19 pop r18
-	pop r17 pop r16
+EndMatrixSelect:
+    ;-----------------------------------
+    ; Selección de columna (igual en ambos casos)
+    ;-----------------------------------
+    ldi XH, high(COL_PORTS<<1)
+    ldi XL, low(COL_PORTS<<1)        ; X -> PORTS
+    ldi ZH, high(COL_PINS<<1)
+    ldi ZL, low(COL_PINS<<1)         ; Z -> PINS
 
-	ret
+    cols_loop:
+        rcall read_loop              ; Busca la máscara de columna
+    dec r21
+    brne cols_loop
+
+    st Y, r18                        ; Aplica máscara de columna
+
+    ; Restaurar registros
+    pop ZH pop ZL
+    pop XH pop XL
+    pop r21 pop r20
+    pop r19 pop r18
+    pop r17 pop r16
+    ret
+
 
 read_loop:
 	mov r1, ZH mov r2, ZL ; Store prev. Z in r2 and r2
@@ -239,4 +280,40 @@ L1: dec  r19
     brne L1
 	mov r18, r1 mov r19, r2
 	ret
+
+
+;---------------------------------------
+; INPUT:
+;   r20 = Fila a usar (0–7)
+;---------------------------------------
+ELEGIR_FILAS:
+    push r16
+    push r17
+
+    ldi r16, MATRIX_TYPE
+    cpi r16, 0
+    breq matriz_estandar
+
+; ----- Subrutina con Doolang -----
+matriz_doolang:
+    ; Número de fila tiene codificación binaria (Fila 5 -> 0x101)
+    mov r17, r20
+    out PORTC, r17
+    rjmp row_end
+
+; ----- Subrutina estándar -----
+matriz_estandar:
+    ; active low row mask (1 bit low, rest high)
+    ldi r17, 0xFF       ; Apaga todas las filas
+    com r20             ; Invierte el índice
+    lsr r17             ; shift mask until right row
+    ; Example: if row=0, activate pin 0
+    ; TODO: adjust depending on wiring
+    out PORTD, r17
+
+row_end:
+    pop r17
+    pop r16
+    ret
+
 
