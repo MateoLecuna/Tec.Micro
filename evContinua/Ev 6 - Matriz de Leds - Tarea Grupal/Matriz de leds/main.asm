@@ -1,13 +1,16 @@
 
 ; Save ports in array
 
-.equ TIMER1_START = 39286
+.equ TIMER1_START = 59286
 .equ TIMER2_START = 0
 
 .cseg
 .org 0x0000 RJMP RESET
 .org 0x0012 RJMP TIM2_OVF
 .org 0x0020 RJMP TIM1_OVF
+
+.def frameRow = r20
+.def frameColumn = r21
 
 .org 0x0200
 ROW_PORTS:
@@ -28,42 +31,30 @@ COL_PINS:
 
 .org 0x0240
 
-; ----------------------------------------------------- 
-; !!!!!!!!!!! CAMBIAR PATRONES ACA
 ; -----------------------------------------------------
+; !!!!!!!!!!!!!!!! CAMBIAR PATRONES ACA !!!!!!!!!!!!!!!
+; -----------------------------------------------------
+; Cambiar patrones en "patronesLED.txt"
 
 ANIMATION_FRAMES:
     ; Carita sonriente
-	.db 0b01111000, 0b10001100, 0b10010100, 0b10010100, 0b10100100, 0b10100100, 0b11000100, 0b01111001
-
-    .db 0b00100000, 0b01100000, 0b10100000, 0b00100000, 0b00100000, 0b00100000, 0b00100000, 0b11111101
-
-	.db 0b01111000, 0b10000100, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b01000000, 0b11111101
-
-	.db 0b01111000, 0b10000100, 0b00000100, 0b00011000, 0b00000100, 0b00000100, 0b10000100, 0b01111001
-
-	.db 0b10000100, 0b10000100, 0b01111000, 0b00000100, 0b00000100, 0b00000100, 0b00000100, 0b00000101
-
-    .db 0b01111100, 0b10000000, 0b10000000, 0b01111000, 0b00000100, 0b00000100, 0b00000100, 0b11111001
-
-	.db 0b00111000, 0b01000000, 0b10000000, 0b11111000, 0b10000100, 0b10000100, 0b10000100, 0b01111001
-
-	.db 0b11111100, 0b00000100, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b01000000, 0b10000001
-	
-	.db 0b01111000, 0b10000100, 0b10000100, 0b10000100, 0b01111000, 0b10000100, 0b10000100, 0b01111001
-
-	.db 0b01111000, 0b10000100, 0b10000100, 0b10000100, 0b01111000, 0b00000100, 0b00000100, 0b01111001
     .db 0b00111100, 0b01000010, 0b10100101, 0b10000001, 0b10100101, 0b10011001, 0b01000010, 0b00111100
 	.db 0b0, 0b0
 	; Carita triste
     .db 0b00111100, 0b01000010, 0b10100101, 0b10000001, 0b10011001, 0b10100101, 0b01000010, 0b00111100
 	.db 0b0, 0b0
-	; Coraz�n
+	; Corazón
     .db 0b00000000, 0b01100110, 0b11111111, 0b11111111, 0b11111111, 0b01111110, 0b00111100, 0b00011000
 	.db 0b0, 0b0
 	; Rombo
     .db 0b00011000, 0b00111100, 0b01111110, 0b11111111, 0b01111110, 0b00111100, 0b00011000, 0b00000000
 
+	; Alien (Space Invader)
+    .db 0b00111100, 0b01111110, 0b10111101, 0b11111111, 0b11111111, 0b00100100, 0b01000010, 0b10000001
+	; Blank space
+	.db 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000
+	.db 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000
+	.db 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000
 
 
 
@@ -115,8 +106,8 @@ MAIN:
 	
 
 TIM1_OVF:
-	ldi r16, 8
-	add r11, r16 ;Increase animation frame
+
+	inc r11 ;Increase animation frame
 	
 	; Reset timer starting point
 	ldi r16, LOW(TIMER1_START)  sts TCNT1L, r16
@@ -140,25 +131,25 @@ CLEAR_MATRIX:
 	ret
 
 ;---------------------------------------
-; r20 = row
-; r21 = column
+; frameRow = row
+; frameColumn = column
 ;---------------------------------------
 SET_LED:
 	push r16 push r17 push r18
-	push r19 push r20 push r21
+	push r19 push frameRow push frameColumn
 	push XL  push XH
 	push ZL  push ZH  
 
 	ldi XH, high(ROW_PORTS<<1) ldi XL, low(ROW_PORTS<<1)  ; Point X to PORTS
 	ldi ZH, high(ROW_PINS<<1) ldi ZL, low(ROW_PINS<<1) ; Point Z to PINS
 	
-	inc r20
-	inc r21
+	inc frameRow
+	inc frameColumn
 
 
 	rows:
 		rcall read_loop
-	dec r20 brne rows
+	dec frameRow brne rows
 
 	st Y, r17
 	
@@ -167,12 +158,12 @@ SET_LED:
 	
 	cols:
 		rcall read_loop
-	dec r21 brne cols
+	dec frameColumn brne cols
 
 	st Y, r17
 
 	pop ZH  pop ZL  pop XH  pop XL
-	pop r21 pop r20 pop r19 pop r18
+	pop frameColumn pop frameRow pop r19 pop r18
 	pop r17 pop r16
 
 	ret
@@ -216,7 +207,7 @@ DRAW_ANIMATION_FRAME:
 		rjmp loop_end ; end loop
 
 		write_led:
-		mov r20, r17 mov r21, r18
+		mov frameRow, r17 mov frameColumn, r18
 		rcall SET_LED  rcall DELAY
 		
 		lsr r23 
@@ -240,3 +231,4 @@ L1: dec  r19
 	mov r18, r1 mov r19, r2
 	ret
 
+	
