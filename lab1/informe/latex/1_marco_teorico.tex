@@ -1,2 +1,64 @@
 \section{Marco Teórico}
 
+\subsection{Microcontrolador ATmega328P}
+\begin{itemize}
+    \item Características principales (arquitectura AVR, memoria, periféricos).
+    \item Uso de puertos GPIO para control de actuadores (motores, LEDs, relés).
+    \item Temporizadores y su aplicación en control de tiempos.
+    \item Comunicación serial USART (principios de transmisión y recepción de datos).
+\end{itemize}
+
+
+\subsection{Entradas y Salidas Digitales}
+\begin{itemize}
+    \item Concepto de GPIO.
+    \item Uso de pulsadores como entradas digitales (debouncing si es necesario).
+    \item Uso de LEDs como indicadores de estado.
+\end{itemize}
+
+
+\subsection{Automatización y Máquinas de Estado}
+\begin{itemize}
+    \item Qué es una máquina de estados finitos.
+    \item Cómo se representan los estados y transiciones en un proceso automatizado (ejemplo: espera → alimentación → posicionado → punzonado → descarga → fin de ciclo).
+\end{itemize}
+
+
+\subsection{Control de Procesos con Cinta Transportadora y Punzonadora}
+\begin{itemize}
+    \item Principios básicos de una cinta transportadora en automatización.
+    \item Funcionamiento de un actuador lineal/solenoide como punzón.
+    \item Diferentes modos de operación según carga (ligera, media, pesada).
+\end{itemize}
+
+
+\subsection{Comunicación Serial (USART/UART)}
+\begin{itemize}
+    \item Definición y funcionamiento de UART.
+    \item Ejemplos de comandos y monitoreo remoto.
+    \item Aplicaciones en sistemas embebidos para interacción con el usuario o con PC.
+\end{itemize}
+
+
+\subsection{Conversión Digital-Analógica (DAC R-2R)}
+\begin{itemize}
+    \item Concepto de DAC y su importancia.
+    \item Explicación del arreglo de resistencias R-2R.
+    \item Uso de una Look-Up Table (LUT) para generar señales analógicas periódicas.
+\end{itemize}
+
+
+\subsection{Matrices de LEDs}
+\begin{itemize}
+    \item Principio de funcionamiento de una matriz de LEDs.
+    \item Multiplexado y desplazamiento de mensajes.
+    \item Ejemplo de uso en displays.
+\end{itemize}
+
+
+\subsection{Plotter y Control de Movimiento}
+\begin{itemize}
+    \item Concepto de plotter y su uso en ingeniería.
+    \item Control de motores paso a paso o conmutados mediante relés/MOSFETs.
+    \item Señales de control enviadas desde el microcontrolador a un PLC.
+\end{itemize}
