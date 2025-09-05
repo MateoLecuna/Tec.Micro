@@ -1,20 +1,16 @@
 
 ; Save ports in array
 
-.equ TIMER1_START = 39286
+.equ TIMER1_START = 59286
 .equ TIMER2_START = 0
-
-; Selector de tipo de matriZ
-.equ MATRIX_NORMAL = 0
-.equ MATRIX_DOOLANG = 1
-.def matrix_type = r22   ; [ Registro selector de tipo de matriz ]
-
-
 
 .cseg
 .org 0x0000 RJMP RESET
 .org 0x0012 RJMP TIM2_OVF
 .org 0x0020 RJMP TIM1_OVF
+
+.def frameRow = r20
+.def frameColumn = r21
 
 .org 0x0200
 ROW_PORTS:
@@ -35,42 +31,30 @@ COL_PINS:
 
 .org 0x0240
 
-; ----------------------------------------------------- 
-; !!!!!!!!!!! CAMBIAR PATRONES ACA
 ; -----------------------------------------------------
+; !!!!!!!!!!!!!!!! CAMBIAR PATRONES ACA !!!!!!!!!!!!!!!
+; -----------------------------------------------------
+; Cambiar patrones en "patronesLED.txt"
 
 ANIMATION_FRAMES:
     ; Carita sonriente
-	.db 0b01111000, 0b10001100, 0b10010100, 0b10010100, 0b10100100, 0b10100100, 0b11000100, 0b01111001
-
-    .db 0b00100000, 0b01100000, 0b10100000, 0b00100000, 0b00100000, 0b00100000, 0b00100000, 0b11111101
-
-	.db 0b01111000, 0b10000100, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b01000000, 0b11111101
-
-	.db 0b01111000, 0b10000100, 0b00000100, 0b00011000, 0b00000100, 0b00000100, 0b10000100, 0b01111001
-
-	.db 0b10000100, 0b10000100, 0b01111000, 0b00000100, 0b00000100, 0b00000100, 0b00000100, 0b00000101
-
-    .db 0b01111100, 0b10000000, 0b10000000, 0b01111000, 0b00000100, 0b00000100, 0b00000100, 0b11111001
-
-	.db 0b00111000, 0b01000000, 0b10000000, 0b11111000, 0b10000100, 0b10000100, 0b10000100, 0b01111001
-
-	.db 0b11111100, 0b00000100, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b01000000, 0b10000001
-	
-	.db 0b01111000, 0b10000100, 0b10000100, 0b10000100, 0b01111000, 0b10000100, 0b10000100, 0b01111001
-
-	.db 0b01111000, 0b10000100, 0b10000100, 0b10000100, 0b01111000, 0b00000100, 0b00000100, 0b01111001
     .db 0b00111100, 0b01000010, 0b10100101, 0b10000001, 0b10100101, 0b10011001, 0b01000010, 0b00111100
 	.db 0b0, 0b0
 	; Carita triste
     .db 0b00111100, 0b01000010, 0b10100101, 0b10000001, 0b10011001, 0b10100101, 0b01000010, 0b00111100
 	.db 0b0, 0b0
-	; Coraz�n
+	; Corazón
     .db 0b00000000, 0b01100110, 0b11111111, 0b11111111, 0b11111111, 0b01111110, 0b00111100, 0b00011000
 	.db 0b0, 0b0
 	; Rombo
     .db 0b00011000, 0b00111100, 0b01111110, 0b11111111, 0b01111110, 0b00111100, 0b00011000, 0b00000000
 
+	; Alien (Space Invader)
+    .db 0b00111100, 0b01111110, 0b10111101, 0b11111111, 0b11111111, 0b00100100, 0b01000010, 0b10000001
+	; Blank space
+	.db 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000
+	.db 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000
+	.db 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000
 
 
 
@@ -83,15 +67,10 @@ ANIMATION_FRAMES:
 
 RESET:
 	; INICIAR STACK ------------------
-	cli
+	cli 
 	ldi r16, high(RAMEND) out SPH, r16
 	ldi r16, low(RAMEND)  out SPL, r16 
 	sei
-
-	; [ Seleccionar tipo de matriz ]
-	ldi matrix_type, MATRIX_NORMAL   		  ; [ Default ]
-	; ldi matrix_type, MATRIX_DOOLANG 		  ; [ Sacar " ; " al inicio para usar matriz Doolang (y poner ; en la anterior línea) ]
-
 
 	; Config timer 1 ---------------------------------------------------
 	ldi r16, HIGH(TIMER1_START)  sts TCNT1H, r16 ; Timer start
@@ -127,8 +106,8 @@ MAIN:
 	
 
 TIM1_OVF:
-	ldi r16, 8
-	add r11, r16 ;Increase animation frame
+
+	inc r11 ;Increase animation frame
 	
 	; Reset timer starting point
 	ldi r16, LOW(TIMER1_START)  sts TCNT1L, r16
@@ -152,71 +131,42 @@ CLEAR_MATRIX:
 	ret
 
 ;---------------------------------------
-; r20 = row
-; r21 = column
+; frameRow = row
+; frameColumn = column
 ;---------------------------------------
 SET_LED:
-    push r16 push r17 push r18
-    push r19 push r20 push r21
-    push XL  push XH
-    push ZL  push ZH  
+	push r16 push r17 push r18
+	push r19 push frameRow push frameColumn
+	push XL  push XH
+	push ZL  push ZH  
 
-    ; Ajustar índices
-    inc r20
-    inc r21
+	ldi XH, high(ROW_PORTS<<1) ldi XL, low(ROW_PORTS<<1)  ; Point X to PORTS
+	ldi ZH, high(ROW_PINS<<1) ldi ZL, low(ROW_PINS<<1) ; Point Z to PINS
+	
+	inc frameRow
+	inc frameColumn
 
-    ;-----------------------------------
-    ; Selección de fila según tipo
-    ;-----------------------------------
-    cpi matrix_type, MATRIX_NORMAL   ; ¿Es matriz normal?
-    breq NormalMatrix
-    rjmp DoolangMatrix
 
-NormalMatrix:
-    ; Usa las tablas predefinidas de ROW_PORTS / ROW_PINS
-    ldi XH, high(ROW_PORTS<<1)
-    ldi XL, low(ROW_PORTS<<1)        ; X -> PORTS
-    ldi ZH, high(ROW_PINS<<1)
-    ldi ZL, low(ROW_PINS<<1)         ; Z -> PINS
-    
-    rows_loop:
-        rcall read_loop              ; Busca la máscara
-    dec r20
-    brne rows_loop
+	rows:
+		rcall read_loop
+	dec frameRow brne rows
 
-    st Y, r17                        ; Aplica máscara de fila
-    rjmp EndMatrixSelect
+	st Y, r17
+	
+	ldi XH, high(COL_PORTS<<1) ldi XL, low(COL_PORTS<<1)  ; Point X to PORTS
+	ldi ZH, high(COL_PINS<<1) ldi ZL, low(COL_PINS<<1) ; Point Z to PINS
+	
+	cols:
+		rcall read_loop
+	dec frameColumn brne cols
 
-DoolangMatrix:
-    ; En Doolang, la fila se representa en binario en PORTC
-    mov r17, r20
-    out PORTC, r17
-    rjmp EndMatrixSelect
+	st Y, r17
 
-EndMatrixSelect:
-    ;-----------------------------------
-    ; Selección de columna (igual en ambos casos)
-    ;-----------------------------------
-    ldi XH, high(COL_PORTS<<1)
-    ldi XL, low(COL_PORTS<<1)        ; X -> PORTS
-    ldi ZH, high(COL_PINS<<1)
-    ldi ZL, low(COL_PINS<<1)         ; Z -> PINS
+	pop ZH  pop ZL  pop XH  pop XL
+	pop frameColumn pop frameRow pop r19 pop r18
+	pop r17 pop r16
 
-    cols_loop:
-        rcall read_loop              ; Busca la máscara de columna
-    dec r21
-    brne cols_loop
-
-    st Y, r18                        ; Aplica máscara de columna
-
-    ; Restaurar registros
-    pop ZH pop ZL
-    pop XH pop XL
-    pop r21 pop r20
-    pop r19 pop r18
-    pop r17 pop r16
-    ret
-
+	ret
 
 read_loop:
 	mov r1, ZH mov r2, ZL ; Store prev. Z in r2 and r2
@@ -257,7 +207,7 @@ DRAW_ANIMATION_FRAME:
 		rjmp loop_end ; end loop
 
 		write_led:
-		mov r20, r17 mov r21, r18
+		mov frameRow, r17 mov frameColumn, r18
 		rcall SET_LED  rcall DELAY
 		
 		lsr r23 
@@ -281,39 +231,4 @@ L1: dec  r19
 	mov r18, r1 mov r19, r2
 	ret
 
-
-;---------------------------------------
-; INPUT:
-;   r20 = Fila a usar (0–7)
-;---------------------------------------
-ELEGIR_FILAS:
-    push r16
-    push r17
-
-    ldi r16, MATRIX_TYPE
-    cpi r16, 0
-    breq matriz_estandar
-
-; ----- Subrutina con Doolang -----
-matriz_doolang:
-    ; Número de fila tiene codificación binaria (Fila 5 -> 0x101)
-    mov r17, r20
-    out PORTC, r17
-    rjmp row_end
-
-; ----- Subrutina estándar -----
-matriz_estandar:
-    ; active low row mask (1 bit low, rest high)
-    ldi r17, 0xFF       ; Apaga todas las filas
-    com r20             ; Invierte el índice
-    lsr r17             ; shift mask until right row
-    ; Example: if row=0, activate pin 0
-    ; TODO: adjust depending on wiring
-    out PORTD, r17
-
-row_end:
-    pop r17
-    pop r16
-    ret
-
-
+	
