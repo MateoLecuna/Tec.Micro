@@ -1,4 +1,4 @@
-
+	
 ; LED SOLO IZQUIERDA A DERECHA ---------------------------------------
 
 ANIMATION_FRAMES:

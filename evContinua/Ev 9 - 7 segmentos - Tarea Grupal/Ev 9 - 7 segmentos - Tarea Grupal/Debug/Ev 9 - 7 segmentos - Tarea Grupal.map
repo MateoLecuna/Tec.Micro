@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm Tue Sep 09 01:27:05 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm Tue Sep 09 01:35:22 2025
 
 
 EQU  SIGNATURE_000 0000001e
@@ -695,5 +695,28 @@ EQU  ACIaddr      0000002e
 EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
-CSEG RESET        00000000
-CSEG MAIN         00000007
+EQU  TIMER1_START 0000e796
+EQU  TIMER2_START 00000000
+CSEG RESET        00000263
+CSEG TIM2_OVF     00000294
+CSEG TIM1_OVF     0000028c
+DEF  frameRow     r20
+DEF  frameColumn  r21
+CSEG ROW_PORTS    00000200
+CSEG COL_PORTS    00000220
+CSEG ROW_PINS     00000210
+CSEG COL_PINS     00000230
+CSEG ANIMATION_FRAMES 00000240
+CSEG MAIN         0000028a
+CSEG DRAW_ANIMATION_FRAME 000002d6
+CSEG CLEAR_MATRIX 00000298
+CSEG SET_LED      000002a1
+CSEG rows         000002b1
+CSEG read_loop    000002c8
+CSEG cols         000002b9
+CSEG next_row     000002d9
+CSEG next_pin     000002dc
+CSEG write_led    000002e6
+CSEG loop_end     000002ee
+CSEG DELAY        000002f2
+CSEG L1           000002f6

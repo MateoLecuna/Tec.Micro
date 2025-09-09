@@ -22,7 +22,26 @@
   <FILE>Ev 9 - 7 segmentos - Tarea Grupal.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <RESET><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>6</LINE></RESET>
-  <MAIN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>17</LINE></MAIN>
+  <RESET><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>68</LINE></RESET>
+  <TIM2_OVF><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>118</LINE></TIM2_OVF>
+  <TIM1_OVF><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>108</LINE></TIM1_OVF>
+  <ROW_PORTS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>16</LINE></ROW_PORTS>
+  <COL_PORTS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>19</LINE></COL_PORTS>
+  <ROW_PINS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>22</LINE></ROW_PINS>
+  <COL_PINS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>25</LINE></COL_PINS>
+  <ANIMATION_FRAMES><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>39</LINE></ANIMATION_FRAMES>
+  <MAIN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>102</LINE></MAIN>
+  <DRAW_ANIMATION_FRAME><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>186</LINE></DRAW_ANIMATION_FRAME>
+  <CLEAR_MATRIX><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>125</LINE></CLEAR_MATRIX>
+  <SET_LED><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>137</LINE></SET_LED>
+  <rows><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>150</LINE></rows>
+  <read_loop><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>171</LINE></read_loop>
+  <cols><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>159</LINE></cols>
+  <next_row><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>188</LINE></next_row>
+  <next_pin><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>194</LINE></next_pin>
+  <write_led><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>209</LINE></write_led>
+  <loop_end><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>218</LINE></loop_end>
+  <DELAY><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>223</LINE></DELAY>
+  <L1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\evContinua\Ev 9 - 7 segmentos - Tarea Grupal\Ev 9 - 7 segmentos - Tarea Grupal\main.asm</FILE><LINE>227</LINE></L1>
  </LABELS>
 </ASSEMBLER_INFO>
