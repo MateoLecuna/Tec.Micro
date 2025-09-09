@@ -5,9 +5,9 @@
 ; Author : hecto
 ;
 
-; HOLA ESTOY HACIENDO UN CAMBIO AL CODIGO DE PUNZONADORA
-; CTRL + S
+; HOLA ESTO ES UN CAMBIO A PUNZONADORA
+; LIStooo CTRL + S
 ; Replace with your application code
 start:
-    inc r16
+    inc r17
     rjmp start
