@@ -5,7 +5,8 @@
 ; Author : hecto
 ;
 
-
+; HOLA ESTOY HACIENDO UN CAMBIO AL CODIGO DE PUNZONADORA
+; CTRL + S
 ; Replace with your application code
 start:
     inc r16
