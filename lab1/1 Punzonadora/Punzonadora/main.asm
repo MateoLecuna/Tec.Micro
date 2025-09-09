@@ -5,9 +5,7 @@
 ; Author : hecto
 ;
 
-; HOLA ESTO ES UN CAMBIO A PUNZONADORA
-; LIStooo CTRL + S
 ; Replace with your application code
 start:
-    inc r17
+    inc r16
     rjmp start
