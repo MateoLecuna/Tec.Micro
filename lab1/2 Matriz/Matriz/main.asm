@@ -2,19 +2,36 @@
 
 .include "m328pdef.inc"
 
+
+;-----------------------------------------------------------------
+; DSEG
+;-----------------------------------------------------------------
+
+	tx_buffer: .byte TX_BUF_SIZE
+	tx_head:   .byte 1
+	tx_tail:   .byte 1
+
 ;-----------------------------------------------------------------
 ; Constantes y definiciones
 ;-----------------------------------------------------------------
 
-.equ _TIMER0_OVF = 60  ; Button cooldown
-.equ _TIMER2_OVF = 2   ; Matrix speed
+; Buffer size (power of two makes wrap easy with AND)
+.dseg
+
+
+
+.equ _TIMER0_OVF_COUNT = 60  ; Button cooldown
+.equ _TIMER2_OVF_COUNT = 3  ; Matrix speed
+.equ _ANIMATION_SIZE = 119
 .equ _F_CPU = 16000000
 .equ _BAUD = 9600
 .equ _BPS = (_F_CPU/16/_BAUD) - 1
+.equ TX_BUF_SIZE = 16
 
-.def animation_count = r20
-.def timer0_ovf_counter = r21
-.def timer2_ovf_counter = r22
+.def timer0_ovf_counter = r2
+.def timer2_ovf_counter = r4
+.def animation_counter = r5
+.def current_state = r20
 .def row = r23
 .def col = r24
 
@@ -26,7 +43,10 @@
 
 .cseg
 .org 0x0000 rjmp RESET			; Program start
-.org 0x0020 rjmp TIMER0_OVF 	; Timer 0 overflow
+.org 0x0002 rjmp INT0_ISR		; External interrupt 1
+.org 0x0004 rjmp INT1_ISR		; External interrupt 2
+.org 0x0012 rjmp T2_OVF_ISR		; Timer 2 overflow ISR
+.org 0x0020 rjmp T0_OVF_ISR 	; Timer 0 overflow ISR
 .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
 
 
@@ -37,6 +57,9 @@
 
 .org 0x100
 RESET:
+	clr r1
+	clr animation_counter
+
 	; Stack 
 	ldi r16, high(RAMEND) out SPH, r16
 	ldi r16, low(RAMEND)  out SPL, r16
@@ -45,11 +68,13 @@ RESET:
 	ldi r16, 0b00000010 sts EICRA, r16 
    	ldi r16, 0b00000001 out EIMSK, r16 
 
+	; Timer 2 configuration
+	ldi r16, 0b00000111 sts TCCR2B, r16 ; Prescaler 1024
+
 	; IO configuration
 	ldi r16, 0b00111111 out DDRB,  r16 ; 
 	ldi r16, 0b00111111 out DDRC,  r16 ; 
 	ldi r16, 0b11110000 out DDRD,  r16 ; Buttons go here!
-	ldi r16, 0b00001100 out PORTD, r16 ; Enable button pull-up 
 
 	; Initialize animation
 	rcall SET_ANIMATION_START
@@ -71,8 +96,7 @@ RESET:
 
 
 MAIN:
-	rcall SET_ANIMATION_START
-	rcall RENDER_FRAME
+	rcall STATE_MACHINE
 	rjmp MAIN
 
 ;-----------------------------------------------------------------
@@ -81,9 +105,27 @@ MAIN:
 
 
 SET_ANIMATION_START:	; ------------------- SET_ANIMATION_START
+	clr animation_counter
 	ldi XL, low(MATRIX_PATTERNS<<1)
 	ldi XH, high(MATRIX_PATTERNS<<1)
 	ret
+
+MOVE_ANIMATION_FRAME:
+	push r16
+
+	adiw XL, 1 adc XH, r1
+
+	inc animation_counter
+
+	mov r16, animation_counter
+	cpi r16, _ANIMATION_SIZE
+	brlo MOVE_ANIMATION_FRAME_END
+	rcall SET_ANIMATION_START
+
+	MOVE_ANIMATION_FRAME_END:
+	pop r16
+	ret
+
 
 RENDER_FRAME:			; ------------------- RENDER_FRAME
 	push row 
@@ -125,8 +167,6 @@ RENDER_FRAME:			; ------------------- RENDER_FRAME
 
 	ret
 
-; -> r16 = mask (e.j. 0b00001000)
-; -> Z = port adress (e.j 0x2B)
 SET_BIT:				; ------------------- SET_BIT
 	push r16
 	push r17
@@ -143,8 +183,6 @@ SET_BIT:				; ------------------- SET_BIT
 	pop r16
 	ret
 
-; -> r16 = mask (e.j. 0b00001000)
-; -> Z = port adress (e.j 0x2B)
 CLEAR_BIT:				; ------------------- CLEAR_BIT
 	push r16
 	push r17
@@ -175,12 +213,16 @@ USART_INIT:				; ------------------- USART_INIT
 	ret
 
 USART_TRANSMIT:			; ------------------- USART_TRANSMIT
+	push r17
+
 	; Wait for empty transmit buffer
 	lds r17, UCSR0A
-	sbrs r17 ,UDRE0
+	sbrs r17, UDRE0
 	rjmp USART_TRANSMIT
 	; Put data (r16) into buffer, sends the data
 	sts UDR0,r16
+
+	pop r17
 	ret
 
 
@@ -253,14 +295,64 @@ L1: dec  r20
 	pop r20 pop r19 pop r18
 	ret
 
+STATE_MACHINE:
+	cpi current_state, 0
+	breq STATE_MACHINE_STATE_0
+	cpi current_state, 1
+	breq STATE_MACHINE_STATE_1
+	cpi current_state, 2
+	breq STATE_MACHINE_STATE_2
+	cpi current_state, 3
+	breq STATE_MACHINE_STATE_3
+	cpi current_state, 4
+	breq STATE_MACHINE_STATE_4
+	cpi current_state, 5
+	breq STATE_MACHINE_STATE_5
+
+	rjmp STATE_MACHINE_DEFAULT
+
+	
+	STATE_MACHINE_STATE_0:
+		rjmp STATE_MACHINE_END
+
+	STATE_MACHINE_STATE_1:
+		rcall RENDER_FRAME
+		rjmp STATE_MACHINE_END
+
+	STATE_MACHINE_STATE_2:
+		rjmp STATE_MACHINE_END
+
+	STATE_MACHINE_STATE_3:
+		rjmp STATE_MACHINE_END
+
+	STATE_MACHINE_STATE_4:
+		rjmp STATE_MACHINE_END
+
+	STATE_MACHINE_STATE_5:
+		rjmp STATE_MACHINE_END
+
+	STATE_MACHINE_DEFAULT: ; Fail state
+		
+		rjmp STATE_MACHINE_END
+
+
+	STATE_MACHINE_END:
+	ret
+
+
+
 ;-----------------------------------------------------------------
 ; Interrupciones (ISR)
 ;-----------------------------------------------------------------
-USART_RX_ISR:
+USART_RX_ISR:		; ---------------------------------- USART ISR
+	push r16 
+    in r16, SREG 
 	push r16 
 	push r17
 	
 	lds r16, UDR0
+	cpi r16, '0' 
+	breq USART_RX_ISR_CASE_0 ; Texto desplazante
 	cpi r16, '1' 
 	breq USART_RX_ISR_CASE_1 ; Texto desplazante
 	cpi r16, '2' 
@@ -274,12 +366,17 @@ USART_RX_ISR:
 
 	rjmp USART_RX_ISR_CASE_DEFAULT 
 
-	USART_RX_ISR_CASE_1:
+	USART_RX_ISR_CASE_0:
+		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+		ldi r16, 0 mov current_state, r16   ; Change state
+		rjmp USART_RX_ISR_END
 
-		in r16, PORTB
-		ldi r17, (1<<PORTB5)
-		eor r16, r17
-		out PORTB, r16
+		rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_CASE_1:
+		ldi r16, 1 mov current_state, r16   ; Change state
+		ldi r16, 0b00000001 sts TIMSK2, r16 ; Enable move frame timer interrupts
+
 		rjmp USART_RX_ISR_END
 
 	USART_RX_ISR_CASE_2:
@@ -290,7 +387,10 @@ USART_RX_ISR:
 		rjmp USART_RX_ISR_END
 	USART_RX_ISR_CASE_5:
 		rjmp USART_RX_ISR_END
+	
 	USART_RX_ISR_CASE_DEFAULT:
+		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+		rcall CLEAR_MATRIX
 
 		ldi r16, 'e'
 		rcall USART_TRANSMIT
@@ -305,19 +405,67 @@ USART_RX_ISR:
 		ldi r16, '\n'
 		rcall USART_TRANSMIT
 
+
 		rjmp USART_RX_ISR_END
 
 
 	USART_RX_ISR_END:
 	pop r17 
 	pop r16
+	out SREG, r16
+	pop r16	
 	reti
 
-INT0_ISR:
+INT0_ISR:			; ---------------------------------- INT0 ISR
+	push r16 
+    in r16, SREG 
+	push r16 
+
+	pop r16
+	out SREG, r16
+	pop r16				
 	reti
 
-TIMER0_OVF:
+INT1_ISR:			; ---------------------------------- INT1 ISR
+	push r16 
+    in r16, SREG 
+	push r16 
+
+	pop r16
+	out SREG, r16
+	pop r16		
+	reti
+
+T0_OVF_ISR:			; ---------------------------------- TIMER0_OVF ISR
+	push r16 
+    in r16, SREG 
+	push r16 
+
+	pop r16
+	out SREG, r16
+	pop r16		
 	reti 
+
+T2_OVF_ISR:			; ---------------------------------- TIMER2_OVF ISR
+	push r16 
+    in r16, SREG 
+	push r16 
+	
+	inc  timer2_ovf_counter
+	
+	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
+    brsh T2_OVF_ISR_END 
+    
+    ; Interruption code here -------------------
+	rcall MOVE_ANIMATION_FRAME
+	
+	clr timer2_ovf_counter
+
+    T2_OVF_ISR_END:
+		pop r16
+		out SREG, r16
+		pop r16	
+		reti
 
 ;-----------------------------------------------------------------
 ; Datos (program memory)
@@ -335,7 +483,11 @@ TIMER0_OVF:
 	.db 0b00010000, 0b00100000, 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000 
 
 	
-.org 0x360 MATRIX_PATTERNS: ; JEBUS
+.org 0x360 MATRIX_PATTERNS: ; JESUS IS GOD
+	.db 0b0, 0b0
+	.db 0b0, 0b0
+	.db 0b0, 0b0
+	.db 0b0, 0b0
     .db 0b01000001, 0b10000001, 0b10000001, 0b10000001, 0b01111111, 0b00000001, 0b00000001, 0b00000001
 	.db 0b0, 0b0
     .db 0b11111111, 0b10001001, 0b10001001, 0b10001001, 0b10001001, 0b10000001, 0b10000001, 0b10000001
@@ -366,6 +518,15 @@ TIMER0_OVF:
 	.db 0b0, 0b0
 	.db 0b0, 0b0
 
+.org 0x0400
+MENU:
+	.db "Elija una opcion:\n",0 
+	.db "[0] Apagar pantalla\n",0
+	.db "[1] Mensaje desplazante\n",0
+	.db "[2] Carita feliz\n"
+	.db "[3] Carita triste\n",0
+	.db "[4] Rombo\n",0
+	.db "[5] Space Invader\n",0
 	; Z contains address of I/O register or SRAM location
 ; Bit to modify = 3 (for example)
 
