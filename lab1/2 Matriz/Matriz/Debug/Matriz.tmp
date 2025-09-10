@@ -1,0 +1,57 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.8</VERSION>
+ <DEVICE>"ATmega328P"</DEVICE>
+ <WORKING_DIR>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc</FILE>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\Debug\Matriz.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>Matriz.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>Matriz.map</FILE>
+  <FILE>Matriz.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <RESET><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>38</LINE></RESET>
+  <TIMER0_OVF><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>315</LINE></TIMER0_OVF>
+  <USART_RX_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>255</LINE></USART_RX_ISR>
+  <SET_ANIMATION_START><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>79</LINE></SET_ANIMATION_START>
+  <USART_INIT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>161</LINE></USART_INIT>
+  <MAIN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>70</LINE></MAIN>
+  <RENDER_FRAME><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>84</LINE></RENDER_FRAME>
+  <MATRIX_PATTERNS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>334</LINE></MATRIX_PATTERNS>
+  <RENDER_FRAME_ROW_LOOP><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>93</LINE></RENDER_FRAME_ROW_LOOP>
+  <RENDER_FRAME_COL_LOOP><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>97</LINE></RENDER_FRAME_COL_LOOP>
+  <CLEAR_MATRIX><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>183</LINE></CLEAR_MATRIX>
+  <RENDER_FRAME_SKIP_LED><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>110</LINE></RENDER_FRAME_SKIP_LED>
+  <TURN_LED><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>191</LINE></TURN_LED>
+  <TEST_DELAY><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>235</LINE></TEST_DELAY>
+  <SET_BIT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>126</LINE></SET_BIT>
+  <CLEAR_BIT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>144</LINE></CLEAR_BIT>
+  <USART_TRANSMIT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>173</LINE></USART_TRANSMIT>
+  <ROW_PORTS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>324</LINE></ROW_PORTS>
+  <ROW_MASKS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>326</LINE></ROW_MASKS>
+  <COL_PORTS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>328</LINE></COL_PORTS>
+  <COL_MASKS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>330</LINE></COL_MASKS>
+  <L1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>241</LINE></L1>
+  <USART_RX_ISR_CASE_1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>273</LINE></USART_RX_ISR_CASE_1>
+  <USART_RX_ISR_CASE_2><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>281</LINE></USART_RX_ISR_CASE_2>
+  <USART_RX_ISR_CASE_3><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>283</LINE></USART_RX_ISR_CASE_3>
+  <USART_RX_ISR_CASE_4><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>285</LINE></USART_RX_ISR_CASE_4>
+  <USART_RX_ISR_CASE_5><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>287</LINE></USART_RX_ISR_CASE_5>
+  <USART_RX_ISR_CASE_DEFAULT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>289</LINE></USART_RX_ISR_CASE_DEFAULT>
+  <USART_RX_ISR_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>307</LINE></USART_RX_ISR_END>
+  <INT0_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>312</LINE></INT0_ISR>
+ </LABELS>
+</ASSEMBLER_INFO>
