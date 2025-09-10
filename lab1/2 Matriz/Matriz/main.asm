@@ -2,23 +2,14 @@
 
 .include "m328pdef.inc"
 
-
-;-----------------------------------------------------------------
-; DSEG
-;-----------------------------------------------------------------
-
-	tx_buffer: .byte TX_BUF_SIZE
-	tx_head:   .byte 1
-	tx_tail:   .byte 1
-
 ;-----------------------------------------------------------------
 ; Constantes y definiciones
 ;-----------------------------------------------------------------
 
-; Buffer size (power of two makes wrap easy with AND)
-.dseg
 
-
+.cseg
+.equ TX_BUF_SIZE = 16                 ; power of two
+.equ TX_BUF_MASK = TX_BUF_SIZE - 1    ; 0x0F for size 1
 
 .equ _TIMER0_OVF_COUNT = 60  ; Button cooldown
 .equ _TIMER2_OVF_COUNT = 3  ; Matrix speed
@@ -26,7 +17,6 @@
 .equ _F_CPU = 16000000
 .equ _BAUD = 9600
 .equ _BPS = (_F_CPU/16/_BAUD) - 1
-.equ TX_BUF_SIZE = 16
 
 .def timer0_ovf_counter = r2
 .def timer2_ovf_counter = r4
@@ -36,10 +26,20 @@
 .def col = r24
 
 
+
+;-----------------------------------------------------------------
+; DSEG
+;-----------------------------------------------------------------
+
+.dseg
+tx_buffer: .byte TX_BUF_SIZE          ; circular buffer storage
+tx_head:   .byte 1                    ; enqueue index
+tx_tail:   .byte 1                    ; dequeue index
+
+
 ;-----------------------------------------------------------------
 ; Vectores 
 ;-----------------------------------------------------------------
-
 
 .cseg
 .org 0x0000 rjmp RESET			; Program start
@@ -48,6 +48,7 @@
 .org 0x0012 rjmp T2_OVF_ISR		; Timer 2 overflow ISR
 .org 0x0020 rjmp T0_OVF_ISR 	; Timer 0 overflow ISR
 .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
+.org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
 
 
 ;-----------------------------------------------------------------
@@ -201,6 +202,9 @@ CLEAR_BIT:				; ------------------- CLEAR_BIT
 	ret
 
 USART_INIT:				; ------------------- USART_INIT
+    sts  tx_head, r1
+    sts  tx_tail, r1
+
 	; Set baud rate
 	sts UBRR0H, r17
 	sts UBRR0L, r16
@@ -212,18 +216,44 @@ USART_INIT:				; ------------------- USART_INIT
 	sts UCSR0C,r16
 	ret
 
-USART_TRANSMIT:			; ------------------- USART_TRANSMIT
-	push r17
 
-	; Wait for empty transmit buffer
-	lds r17, UCSR0A
-	sbrs r17, UDRE0
-	rjmp USART_TRANSMIT
-	; Put data (r16) into buffer, sends the data
-	sts UDR0,r16
+USART_SEND:
+    ; load head and tail
+    lds  r17, tx_head               ; r17 = head
+    lds  r18, tx_tail               ; r18 = tail
 
-	pop r17
-	ret
+    ; next_head = (head + 1) & MASK
+    mov  r19, r17
+    inc  r19
+    andi r19, TX_BUF_MASK
+
+    ; if next_head == tail => buffer full
+    cp   r19, r18
+    breq usart_send_full            ; full ? fail (SEC)
+
+    ; compute &tx_buffer[head] into Z
+    ldi  ZL, low(tx_buffer)
+    ldi  ZH, high(tx_buffer)
+    add  ZL, r17
+    adc  ZH, r1           ; assumes r1==0 (standard AVR ABI)
+
+    ; store data
+    st   Z, r16
+
+    ; commit new head
+    sts  tx_head, r19
+
+    ; enable UDRE interrupt so ISR starts draining
+    lds  r20, UCSR0B
+    ori  r20, (1<<UDRIE0)
+    sts  UCSR0B, r20
+
+    clc                            ; success
+    ret
+
+usart_send_full:
+    sec                            ; fail: buffer full
+    ret
 
 
 CLEAR_MATRIX:			; ------------------- CLEAR_MATRIX
@@ -344,6 +374,56 @@ STATE_MACHINE:
 ;-----------------------------------------------------------------
 ; Interrupciones (ISR)
 ;-----------------------------------------------------------------
+
+USART_UDRE_ISR:
+    push r16
+    push r17
+    push r18
+    push r19
+    push r20
+    push ZH
+    push ZL
+
+    ; load head/tail
+    lds  r17, tx_head              ; r17 = head
+    lds  r18, tx_tail              ; r18 = tail
+
+    ; buffer empty? (head == tail)
+    cp   r17, r18
+    brne usart_udre_send
+    ; empty ? disable UDRE interrupt
+    lds  r20, UCSR0B
+    andi r20, ~(1<<UDRIE0)
+    sts  UCSR0B, r20
+    rjmp usart_udre_exit
+
+	usart_udre_send:
+    ; Z = &tx_buffer[tail]
+    ldi  ZL, low(tx_buffer)
+    ldi  ZH, high(tx_buffer)
+    add  ZL, r18
+    adc  ZH, r1
+
+    ; r16 = byte to send
+    ld   r16, Z
+    sts  UDR0, r16                 ; write to data register (starts shift)
+
+    ; tail = (tail + 1) & MASK
+    inc  r18
+    andi r18, TX_BUF_MASK
+    sts  tx_tail, r18
+
+	usart_udre_exit:
+    pop  ZL
+    pop  ZH
+    pop  r20
+    pop  r19
+    pop  r18
+    pop  r17
+    pop  r16
+    reti
+
+
 USART_RX_ISR:		; ---------------------------------- USART ISR
 	push r16 
     in r16, SREG 
@@ -393,17 +473,17 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
 		rcall CLEAR_MATRIX
 
 		ldi r16, 'e'
-		rcall USART_TRANSMIT
+		rcall USART_SEND
 		ldi r16, 'r'
-		rcall USART_TRANSMIT
+		rcall USART_SEND
 		ldi r16, 'r'
-		rcall USART_TRANSMIT
+		rcall USART_SEND
 		ldi r16, 'o'
-		rcall USART_TRANSMIT
+		rcall USART_SEND
 		ldi r16, 'r'
-		rcall USART_TRANSMIT
+		rcall USART_SEND
 		ldi r16, '\n'
-		rcall USART_TRANSMIT
+		rcall USART_SEND
 
 
 		rjmp USART_RX_ISR_END
