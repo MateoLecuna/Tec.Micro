@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm Thu Sep 11 15:49:41 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm Thu Sep 11 16:25:37 2025
 
 
 EQU  SIGNATURE_000 0000001e
@@ -699,10 +699,13 @@ EQU  _TIMER0_OVF_COUNT 0000003c
 EQU  _TIMER2_OVF_COUNT 00000002
 DEF  animation_count r20
 DEF  timer_ovf_count r21
+DEF  timer0_ovf_counter r2
+DEF  timer1_ovf_counter r3
+DEF  timer2_ovf_counter r4
 CSEG RESET        00000100
 CSEG INT0_ISR     0000010e
 CSEG TIMER0_OVF   0000010f
 CSEG MAIN         0000010b
 CSEG TURN_LED     0000010c
 CSEG CLEAR_MATRIX 0000010d
-CSEG LCD_PORTS    00000300
+CSEG DATA         00000300

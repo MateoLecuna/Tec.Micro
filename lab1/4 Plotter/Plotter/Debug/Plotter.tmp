@@ -23,12 +23,12 @@
   <FILE>Plotter.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <RESET><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>33</LINE></RESET>
-  <INT0_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>70</LINE></INT0_ISR>
-  <TIMER0_OVF><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>73</LINE></TIMER0_OVF>
-  <MAIN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>51</LINE></MAIN>
-  <TURN_LED><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>58</LINE></TURN_LED>
-  <CLEAR_MATRIX><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>62</LINE></CLEAR_MATRIX>
-  <LCD_PORTS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>82</LINE></LCD_PORTS>
+  <RESET><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>30</LINE></RESET>
+  <INT0_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>67</LINE></INT0_ISR>
+  <TIMER0_OVF><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>70</LINE></TIMER0_OVF>
+  <MAIN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>48</LINE></MAIN>
+  <TURN_LED><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>55</LINE></TURN_LED>
+  <CLEAR_MATRIX><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>59</LINE></CLEAR_MATRIX>
+  <DATA><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>77</LINE></DATA>
  </LABELS>
 </ASSEMBLER_INFO>

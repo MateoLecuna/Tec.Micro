@@ -1,12 +1,12 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm Thu Sep 11 15:49:41 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm Thu Sep 11 16:25:37 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
-C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(3): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
+C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
-C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(3): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
+C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
                                  
-                                 ; Estructura para codigo asm
+                                 
                                  
                                  ;***** Created: 2011-02-09 12:03 ******* Source: ATmega328P.xml **********
                                  ;*************************************************************************
@@ -987,7 +987,6 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
                                  
                                  ; ***** END OF FILE ******************************************************
                                  
-                                 
                                  .include "m328pdef.inc"
                                  
                                  ;***** Created: 2011-02-09 12:03 ******* Source: ATmega328P.xml **********
@@ -1037,24 +1036,22 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
                                  ; Constantes y definiciones
                                  ;-----------------------------------------------------------------
                                  
-                                 ; Constantes del programa
-                                 
-                                 .equ _TIMER0_OVF_COUNT = 60  ; Button cooldown
-                                 .equ _TIMER2_OVF_COUNT = 2 ; Bottom led blink speed
-                                 
-                                 
-                                 ; Renombrando registros (para no olvidar que son)
+                                 .equ _TIMER0_OVF_COUNT = 60		; Button cooldown
+                                 .equ _TIMER2_OVF_COUNT = 2		; Bottom led blink speed
                                  
                                  .def animation_count = r20
                                  .def timer_ovf_count = r21
+                                 .def timer0_ovf_counter = r2
+                                 .def timer1_ovf_counter = r3
+                                 .def timer2_ovf_counter = r4
                                  
                                  ;-----------------------------------------------------------------
                                  ; Vectores 
                                  ;-----------------------------------------------------------------
                                  
                                  .cseg
-000000 c0ff                      .org 0x0000 rjmp RESET		; Program start
-000002 c10b                      .org 0x0002 rjmp INT0_ISR	; Button press 1
+000000 c0ff                      .org 0x0000 rjmp RESET			; Program start
+000002 c10b                      .org 0x0002 rjmp INT0_ISR		; Button press 1
 000020 c0ee                      .org 0x0020 rjmp TIMER0_OVF 	; Timer 0 overflow
                                  
                                  ;-----------------------------------------------------------------
@@ -1087,7 +1084,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 00010b cfff                      	rjmp MAIN
                                  
                                  ;-----------------------------------------------------------------
-                                 ; Subrutinas (funciones del programa)
+                                 ; Subrutinas 
                                  ;-----------------------------------------------------------------
                                  
                                  TURN_LED:
@@ -1112,9 +1109,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
                                  ; Datos (program memory)
                                  ;-----------------------------------------------------------------
                                  
-                                 ; 0x300 es un lugar seguro para CUALQUIER tamaño de programa
-                                 
-                                 .org 0x300 LCD_PORTS:
+                                 .org 0x300 DATA:
 000300 2b2b
 000301 2b2b
 000302 2525

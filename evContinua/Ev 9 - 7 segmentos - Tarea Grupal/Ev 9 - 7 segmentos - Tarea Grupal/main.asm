@@ -4,252 +4,505 @@
 ; Propósito: Controlar matriz 8x8 con multiplexado por filas/columnas.
 ; ============================================================
 
+; Implementar el código de la LUT con un display de 7 segmentos, 
+; luego de esto implementar un contador de 0 a 9, usar un pulsador de inicio y uno de parada. 
+; Usando el código de ejemplo dejado en plataforma para el cargado de la LUT.
 
-; Save ports in array
+; Codigo de ejemplo:
+;.org 0x0000
+;rjmp start
+;
+;configurar:   
+;	ldi r20, 255
+;	out DDRD, r20
+;	ldi r20, 0xff
+;	out DDRB, r20
+;	clr r20
+;	out PORTC, r20
+;	call guardar_codigos
+;	ret
+;
+;esperar_inicio:
+;	nop
+;	ret
+;
+;start:
+;  ldi r16, HIGH(RAMEND)
+;	out SPH, r16
+;	ldi r16, LOW(RAMEND)
+;	out SPL, r16
+;	call configurar
+;	call esperar_inicio
+;	ldi r16, 0x01
+;	call get_u
+;	call set_7seg_u
+;	rjmp start
+;
+;get_u:
+;	mov		r20, r16
+;	andi	r20, 0x0f
+;	mov		r1, r20
+;	ret
+;
+;set_7seg_u:
+;	mov		r0, r1
+;	call	get_7seg_code
+;	mov		r17, r20
+;	out		PORTD, r17
+;	ret
+;
+;get_7seg_code:
+;	ldi r28,0x00 ;LOW(0x0100)
+;	ldi r29,0x01 ;HIGH(0x0100)
+;	add r28,r0
+;	ld r20, Y
+;	ret
+;
+;guardar_codigos:
+;	ldi r28, 0x00 ;LOW(0x0100)
+;	ldi r29, 0x01 ;HIGH(0x0100)
+;	ldi r20, 0b01111110 ;cargamos el 0
+;	ST Y+, r20
+;	ldi r20, 0b00110000 ;cargamos el 1
+;	ST Y+, r20
+;	ldi r20, 0b01101101 ;cargamos el 2
+;	ST Y+, r20
+;	ldi r20, 0b01111001 ;cargamos el 3
+;	ST Y+, r20
+;	ldi r20, 0b00110011 ;cargamos el 4
+;	ST Y+, r20
+;	ldi r20, 0b01011011 ;cargamos el 5
+;	ST Y+, r20
+;	ldi r20, 0b01011111 ;cargamos el 6
+;	ST Y+, r20
+;	ldi r20, 0b01110000 ;cargamos el 7
+;	ST Y+, r20
+;	ldi r20, 0b01111111 ;cargamos el 8
+;	ST Y+, r20
+;	ldi r20, 0b01110011 ;cargamos el 9
+;	ST Y+, r20
+;	ret
 
-.equ TIMER1_START = 59286	; Preload de Timer1 para temporización de animación (ajustable)
-.equ TIMER2_START = 0		; Preload de Timer2 para refresco de matriz (ajustable)
+
+
+;-----------------------------------------------------------------
+; Constants & Definitions
+;-----------------------------------------------------------------
+
+.equ _TIMER0_OVF_COUNT = 60 ; Button cooldown
+.equ _TIMER2_OVF_COUNT = 30 ; Bottom led blink speed
+
+.def t0_ovf = r2
+.def t2_ovf = r3
+.def led_prev_state = r4
+.def animation_state = r22 ; 0 = clear , 1 = counting , 2 = stopped
+.def animation_position = r23
+
+
+;-----------------------------------------------------------------
+; Vectors
+;-----------------------------------------------------------------
 
 .cseg
-.org 0x0000 RJMP RESET		; Vector 0x0000: RESET
-.org 0x0012 RJMP TIM2_OVF	; Vector 0x0012: Timer/Counter2 Overflow
-.org 0x0020 RJMP TIM1_OVF	; Vector 0x0020: Timer/Counter1 Overflow
+.org 0x0000 rjmp RESET		; Program start
+.org 0x0002 rjmp INT0_ISR	; Button press 1
+.org 0x0004 rjmp INT1_ISR	; Button press 2
+.org 0x0012 rjmp T2_OVF_ISR ; Timer 2 overflow
+.org 0x0020 rjmp T0_OVF_ISR ; Timer 0 overflow
 
-.def frameRow = r20			; índice de fila activa (0..7)
-.def frameColumn = r21		; índice/byte de columna para el frame actual
+;-----------------------------------------------------------------
+; Reset
+;-----------------------------------------------------------------
 
-; Tabla ROW_PORTS: mapea salida de filas/columnas para el barrido
-; Cada entrada corresponde a la configuración de puertos en un paso del scan
-.org 0x0200
-ROW_PORTS:
-	.db 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B
-.org 0x0220
-COL_PORTS:
-	.db 0x25, 0x25, 0x25, 0x25, 0x25, 0x25, 0x28, 0x28 
-.org 0x0210
-ROW_PINS:
-	.db 0b11111110, 0b11111101, 0b11111011, 0b11110111, 0b11101111, 0b11011111, 0b10111111, 0b01111111
-.org 0x0230
-COL_PINS:
-	.db 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b00000001, 0b00000010
-
-
-
-
-
-.org 0x0240
-
-; -----------------------------------------------------
-; !!!!!!!!!!!!!!!! CAMBIAR PATRONES ACA !!!!!!!!!!!!!!!
-; -----------------------------------------------------
-; Cambiar patrones en "patronesLED.txt"
-
-ANIMATION_FRAMES:
-    ; Carita sonriente
-    .db 0b00111100, 0b01000010, 0b10100101, 0b10000001, 0b10100101, 0b10011001, 0b01000010, 0b00111100
-	.db 0b0, 0b0
-	; Carita triste
-    .db 0b00111100, 0b01000010, 0b10100101, 0b10000001, 0b10011001, 0b10100101, 0b01000010, 0b00111100
-	.db 0b0, 0b0
-	; Coraz�n
-    .db 0b00000000, 0b01100110, 0b11111111, 0b11111111, 0b11111111, 0b01111110, 0b00111100, 0b00011000
-	.db 0b0, 0b0
-	; Rombo
-    .db 0b00011000, 0b00111100, 0b01111110, 0b11111111, 0b01111110, 0b00111100, 0b00011000, 0b00000000
-
-	; Alien (Space Invader)
-    .db 0b00111100, 0b01111110, 0b10111101, 0b11111111, 0b11111111, 0b00100100, 0b01000010, 0b10000001
-	; Blank space
-	.db 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000
-	.db 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000
-	.db 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000
-
-
-
-
-
-
-
-
-
-
+.org 0x100
 RESET:
-	; INICIAR STACK ------------------
-	cli 
-	ldi r16, high(RAMEND)
-	out SPH, r16
-	ldi r16, low(RAMEND) 
-	out SPL, r16 
-	sei
 
-	; Config timer 1 ---------------------------------------------------
-	ldi r16, HIGH(TIMER1_START)
-	sts TCNT1H, r16 ; Timer start
-	ldi r16, LOW(TIMER1_START) 
-	sts TCNT1L, r16 ; -
-	ldi r16, (1<<TOIE1)			 
-	sts TIMSK1, r16 ; Enable overflow interrupts
-	ldi R16, (1<<CS10)|(1<<CS12) sts TCCR1B, r16 ; 1024 prescaler
+	clr r1 ; Clear r1 (good practice)
+	clr t0_ovf 
+	clr t2_ovf
+	clr led_prev_state
+	clr animation_state
+	clr animation_position
 
+	; Stack initialization
+	ldi r16, high(RAMEND) out SPH, r16
+	ldi r16, low(RAMEND)  out SPL, r16
 
-	; Config timer 2 ---------------------------------------------------
-	ldi r16, TIMER2_START 
-	sts TCNT2, r16  ; Timer start
-	ldi r16, 0b00000111   
-	sts TCCR2B, r16 ; 1024 prescaler
-	ldi r16, (1<<TOIE2)   
-	sts TIMSK2, r16 ; Enable overflow interrupt
+	; IO configuration
+	ldi r16, 0b00001111 out DDRB,  r16 ; 
+	ldi r16, 0b00001111 out DDRC,  r16 ; 
+	ldi r16, 0b00110000 out DDRD,  r16 ; Buttons go here!
 
+	ldi r16, 0b00001100 out PORTD, r16 ; Enable button pull-up 
 
+	; External interrupt configuration
+	ldi r16, 0b00001010 sts EICRA, r16 ; Interrupt type (falling edge)
+    ldi r16, 0b00000011 out EIMSK, r16 ; Enable interrupts
 
+	; Timer 2 configuration
+	ldi r16, 0b00000001 sts TIMSK2, r16 ; Interrupts
+	ldi r16, 0b00000111 sts TCCR2B, r16 ; Prescaler 1024
 
-	; PORT CONFIG ----------------------
-	; Rows are negative, columns positive
-	ldi r16, 0b11111111 
-	out DDRD, r16
-	ldi r16, 0b00111111 
-	out DDRB, r16
-	ldi r16, 0b00000011 
-	out DDRC, r16
+	sei ; Enable global interruptions
+	ldi ZL, low(LCD_NUMBERS<<1) ldi ZH, high(LCD_NUMBERS<<1)
 
 
-	ldi r16, LOW(ANIMATION_FRAMES<<1)  
-	mov r11, r16
-	ldi r16, HIGH(ANIMATION_FRAMES<<1) 
-	mov r12, r16 
+    rjmp MAIN
 
-	JMP MAIN
+;-----------------------------------------------------------------
+; Main loop
+;-----------------------------------------------------------------
 
 MAIN:
-	rcall DRAW_ANIMATION_FRAME
 	rjmp MAIN
+
+;-----------------------------------------------------------------
+; Subroutines
+;-----------------------------------------------------------------
+
+; ZL -> Number low
+; ZH -> Number high
+
+SET_NUMBER: ;------------------------------- Set number
+	push r16 
+	push r17
+	push r18
+	push r19
+	push r20
+	push XL
+	push XH
+	push YL
+	push YH
+	push ZL
+	push ZH
+
+	ldi XL, low(LCD_PORTS<<1)	ldi XH, high(LCD_PORTS<<1)
+	ldi YL, low(LCD_PINS<<1)    ldi YH, high(LCD_PINS<<1)
 	
+	lpm r16, Z ; r16 -> Number mask
+	ldi r19, 0b10000000 ; Pin checker
+
+
+	SET_NUMBER_LOOP:
+
+	mov ZL, YL mov ZH, YH 
+	lpm r18, Z ; r18 -> Individual pin mask
+	adiw YL, 1 adc YH, r1 ; Increment pointer
 	
+	mov ZL, XL mov ZH, XH
+	lpm r17, Z ; r17 -> Port adress
+	adiw XL, 1 adc XH, r1 ; Increment pointer
 
-TIM1_OVF:
+	push r19
+	and r19, r16
+	cpi r19, 0
+	breq SET_NUMBER_LOOP_SKIP
 
-	inc r11 ;Increase animation frame
+	pop r19
+	push ZL push ZH
+
+	lpm ZL, Z
+	ldi ZH, 0x00
 	
-	; Reset timer starting point
-	ldi r16, LOW(TIMER1_START)  sts TCNT1L, r16
-	ldi r16, HIGH(TIMER1_START) sts TCNT1H, r16
-	RETI
+	ld r20, Z ; -> previous port values
+	or r20, r18
+	st Z, r20
 
+	pop ZH pop ZL
+	rjmp SET_NUMBER_LOOP_END
+	
+	SET_NUMBER_LOOP_SKIP:
+	pop r19
+	SET_NUMBER_LOOP_END:
+	lsr r19 
+	cpi r19, 0 brne SET_NUMBER_LOOP
 
-TIM2_OVF:
-	; Reset timer starting point
-	ldi r16, LOW(TIMER2_START)  sts TCNT2, r16
-	RETI
+	pop ZH
+	pop ZL
+	pop YH
+	pop YL
+	pop XH
+	pop XL
+	pop r20
+	pop r19
+	pop r18
+	pop r17
+	pop r16 
 
-
-
-CLEAR_MATRIX:
-	push r16
-	ldi r16, 0xFF out PORTD, r16
-	ldi r16, 0x00 out PORTB, r16
-	ldi r16, 0x00 out PORTC, r16
-	pop r16
 	ret
 
-;---------------------------------------
-; frameRow = row
-; frameColumn = column
-;---------------------------------------
-SET_LED:
-	push r16 push r17 push r18
-	push r19 push frameRow push frameColumn
-	push XL  push XH
-	push ZL  push ZH  
+CLEAR_DISPLAY: ;------------------------------- Clear display
+	push r16 
+	push r17
 
-	ldi XH, high(ROW_PORTS<<1) ldi XL, low(ROW_PORTS<<1)  ; Point X to PORTS
-	ldi ZH, high(ROW_PINS<<1) ldi ZL, low(ROW_PINS<<1) ; Point Z to PINS
+	ldi r16, 0b00000000 
+	out PORTB, r16
 	
-	inc frameRow
-	inc frameColumn
+	in r16, PORTC
+	ldi r17, 0b00001000
+	and r16, r17 
+	out PORTC, r16
 
-
-	rows:
-		rcall read_loop
-	dec frameRow brne rows
-
-	st Y, r17
-	
-	ldi XH, high(COL_PORTS<<1) ldi XL, low(COL_PORTS<<1)  ; Point X to PORTS
-	ldi ZH, high(COL_PINS<<1) ldi ZL, low(COL_PINS<<1) ; Point Z to PINS
-	
-	cols:
-		rcall read_loop
-	dec frameColumn brne cols
-
-	st Y, r17
-
-	pop ZH  pop ZL  pop XH  pop XL
-	pop frameColumn pop frameRow pop r19 pop r18
-	pop r17 pop r16
-
+	pop r17
+	pop r16	
 	ret
 
-read_loop:
-	mov r1, ZH mov r2, ZL ; Store prev. Z in r2 and r2
-	mov ZL, XL mov ZH, XH ; Move X to Z
-	lpm r16, Z+ ; Retrieve program memory and increase Z
-	mov XL, ZL mov XH, ZH ; Move increased Z to X
-	mov ZH, r1 mov ZL, r2 ; Retrieve original. Z
+TEST_DELAY: ;------------------------------- Test delay
+	push r18 
+	push r19 
+	push r20
 
-	ldi r18, 0x00
-	mov YL, r16 mov YH, r18
-	lpm r17, Z+
-	ret
-
-; PARAMETROS:
-; r11 -> animation frame pointer low 
-; r12 -> animation frame pointer high
-DRAW_ANIMATION_FRAME: 
-	mov ZL, r11 mov ZH, r12 ; X = FRAME MASK
-	ldi r17, 0 next_row: ;Next animation row | r17 = vertical coordinate
-		
-		lpm r22, Z+ ; FRAME MASK (with increase)
-		ldi r23, 0b10000000 ;
-		ldi r18, 0  ; r18 = Horizontal coordinate
-			
-		next_pin:
-		rcall CLEAR_MATRIX ; Clear matrix
-		mov r24, r23 ; Copy pin mask
-
-		and r24, r22 ; And animation mask with pin mask
-		cpi r24, 0 ; Compare with 0
-		brne write_led ; Write led
-
-		lsr r23 ; shift right pin mask
-		inc r18 ; increase horizontal coordinate
-		cpi r18, 8 ; Check if end of  loop
-		brne next_pin ; Loop over
-		
-		rjmp loop_end ; end loop
-
-		write_led:
-		mov frameRow, r17 mov frameColumn, r18
-		rcall SET_LED  rcall DELAY
-		
-		lsr r23 
-		inc r18 
-		cpi r18, 8 
-		brne next_pin
-
-		loop_end:
-	
-	inc r17 cpi r17, 8 brne next_row
-	ret
-
-DELAY:
-	mov r1, r18 mov r2, r19
-    ldi  r18, 3
-    ldi  r19, 19
-L1: dec  r19
+    ldi  r18, 9
+    ldi  r19, 30
+    ldi  r20, 229
+L1: dec  r20
+    brne L1
+    dec  r19
     brne L1
     dec  r18
     brne L1
-	mov r18, r1 mov r19, r2
+    nop
+
+	pop r20 
+	pop r19 
+	pop r18
 	ret
 
+; ------------------------------
+; State logic
+; ------------------------------
+
+STATE_MACHINE: ;------------------------------- State machine
+
+	cpi animation_state, 0 ; Clear
+	breq STATE_CLEAR
+	cpi animation_state, 1 ; Counting
+	breq STATE_COUNTING
+	cpi animation_state, 2 ; Stopped
+	breq STATE_STOPPED
+
+
+
+	STATE_CLEAR:
+		rcall CLEAR_DISPLAY
+		clr animation_position
+		rjmp STATE_MACHINE_END
+
+	STATE_COUNTING:
+		cpi animation_position, 10 
+		brne STATE_COUNTING_SKIP
 	
+		; Overflow reset
+		rcall CLEAR_DISPLAY
+		ldi animation_state, 0
+		rjmp STATE_MACHINE_END
+
+		; Normal counting increment
+		STATE_COUNTING_SKIP:
+		rcall CLEAR_DISPLAY
+		add ZL, animation_position adc ZH, r1
+		rcall SET_NUMBER
+		inc animation_position
+		rjmp STATE_MACHINE_END
+
+
+	STATE_STOPPED:
+		rcall CLEAR_DISPLAY
+		add ZL, animation_position adc ZH, r1
+		rcall SET_NUMBER
+		rjmp STATE_MACHINE_END
+
+	STATE_MACHINE_END:
+	ldi ZL, low(LCD_NUMBERS<<1) ldi ZH, high(LCD_NUMBERS<<1)
+	ret
+	
+
+; ------------------------------
+; External input (buttons)
+; ------------------------------
+
+BUTTON_PRESS_0: ;------------------------------- Button press 0
+
+	cpi animation_state, 0 ; Clear
+	breq BUTTON_PRESS_0_STATE_CLEAR
+	cpi animation_state, 1 ; Counting
+	breq BUTTON_PRESS_0_STATE_COUNTING
+	cpi animation_state, 2 ; Stopped
+	breq BUTTON_PRESS_0_STATE_STOPPED
+
+	BUTTON_PRESS_0_STATE_CLEAR:
+		ldi animation_state, 1
+		rjmp BUTTON_PRESS_0_END
+
+	BUTTON_PRESS_0_STATE_COUNTING:
+		rjmp BUTTON_PRESS_0_END
+
+	BUTTON_PRESS_0_STATE_STOPPED:
+		ldi animation_state, 1
+		rjmp BUTTON_PRESS_0_END
+
+
+	BUTTON_PRESS_0_END:
+	ret
+
+
+
+BUTTON_PRESS_1: ;------------------------------- Button press 1
+
+	cpi animation_state, 0 ; Clear
+	breq BUTTON_PRESS_1_STATE_CLEAR
+	cpi animation_state, 1 ; Counting
+	breq BUTTON_PRESS_1_STATE_COUNTING
+	cpi animation_state, 2 ; Stopped
+	breq BUTTON_PRESS_1_STATE_STOPPED
+
+	BUTTON_PRESS_1_STATE_CLEAR:
+		rjmp BUTTON_PRESS_1_END
+
+	BUTTON_PRESS_1_STATE_COUNTING:
+		ldi animation_state, 2
+		rjmp BUTTON_PRESS_1_END
+
+	BUTTON_PRESS_1_STATE_STOPPED:
+		ldi animation_state, 0
+		rjmp BUTTON_PRESS_1_END
+
+	BUTTON_PRESS_1_END:
+	ret
+
+
+
+;-----------------------------------------------------------------
+; Interruptions
+;-----------------------------------------------------------------
+
+
+; Timer 2 overflow ////////////////////////////////////
+; Display control
+T2_OVF_ISR:
+	push r16 
+    in r16, SREG 
+	push r16 
+
+    inc  t2_ovf 
+
+	ldi r16, _TIMER2_OVF_COUNT/2 cp r16, t2_ovf 
+    brsh T2_OVF_ISR_END
+
+	cp led_prev_state, r1 ; Dont turn on if led state is already 1
+	brne T2_OVF_ISR_SKIP 
+
+	sbi PORTC, 3
+	ldi r16, 1 mov led_prev_state, r16	
+
+
+	T2_OVF_ISR_SKIP:
+	ldi r16, _TIMER2_OVF_COUNT cp r16, t2_ovf
+	brsh T2_OVF_ISR_END
+
+
+	clr t2_ovf				; Reset overflow timer
+	clr led_prev_state		; Reset led state
+	cbi PORTC, 3			; Turn off led
+
+	rcall STATE_MACHINE
+
+
+	T2_OVF_ISR_END:
+		pop r16
+		out SREG, r16
+		pop r16	
+		reti
+
+
+; Timer 0 overflow /////////////////////////////////////
+; Button reset
+T0_OVF_ISR:
+	push r16
+    in r16, SREG 
+	push r16
+
+	inc t0_ovf 
+
+	ldi r16, _TIMER0_OVF_COUNT cp t0_ovf, r16; r16 >= t0_ovf
+	brlo T0_OVF_ISR_END
+
+	; Interruption code here -------------------
+
+	ldi r16, 0b00000011 out EIFR, r16	; Clear pending external flags
+	ldi r16, 0b00000011 out EIMSK, r16	; Enable button interrupt	
+
+	ldi r16, 0b00000000 sts TIMSK0, r16 ; Disable timer 0 interrupts
+	ldi r16, 0b00000001 out TIFR0, r16	; Clear timer overflow flags
+	ldi r16, 0b00000000 out TCNT0 , r16	; Clear timer 
+	ldi r16, 0b00000000 out TCCR0B, r16 ; Stop cooldown timer
+
+	clr t0_ovf
+	
+	T0_OVF_ISR_END:
+	pop r16
+	out SREG, r16
+	pop r16	
+	reti
+
+; Button press 1 ////////////////////////////////////////
+INT0_ISR: 
+	push r16 
+	in r16, SREG 
+	push r16
+
+	; Interruption code here -------------------
+
+	rcall BUTTON_PRESS_0
+
+	; Button cooldown ---------------------------
+	ldi r16, 0b00000011 out EIFR, r16	; Clear pending external flags
+	ldi r16, 0b00000000 out EIMSK, r16	; Disable button interrupt
+
+	ldi r16, 0b00000001 out TIFR0, r16	; Clear timer overflow flags
+	ldi r16, 0b00000000 out TCNT0 , r16	; Clear timer 
+	ldi r16, 0b00000101 out TCCR0B, r16	; Enable cooldown timer
+	ldi r16, 0b00000001 sts TIMSK0, r16 ; Enable timer 0 interrupts
+
+	pop r16 
+	out SREG, r16 
+	pop  r16
+	reti
+
+; Button press 2 ////////////////////////////////////////
+INT1_ISR: 
+	push r16 
+	in r16, SREG 
+	push r16
+	
+	; Interruption code here -------------------
+
+	rcall BUTTON_PRESS_1
+
+	; Button cooldown ---------------------------
+	ldi r16, 0b00000011 out EIFR, r16	; Clear pending external flags
+	ldi r16, 0b00000000 out EIMSK, r16	; Disable button interrupt
+
+	ldi r16, 0b00000001 out TIFR0, r16	; Clear timer overflow flags
+	ldi r16, 0b00000000 out TCNT0 , r16	; Clear timer 
+	ldi r16, 0b00000101 out TCCR0B, r16	; Enable cooldown timer
+	ldi r16, 0b00000001 sts TIMSK0, r16 ; Enable timer 0 interrupts
+
+	pop r16 
+	out SREG, r16 
+	pop r16
+	reti
+
+;-----------------------------------------------------------------
+; Data
+;-----------------------------------------------------------------
+
+.cseg
+.org 0x300 LCD_PORTS:
+	.db 0x25, 0x25, 0x25, 0x25, 0x28, 0x28, 0x28, 0x28
+
+.org 0x310 LCD_PINS: 
+	.db 0b0001, 0b0010, 0b0100, 0b1000, 0b0001, 0b0010, 0b0100, 0b1000
+
+.org 0x320 LCD_NUMBERS: ;numbers 0-9
+	.db 0x7e<<1, 0x30<<1, 0x6d<<1, 0x79<<1, 0x33<<1, 0x5b<<1, 0x5f<<1, 0x70<<1, 0x7f<<1, 0x7b<<1

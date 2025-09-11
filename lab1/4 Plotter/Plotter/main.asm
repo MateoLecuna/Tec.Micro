@@ -10,6 +10,9 @@
 
 .def animation_count = r20
 .def timer_ovf_count = r21
+.def timer0_ovf_counter = r2
+.def timer1_ovf_counter = r3
+.def timer2_ovf_counter = r4
 
 ;-----------------------------------------------------------------
 ; Vectores 
