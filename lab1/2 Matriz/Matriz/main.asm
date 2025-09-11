@@ -8,11 +8,11 @@
 
 
 .cseg
-.equ TX_BUF_SIZE = 128                 ; power of two
+.equ TX_BUF_SIZE = 256                 ; power of two
 .equ TX_BUF_MASK = TX_BUF_SIZE - 1    ; 0x0F for size 1
 
 .equ _TIMER0_OVF_COUNT = 60  ; Button cooldown
-.equ _TIMER2_OVF_COUNT = 3  ; Matrix speed
+.equ _TIMER2_OVF_COUNT = 2  ; Matrix speed
 .equ _ANIMATION_SIZE = 119
 .equ _F_CPU = 16000000
 .equ _BAUD = 9600
@@ -360,11 +360,14 @@ STATE_MACHINE:
 	breq STATE_MACHINE_STATE_4
 	cpi current_state, 5
 	breq STATE_MACHINE_STATE_5
+	cpi current_state, 6
+	breq STATE_MACHINE_STATE_6
 
 	rjmp STATE_MACHINE_DEFAULT
 
 	
 	STATE_MACHINE_STATE_0:
+		rcall CLEAR_MATRIX
 		rjmp STATE_MACHINE_END
 
 	STATE_MACHINE_STATE_1:
@@ -372,26 +375,72 @@ STATE_MACHINE:
 		rjmp STATE_MACHINE_END
 
 	STATE_MACHINE_STATE_2:
+		rcall RENDER_FRAME
 		rjmp STATE_MACHINE_END
 
 	STATE_MACHINE_STATE_3:
+		rcall RENDER_FRAME
 		rjmp STATE_MACHINE_END
 
 	STATE_MACHINE_STATE_4:
+		rcall RENDER_FRAME
 		rjmp STATE_MACHINE_END
 
 	STATE_MACHINE_STATE_5:
+		rcall RENDER_FRAME
+		rjmp STATE_MACHINE_END
+
+	STATE_MACHINE_STATE_6:
+		rcall RENDER_FRAME
 		rjmp STATE_MACHINE_END
 
 	STATE_MACHINE_DEFAULT: ; Fail state
-		
+		rcall CLEAR_MATRIX
 		rjmp STATE_MACHINE_END
 
 
 	STATE_MACHINE_END:
 	ret
 
+SEND_MENU:
+	push r16
+	push ZL
+	push ZH
+	
+	ldi ZL, low(MENU_TEXT<<1) ldi ZH, high(MENU_TEXT<<1)
 
+	SEND_MENU_LOOP:
+	lpm r16, Z+
+	cpi r16, 0
+	breq SEND_MENU_END
+	rcall USART_SEND
+	rjmp SEND_MENU_LOOP
+
+	SEND_MENU_END:
+	pop ZH
+	pop ZL
+	pop r16
+	ret
+
+SEND_ERROR:
+	push r16
+	push ZL
+	push ZH
+		
+	ldi ZL, low(ERROR_TEXT<<1) ldi ZH, high(ERROR_TEXT<<1)
+
+	SEND_ERROR_LOOP:
+	lpm r16, Z+
+	cpi r16, 0
+	breq SEND_ERROR_END
+	rcall USART_SEND
+	rjmp SEND_ERROR_LOOP
+
+	SEND_ERROR_END:
+	pop ZH
+	pop ZL
+	pop r16
+	ret
 
 ;-----------------------------------------------------------------
 ; Interrupciones (ISR)
@@ -451,8 +500,6 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
     in r16, SREG 
 	push r16 
 	push r17
-	push ZL
-	push ZH
 	
 	lds r16, UDR0
 	cpi r16, '0' 
@@ -464,68 +511,76 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
 	cpi r16, '3' 
 	breq USART_RX_ISR_CASE_3 ; Cara triste
 	cpi r16, '4' 
-	breq USART_RX_ISR_CASE_4 ; Rombo
+	breq USART_RX_ISR_CASE_4 ; Corazon
 	cpi r16, '5' 
-	breq USART_RX_ISR_CASE_5 ; Alien
+	breq USART_RX_ISR_CASE_5 ; Rombo
+	cpi r16, '6' 
+	breq USART_RX_ISR_CASE_6 ; Space Invader
 
 	rjmp USART_RX_ISR_CASE_DEFAULT 
 
 	USART_RX_ISR_CASE_0:
+		rcall SET_ANIMATION_START
 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
 		ldi r16, 0 mov current_state, r16   ; Change state
 		rjmp USART_RX_ISR_END
 
 
 	USART_RX_ISR_CASE_1:
+		rcall SET_ANIMATION_START
 		ldi r16, 1 mov current_state, r16   ; Change state
 		ldi r16, 0b00000001 sts TIMSK2, r16 ; Enable move frame timer interrupts
 
 		rjmp USART_RX_ISR_END
 
 	USART_RX_ISR_CASE_2:
+		ldi XL, low(CARITA_SONRIENTE<<1) ldi XH, high(CARITA_SONRIENTE<<1)
+		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+		ldi r16, 2 mov current_state, r16   ; Change state
+	
 		rjmp USART_RX_ISR_END
 	USART_RX_ISR_CASE_3:
+		ldi XL, low(CARITA_TRISTE<<1) ldi XH, high(CARITA_TRISTE<<1)
+		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+		ldi r16, 3 mov current_state, r16   ; Change state
+
 		rjmp USART_RX_ISR_END
 	USART_RX_ISR_CASE_4:
+		ldi XL, low(CORAZON<<1) ldi XH, high(CORAZON<<1)
+		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+		ldi r16, 4 mov current_state, r16   ; Change state
+
 		rjmp USART_RX_ISR_END
 	USART_RX_ISR_CASE_5:
+		ldi XL, low(ROMBO<<1) ldi XH, high(ROMBO<<1)
+		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+		ldi r16, 5 mov current_state, r16   ; Change state
+
 		rjmp USART_RX_ISR_END
-	
+
+	USART_RX_ISR_CASE_6:
+		ldi XL, low(ALIEN<<1) ldi XH, high(ALIEN<<1)
+		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+		ldi r16, 6 mov current_state, r16   ; Change state
+
+		rjmp USART_RX_ISR_END
 	USART_RX_ISR_CASE_DEFAULT:
 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+		ldi r16, 99 mov current_state, r16   ; Change state
+		
+
+		rcall SEND_ERROR
+		rcall SEND_MENU
 
 		rjmp USART_RX_ISR_END
 
 
 	USART_RX_ISR_END:
-	pop ZH
-	pop ZL
 	pop r17 
 	pop r16
 	out SREG, r16
 	pop r16	
 	reti
-
-SEND_MENU:
-	push r16
-	push ZL
-	push ZH
-	
-	ldi ZL, low(MENU_TEXT<<1) ldi ZH, high(MENU_TEXT<<1)
-
-	SEND_LOOP:
-	lpm r16, Z+
-	cpi r16, 0
-	breq SEND_MENU_END
-	rcall USART_SEND
-	rjmp SEND_LOOP
-
-	SEND_MENU_END:
-	pop ZH
-	pop ZL
-	pop r16
-
-	ret
 
 
 INT0_ISR:			; ---------------------------------- INT0 ISR
@@ -629,16 +684,34 @@ T2_OVF_ISR:			; ---------------------------------- TIMER2_OVF ISR
 	.db 0b0, 0b0
 	.db 0b0, 0b0
 	.db 0b0, 0b0
+.org 0x400    
 
-.org 0x0400
+CARITA_SONRIENTE:
+    .db 0b00111100, 0b01000010, 0b10100101, 0b10000001, 0b10100101, 0b10011001, 0b01000010, 0b00111100
+CARITA_TRISTE:
+    .db 0b00111100, 0b01000010, 0b10100101, 0b10000001, 0b10011001, 0b10100101, 0b01000010, 0b00111100
+CORAZON:
+    .db 0b00000000, 0b01100110, 0b11111111, 0b11111111, 0b11111111, 0b01111110, 0b00111100, 0b00011000
+ROMBO:
+    .db 0b00011000, 0b00111100, 0b01111110, 0b11111111, 0b11111111, 0b01111110, 0b00111100, 0b00011000
+ALIEN:
+    .db 0b00111100, 0b01111110, 0b10111101, 0b11111111, 0b11111111, 0b00100100, 0b01000010, 0b10000001
+	
+
+.org 0x0500
 MENU_TEXT:
 	.db "Elija una opcion:", 0x0A
 	.db "[0] Apagar pantalla", 0x0A
 	.db "[1] Mensaje desplazante", 0x0A
 	.db "[2] Carita feliz ", 0x0A
 	.db "[3] Carita triste", 0x0A
-	.db "[4] Rombo", 0x0A
-	.db "[5] Space Invader",0x0A,0x0A, 0
+	.db "[4] Corazon", 0x0A
+	.db "[5] Rombo", 0x0A
+	.db "[6] Space Invader",0x0A,0x0A, 0
+
+.org 0x600
+ERROR_TEXT:
+	.db "Opcion invalida!", 0x0A, 0x0A, 0, 0
 	; Z contains address of I/O register or SRAM location
 ; Bit to modify = 3 (for example)
 

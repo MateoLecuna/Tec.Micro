@@ -27,18 +27,18 @@
   <tx_head><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>36</LINE></tx_head>
   <tx_tail><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>37</LINE></tx_tail>
   <RESET><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>60</LINE></RESET>
-  <INT0_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>531</LINE></INT0_ISR>
-  <INT1_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>541</LINE></INT1_ISR>
-  <T2_OVF_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>561</LINE></T2_OVF_ISR>
-  <T0_OVF_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>551</LINE></T0_OVF_ISR>
-  <USART_RX_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>449</LINE></USART_RX_ISR>
-  <USART_UDRE_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>400</LINE></USART_UDRE_ISR>
+  <INT0_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>586</LINE></INT0_ISR>
+  <INT1_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>596</LINE></INT1_ISR>
+  <T2_OVF_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>616</LINE></T2_OVF_ISR>
+  <T0_OVF_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>606</LINE></T0_OVF_ISR>
+  <USART_RX_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>498</LINE></USART_RX_ISR>
+  <USART_UDRE_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>449</LINE></USART_UDRE_ISR>
   <SET_ANIMATION_START><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>109</LINE></SET_ANIMATION_START>
   <USART_INIT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>205</LINE></USART_INIT>
-  <SEND_MENU><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>509</LINE></SEND_MENU>
+  <SEND_MENU><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>405</LINE></SEND_MENU>
   <MAIN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>100</LINE></MAIN>
   <STATE_MACHINE><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>350</LINE></STATE_MACHINE>
-  <MATRIX_PATTERNS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>598</LINE></MATRIX_PATTERNS>
+  <MATRIX_PATTERNS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>653</LINE></MATRIX_PATTERNS>
   <MOVE_ANIMATION_FRAME><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>115</LINE></MOVE_ANIMATION_FRAME>
   <MOVE_ANIMATION_FRAME_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>127</LINE></MOVE_ANIMATION_FRAME_END>
   <RENDER_FRAME><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>132</LINE></RENDER_FRAME>
@@ -52,32 +52,43 @@
   <CLEAR_BIT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>188</LINE></CLEAR_BIT>
   <USART_SEND><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>221</LINE></USART_SEND>
   <usart_send_full><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>269</LINE></usart_send_full>
-  <ROW_PORTS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>588</LINE></ROW_PORTS>
-  <ROW_MASKS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>590</LINE></ROW_MASKS>
-  <COL_PORTS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>592</LINE></COL_PORTS>
-  <COL_MASKS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>594</LINE></COL_MASKS>
+  <ROW_PORTS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>643</LINE></ROW_PORTS>
+  <ROW_MASKS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>645</LINE></ROW_MASKS>
+  <COL_PORTS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>647</LINE></COL_PORTS>
+  <COL_MASKS><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>649</LINE></COL_MASKS>
   <L1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>339</LINE></L1>
-  <STATE_MACHINE_STATE_0><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>367</LINE></STATE_MACHINE_STATE_0>
-  <STATE_MACHINE_STATE_1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>370</LINE></STATE_MACHINE_STATE_1>
-  <STATE_MACHINE_STATE_2><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>374</LINE></STATE_MACHINE_STATE_2>
-  <STATE_MACHINE_STATE_3><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>377</LINE></STATE_MACHINE_STATE_3>
-  <STATE_MACHINE_STATE_4><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>380</LINE></STATE_MACHINE_STATE_4>
-  <STATE_MACHINE_STATE_5><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>383</LINE></STATE_MACHINE_STATE_5>
-  <STATE_MACHINE_DEFAULT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>386</LINE></STATE_MACHINE_DEFAULT>
-  <STATE_MACHINE_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>391</LINE></STATE_MACHINE_END>
-  <usart_udre_send><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>422</LINE></usart_udre_send>
-  <usart_udre_exit><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>438</LINE></usart_udre_exit>
-  <USART_RX_ISR_CASE_0><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>473</LINE></USART_RX_ISR_CASE_0>
-  <USART_RX_ISR_CASE_1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>479</LINE></USART_RX_ISR_CASE_1>
-  <USART_RX_ISR_CASE_2><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>485</LINE></USART_RX_ISR_CASE_2>
-  <USART_RX_ISR_CASE_3><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>487</LINE></USART_RX_ISR_CASE_3>
-  <USART_RX_ISR_CASE_4><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>489</LINE></USART_RX_ISR_CASE_4>
-  <USART_RX_ISR_CASE_5><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>491</LINE></USART_RX_ISR_CASE_5>
-  <USART_RX_ISR_CASE_DEFAULT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>494</LINE></USART_RX_ISR_CASE_DEFAULT>
-  <USART_RX_ISR_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>500</LINE></USART_RX_ISR_END>
-  <MENU_TEXT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>634</LINE></MENU_TEXT>
-  <SEND_LOOP><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>516</LINE></SEND_LOOP>
-  <SEND_MENU_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>523</LINE></SEND_MENU_END>
-  <T2_OVF_ISR_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>576</LINE></T2_OVF_ISR_END>
+  <STATE_MACHINE_STATE_0><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>369</LINE></STATE_MACHINE_STATE_0>
+  <STATE_MACHINE_STATE_1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>373</LINE></STATE_MACHINE_STATE_1>
+  <STATE_MACHINE_STATE_2><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>377</LINE></STATE_MACHINE_STATE_2>
+  <STATE_MACHINE_STATE_3><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>381</LINE></STATE_MACHINE_STATE_3>
+  <STATE_MACHINE_STATE_4><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>385</LINE></STATE_MACHINE_STATE_4>
+  <STATE_MACHINE_STATE_5><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>389</LINE></STATE_MACHINE_STATE_5>
+  <STATE_MACHINE_STATE_6><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>393</LINE></STATE_MACHINE_STATE_6>
+  <STATE_MACHINE_DEFAULT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>397</LINE></STATE_MACHINE_DEFAULT>
+  <STATE_MACHINE_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>402</LINE></STATE_MACHINE_END>
+  <MENU_TEXT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>702</LINE></MENU_TEXT>
+  <SEND_MENU_LOOP><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>412</LINE></SEND_MENU_LOOP>
+  <SEND_MENU_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>419</LINE></SEND_MENU_END>
+  <SEND_ERROR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>425</LINE></SEND_ERROR>
+  <ERROR_TEXT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>713</LINE></ERROR_TEXT>
+  <SEND_ERROR_LOOP><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>432</LINE></SEND_ERROR_LOOP>
+  <SEND_ERROR_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>439</LINE></SEND_ERROR_END>
+  <usart_udre_send><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>471</LINE></usart_udre_send>
+  <usart_udre_exit><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>487</LINE></usart_udre_exit>
+  <USART_RX_ISR_CASE_0><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>522</LINE></USART_RX_ISR_CASE_0>
+  <USART_RX_ISR_CASE_1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>529</LINE></USART_RX_ISR_CASE_1>
+  <USART_RX_ISR_CASE_2><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>536</LINE></USART_RX_ISR_CASE_2>
+  <USART_RX_ISR_CASE_3><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>542</LINE></USART_RX_ISR_CASE_3>
+  <USART_RX_ISR_CASE_4><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>548</LINE></USART_RX_ISR_CASE_4>
+  <USART_RX_ISR_CASE_5><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>554</LINE></USART_RX_ISR_CASE_5>
+  <USART_RX_ISR_CASE_6><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>561</LINE></USART_RX_ISR_CASE_6>
+  <USART_RX_ISR_CASE_DEFAULT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>567</LINE></USART_RX_ISR_CASE_DEFAULT>
+  <USART_RX_ISR_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>578</LINE></USART_RX_ISR_END>
+  <CARITA_SONRIENTE><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>689</LINE></CARITA_SONRIENTE>
+  <CARITA_TRISTE><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>691</LINE></CARITA_TRISTE>
+  <CORAZON><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>693</LINE></CORAZON>
+  <ROMBO><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>695</LINE></ROMBO>
+  <ALIEN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>697</LINE></ALIEN>
+  <T2_OVF_ISR_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm</FILE><LINE>631</LINE></T2_OVF_ISR_END>
  </LABELS>
 </ASSEMBLER_INFO>
