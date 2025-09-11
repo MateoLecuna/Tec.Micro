@@ -8,7 +8,7 @@
 
 
 .cseg
-.equ TX_BUF_SIZE = 16                 ; power of two
+.equ TX_BUF_SIZE = 128                 ; power of two
 .equ TX_BUF_MASK = TX_BUF_SIZE - 1    ; 0x0F for size 1
 
 .equ _TIMER0_OVF_COUNT = 60  ; Button cooldown
@@ -85,6 +85,7 @@ RESET:
 	ldi r17, high(_BPS)
 	rcall USART_INIT
 
+	rcall SEND_MENU 
 	; Enable global interrupt
 	sei
 
@@ -218,6 +219,13 @@ USART_INIT:				; ------------------- USART_INIT
 
 
 USART_SEND:
+	push r17
+	push r18
+	push r19
+	push r20
+	push ZL
+	push ZH
+
     ; load head and tail
     lds  r17, tx_head               ; r17 = head
     lds  r18, tx_tail               ; r18 = tail
@@ -249,10 +257,24 @@ USART_SEND:
     sts  UCSR0B, r20
 
     clc                            ; success
+
+	pop ZH
+	pop ZL
+	pop r20
+	pop r19
+	pop r18
+	pop r17
     ret
 
 usart_send_full:
     sec                            ; fail: buffer full
+
+	pop ZH
+	pop ZL
+	pop r20
+	pop r19
+	pop r18
+	pop r17
     ret
 
 
@@ -429,6 +451,8 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
     in r16, SREG 
 	push r16 
 	push r17
+	push ZL
+	push ZH
 	
 	lds r16, UDR0
 	cpi r16, '0' 
@@ -451,7 +475,6 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
 		ldi r16, 0 mov current_state, r16   ; Change state
 		rjmp USART_RX_ISR_END
 
-		rjmp USART_RX_ISR_END
 
 	USART_RX_ISR_CASE_1:
 		ldi r16, 1 mov current_state, r16   ; Change state
@@ -470,31 +493,40 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
 	
 	USART_RX_ISR_CASE_DEFAULT:
 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
-		rcall CLEAR_MATRIX
-
-		ldi r16, 'e'
-		rcall USART_SEND
-		ldi r16, 'r'
-		rcall USART_SEND
-		ldi r16, 'r'
-		rcall USART_SEND
-		ldi r16, 'o'
-		rcall USART_SEND
-		ldi r16, 'r'
-		rcall USART_SEND
-		ldi r16, '\n'
-		rcall USART_SEND
-
 
 		rjmp USART_RX_ISR_END
 
 
 	USART_RX_ISR_END:
+	pop ZH
+	pop ZL
 	pop r17 
 	pop r16
 	out SREG, r16
 	pop r16	
 	reti
+
+SEND_MENU:
+	push r16
+	push ZL
+	push ZH
+	
+	ldi ZL, low(MENU_TEXT<<1) ldi ZH, high(MENU_TEXT<<1)
+
+	SEND_LOOP:
+	lpm r16, Z+
+	cpi r16, 0
+	breq SEND_MENU_END
+	rcall USART_SEND
+	rjmp SEND_LOOP
+
+	SEND_MENU_END:
+	pop ZH
+	pop ZL
+	pop r16
+
+	ret
+
 
 INT0_ISR:			; ---------------------------------- INT0 ISR
 	push r16 
@@ -599,14 +631,14 @@ T2_OVF_ISR:			; ---------------------------------- TIMER2_OVF ISR
 	.db 0b0, 0b0
 
 .org 0x0400
-MENU:
-	.db "Elija una opcion:\n",0 
-	.db "[0] Apagar pantalla\n",0
-	.db "[1] Mensaje desplazante\n",0
-	.db "[2] Carita feliz\n"
-	.db "[3] Carita triste\n",0
-	.db "[4] Rombo\n",0
-	.db "[5] Space Invader\n",0
+MENU_TEXT:
+	.db "Elija una opcion:", 0x0A
+	.db "[0] Apagar pantalla", 0x0A
+	.db "[1] Mensaje desplazante", 0x0A
+	.db "[2] Carita feliz ", 0x0A
+	.db "[3] Carita triste", 0x0A
+	.db "[4] Rombo", 0x0A
+	.db "[5] Space Invader",0x0A,0x0A, 0
 	; Z contains address of I/O register or SRAM location
 ; Bit to modify = 3 (for example)
 
