@@ -1,3 +1,9 @@
+; ============================================================
+; Proyecto: Ev 9 - 7 segmentos - Tarea Grupal
+; MCU: ATmega328P @ 16 MHz   |  Toolchain: AVR Assembler (Atmel/Microchip Studio)
+; PropÃ³sito: Controlar matriz 8x8 con multiplexado por filas/columnas.
+; ============================================================
+
 
 ; Save ports in array
 
@@ -43,7 +49,7 @@ ANIMATION_FRAMES:
 	; Carita triste
     .db 0b00111100, 0b01000010, 0b10100101, 0b10000001, 0b10011001, 0b10100101, 0b01000010, 0b00111100
 	.db 0b0, 0b0
-	; Corazón
+	; Corazï¿½n
     .db 0b00000000, 0b01100110, 0b11111111, 0b11111111, 0b11111111, 0b01111110, 0b00111100, 0b00011000
 	.db 0b0, 0b0
 	; Rombo
