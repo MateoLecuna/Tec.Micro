@@ -74,34 +74,47 @@ ANIMATION_FRAMES:
 RESET:
 	; INICIAR STACK ------------------
 	cli 
-	ldi r16, high(RAMEND) out SPH, r16
-	ldi r16, low(RAMEND)  out SPL, r16 
+	ldi r16, high(RAMEND)
+	out SPH, r16
+	ldi r16, low(RAMEND) 
+	out SPL, r16 
 	sei
 
 	; Config timer 1 ---------------------------------------------------
-	ldi r16, HIGH(TIMER1_START)  sts TCNT1H, r16 ; Timer start
-	ldi r16, LOW(TIMER1_START)   sts TCNT1L, r16 ; -
-	ldi r16, (1<<TOIE1)			 sts TIMSK1, r16 ; Enable overflow interrupts
+	ldi r16, HIGH(TIMER1_START)
+	sts TCNT1H, r16 ; Timer start
+	ldi r16, LOW(TIMER1_START) 
+	sts TCNT1L, r16 ; -
+	ldi r16, (1<<TOIE1)			 
+	sts TIMSK1, r16 ; Enable overflow interrupts
 	ldi R16, (1<<CS10)|(1<<CS12) sts TCCR1B, r16 ; 1024 prescaler
 
 
 	; Config timer 2 ---------------------------------------------------
-	ldi r16, TIMER2_START sts TCNT2, r16  ; Timer start
-	ldi r16, 0b00000111   sts TCCR2B, r16 ; 1024 prescaler
-	ldi r16, (1<<TOIE2)   sts TIMSK2, r16 ; Enable overflow interrupt
+	ldi r16, TIMER2_START 
+	sts TCNT2, r16  ; Timer start
+	ldi r16, 0b00000111   
+	sts TCCR2B, r16 ; 1024 prescaler
+	ldi r16, (1<<TOIE2)   
+	sts TIMSK2, r16 ; Enable overflow interrupt
 
 
 
 
 	; PORT CONFIG ----------------------
 	; Rows are negative, columns positive
-	ldi r16, 0b11111111 out DDRD, r16
-	ldi r16, 0b00111111 out DDRB, r16
-	ldi r16, 0b00000011 out DDRC, r16
+	ldi r16, 0b11111111 
+	out DDRD, r16
+	ldi r16, 0b00111111 
+	out DDRB, r16
+	ldi r16, 0b00000011 
+	out DDRC, r16
 
 
-	ldi r16, LOW(ANIMATION_FRAMES<<1)  mov r11, r16
-	ldi r16, HIGH(ANIMATION_FRAMES<<1) mov r12, r16 
+	ldi r16, LOW(ANIMATION_FRAMES<<1)  
+	mov r11, r16
+	ldi r16, HIGH(ANIMATION_FRAMES<<1) 
+	mov r12, r16 
 
 	JMP MAIN
 
