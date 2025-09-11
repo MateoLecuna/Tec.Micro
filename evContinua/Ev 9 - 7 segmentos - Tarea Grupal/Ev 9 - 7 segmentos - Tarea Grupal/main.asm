@@ -15,8 +15,8 @@
 .org 0x0012 RJMP TIM2_OVF	; Vector 0x0012: Timer/Counter2 Overflow
 .org 0x0020 RJMP TIM1_OVF	; Vector 0x0020: Timer/Counter1 Overflow
 
-.def frameRow = r20
-.def frameColumn = r21
+.def frameRow = r20			; índice de fila activa (0..7)
+.def frameColumn = r21		; índice/byte de columna para el frame actual
 
 .org 0x0200
 ROW_PORTS:
