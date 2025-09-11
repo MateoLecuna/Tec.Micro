@@ -18,6 +18,8 @@
 .def frameRow = r20			; índice de fila activa (0..7)
 .def frameColumn = r21		; índice/byte de columna para el frame actual
 
+; Tabla ROW_PORTS: mapea salida de filas/columnas para el barrido
+; Cada entrada corresponde a la configuración de puertos en un paso del scan
 .org 0x0200
 ROW_PORTS:
 	.db 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B
