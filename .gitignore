@@ -1,23 +1,21 @@
-# LaTeX aux files
-*.aux
-*.bbl
-*.bcf
-*.blg
-*.brf
-*.fdb_latexmk
-*.fls
-*.log
-*.lof
-*.lot
-*.out
-*.run.xml
-*.synctex.gz
-*.toc
-*.xdv
-*.nav
-*.snm
-*.vrb
-# minted
-_minted*
-# compilaciones locales
-build/
+# Microchip Studio / Atmel Studio
+.vs/
+*.atsuo
+*.asmproj.user
+ipch/
+*.opendb
+
+# Build artifacts
+Debug/
+Release/
+*.hex
+*.obj
+*.lss
+*.map
+*.tmp
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
