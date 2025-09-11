@@ -7,13 +7,13 @@
 
 ; Save ports in array
 
-.equ TIMER1_START = 59286
-.equ TIMER2_START = 0
+.equ TIMER1_START = 59286	; Preload de Timer1 para temporización de animación (ajustable)
+.equ TIMER2_START = 0		; Preload de Timer2 para refresco de matriz (ajustable)
 
 .cseg
-.org 0x0000 RJMP RESET
-.org 0x0012 RJMP TIM2_OVF
-.org 0x0020 RJMP TIM1_OVF
+.org 0x0000 RJMP RESET		; Vector 0x0000: RESET
+.org 0x0012 RJMP TIM2_OVF	; Vector 0x0012: Timer/Counter2 Overflow
+.org 0x0020 RJMP TIM1_OVF	; Vector 0x0020: Timer/Counter1 Overflow
 
 .def frameRow = r20
 .def frameColumn = r21
