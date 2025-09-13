@@ -10,7 +10,7 @@ RESET:
     ldi r16, low(RAMEND)
     out SPL, r16
 
-    ; Configuración puerto D
+    ; Configuración del puerto D
     ldi r16, 0xFF
     out DDRD, r16
 
@@ -20,43 +20,41 @@ RESET:
 
 MAIN_LOOP:
 	rcall arriba
-    rcall abajo
+	rcall abajo
     rjmp MAIN_LOOP
 
-Delay:
-	ldi  r18, 2
-    ldi  r19, 69
-    ldi  r20, 170
-L1: dec  r20
+delay:
+	ldi  r22, 82
+    ldi  r23, 9
+L1: dec  r23
     brne L1
-    dec  r19
+    dec  r22
     brne L1
-    dec  r18
-    brne L1
-    nop
+	nop
+	ret
 
 arriba:
-	ldi r16, 0b00000000
-	ldi r17, 0b11111000
-	ldi r18, 0b00001000
+	ldi r16, 0x00
+	ldi r17, 0b01111110
+	ldi r18, 0x01
 	out PORTD, r16
 suma:
 	rcall delay
 	add r16, r18
 	out PORTD, r16
 	cp r16, r17
-	brge suma
+	brlo suma
 	ret
 
 abajo:
-	ldi r16, 0b11111111
-	ldi r17, 0b00000111
-	ldi r18, 0b00001000
+	ldi r16, 0b01111111
+	ldi r17, 0x01
+	ldi r18, 0x01
 	out PORTD, r16
 resta:
 	rcall delay
 	sub r16, r18
 	out PORTD, r16
 	cp r17, r16
-	brge resta
+	brlo resta
 	ret
