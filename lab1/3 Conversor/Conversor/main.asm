@@ -19,8 +19,12 @@ RESET:
     out PORTD, r16
 
     ; Apuntar Z al inicio de la LUT
-    ldi ZH, high(LUT_START<<1)
-    ldi ZL, low(LUT_START<<1)
+    ldi ZH, HIGH(LUT_START<<1)
+    ldi ZL, LOW(LUT_START<<1)
+
+	; Apuntar Y al final de la LUT
+	ldi YH, HIGH(LUT_END<<1)
+	ldi YL, LOW(LUT_END<<1)
 
     rjmp MAIN_LOOP
 
@@ -32,15 +36,13 @@ MAIN_LOOP:
     rcall delay
 
     ; ¿Llegamos al final?
-    ldi r30, low(LUT_END<<1)   ; ZL objetivo
-    ldi r31, high(LUT_END<<1)  ; ZH objetivo
-    cp  ZL, r30
-    cpc ZH, r31
+    cp  ZL, YL
+    cpc ZH, YH
     brne MAIN_LOOP             ; si no es fin, seguir
 
     ; Volver al inicio de la tabla
-    ldi ZH, high(LUT_START<<1)
-    ldi ZL, low(LUT_START<<1)
+    ldi ZH, HIGH(LUT_START<<1)
+    ldi ZL, LOW(LUT_START<<1)
     rjmp MAIN_LOOP
 
 delay:
