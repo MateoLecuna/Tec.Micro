@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm Thu Sep 11 01:11:17 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm Fri Sep 12 15:35:11 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
 C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm(3): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
@@ -1039,8 +1039,8 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
                                  
                                  
                                  .cseg
-                                 .equ TX_BUF_SIZE = 256                 ; power of two
-                                 .equ TX_BUF_MASK = TX_BUF_SIZE - 1    ; 0x0F for size 1
+                                 .equ TX_BUF_SIZE = 256				; power of two
+                                 .equ TX_BUF_MASK = TX_BUF_SIZE - 1		; 0x0F for size 1
                                  
                                  .equ _TIMER0_OVF_COUNT = 60  ; Button cooldown
                                  .equ _TIMER2_OVF_COUNT = 2  ; Matrix speed

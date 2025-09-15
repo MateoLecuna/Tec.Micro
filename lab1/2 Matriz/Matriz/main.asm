@@ -8,8 +8,8 @@
 
 
 .cseg
-.equ TX_BUF_SIZE = 256                 ; power of two
-.equ TX_BUF_MASK = TX_BUF_SIZE - 1    ; 0x0F for size 1
+.equ TX_BUF_SIZE = 256				; power of two
+.equ TX_BUF_MASK = TX_BUF_SIZE - 1		; 0x0F for size 1
 
 .equ _TIMER0_OVF_COUNT = 60  ; Button cooldown
 .equ _TIMER2_OVF_COUNT = 2  ; Matrix speed
