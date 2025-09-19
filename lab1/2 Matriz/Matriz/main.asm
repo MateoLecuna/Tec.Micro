@@ -1,4 +1,4 @@
-; Laboratorio 1: Matriz de LEDs
+
 
 .include "m328pdef.inc"
 
@@ -6,6 +6,7 @@
 ; Constantes y definiciones
 ;-----------------------------------------------------------------
 
+; Matriz de LEDs -------------------------------------------------
 
 .cseg
 .equ TX_BUF_SIZE = 256				; power of two
