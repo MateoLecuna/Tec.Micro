@@ -42,9 +42,27 @@
 
 \subsection{Conversión Digital-Analógica (DAC R-2R)}
 \begin{itemize}
-    \item Concepto de DAC y su importancia.
-    \item Explicación del arreglo de resistencias R-2R.
-    \item Uso de una Look-Up Table (LUT) para generar señales analógicas periódicas.
+    \item Concepto de DAC y su importancia.\vspace{0.5em}
+    
+    \hspace{2em}Un DAC (Digital to Analog Converter) es un dispositivo o técnica que permite transformar valores digitales (códigos binarios) en señales analógicas (tensiones o corrientes continuas y variables en el tiempo). Su importancia radica en que la mayoría de los sistemas electrónicos trabajan de manera digital, pero el mundo físico es analógico: audio, imágenes, señales de control de motores, etc.
+    
+    \hspace{2em}En pocas palabras, el DAC es el “puente” entre lo digital y lo analógico.\vspace{1em}
+
+    \item Explicación del arreglo de resistencias R-2R.\vspace{0.5em}
+
+    \hspace{2em}El arreglo R-2R es una red de resistencias que se usa mucho para construir DACs simples y económicos. Se compone unicamente de dos valores de resistencias: una de valor R y otra de valor 2R, que se repiten en forma de escalera.
+    
+    \hspace{2em}Cada bit de nel número digital controla un interruptor (o transistor) que conecta la red a una referencia de tensión (Vref) o a tierra. Gracias a la proporción entre Ry 2R, la red genera tenciones que corresponden al valor binario aplicado.
+    
+    \hspace{2em}La ventaja del arreglo R-2R es que es fácil de implementar, no requiere de resistencias con muchos valores distintos, y mantienen una buena presición.\vspace{1em}
+    
+    \item Uso de una Look-Up Table (LUT) para generar señales analógicas periódicas.\vspace{0.5em}
+    
+    \hspace{2em}Una Look-up Table (LUT) es básicamente una tabla de valores precargada en la memoria que representa una señal digitalizada (por ejemplo, una onda seno). En lugar de calcular cada valor de la función en tiempo real, el monitor solo "lee" la tabla en orden y envía los valores a un puerto o a un DAC.
+    
+    \hspace{2em}Cuando esos valores se aplican de manera periódica y con la velocidad adecuada, en la salida se reconstruye una señal analógica periodica.
+    
+    El uso de una LUT simplifica mucho la generación de señales, por que evita cálculos complejos y garantiza que la forma de onda siempre tenga la misma calidad.\vspace{1em}
 \end{itemize}
 
 
