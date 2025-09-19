@@ -1,5 +1,4 @@
 
-
 .include "m328pdef.inc"
 
 ;-----------------------------------------------------------------
@@ -25,7 +24,6 @@
 .def current_state = r20
 .def row = r23
 .def col = r24
-
 
 
 ;-----------------------------------------------------------------
@@ -449,6 +447,8 @@ SEND_ERROR:
 
 USART_UDRE_ISR:
     push r16
+	in r16, SREG
+	push r16
     push r17
     push r18
     push r19
@@ -486,13 +486,15 @@ USART_UDRE_ISR:
     sts  tx_tail, r18
 
 	usart_udre_exit:
-    pop  ZL
-    pop  ZH
-    pop  r20
-    pop  r19
-    pop  r18
-    pop  r17
-    pop  r16
+    pop ZL
+    pop ZH
+    pop r20
+    pop r19
+    pop r18
+    pop r17
+    pop r16
+	out SREG, r16
+	pop r16
     reti
 
 

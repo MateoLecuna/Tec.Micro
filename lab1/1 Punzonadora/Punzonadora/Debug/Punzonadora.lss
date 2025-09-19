@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzonadora\main.asm Fri Sep 19 03:08:35 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzonadora\main.asm Fri Sep 19 16:09:20 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
 C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzonadora\main.asm(2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
@@ -1042,17 +1042,10 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  .equ TX_BUF_SIZE = 256				
                                  .equ TX_BUF_MASK = TX_BUF_SIZE - 1		
                                  .equ _F_CPU = 16000000
-                                 .equ _BAUD = 9600
+                                 .equ _BAUD = 57600
                                  .equ _BPS = (_F_CPU/16/_BAUD) - 1
                                  
                                  .equ T1_1S_PRESET = 49911 ; Timer preload for 1s (1024 prescaler)
-                                 
-                                 .equ ST_STOP = 0
-                                 .equ ST_ADVANCE = 1
-                                 .equ ST_WAIT_1 = 2
-                                 .equ ST_PUNCH = 3
-                                 .equ ST_WAIT_2 = 4
-                                 .equ ST_UNLOAD = 5
                                  
                                  .def timer1_ovf_count = r2
                                  
@@ -1068,6 +1061,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
 000100                           tx_buffer: .byte TX_BUF_SIZE          ; circular buffer storage
 000200                           tx_head:   .byte 1                    ; enqueue index
 000201                           tx_tail:   .byte 1                    ; dequeue index
+000202                           event_pending: .byte 1
                                  
                                  
                                  ;-----------------------------------------------------------------
@@ -1077,10 +1071,10 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  
                                  .cseg
 000000 c0ff                      .org 0x0000 rjmp RESET			; Program start
-000002 c1fc                      .org 0x0002 rjmp INT0_ISR		; Button press 1
-00001a c1f1                      .org 0x001A rjmp T1_OVF_ISR		; Timer 2 overflow ISR
-000024 c1d1                      .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
-000026 c1a7                      .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
+000002 c261                      .org 0x0002 rjmp INT0_ISR		; Button press 1
+00001a c25c                      .org 0x001A rjmp T1_OVF_ISR		; Timer 2 overflow ISR
+000024 c20d                      .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
+000026 c1e3                      .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
                                  
                                  
                                  ;-----------------------------------------------------------------
@@ -1090,41 +1084,46 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  
                                  .org 0x100
                                  RESET:
-000100 2411                      	clr r1
                                  
                                  	; Stack 
-000101 e008
-000102 bf0e                      	ldi r16, high(RAMEND) out SPH, r16
-000103 ef0f
-000104 bf0d                      	ldi r16, low(RAMEND)  out SPL, r16
+000100 e008
+000101 bf0e                      	ldi r16, high(RAMEND) out SPH, r16
+000102 ef0f
+000103 bf0d                      	ldi r16, low(RAMEND)  out SPL, r16
                                  
                                  	; External interrupt INT0, INT1
-000105 e002
-000106 9300 0069                 	ldi r16, 0b00000010 sts EICRA, r16 
-000108 e001
-000109 bb0d                         	ldi r16, 0b00000001 out EIMSK, r16 
+000104 e002
+000105 9300 0069                 	ldi r16, 0b00000010 sts EICRA, r16 
+000107 e001
+000108 bb0d                         	ldi r16, 0b00000001 out EIMSK, r16 
                                  
                                  	; Inputs and outputs
-00010a e30f
-00010b b904                      	ldi r16, 0b00111111 out DDRB, r16
-00010c e000
-00010d b90a                      	ldi r16, 0b00000000 out DDRD, r16
-00010e e00c
-00010f b90b                      	ldi r16, 0b00001100 out PORTD, r16
+000109 e608
+00010a b90a                      	ldi r16, 0b01101000 out DDRD, r16
+00010b e004
+00010c b90b                      	ldi r16, 0b00000100 out PORTD, r16 ;Pull-up for INT0
                                  	
                                  	; Init USART
-000110 e607                      	ldi r16, low(_BPS)
-000111 e010                      	ldi r17, high(_BPS)
-000112 d08b                      	rcall USART_INIT
+00010d e100                      	ldi r16, low(_BPS)
+00010e e010                      	ldi r17, high(_BPS)
+00010f d0c1                      	rcall USART_INIT
                                  
                                  	; Initial state
-000113 e040                      	ldi state, 0
-000114 e051                      	ldi load, 1
+000110 e040                      	ldi state, 0
+000111 e050                      	ldi load, 0
+                                 
+000112 e000                      	ldi  r16, 0
+000113 9300 0200                 	sts  tx_head, r16
+000115 9300 0201                 	sts  tx_tail, r16
+000117 2411                      	clr  r1      
+                                 	
+000118 d00b                      	rcall STATE_MACHINE
+                                 
                                  
                                  	; Global interrupt
-000115 9478                      	sei
+000119 9478                      	sei
                                  
-000116 c000                      	rjmp MAIN
+00011a c000                      	rjmp MAIN
                                  
                                  ;-----------------------------------------------------------------
                                  ; Loop principal
@@ -1132,7 +1131,13 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  
                                  
                                  MAIN:
-000117 cfff                      	rjmp MAIN
+00011b 9100 0202                     lds  r16, event_pending
+00011d 2300                          tst  r16
+00011e f3e1                          breq MAIN
+00011f e000                          ldi  r16,0
+000120 9300 0202                     sts  event_pending,r16
+000122 d001                          rcall STATE_MACHINE
+000123 cff7                          rjmp MAIN
                                  
                                  
                                  ;-----------------------------------------------------------------
@@ -1141,238 +1146,318 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  
                                  
                                  STATE_MACHINE:
-000118 930f                      	push r16
-000119 b70f                      	in r16, SREG
-00011a 930f                      	push r16
+000124 930f                      	push r16
+000125 b70f                      	in r16, SREG
+000126 930f                      	push r16
                                  
-00011b 3040
-00011c f059                      	cpi state, 0 breq STATE_MACHINE_STOP
-00011d 3041
-00011e f099                      	cpi state, 1 breq STATE_MACHINE_ADVANCE
-00011f 3042
-000120 f101                      	cpi state, 2 breq STATE_MACHINE_WAIT_1
-000121 3043
-000122 f169                      	cpi state, 3 breq STATE_MACHINE_PUNCH
-000123 3044
-000124 f179                      	cpi state, 4 breq STATE_MACHINE_WAIT_2
-000125 3045
-000126 f1e1                      	cpi state, 5 breq STATE_MACHINE_EXTRACT
-000127 c04a                      	rjmp STATE_MACHINE_END
-                                 
-                                 
-                                 	STATE_MACHINE_STOP: ; ---------------------------- ESTADO 0
-000128 e001
-000129 b905                      		ldi r16, 1 out PORTB, r16
-00012a e001
-00012b bb0c                      		ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
-00012c e001
-00012d bb0d                         		ldi r16, 0b00000001 out EIMSK, r16 ; Enable external interruption 
+000127 3040
+000128 f059                      	cpi state, 0 breq STATE_MACHINE_STOP_NEAR
+000129 3041
+00012a f051                      	cpi state, 1 breq STATE_MACHINE_ADVANCE_NEAR
+00012b 3042
+00012c f049                      	cpi state, 2 breq STATE_MACHINE_WAIT_1_NEAR
+00012d 3043
+00012e f041                      	cpi state, 3 breq STATE_MACHINE_PUNCH_NEAR
+00012f 3044
+000130 f039                      	cpi state, 4 breq STATE_MACHINE_WAIT_2_NEAR
+000131 3045
+000132 f031                      	cpi state, 5 breq STATE_MACHINE_EXTRACT_NEAR
                                  	
-00012e 910f                      		pop r16
-00012f bf0f                      		out SREG, r16
-000130 910f                      		pop r16
-000131 9508                      		ret
+000133 c071                      	rjmp STATE_MACHINE_END
+                                 
+000134 c005                      	STATE_MACHINE_STOP_NEAR:	rjmp STATE_MACHINE_STOP
+000135 c024                      	STATE_MACHINE_ADVANCE_NEAR: rjmp STATE_MACHINE_ADVANCE
+000136 c035                      	STATE_MACHINE_WAIT_1_NEAR:	rjmp STATE_MACHINE_WAIT_1
+000137 c046                      	STATE_MACHINE_PUNCH_NEAR:	rjmp STATE_MACHINE_PUNCH
+000138 c056                      	STATE_MACHINE_WAIT_2_NEAR:	rjmp STATE_MACHINE_WAIT_2
+000139 c059                      	STATE_MACHINE_EXTRACT_NEAR: rjmp STATE_MACHINE_EXTRACT
+                                 
+                                 
+                                 
+                                 	STATE_MACHINE_STOP: ; ---------------------------- STOP
+                                 
+00013a 3050
+00013b f029                      		cpi load, 0 breq STATE_MACHINE_STOP_LOAD_0
+00013c 3051
+00013d f039                      		cpi load, 1 breq STATE_MACHINE_STOP_LOAD_1
+00013e 3052
+00013f f049                      		cpi load, 2 breq STATE_MACHINE_STOP_LOAD_2
+000140 c00c                      		rjmp STATE_MACHINE_STOP_SKIP
+                                 
+                                 		STATE_MACHINE_STOP_LOAD_0:
+000141 e3e2
+000142 e0f7                      		ldi ZL, LOW(MSG_LOAD_0<<1) ldi ZH, HIGH(MSG_LOAD_0<<1)
+000143 d0be                      		rcall SEND_MESSAGE
+000144 c008                      		rjmp STATE_MACHINE_STOP_SKIP
+                                 
+                                 		STATE_MACHINE_STOP_LOAD_1:
+000145 e4ee
+000146 e0f7                      		ldi ZL, LOW(MSG_LOAD_1<<1) ldi ZH, HIGH(MSG_LOAD_1<<1)
+000147 d0ba                      		rcall SEND_MESSAGE
+000148 c004                      		rjmp STATE_MACHINE_STOP_SKIP
+                                 		
+                                 		STATE_MACHINE_STOP_LOAD_2:
+000149 e6ea
+00014a e0f7                      		ldi ZL, LOW(MSG_LOAD_2<<1) ldi ZH, HIGH(MSG_LOAD_2<<1)
+00014b d0b6                      		rcall SEND_MESSAGE
+00014c c000                      		rjmp STATE_MACHINE_STOP_SKIP
+                                 
+                                 		STATE_MACHINE_STOP_SKIP:
+00014d e2e0
+00014e e0f6                      		ldi ZL, LOW(MSG_MENU<<1) ldi ZH, HIGH(MSG_MENU<<1)
+00014f d0b2                      		rcall SEND_MESSAGE
+                                 
+000150 e004
+000151 b90b                      		ldi r16, 0b00000100 out PORTD, r16
+000152 e001
+000153 bb0c                      		ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
+000154 e001
+000155 bb0d                         		ldi r16, 0b00000001 out EIMSK, r16 ; Enable external interruption 
+                                 
+000156 910f                      		pop r16
+000157 bf0f                      		out SREG, r16
+000158 910f                      		pop r16
+000159 9508                      		ret
                                  		
                                  
-                                 	STATE_MACHINE_ADVANCE: ; ---------------------------- ESTADO 1 
-000132 e002
-000133 b905                      		ldi r16, (1<<1) out PORTB, r16
-000134 3050
-000135 f029                      		cpi load, 0 breq STATE_MACHINE_ADVANCE_LOAD_0
-000136 3051
-000137 f029                      		cpi load, 1 breq STATE_MACHINE_ADVANCE_LOAD_1
-000138 3052
-000139 f029                      		cpi load, 2 breq STATE_MACHINE_ADVANCE_LOAD_2
-00013a c037                      		rjmp STATE_MACHINE_END
+                                 	STATE_MACHINE_ADVANCE: ; ---------------------------- AVANCE 
                                  
-00013b e003                      		STATE_MACHINE_ADVANCE_LOAD_0: ldi r16, 3 
-00013c c035                      		rjmp STATE_MACHINE_END
+00015a ece4
+00015b e0f6                      		ldi ZL, LOW(MSG_STATE_1<<1) ldi ZH, HIGH(MSG_STATE_1<<1)
+00015c d0a5                      		rcall SEND_MESSAGE
+                                 
+00015d e204
+00015e b90b                      		ldi r16, 0b00100100 out PORTD, r16
+00015f 3050
+000160 f029                      		cpi load, 0 breq STATE_MACHINE_ADVANCE_LOAD_0
+000161 3051
+000162 f029                      		cpi load, 1 breq STATE_MACHINE_ADVANCE_LOAD_1
+000163 3052
+000164 f029                      		cpi load, 2 breq STATE_MACHINE_ADVANCE_LOAD_2
+000165 c03f                      		rjmp STATE_MACHINE_END
+                                 
+000166 e003                      		STATE_MACHINE_ADVANCE_LOAD_0: ldi r16, 3 
+000167 c03d                      		rjmp STATE_MACHINE_END
                                  		
-00013d e004                      		STATE_MACHINE_ADVANCE_LOAD_1: ldi r16, 4 
-00013e c033                      		rjmp STATE_MACHINE_END
+000168 e004                      		STATE_MACHINE_ADVANCE_LOAD_1: ldi r16, 4 
+000169 c03b                      		rjmp STATE_MACHINE_END
                                  		
-00013f e005                      		STATE_MACHINE_ADVANCE_LOAD_2: ldi r16, 5 
-000140 c031                      		rjmp STATE_MACHINE_END
+00016a e005                      		STATE_MACHINE_ADVANCE_LOAD_2: ldi r16, 5 
+00016b c039                      		rjmp STATE_MACHINE_END
                                  
                                  
-                                 	STATE_MACHINE_WAIT_1: ; ---------------------------- ESTADO 2
-000141 e004
-000142 b905                      		ldi r16, (1<<2) out PORTB, r16
-000143 3050
-000144 f029                      		cpi load, 0 breq STATE_MACHINE_WAIT_1_LOAD_0
-000145 3051
-000146 f029                      		cpi load, 1 breq STATE_MACHINE_WAIT_1_LOAD_1
-000147 3052
-000148 f029                      		cpi load, 2 breq STATE_MACHINE_WAIT_1_LOAD_2
-000149 c028                      		rjmp STATE_MACHINE_END
+                                 	STATE_MACHINE_WAIT_1: ; ---------------------------- ESPERA 1
                                  		
-00014a e002                      		STATE_MACHINE_WAIT_1_LOAD_0: ldi r16, 2 
-00014b c026                      		rjmp STATE_MACHINE_END
+00016c eee2
+00016d e0f6                      		ldi ZL, LOW(MSG_STATE_2<<1) ldi ZH, HIGH(MSG_STATE_2<<1)
+00016e d093                      		rcall SEND_MESSAGE
                                  
-00014c e002                      		STATE_MACHINE_WAIT_1_LOAD_1: ldi r16, 2 
-00014d c024                      		rjmp STATE_MACHINE_END
-                                 
-00014e e003                      		STATE_MACHINE_WAIT_1_LOAD_2: ldi r16, 3 
-00014f c022                      		rjmp STATE_MACHINE_END
-                                 
-                                 
-                                 	STATE_MACHINE_PUNCH: ; ---------------------------- ESTADO 3
-000150 e008
-000151 b905                      		ldi r16, (1<<3) out PORTB, r16
-000152 e001                      		ldi r16, 1 
-000153 c01e                      		rjmp STATE_MACHINE_END
-                                 
-                                 
-                                 	STATE_MACHINE_WAIT_2: ; ---------------------------- ESTADO 4
-000154 e100
-000155 b905                      		ldi r16, (1<<4) out PORTB, r16
-000156 3050
-000157 f029                      		cpi load, 0 breq STATE_MACHINE_WAIT_2_LOAD_0
-000158 3051
-000159 f029                      		cpi load, 1 breq STATE_MACHINE_WAIT_2_LOAD_1
-00015a 3052
-00015b f029                      		cpi load, 2 breq STATE_MACHINE_WAIT_2_LOAD_2
-00015c c015                      		rjmp STATE_MACHINE_END
+00016f e004
+000170 b90b                      		ldi r16, 0b00000100 out PORTD, r16
+000171 3050
+000172 f029                      		cpi load, 0 breq STATE_MACHINE_WAIT_1_LOAD_0
+000173 3051
+000174 f029                      		cpi load, 1 breq STATE_MACHINE_WAIT_1_LOAD_1
+000175 3052
+000176 f029                      		cpi load, 2 breq STATE_MACHINE_WAIT_1_LOAD_2
+000177 c02d                      		rjmp STATE_MACHINE_END
                                  		
-00015d e002                      		STATE_MACHINE_WAIT_2_LOAD_0: ldi r16, 2
-00015e c013                      		rjmp STATE_MACHINE_END
+000178 e002                      		STATE_MACHINE_WAIT_1_LOAD_0: ldi r16, 2 
+000179 c02b                      		rjmp STATE_MACHINE_END
                                  
-00015f e003                      		STATE_MACHINE_WAIT_2_LOAD_1: ldi r16, 3
-000160 c011                      		rjmp STATE_MACHINE_END
+00017a e002                      		STATE_MACHINE_WAIT_1_LOAD_1: ldi r16, 2 
+00017b c029                      		rjmp STATE_MACHINE_END
                                  
-000161 e004                      		STATE_MACHINE_WAIT_2_LOAD_2: ldi r16, 4
-000162 c00f                      		rjmp STATE_MACHINE_END
+00017c e003                      		STATE_MACHINE_WAIT_1_LOAD_2: ldi r16, 3 
+00017d c027                      		rjmp STATE_MACHINE_END
                                  
                                  
+                                 	STATE_MACHINE_PUNCH: ; ---------------------------- PUNZONADO
                                  
-                                 	STATE_MACHINE_EXTRACT: ; ---------------------------- ESTADO 5
-000163 e200
-000164 b905                      		ldi r16, (1<<5) out PORTB, r16
-000165 3050
-000166 f029                      		cpi load, 0 breq STATE_MACHINE_EXTRACT_LOAD_0
-000167 3051
-000168 f029                      		cpi load, 1 breq STATE_MACHINE_EXTRACT_LOAD_1
-000169 3052
-00016a f029                      		cpi load, 2 breq STATE_MACHINE_EXTRACT_LOAD_2
-00016b c006                      		rjmp STATE_MACHINE_END
+00017e efea
+00017f e0f6                      		ldi ZL, LOW(MSG_STATE_3<<1) ldi ZH, HIGH(MSG_STATE_3<<1)
+000180 d081                      		rcall SEND_MESSAGE
                                  		
-00016c e002                      		STATE_MACHINE_EXTRACT_LOAD_0: ldi r16, 2
-00016d c004                      		rjmp STATE_MACHINE_END
+000181 e404
+000182 b90b                      		ldi r16, 0b01000100 out PORTD, r16
+000183 3050
+000184 f021                      		cpi load, 0 breq STATE_MACHINE_PUNCH_LOAD_0
+000185 3051
+000186 f021                      		cpi load, 1 breq STATE_MACHINE_PUNCH_LOAD_1
+000187 3052
+000188 f021                      		cpi load, 2 breq STATE_MACHINE_PUNCH_LOAD_2
                                  
-00016e e003                      		STATE_MACHINE_EXTRACT_LOAD_1: ldi r16, 3
-00016f c002                      		rjmp STATE_MACHINE_END
+000189 e002                      		STATE_MACHINE_PUNCH_LOAD_0: ldi r16, 2 
+00018a c01a                      		rjmp STATE_MACHINE_END
+00018b e003                      		STATE_MACHINE_PUNCH_LOAD_1: ldi r16, 3
+00018c c018                      		rjmp STATE_MACHINE_END
+00018d e004                      		STATE_MACHINE_PUNCH_LOAD_2: ldi r16, 4
+00018e c016                      		rjmp STATE_MACHINE_END
                                  
-000170 e004                      		STATE_MACHINE_EXTRACT_LOAD_2: ldi r16, 4
-000171 c000                      		rjmp STATE_MACHINE_END
+                                 
+                                 	STATE_MACHINE_WAIT_2: ; ---------------------------- ESPERA 2
+                                 
+                                 		;ldi ZL, LOW(MSG_STATE_4<<1) ldi ZH, HIGH(MSG_STATE_4<<1)
+                                 		;rcall SEND_MESSAGE
+                                 
+00018f e004
+000190 b90b                      		ldi r16, 0b00000100 out PORTD, r16
+000191 e001                      		ldi r16, 1
+000192 c012                      		rjmp STATE_MACHINE_END
+                                 
+                                 
+                                 
+                                 	STATE_MACHINE_EXTRACT: ; ---------------------------- EXTRACCION
+                                 		
+000193 e1e6
+000194 e0f7                      		ldi ZL, LOW(MSG_STATE_5<<1) ldi ZH, HIGH(MSG_STATE_5<<1)
+000195 d06c                      		rcall SEND_MESSAGE
+                                 
+000196 e00c
+000197 b90b                      		ldi r16, 0b00001100 out PORTD, r16
+000198 3050
+000199 f029                      		cpi load, 0 breq STATE_MACHINE_EXTRACT_LOAD_0
+00019a 3051
+00019b f029                      		cpi load, 1 breq STATE_MACHINE_EXTRACT_LOAD_1
+00019c 3052
+00019d f029                      		cpi load, 2 breq STATE_MACHINE_EXTRACT_LOAD_2
+00019e c006                      		rjmp STATE_MACHINE_END
+                                 		
+00019f e002                      		STATE_MACHINE_EXTRACT_LOAD_0: ldi r16, 2
+0001a0 c004                      		rjmp STATE_MACHINE_END
+                                 
+0001a1 e003                      		STATE_MACHINE_EXTRACT_LOAD_1: ldi r16, 3
+0001a2 c002                      		rjmp STATE_MACHINE_END
+                                 
+0001a3 e004                      		STATE_MACHINE_EXTRACT_LOAD_2: ldi r16, 4
+0001a4 c000                      		rjmp STATE_MACHINE_END
                                  
                                  
                                  	STATE_MACHINE_END: ; ----------------------------- FINAL
-000172 2e20                      	mov timer1_ovf_count, r16 
-000173 d018                      	rcall ENABLE_TIMER_1
+0001a5 2e20                      	mov timer1_ovf_count, r16 
+0001a6 d018                      	rcall ENABLE_TIMER_1
                                  
-000174 910f                      	pop r16
-000175 bf0f                      	out SREG, r16
-000176 910f                      	pop r16
+0001a7 910f                      	pop r16
+0001a8 bf0f                      	out SREG, r16
+0001a9 910f                      	pop r16
                                  
-000177 9508                      	ret
-                                 
+0001aa 9508                      	ret
                                  
                                  
                                  DISABLE_TIMER_1:
-000178 930f                      	push r16
-000179 e000
-00017a 9300 0080                 	ldi r16, 0			 sts TCCR1A, r16
-00017c e000
-00017d 9300 0081                 	ldi r16, 0			 sts TCCR1B, r16
-00017f e000
-000180 9300 0085                 	ldi r16, 0			 sts TCNT1H, r16
-000182 e000
-000183 9300 0084                 	ldi r16, 0			 sts TCNT1L, r16 
-000185 e000
-000186 9300 006f                 	ldi r16, (0<<TOIE1)	 sts TIMSK1, r16
-000188 e001
-000189 bb06                      	ldi r16, (1<<TOV1)   out TIFR1,  r16 
-00018a 910f                      	pop r16
-00018b 9508                      	ret
+0001ab 930f                      	push r16
+0001ac e000
+0001ad 9300 0080                 	ldi r16, 0			 sts TCCR1A, r16
+0001af e000
+0001b0 9300 0081                 	ldi r16, 0			 sts TCCR1B, r16
+0001b2 e000
+0001b3 9300 0085                 	ldi r16, 0			 sts TCNT1H, r16
+0001b5 e000
+0001b6 9300 0084                 	ldi r16, 0			 sts TCNT1L, r16 
+0001b8 e000
+0001b9 9300 006f                 	ldi r16, (0<<TOIE1)	 sts TIMSK1, r16
+0001bb e001
+0001bc bb06                      	ldi r16, (1<<TOV1)   out TIFR1,  r16 
+0001bd 910f                      	pop r16
+0001be 9508                      	ret
                                  
                                  
                                  ENABLE_TIMER_1:
-00018c 930f                      	push r16
-00018d e000
-00018e 9300 0080                 	ldi r16, 0			 sts TCCR1A, r16
-000190 e005
-000191 9300 0081                 	ldi r16, 0b101		 sts TCCR1B, r16
-000193 ec02
-000194 9300 0085                 	ldi r16, HIGH(49911) sts TCNT1H, r16
-000196 ef07
-000197 9300 0084                 	ldi r16, LOW(49911)	 sts TCNT1L, r16 
-000199 e001
-00019a 9300 006f                 	ldi r16, (1<<TOIE1)  sts TIMSK1, r16 
-00019c 910f                      	pop r16
-00019d 9508                      	ret
+0001bf 930f                      	push r16
+0001c0 e000
+0001c1 9300 0080                 	ldi r16, 0			 sts TCCR1A, r16
+0001c3 e005
+0001c4 9300 0081                 	ldi r16, 0b101		 sts TCCR1B, r16
+0001c6 ec02
+0001c7 9300 0085                 	ldi r16, HIGH(49911) sts TCNT1H, r16
+0001c9 ef07
+0001ca 9300 0084                 	ldi r16, LOW(49911)	 sts TCNT1L, r16 
+0001cc e001
+0001cd 9300 006f                 	ldi r16, (1<<TOIE1)  sts TIMSK1, r16 
+0001cf 910f                      	pop r16
+0001d0 9508                      	ret
                                  	
-                                 
                                  
                                  USART_INIT:		
                                  	; Set baud rate
-00019e 9310 00c5                 	sts UBRR0H, r17
-0001a0 9300 00c4                 	sts UBRR0L, r16
+0001d1 9310 00c5                 	sts UBRR0H, r17
+0001d3 9300 00c4                 	sts UBRR0L, r16
                                  	; Enable receiver and transmitter, and interruptions
-0001a2 e908                      	ldi r16, (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0)
-0001a3 9300 00c1                 	sts UCSR0B,r16
-                                 	; Set frame format: 8data, 2stop bit
-0001a5 e00e                      	ldi r16, (1<<USBS0)|(3<<UCSZ00)
-0001a6 9300 00c2                 	sts UCSR0C,r16
-0001a8 9508                      	ret
+0001d5 e908                      	ldi r16, (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0)
+0001d6 9300 00c1                 	sts UCSR0B,r16
+                                 	; Set frame format: 8data, 1stop bit
+0001d8 e006                      	ldi r16, (0<<USBS0)|(3<<UCSZ00)
+0001d9 9300 00c2                 	sts UCSR0C, r16
+0001db 9508                      	ret
                                  	
+                                 
+                                 
                                  USART_WRITE_BYTE:
-0001a9 931f                          push r17
-0001aa 932f                          push r18
-0001ab 93ff                          push ZH
-0001ac 93ef                          push ZL
+0001dc 931f                          push r17
+0001dd 932f                          push r18
+0001de 933f                          push r19
+0001df 93ff                          push ZH
+0001e0 93ef                          push ZL
                                  
-                                     ; leer head/tail actuales
-0001ad 9110 0200                     lds  r17, tx_head
-0001af 9120 0201                     lds  r18, tx_tail
+                                     ; head/tail
+0001e1 9110 0200                     lds  r17, tx_head
+0001e3 9120 0201                     lds  r18, tx_tail
                                  
-                                     ; calcular next = (head + 1) & MASK
-0001b1 2fe1                          mov  ZL, r17
-0001b2 95e3                          inc  ZL
-0001b3 7fef                          andi ZL, TX_BUF_MASK
+                                     ; next = (head + 1) & MASK   (keep it in r19!)
+0001e5 2f31                          mov  r19, r17
+0001e6 9533                          inc  r19
+0001e7 7f3f                          andi r19, TX_BUF_MASK
                                  
-                                     ; buffer lleno si next == tail  -> (opcional) esperar o desechar
                                  wait_space:
-0001b4 17e2                          cp   ZL, r18
-0001b5 f421                          brne have_space
-                                     ; actualizar tail por si la ISR avanzó mientras esperábamos
-0001b6 9120 0201                     lds  r18, tx_tail
-0001b8 17e2                          cp   ZL, r18
-0001b9 f3d1                          breq wait_space
+                                     ; full? next == tail
+0001e8 1732                          cp   r19, r18
+0001e9 f421                          brne have_space
+                                     ; maybe ISR advanced tail while we were here ? reload tail and re-check
+0001ea 9120 0201                     lds  r18, tx_tail
+0001ec 1732                          cp   r19, r18
+0001ed f3d1                          breq wait_space
                                  
                                  have_space:
-                                     ; escribir en tx_buffer[head]
-0001ba e0e0                          ldi  ZL, low(tx_buffer)
-0001bb e0f1                          ldi  ZH, high(tx_buffer)
-0001bc 0fe1                          add  ZL, r17
-0001bd 1df1                          adc  ZH, r1
-0001be 8300                          st   Z, r16
+                                     ; Z = &tx_buffer[head]
+0001ee e0e0                          ldi  ZL, low(tx_buffer)
+0001ef e0f1                          ldi  ZH, high(tx_buffer)
+0001f0 0fe1                          add  ZL, r17
+0001f1 1df1                          adc  ZH, r1            ; r1 must be 0
                                  
-                                     ; head = next
-0001bf 2f1e                          mov  r17, ZL
-0001c0 9310 0200                     sts  tx_head, r17
+0001f2 8300                          st   Z, r16            ; write byte
                                  
-                                     ; habilitar UDRIE0 (para que la ISR empiece/continúe a vaciar)
-0001c2 94f8                          cli
-0001c3 9120 00c1                     lds  r18, UCSR0B
-0001c5 6220                          ori  r18, (1<<UDRIE0)
-0001c6 9320 00c1                     sts  UCSR0B, r18
-0001c8 9478                          sei
+                                     ; head = next   (use r19, NOT ZL)
+0001f3 9330 0200                     sts  tx_head, r19
                                  
-0001c9 91ef                          pop  ZL
-0001ca 91ff                          pop  ZH
-0001cb 912f                          pop  r18
-0001cc 911f                          pop  r17
-0001cd 9508                          ret 
+                                     ; enable UDRE interrupt so ISR starts/continues draining
+0001f5 94f8                          cli
+0001f6 9120 00c1                     lds  r18, UCSR0B
+0001f8 6220                          ori  r18, (1<<UDRIE0)
+0001f9 9320 00c1                     sts  UCSR0B, r18
+0001fb 9478                          sei
+                                 
+0001fc 91ef                          pop  ZL
+0001fd 91ff                          pop  ZH
+0001fe 913f                          pop  r19
+0001ff 912f                          pop  r18
+000200 911f                          pop  r17
+000201 9508                          ret
+                                 
+                                 ; Preload Z with the message
+                                 SEND_MESSAGE:
+000202 930f                      	push r16
+                                 
+                                 	SEND_MESSAGE_LOOP:
+000203 9105                      	lpm r16, Z+
+000204 3000                      	cpi r16, 0
+                                 
+000205 f011                      	breq SEND_MESSAGE_END
+000206 dfd5                      	rcall USART_WRITE_BYTE
+000207 cffb                      	rjmp SEND_MESSAGE_LOOP
+                                 
+                                 	SEND_MESSAGE_END:
+000208 910f                      	pop r16
+000209 9508                      	ret
                                  
                                  
                                  ;-----------------------------------------------------------------
@@ -1380,128 +1465,390 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  ;-----------------------------------------------------------------
                                  
                                  USART_UDRE_ISR:
-0001ce 930f                          push r16
-0001cf b70f                          in   r16, SREG
-0001d0 930f                          push r16
+00020a 930f                          push r16
+00020b b70f                          in   r16, SREG
+00020c 930f                          push r16
                                  
-0001d1 931f                          push r17
-0001d2 932f                          push r18
-0001d3 934f                          push r20
-0001d4 93ff                          push ZH
-0001d5 93ef                          push ZL
+00020d 931f                          push r17
+00020e 932f                          push r18
+00020f 934f                          push r20
+000210 93ff                          push ZH
+000211 93ef                          push ZL
                                  
                                      ; r17 = head, r18 = tail
-0001d6 9110 0200                     lds  r17, tx_head
-0001d8 9120 0201                     lds  r18, tx_tail
+000212 9110 0200                     lds  r17, tx_head
+000214 9120 0201                     lds  r18, tx_tail
                                  
                                      ; buffer vacío? head == tail
-0001da 1712                          cp   r17, r18
-0001db f431                          brne usart_udre_send
+000216 1712                          cp   r17, r18
+000217 f431                          brne usart_udre_send
                                  
                                      ; vacío: deshabilitar UDRIE0
-0001dc 9140 00c1                     lds  r20, UCSR0B
-0001de 7d4f                          andi r20, ~(1<<UDRIE0)
-0001df 9340 00c1                     sts  UCSR0B, r20
-0001e1 c00b                          rjmp usart_udre_exit
+000218 9140 00c1                     lds  r20, UCSR0B
+00021a 7d4f                          andi r20, ~(1<<UDRIE0)
+00021b 9340 00c1                     sts  UCSR0B, r20
+00021d c00b                          rjmp usart_udre_exit
                                  
                                  usart_udre_send:
                                      ; Z = &tx_buffer[tail]
-0001e2 e0e0                          ldi  ZL, low(tx_buffer)
-0001e3 e0f1                          ldi  ZH, high(tx_buffer)
-0001e4 0fe2                          add  ZL, r18
-0001e5 1df1                          adc  ZH, r1          ; requiere r1 = 0
+00021e e0e0                          ldi  ZL, low(tx_buffer)
+00021f e0f1                          ldi  ZH, high(tx_buffer)
+000220 0fe2                          add  ZL, r18
+000221 1df1                          adc  ZH, r1          ; requiere r1 = 0
                                  
                                      ; enviar byte
-0001e6 8100                          ld   r16, Z
-0001e7 9300 00c6                     sts  UDR0, r16
+000222 8100                          ld   r16, Z
+000223 9300 00c6                     sts  UDR0, r16
                                  
                                      ; tail = (tail + 1) & TX_BUF_MASK
-0001e9 9523                          inc  r18
-0001ea 7f2f                          andi r18, TX_BUF_MASK   ; con 256 es 0xFF: no cambia, pero deja claro el patrón
-0001eb 9320 0201                     sts  tx_tail, r18
+000225 9523                          inc  r18
+000226 7f2f                          andi r18, TX_BUF_MASK   ; con 256 es 0xFF: no cambia, pero deja claro el patrón
+000227 9320 0201                     sts  tx_tail, r18
                                  
                                  usart_udre_exit:
-0001ed 91ef                          pop  ZL
-0001ee 91ff                          pop  ZH
-0001ef 914f                          pop  r20
-0001f0 912f                          pop  r18
-0001f1 911f                          pop  r17
+000229 91ef                          pop  ZL
+00022a 91ff                          pop  ZH
+00022b 914f                          pop  r20
+00022c 912f                          pop  r18
+00022d 911f                          pop  r17
                                  
-0001f2 910f                          pop  r16
-0001f3 bf0f                          out  SREG, r16
-0001f4 910f                          pop  r16
-0001f5 9518                          reti
+00022e 910f                          pop  r16
+00022f bf0f                          out  SREG, r16
+000230 910f                          pop  r16
+000231 9518                          reti
                                  
                                  
                                  USART_RX_ISR:
-0001f6 930f                      	push r16 
-0001f7 b70f                      	in r16, SREG
-0001f8 930f                      	push r16
-0001f9 9100 00c6                 	lds r16, UDR0
+000232 930f                      	push r16 
+000233 b70f                      	in r16, SREG
+000234 930f                      	push r16
+000235 9100 00c6                 	lds r16, UDR0
                                  	; Code here -----------
                                  	
+000237 3040
+000238 f539                      	cpi state, 0 brne USART_RX_ISR_END
+000239 3301
+00023a f069                      	cpi r16, '1' breq USART_RX_ISR_LIGHT
+00023b 3302
+00023c f081                      	cpi r16, '2' breq USART_RX_ISR_MEDIUM
+00023d 3303
+00023e f099                      	cpi r16, '3' breq USART_RX_ISR_HEAVY
+00023f 3401
+000240 f0b1                      	cpi r16, 'A' breq USART_RX_ISR_START
                                  	
-0001fb 910f                      	pop r16
-0001fc bf0f                      	out SREG, r16
-0001fd 910f                      	pop r16
-0001fe 9518                      	reti
+000241 e0e0
+000242 e0f6                      	ldi ZL, LOW(MSG_ERROR<<1) ldi ZH, HIGH(MSG_ERROR<<1)
+000243 dfbe                      	rcall SEND_MESSAGE
+                                 
+000244 e001
+000245 9300 0202                 	ldi r16, 1 sts event_pending, r16
+000247 c018                      	rjmp USART_RX_ISR_END
+                                 	
+                                 	USART_RX_ISR_LIGHT:
+000248 e050                      	ldi load, 0
+000249 e001
+00024a 9300 0202                 	ldi r16, 1 sts event_pending, r16
+00024c c013                      	rjmp USART_RX_ISR_END
+                                 
+                                 	USART_RX_ISR_MEDIUM:
+00024d e051                      	ldi load, 1
+00024e e001
+00024f 9300 0202                 	ldi r16, 1 sts event_pending, r16
+000251 c00e                      	rjmp USART_RX_ISR_END
+                                 	
+                                 	USART_RX_ISR_HEAVY:
+000252 e052                      	ldi load, 2
+000253 e001
+000254 9300 0202                 	ldi r16, 1 sts event_pending, r16
+000256 c009                      	rjmp USART_RX_ISR_END
+                                 
+                                 	USART_RX_ISR_START:
+000257 e000
+000258 bb0d                      	ldi r16, 0b00000000 out EIMSK, r16 ; Disable external interruption 
+000259 e001
+00025a bb0c                      	ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
+                                 	
+                                 	;ldi r16, (1<<RXEN0)|(1<<TXEN0) sts UCSR0B, r16  ; Disable USART ISR
+                                 	;ldi r16, (1<<RXC0) sts UCSR0A, r16				; Clear USART Rx flag
+                                 	
+00025b e041                      	ldi state, 1					
+00025c e001
+00025d 9300 0202                 	ldi r16, 1 sts event_pending, r16
+00025f c000                      	rjmp USART_RX_ISR_END
+                                 
+                                 	
+                                 
+                                 	USART_RX_ISR_END:
+000260 910f                      	pop r16
+000261 bf0f                      	out SREG, r16
+000262 910f                      	pop r16
+000263 9518                      	reti
                                  
                                  INT0_ISR:
-0001ff 930f                      	push r16
-000200 b70f                      	in r16, SREG
-000201 930f                      	push r16 
-                                 	; Start program cycle
+000264 930f                      	push r16
+000265 b70f                      	in r16, SREG
+000266 930f                      	push r16 
                                  
-000202 e000
-000203 bb0d                         	ldi r16, 0b00000000 out EIMSK, r16 ; Disable external interruption 
-000204 e001
-000205 bb0c                      	ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
+000267 e000
+000268 bb0d                         	ldi r16, 0b00000000 out EIMSK, r16 ; Disable external interruption 
+000269 e001
+00026a bb0c                      	ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
+                                 
+00026b 9100 00c1                 	lds  r16, UCSR0B
+00026d 770f                      	andi r16, ~(1<<RXCIE0)       ; disable RX interrupt only
+00026e 6200                      	ori  r16, (1<<UDRIE0)        ; make sure UDRE interrupt is enabled
+00026f 9300 00c1                 	sts  UCSR0B, r16
                                  	
-000206 e041                      	ldi state, 1						
-000207 df10                      	rcall STATE_MACHINE
+000271 e041                      	ldi state, 1						
+000272 deb1                      	rcall STATE_MACHINE	; Start program cycle
                                  	
-000208 910f                      	pop r16
-000209 bf0f                      	out SREG, r16
-00020a 910f                      	pop r16 
-00020b 9518                      	reti
+000273 910f                      	pop r16
+000274 bf0f                      	out SREG, r16
+000275 910f                      	pop r16 
+000276 9518                      	reti
                                  
                                  
                                  T1_OVF_ISR:
-00020c 930f                      	push r16
-00020d b70f                      	in r16, SREG
-00020e 930f                      	push r16
+000277 930f                      	push r16
+000278 b70f                      	in r16, SREG
+000279 930f                      	push r16
                                  
-00020f 942a                      	dec timer1_ovf_count    ; Decrement timer
+00027a 942a                      	dec timer1_ovf_count    ; Decrement timer
                                  	
-000210 1421                      	cp timer1_ovf_count, r1 ; Check timer overflow counter with 0 
-000211 f011                      	breq T1_OVF_ISR_STOP	
+00027b 1421                      	cp timer1_ovf_count, r1 ; Check timer overflow counter with 0 
+00027c f011                      	breq T1_OVF_ISR_STOP	
                                  
-000212 df79                      	rcall ENABLE_TIMER_1	; Preload timer again
-000213 c009                      	rjmp T1_OVF_ISR_END		
+00027d df41                      	rcall ENABLE_TIMER_1	; Preload timer again
+00027e c009                      	rjmp T1_OVF_ISR_END		
                                  
                                  	T1_OVF_ISR_STOP:		
-000214 df63                      	rcall DISABLE_TIMER_1	; Disable timer
+00027f df2b                      	rcall DISABLE_TIMER_1	; Disable timer
                                  	
-000215 3045                      	cpi state, 5			; Check if state = last_state
-000216 f019                      	breq RESET_STATE			
-000217 9543                      	inc state				; Increment state
-000218 deff                      	rcall STATE_MACHINE		; Call back state machine
-000219 c003                      	rjmp T1_OVF_ISR_END 	
+000280 3045                      	cpi state, 5			; Check if state = last_state
+000281 f019                      	breq RESET_STATE			
+000282 9543                      	inc state				; Increment state
+000283 dea0                      	rcall STATE_MACHINE		; Call back state machine
+000284 c003                      	rjmp T1_OVF_ISR_END 	
                                  
                                  	RESET_STATE:			
-00021a 2744                      	clr state				; Reset state back to 0
-00021b defc                      	rcall STATE_MACHINE		; Call back state machine
-00021c c000                      	rjmp T1_OVF_ISR_END     ; Program stops.
+000285 2744                      	clr state				; Reset state back to 0
+000286 de9d                      	rcall STATE_MACHINE		; Call back state machine
+                                 
+000287 c000                      	rjmp T1_OVF_ISR_END     ; Program stops.
                                  
                                  	T1_OVF_ISR_END:
-00021d 910f                      	pop r16
-00021e bf0f                      	out SREG, r16
-00021f 910f                      	pop r16
-000220 9518                      	reti 
+000288 910f                      	pop r16
+000289 bf0f                      	out SREG, r16
+00028a 910f                      	pop r16
+00028b 9518                      	reti 
+                                 
+                                 
                                  
                                  ;-----------------------------------------------------------------
                                  ; Datos (program memory)
                                  ;-----------------------------------------------------------------
+                                 
+                                 .cseg 
+                                 .org 0x300 
+                                 	MSG_ERROR: 
+000300 7245
+000301 6f72
+000302 3a72
+000303 6320
+000304 6d6f
+000305 6e61
+000306 6f64
+000307 6e20
+000308 206f
+000309 6e65
+00030a 6f63
+00030b 746e
+00030c 6172
+00030d 6f64
+00030e 0a20
+00030f 000a                      		.db "Error: comando no encontrado ", 0x0A, 0x0A, 0
+                                 	
+                                 	MSG_MENU:
+000310 7345
+000311 6174
+000312 6f64
+000313 6120
+000314 7463
+000315 6175
+000316 3a6c
+000317 5320
+000318 6174
+000319 646e
+00031a 7962
+00031b 0a0a                      		.db "Estado actual: Standby", 0x0A, 0x0A
+00031c 6c45
+00031d 6a69
+00031e 2061
+00031f 6e75
+000320 2061
+000321 706f
+000322 6963
+000323 6e6f
+000324 0a3a                      		.db "Elija una opcion:", 0x0A
+000325 315b
+000326 205d
+000327 3e2d
+000328 4320
+000329 6e6f
+00032a 6966
+00032b 7567
+00032c 6172
+00032d 2072
+00032e 6163
+00032f 6772
+000330 2061
+000331 696c
+000332 6567
+000333 6172
+000334 0a20                      		.db "[1] -> Configurar carga ligera ", 0x0A
+000335 325b
+000336 205d
+000337 3e2d
+000338 4320
+000339 6e6f
+00033a 6966
+00033b 7567
+00033c 6172
+00033d 2072
+00033e 6163
+00033f 6772
+000340 2061
+000341 656d
+000342 6964
+000343 6e61
+000344 0a61                      		.db "[2] -> Configurar carga mediana", 0x0A
+000345 335b
+000346 205d
+000347 3e2d
+000348 4320
+000349 6e6f
+00034a 6966
+00034b 7567
+00034c 6172
+00034d 2072
+00034e 6163
+00034f 6772
+000350 2061
+000351 6570
+000352 6173
+000353 6164
+000354 0a20                      		.db "[3] -> Configurar carga pesada ", 0x0A
+000355 415b
+000356 205d
+000357 3e2d
+000358 4920
+000359 696e
+00035a 6963
+00035b 7261
+00035c 7020
+00035d 6f72
+00035e 6563
+00035f 6f73
+000360 0a20
+000361 000a                      		.db "[A] -> Iniciar proceso ", 0x0A, 0x0A, 0
+                                 			
+000362 7345
+000363 6174
+000364 6f64
+000365 6120
+000366 7463
+000367 6175
+000368 3a6c
+000369 4120
+00036a 696c
+00036b 656d
+00036c 746e
+00036d 6361
+00036e f369
+00036f 0a6e
+000370 000a                      	MSG_STATE_1: .db "Estado actual: Alimentación", 0x0A, 0x0A, 0
+000371 7345
+000372 6174
+000373 6f64
+000374 6120
+000375 7463
+000376 6175
+000377 3a6c
+000378 4520
+000379 7073
+00037a 7265
+00037b 0a61
+00037c 000a                      	MSG_STATE_2: .db "Estado actual: Espera", 0x0A, 0x0A, 0
+00037d 7345
+00037e 6174
+00037f 6f64
+000380 6120
+000381 7463
+000382 6175
+000383 3a6c
+000384 5020
+000385 6e75
+000386 6f7a
+000387 616e
+000388 646e
+000389 0a6f
+00038a 000a                      	MSG_STATE_3: .db "Estado actual: Punzonando", 0x0A, 0x0A, 0
+00038b 7345
+00038c 6174
+00038d 6f64
+00038e 6120
+00038f 7463
+000390 6175
+000391 3a6c
+000392 4520
+000393 7478
+000394 6172
+000395 6363
+000396 f369
+000397 0a6e
+000398 000a                      	MSG_STATE_5: .db "Estado actual: Extracción", 0x0A, 0x0A, 0
+                                 
+000399 6143
+00039a 6772
+00039b 2061
+00039c 6f63
+00039d 666e
+00039e 6769
+00039f 7275
+0003a0 6461
+0003a1 3a61
+0003a2 4c20
+0003a3 7669
+0003a4 6169
+0003a5 616e
+0003a6 000a                      	MSG_LOAD_0:	 .db "Carga configurada: Liviana", 0x0A, 0
+0003a7 6143
+0003a8 6772
+0003a9 2061
+0003aa 6f63
+0003ab 666e
+0003ac 6769
+0003ad 7275
+0003ae 6461
+0003af 3a61
+0003b0 4d20
+0003b1 6465
+0003b2 6169
+0003b3 616e
+0003b4 000a                      	MSG_LOAD_1:	 .db "Carga configurada: Mediana", 0x0A, 0
+0003b5 6143
+0003b6 6772
+0003b7 2061
+0003b8 6f63
+0003b9 666e
+0003ba 6769
+0003bb 7275
+0003bc 6461
+0003bd 3a61
+0003be 5020
+0003bf 7365
+0003c0 6461
+0003c1 2061
 
 
 RESOURCE USE INFORMATION
@@ -1519,40 +1866,40 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega328P" register use summary:
-x  :   0 y  :   0 z  :   2 r0 :   0 r1 :   4 r2 :   3 r3 :   0 r4 :   0 
+x  :   0 y  :   0 z  :   3 r0 :   0 r1 :   4 r2 :   3 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16: 117 r17:  13 r18:  17 r19:   0 r20:  16 
-r21:  13 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
-r29:   0 r30:  14 r31:   8 
-Registers used: 10 out of 35 (28.6%)
+r13:   0 r14:   0 r15:   0 r16: 148 r17:  11 r18:  17 r19:   8 r20:  18 
+r21:  19 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
+r29:   0 r30:  17 r31:  17 
+Registers used: 11 out of 35 (31.4%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   2 add   :   2 adiw  :   0 and   :   0 
-andi  :   3 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :  21 brge  :   0 brhc  :   0 
+andi  :   4 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :  30 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   2 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brne  :   3 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   1 cln   :   0 clr   :   2 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   4 cpc   :   0 
-cpi   :  19 cpse  :   0 dec   :   1 eor   :   0 fmul  :   0 fmuls :   0 
+cpi   :  28 cpse  :   0 dec   :   1 eor   :   0 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :   5 inc   :   3 jmp   :   0 
-ld    :   1 ldd   :   0 ldi   :  52 lds   :   8 lpm   :   0 lsl   :   0 
-lsr   :   0 mov   :   3 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   0 or    :   0 ori   :   1 out   :  23 pop   :  23 
-push  :  21 rcall :   7 ret   :   6 reti  :   4 rjmp  :  29 rol   :   0 
+ld    :   1 ldd   :   0 ldi   :  82 lds   :  10 lpm   :   1 lsl   :   0 
+lsr   :   0 mov   :   2 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
+neg   :   0 nop   :   0 or    :   0 ori   :   2 out   :  24 pop   :  25 
+push  :  23 rcall :  19 ret   :   7 reti  :   4 rjmp  :  44 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   2 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   1 std   :   0 sts   :  20 
-sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 27 out of 113 (23.9%)
+sez   :   0 sleep :   0 spm   :   0 st    :   1 std   :   0 sts   :  29 
+sub   :   0 subi  :   0 swap  :   0 tst   :   1 wdr   :   0 
+Instructions used: 29 out of 113 (25.7%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000442    588      0    588   32768   1.8%
-[.dseg] 0x000100 0x000202      0    258    258    2048  12.6%
+[.cseg] 0x000000 0x000786    802    390   1192   32768   3.6%
+[.dseg] 0x000100 0x000203      0    259    259    2048  12.6%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
 Assembly complete, 0 errors, 0 warnings

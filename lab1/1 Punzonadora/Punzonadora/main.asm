@@ -11,17 +11,10 @@
 .equ TX_BUF_SIZE = 256				
 .equ TX_BUF_MASK = TX_BUF_SIZE - 1		
 .equ _F_CPU = 16000000
-.equ _BAUD = 9600
+.equ _BAUD = 57600
 .equ _BPS = (_F_CPU/16/_BAUD) - 1
 
 .equ T1_1S_PRESET = 49911 ; Timer preload for 1s (1024 prescaler)
-
-.equ ST_STOP = 0
-.equ ST_ADVANCE = 1
-.equ ST_WAIT_1 = 2
-.equ ST_PUNCH = 3
-.equ ST_WAIT_2 = 4
-.equ ST_UNLOAD = 5
 
 .def timer1_ovf_count = r2
 
@@ -37,6 +30,7 @@
 tx_buffer: .byte TX_BUF_SIZE          ; circular buffer storage
 tx_head:   .byte 1                    ; enqueue index
 tx_tail:   .byte 1                    ; dequeue index
+event_pending: .byte 1
 
 
 ;-----------------------------------------------------------------
@@ -59,7 +53,6 @@ tx_tail:   .byte 1                    ; dequeue index
 
 .org 0x100
 RESET:
-	clr r1
 
 	; Stack 
 	ldi r16, high(RAMEND) out SPH, r16
@@ -70,9 +63,8 @@ RESET:
    	ldi r16, 0b00000001 out EIMSK, r16 
 
 	; Inputs and outputs
-	ldi r16, 0b00111111 out DDRB, r16
-	ldi r16, 0b00000000 out DDRD, r16
-	ldi r16, 0b00001100 out PORTD, r16
+	ldi r16, 0b01101000 out DDRD, r16
+	ldi r16, 0b00000100 out PORTD, r16 ;Pull-up for INT0
 	
 	; Init USART
 	ldi r16, low(_BPS)
@@ -81,7 +73,15 @@ RESET:
 
 	; Initial state
 	ldi state, 0
-	ldi load, 1
+	ldi load, 0
+
+	ldi  r16, 0
+	sts  tx_head, r16
+	sts  tx_tail, r16
+	clr  r1      
+	
+	rcall STATE_MACHINE
+
 
 	; Global interrupt
 	sei
@@ -94,7 +94,13 @@ RESET:
 
 
 MAIN:
-	rjmp MAIN
+    lds  r16, event_pending
+    tst  r16
+    breq MAIN
+    ldi  r16,0
+    sts  event_pending,r16
+    rcall STATE_MACHINE
+    rjmp MAIN
 
 
 ;-----------------------------------------------------------------
@@ -107,28 +113,66 @@ STATE_MACHINE:
 	in r16, SREG
 	push r16
 
-	cpi state, 0 breq STATE_MACHINE_STOP
-	cpi state, 1 breq STATE_MACHINE_ADVANCE
-	cpi state, 2 breq STATE_MACHINE_WAIT_1
-	cpi state, 3 breq STATE_MACHINE_PUNCH
-	cpi state, 4 breq STATE_MACHINE_WAIT_2
-	cpi state, 5 breq STATE_MACHINE_EXTRACT
+	cpi state, 0 breq STATE_MACHINE_STOP_NEAR
+	cpi state, 1 breq STATE_MACHINE_ADVANCE_NEAR
+	cpi state, 2 breq STATE_MACHINE_WAIT_1_NEAR
+	cpi state, 3 breq STATE_MACHINE_PUNCH_NEAR
+	cpi state, 4 breq STATE_MACHINE_WAIT_2_NEAR
+	cpi state, 5 breq STATE_MACHINE_EXTRACT_NEAR
+	
 	rjmp STATE_MACHINE_END
 
+	STATE_MACHINE_STOP_NEAR:	rjmp STATE_MACHINE_STOP
+	STATE_MACHINE_ADVANCE_NEAR: rjmp STATE_MACHINE_ADVANCE
+	STATE_MACHINE_WAIT_1_NEAR:	rjmp STATE_MACHINE_WAIT_1
+	STATE_MACHINE_PUNCH_NEAR:	rjmp STATE_MACHINE_PUNCH
+	STATE_MACHINE_WAIT_2_NEAR:	rjmp STATE_MACHINE_WAIT_2
+	STATE_MACHINE_EXTRACT_NEAR: rjmp STATE_MACHINE_EXTRACT
 
-	STATE_MACHINE_STOP: ; ---------------------------- ESTADO 0
-		ldi r16, 1 out PORTB, r16
+
+
+	STATE_MACHINE_STOP: ; ---------------------------- STOP
+
+		cpi load, 0 breq STATE_MACHINE_STOP_LOAD_0
+		cpi load, 1 breq STATE_MACHINE_STOP_LOAD_1
+		cpi load, 2 breq STATE_MACHINE_STOP_LOAD_2
+		rjmp STATE_MACHINE_STOP_SKIP
+
+		STATE_MACHINE_STOP_LOAD_0:
+		ldi ZL, LOW(MSG_LOAD_0<<1) ldi ZH, HIGH(MSG_LOAD_0<<1)
+		rcall SEND_MESSAGE
+		rjmp STATE_MACHINE_STOP_SKIP
+
+		STATE_MACHINE_STOP_LOAD_1:
+		ldi ZL, LOW(MSG_LOAD_1<<1) ldi ZH, HIGH(MSG_LOAD_1<<1)
+		rcall SEND_MESSAGE
+		rjmp STATE_MACHINE_STOP_SKIP
+		
+		STATE_MACHINE_STOP_LOAD_2:
+		ldi ZL, LOW(MSG_LOAD_2<<1) ldi ZH, HIGH(MSG_LOAD_2<<1)
+		rcall SEND_MESSAGE
+		rjmp STATE_MACHINE_STOP_SKIP
+
+		STATE_MACHINE_STOP_SKIP:
+		ldi ZL, LOW(MSG_MENU<<1) ldi ZH, HIGH(MSG_MENU<<1)
+		rcall SEND_MESSAGE
+
+		ldi r16, 0b00000100 out PORTD, r16
 		ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
    		ldi r16, 0b00000001 out EIMSK, r16 ; Enable external interruption 
-	
+
 		pop r16
 		out SREG, r16
 		pop r16
 		ret
 		
 
-	STATE_MACHINE_ADVANCE: ; ---------------------------- ESTADO 1 
-		ldi r16, (1<<1) out PORTB, r16
+	STATE_MACHINE_ADVANCE: ; ---------------------------- AVANCE 
+
+		ldi ZL, LOW(MSG_STATE_1<<1) ldi ZH, HIGH(MSG_STATE_1<<1)
+		rcall SEND_MESSAGE
+
+		ldi r16, 0b00100100 out PORTD, r16
 		cpi load, 0 breq STATE_MACHINE_ADVANCE_LOAD_0
 		cpi load, 1 breq STATE_MACHINE_ADVANCE_LOAD_1
 		cpi load, 2 breq STATE_MACHINE_ADVANCE_LOAD_2
@@ -144,8 +188,12 @@ STATE_MACHINE:
 		rjmp STATE_MACHINE_END
 
 
-	STATE_MACHINE_WAIT_1: ; ---------------------------- ESTADO 2
-		ldi r16, (1<<2) out PORTB, r16
+	STATE_MACHINE_WAIT_1: ; ---------------------------- ESPERA 1
+		
+		ldi ZL, LOW(MSG_STATE_2<<1) ldi ZH, HIGH(MSG_STATE_2<<1)
+		rcall SEND_MESSAGE
+
+		ldi r16, 0b00000100 out PORTD, r16
 		cpi load, 0 breq STATE_MACHINE_WAIT_1_LOAD_0
 		cpi load, 1 breq STATE_MACHINE_WAIT_1_LOAD_1
 		cpi load, 2 breq STATE_MACHINE_WAIT_1_LOAD_2
@@ -161,32 +209,41 @@ STATE_MACHINE:
 		rjmp STATE_MACHINE_END
 
 
-	STATE_MACHINE_PUNCH: ; ---------------------------- ESTADO 3
-		ldi r16, (1<<3) out PORTB, r16
-		ldi r16, 1 
-		rjmp STATE_MACHINE_END
+	STATE_MACHINE_PUNCH: ; ---------------------------- PUNZONADO
 
-
-	STATE_MACHINE_WAIT_2: ; ---------------------------- ESTADO 4
-		ldi r16, (1<<4) out PORTB, r16
-		cpi load, 0 breq STATE_MACHINE_WAIT_2_LOAD_0
-		cpi load, 1 breq STATE_MACHINE_WAIT_2_LOAD_1
-		cpi load, 2 breq STATE_MACHINE_WAIT_2_LOAD_2
-		rjmp STATE_MACHINE_END
+		ldi ZL, LOW(MSG_STATE_3<<1) ldi ZH, HIGH(MSG_STATE_3<<1)
+		rcall SEND_MESSAGE
 		
-		STATE_MACHINE_WAIT_2_LOAD_0: ldi r16, 2
+		ldi r16, 0b01000100 out PORTD, r16
+		cpi load, 0 breq STATE_MACHINE_PUNCH_LOAD_0
+		cpi load, 1 breq STATE_MACHINE_PUNCH_LOAD_1
+		cpi load, 2 breq STATE_MACHINE_PUNCH_LOAD_2
+
+		STATE_MACHINE_PUNCH_LOAD_0: ldi r16, 2 
+		rjmp STATE_MACHINE_END
+		STATE_MACHINE_PUNCH_LOAD_1: ldi r16, 3
+		rjmp STATE_MACHINE_END
+		STATE_MACHINE_PUNCH_LOAD_2: ldi r16, 4
 		rjmp STATE_MACHINE_END
 
-		STATE_MACHINE_WAIT_2_LOAD_1: ldi r16, 3
+
+	STATE_MACHINE_WAIT_2: ; ---------------------------- ESPERA 2
+
+		;ldi ZL, LOW(MSG_STATE_4<<1) ldi ZH, HIGH(MSG_STATE_4<<1)
+		;rcall SEND_MESSAGE
+
+		ldi r16, 0b00000100 out PORTD, r16
+		ldi r16, 1
 		rjmp STATE_MACHINE_END
 
-		STATE_MACHINE_WAIT_2_LOAD_2: ldi r16, 4
-		rjmp STATE_MACHINE_END
 
 
+	STATE_MACHINE_EXTRACT: ; ---------------------------- EXTRACCION
+		
+		ldi ZL, LOW(MSG_STATE_5<<1) ldi ZH, HIGH(MSG_STATE_5<<1)
+		rcall SEND_MESSAGE
 
-	STATE_MACHINE_EXTRACT: ; ---------------------------- ESTADO 5
-		ldi r16, (1<<5) out PORTB, r16
+		ldi r16, 0b00001100 out PORTD, r16
 		cpi load, 0 breq STATE_MACHINE_EXTRACT_LOAD_0
 		cpi load, 1 breq STATE_MACHINE_EXTRACT_LOAD_1
 		cpi load, 2 breq STATE_MACHINE_EXTRACT_LOAD_2
@@ -213,7 +270,6 @@ STATE_MACHINE:
 	ret
 
 
-
 DISABLE_TIMER_1:
 	push r16
 	ldi r16, 0			 sts TCCR1A, r16
@@ -237,7 +293,6 @@ ENABLE_TIMER_1:
 	ret
 	
 
-
 USART_INIT:		
 	; Set baud rate
 	sts UBRR0H, r17
@@ -245,48 +300,51 @@ USART_INIT:
 	; Enable receiver and transmitter, and interruptions
 	ldi r16, (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0)
 	sts UCSR0B,r16
-	; Set frame format: 8data, 2stop bit
-	ldi r16, (1<<USBS0)|(3<<UCSZ00)
-	sts UCSR0C,r16
+	; Set frame format: 8data, 1stop bit
+	ldi r16, (0<<USBS0)|(3<<UCSZ00)
+	sts UCSR0C, r16
 	ret
 	
+
+
 USART_WRITE_BYTE:
     push r17
     push r18
+    push r19
     push ZH
     push ZL
 
-    ; leer head/tail actuales
+    ; head/tail
     lds  r17, tx_head
     lds  r18, tx_tail
 
-    ; calcular next = (head + 1) & MASK
-    mov  ZL, r17
-    inc  ZL
-    andi ZL, TX_BUF_MASK
+    ; next = (head + 1) & MASK   (keep it in r19!)
+    mov  r19, r17
+    inc  r19
+    andi r19, TX_BUF_MASK
 
-    ; buffer lleno si next == tail  -> (opcional) esperar o desechar
 wait_space:
-    cp   ZL, r18
+    ; full? next == tail
+    cp   r19, r18
     brne have_space
-    ; actualizar tail por si la ISR avanzó mientras esperábamos
+    ; maybe ISR advanced tail while we were here ? reload tail and re-check
     lds  r18, tx_tail
-    cp   ZL, r18
+    cp   r19, r18
     breq wait_space
 
 have_space:
-    ; escribir en tx_buffer[head]
+    ; Z = &tx_buffer[head]
     ldi  ZL, low(tx_buffer)
     ldi  ZH, high(tx_buffer)
     add  ZL, r17
-    adc  ZH, r1
-    st   Z, r16
+    adc  ZH, r1            ; r1 must be 0
 
-    ; head = next
-    mov  r17, ZL
-    sts  tx_head, r17
+    st   Z, r16            ; write byte
 
-    ; habilitar UDRIE0 (para que la ISR empiece/continúe a vaciar)
+    ; head = next   (use r19, NOT ZL)
+    sts  tx_head, r19
+
+    ; enable UDRE interrupt so ISR starts/continues draining
     cli
     lds  r18, UCSR0B
     ori  r18, (1<<UDRIE0)
@@ -295,9 +353,26 @@ have_space:
 
     pop  ZL
     pop  ZH
+    pop  r19
     pop  r18
     pop  r17
-    ret 
+    ret
+
+; Preload Z with the message
+SEND_MESSAGE:
+	push r16
+
+	SEND_MESSAGE_LOOP:
+	lpm r16, Z+
+	cpi r16, 0
+
+	breq SEND_MESSAGE_END
+	rcall USART_WRITE_BYTE
+	rjmp SEND_MESSAGE_LOOP
+
+	SEND_MESSAGE_END:
+	pop r16
+	ret
 
 
 ;-----------------------------------------------------------------
@@ -365,7 +440,47 @@ USART_RX_ISR:
 	lds r16, UDR0
 	; Code here -----------
 	
+	cpi state, 0 brne USART_RX_ISR_END
+	cpi r16, '1' breq USART_RX_ISR_LIGHT
+	cpi r16, '2' breq USART_RX_ISR_MEDIUM
+	cpi r16, '3' breq USART_RX_ISR_HEAVY
+	cpi r16, 'A' breq USART_RX_ISR_START
 	
+	ldi ZL, LOW(MSG_ERROR<<1) ldi ZH, HIGH(MSG_ERROR<<1)
+	rcall SEND_MESSAGE
+
+	ldi r16, 1 sts event_pending, r16
+	rjmp USART_RX_ISR_END
+	
+	USART_RX_ISR_LIGHT:
+	ldi load, 0
+	ldi r16, 1 sts event_pending, r16
+	rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_MEDIUM:
+	ldi load, 1
+	ldi r16, 1 sts event_pending, r16
+	rjmp USART_RX_ISR_END
+	
+	USART_RX_ISR_HEAVY:
+	ldi load, 2
+	ldi r16, 1 sts event_pending, r16
+	rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_START:
+	ldi r16, 0b00000000 out EIMSK, r16 ; Disable external interruption 
+	ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
+	
+	;ldi r16, (1<<RXEN0)|(1<<TXEN0) sts UCSR0B, r16  ; Disable USART ISR
+	;ldi r16, (1<<RXC0) sts UCSR0A, r16				; Clear USART Rx flag
+	
+	ldi state, 1					
+	ldi r16, 1 sts event_pending, r16
+	rjmp USART_RX_ISR_END
+
+	
+
+	USART_RX_ISR_END:
 	pop r16
 	out SREG, r16
 	pop r16
@@ -375,13 +490,17 @@ INT0_ISR:
 	push r16
 	in r16, SREG
 	push r16 
-	; Start program cycle
 
    	ldi r16, 0b00000000 out EIMSK, r16 ; Disable external interruption 
 	ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
+
+	lds  r16, UCSR0B
+	andi r16, ~(1<<RXCIE0)       ; disable RX interrupt only
+	ori  r16, (1<<UDRIE0)        ; make sure UDRE interrupt is enabled
+	sts  UCSR0B, r16
 	
 	ldi state, 1						
-	rcall STATE_MACHINE
+	rcall STATE_MACHINE	; Start program cycle
 	
 	pop r16
 	out SREG, r16
@@ -414,6 +533,7 @@ T1_OVF_ISR:
 	RESET_STATE:			
 	clr state				; Reset state back to 0
 	rcall STATE_MACHINE		; Call back state machine
+
 	rjmp T1_OVF_ISR_END     ; Program stops.
 
 	T1_OVF_ISR_END:
@@ -422,6 +542,31 @@ T1_OVF_ISR:
 	pop r16
 	reti 
 
+
+
 ;-----------------------------------------------------------------
 ; Datos (program memory)
 ;-----------------------------------------------------------------
+
+.cseg 
+.org 0x300 
+	MSG_ERROR: 
+		.db "Error: comando no encontrado ", 0x0A, 0x0A, 0
+	
+	MSG_MENU:
+		.db "Estado actual: Standby", 0x0A, 0x0A
+		.db "Elija una opcion:", 0x0A
+		.db "[1] -> Configurar carga ligera ", 0x0A
+		.db "[2] -> Configurar carga mediana", 0x0A
+		.db "[3] -> Configurar carga pesada ", 0x0A
+		.db "[A] -> Iniciar proceso ", 0x0A, 0x0A, 0
+			
+	MSG_STATE_1: .db "Estado actual: Alimentación", 0x0A, 0x0A, 0
+	MSG_STATE_2: .db "Estado actual: Espera", 0x0A, 0x0A, 0
+	MSG_STATE_3: .db "Estado actual: Punzonando", 0x0A, 0x0A, 0
+	MSG_STATE_4: .db "Estado actual: Espera 2", 0x0A, 0x0A, 0
+	MSG_STATE_5: .db "Estado actual: Extracción", 0x0A, 0x0A, 0
+
+	MSG_LOAD_0:	 .db "Carga configurada: Liviana", 0x0A, 0
+	MSG_LOAD_1:	 .db "Carga configurada: Mediana", 0x0A, 0
+	MSG_LOAD_2:	 .db "Carga configurada: Pesada ", 0x0A, 0

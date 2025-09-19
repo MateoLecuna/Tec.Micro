@@ -1,12 +1,12 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm Fri Sep 12 15:35:11 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm Fri Sep 19 14:57:02 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
-C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm(3): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
+C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm(2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
-C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm(3): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
+C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm(2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
                                  
-                                 ; Laboratorio 1: Matriz de LEDs
+                                 
                                  
                                  ;***** Created: 2011-02-09 12:03 ******* Source: ATmega328P.xml **********
                                  ;*************************************************************************
@@ -987,7 +987,6 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
                                  
                                  ; ***** END OF FILE ******************************************************
                                  
-                                 
                                  .include "m328pdef.inc"
                                  
                                  ;***** Created: 2011-02-09 12:03 ******* Source: ATmega328P.xml **********
@@ -1037,6 +1036,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
                                  ; Constantes y definiciones
                                  ;-----------------------------------------------------------------
                                  
+                                 ; Matriz de LEDs -------------------------------------------------
                                  
                                  .cseg
                                  .equ TX_BUF_SIZE = 256				; power of two
@@ -1057,7 +1057,6 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
                                  .def col = r24
                                  
                                  
-                                 
                                  ;-----------------------------------------------------------------
                                  ; DSEG
                                  ;-----------------------------------------------------------------
@@ -1074,11 +1073,11 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
                                  
                                  .cseg
 000000 c0ff                      .org 0x0000 rjmp RESET			; Program start
-000002 c296                      .org 0x0002 rjmp INT0_ISR		; External interrupt 1
-000004 c29b                      .org 0x0004 rjmp INT1_ISR		; External interrupt 2
-000012 c29b                      .org 0x0012 rjmp T2_OVF_ISR		; Timer 2 overflow ISR
-000020 c286                      .org 0x0020 rjmp T0_OVF_ISR 	; Timer 0 overflow ISR
-000024 c21c                      .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
+000002 c29a                      .org 0x0002 rjmp INT0_ISR		; External interrupt 1
+000004 c29f                      .org 0x0004 rjmp INT1_ISR		; External interrupt 2
+000012 c29f                      .org 0x0012 rjmp T2_OVF_ISR		; Timer 2 overflow ISR
+000020 c28a                      .org 0x0020 rjmp T0_OVF_ISR 	; Timer 0 overflow ISR
+000024 c220                      .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
 000026 c1f4                      .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
                                  
                                  
@@ -1512,213 +1511,217 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
                                  
                                  USART_UDRE_ISR:
 00021b 930f                          push r16
-00021c 931f                          push r17
-00021d 932f                          push r18
-00021e 933f                          push r19
-00021f 934f                          push r20
-000220 93ff                          push ZH
-000221 93ef                          push ZL
+00021c b70f                      	in r16, SREG
+00021d 930f                      	push r16
+00021e 931f                          push r17
+00021f 932f                          push r18
+000220 933f                          push r19
+000221 934f                          push r20
+000222 93ff                          push ZH
+000223 93ef                          push ZL
                                  
                                      ; load head/tail
-000222 9110 0200                     lds  r17, tx_head              ; r17 = head
-000224 9120 0201                     lds  r18, tx_tail              ; r18 = tail
+000224 9110 0200                     lds  r17, tx_head              ; r17 = head
+000226 9120 0201                     lds  r18, tx_tail              ; r18 = tail
                                  
                                      ; buffer empty? (head == tail)
-000226 1712                          cp   r17, r18
-000227 f431                          brne usart_udre_send
+000228 1712                          cp   r17, r18
+000229 f431                          brne usart_udre_send
                                      ; empty ? disable UDRE interrupt
-000228 9140 00c1                     lds  r20, UCSR0B
-00022a 7d4f                          andi r20, ~(1<<UDRIE0)
-00022b 9340 00c1                     sts  UCSR0B, r20
-00022d c00b                          rjmp usart_udre_exit
+00022a 9140 00c1                     lds  r20, UCSR0B
+00022c 7d4f                          andi r20, ~(1<<UDRIE0)
+00022d 9340 00c1                     sts  UCSR0B, r20
+00022f c00b                          rjmp usart_udre_exit
                                  
                                  	usart_udre_send:
                                      ; Z = &tx_buffer[tail]
-00022e e0e0                          ldi  ZL, low(tx_buffer)
-00022f e0f1                          ldi  ZH, high(tx_buffer)
-000230 0fe2                          add  ZL, r18
-000231 1df1                          adc  ZH, r1
+000230 e0e0                          ldi  ZL, low(tx_buffer)
+000231 e0f1                          ldi  ZH, high(tx_buffer)
+000232 0fe2                          add  ZL, r18
+000233 1df1                          adc  ZH, r1
                                  
                                      ; r16 = byte to send
-000232 8100                          ld   r16, Z
-000233 9300 00c6                     sts  UDR0, r16                 ; write to data register (starts shift)
+000234 8100                          ld   r16, Z
+000235 9300 00c6                     sts  UDR0, r16                 ; write to data register (starts shift)
                                  
                                      ; tail = (tail + 1) & MASK
-000235 9523                          inc  r18
-000236 7f2f                          andi r18, TX_BUF_MASK
-000237 9320 0201                     sts  tx_tail, r18
+000237 9523                          inc  r18
+000238 7f2f                          andi r18, TX_BUF_MASK
+000239 9320 0201                     sts  tx_tail, r18
                                  
                                  	usart_udre_exit:
-000239 91ef                          pop  ZL
-00023a 91ff                          pop  ZH
-00023b 914f                          pop  r20
-00023c 913f                          pop  r19
-00023d 912f                          pop  r18
-00023e 911f                          pop  r17
-00023f 910f                          pop  r16
-000240 9518                          reti
+00023b 91ef                          pop ZL
+00023c 91ff                          pop ZH
+00023d 914f                          pop r20
+00023e 913f                          pop r19
+00023f 912f                          pop r18
+000240 911f                          pop r17
+000241 910f                          pop r16
+000242 bf0f                      	out SREG, r16
+000243 910f                      	pop r16
+000244 9518                          reti
                                  
                                  
                                  USART_RX_ISR:		; ---------------------------------- USART ISR
-000241 930f                      	push r16 
-000242 b70f                          in r16, SREG 
-000243 930f                      	push r16 
-000244 931f                      	push r17
+000245 930f                      	push r16 
+000246 b70f                          in r16, SREG 
+000247 930f                      	push r16 
+000248 931f                      	push r17
                                  	
-000245 9100 00c6                 	lds r16, UDR0
-000247 3300                      	cpi r16, '0' 
-000248 f069                      	breq USART_RX_ISR_CASE_0 ; Texto desplazante
-000249 3301                      	cpi r16, '1' 
-00024a f091                      	breq USART_RX_ISR_CASE_1 ; Texto desplazante
-00024b 3302                      	cpi r16, '2' 
-00024c f0b9                      	breq USART_RX_ISR_CASE_2 ; Cara feliz
-00024d 3303                      	cpi r16, '3' 
-00024e f0e9                      	breq USART_RX_ISR_CASE_3 ; Cara triste
-00024f 3304                      	cpi r16, '4' 
-000250 f119                      	breq USART_RX_ISR_CASE_4 ; Corazon
-000251 3305                      	cpi r16, '5' 
-000252 f149                      	breq USART_RX_ISR_CASE_5 ; Rombo
-000253 3306                      	cpi r16, '6' 
-000254 f179                      	breq USART_RX_ISR_CASE_6 ; Space Invader
+000249 9100 00c6                 	lds r16, UDR0
+00024b 3300                      	cpi r16, '0' 
+00024c f069                      	breq USART_RX_ISR_CASE_0 ; Texto desplazante
+00024d 3301                      	cpi r16, '1' 
+00024e f091                      	breq USART_RX_ISR_CASE_1 ; Texto desplazante
+00024f 3302                      	cpi r16, '2' 
+000250 f0b9                      	breq USART_RX_ISR_CASE_2 ; Cara feliz
+000251 3303                      	cpi r16, '3' 
+000252 f0e9                      	breq USART_RX_ISR_CASE_3 ; Cara triste
+000253 3304                      	cpi r16, '4' 
+000254 f119                      	breq USART_RX_ISR_CASE_4 ; Corazon
+000255 3305                      	cpi r16, '5' 
+000256 f149                      	breq USART_RX_ISR_CASE_5 ; Rombo
+000257 3306                      	cpi r16, '6' 
+000258 f179                      	breq USART_RX_ISR_CASE_6 ; Space Invader
                                  
-000255 c036                      	rjmp USART_RX_ISR_CASE_DEFAULT 
+000259 c036                      	rjmp USART_RX_ISR_CASE_DEFAULT 
                                  
                                  	USART_RX_ISR_CASE_0:
-000256 dec6                      		rcall SET_ANIMATION_START
-000257 e000
-000258 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
-00025a e000
-00025b 2f40                      		ldi r16, 0 mov current_state, r16   ; Change state
-00025c c037                      		rjmp USART_RX_ISR_END
+00025a dec2                      		rcall SET_ANIMATION_START
+00025b e000
+00025c 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+00025e e000
+00025f 2f40                      		ldi r16, 0 mov current_state, r16   ; Change state
+000260 c037                      		rjmp USART_RX_ISR_END
                                  
                                  
                                  	USART_RX_ISR_CASE_1:
-00025d debf                      		rcall SET_ANIMATION_START
-00025e e001
-00025f 2f40                      		ldi r16, 1 mov current_state, r16   ; Change state
-000260 e001
-000261 9300 0070                 		ldi r16, 0b00000001 sts TIMSK2, r16 ; Enable move frame timer interrupts
+000261 debb                      		rcall SET_ANIMATION_START
+000262 e001
+000263 2f40                      		ldi r16, 1 mov current_state, r16   ; Change state
+000264 e001
+000265 9300 0070                 		ldi r16, 0b00000001 sts TIMSK2, r16 ; Enable move frame timer interrupts
                                  
-000263 c030                      		rjmp USART_RX_ISR_END
+000267 c030                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_2:
-000264 e0a0
-000265 e0b8                      		ldi XL, low(CARITA_SONRIENTE<<1) ldi XH, high(CARITA_SONRIENTE<<1)
-000266 e000
-000267 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
-000269 e002
-00026a 2f40                      		ldi r16, 2 mov current_state, r16   ; Change state
+000268 e0a0
+000269 e0b8                      		ldi XL, low(CARITA_SONRIENTE<<1) ldi XH, high(CARITA_SONRIENTE<<1)
+00026a e000
+00026b 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+00026d e002
+00026e 2f40                      		ldi r16, 2 mov current_state, r16   ; Change state
                                  	
-00026b c028                      		rjmp USART_RX_ISR_END
+00026f c028                      		rjmp USART_RX_ISR_END
                                  	USART_RX_ISR_CASE_3:
-00026c e0a8
-00026d e0b8                      		ldi XL, low(CARITA_TRISTE<<1) ldi XH, high(CARITA_TRISTE<<1)
-00026e e000
-00026f 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
-000271 e003
-000272 2f40                      		ldi r16, 3 mov current_state, r16   ; Change state
+000270 e0a8
+000271 e0b8                      		ldi XL, low(CARITA_TRISTE<<1) ldi XH, high(CARITA_TRISTE<<1)
+000272 e000
+000273 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+000275 e003
+000276 2f40                      		ldi r16, 3 mov current_state, r16   ; Change state
                                  
-000273 c020                      		rjmp USART_RX_ISR_END
+000277 c020                      		rjmp USART_RX_ISR_END
                                  	USART_RX_ISR_CASE_4:
-000274 e1a0
-000275 e0b8                      		ldi XL, low(CORAZON<<1) ldi XH, high(CORAZON<<1)
-000276 e000
-000277 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
-000279 e004
-00027a 2f40                      		ldi r16, 4 mov current_state, r16   ; Change state
+000278 e1a0
+000279 e0b8                      		ldi XL, low(CORAZON<<1) ldi XH, high(CORAZON<<1)
+00027a e000
+00027b 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+00027d e004
+00027e 2f40                      		ldi r16, 4 mov current_state, r16   ; Change state
                                  
-00027b c018                      		rjmp USART_RX_ISR_END
+00027f c018                      		rjmp USART_RX_ISR_END
                                  	USART_RX_ISR_CASE_5:
-00027c e1a8
-00027d e0b8                      		ldi XL, low(ROMBO<<1) ldi XH, high(ROMBO<<1)
-00027e e000
-00027f 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
-000281 e005
-000282 2f40                      		ldi r16, 5 mov current_state, r16   ; Change state
+000280 e1a8
+000281 e0b8                      		ldi XL, low(ROMBO<<1) ldi XH, high(ROMBO<<1)
+000282 e000
+000283 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+000285 e005
+000286 2f40                      		ldi r16, 5 mov current_state, r16   ; Change state
                                  
-000283 c010                      		rjmp USART_RX_ISR_END
+000287 c010                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_6:
-000284 e2a0
-000285 e0b8                      		ldi XL, low(ALIEN<<1) ldi XH, high(ALIEN<<1)
-000286 e000
-000287 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
-000289 e006
-00028a 2f40                      		ldi r16, 6 mov current_state, r16   ; Change state
+000288 e2a0
+000289 e0b8                      		ldi XL, low(ALIEN<<1) ldi XH, high(ALIEN<<1)
+00028a e000
+00028b 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+00028d e006
+00028e 2f40                      		ldi r16, 6 mov current_state, r16   ; Change state
                                  
-00028b c008                      		rjmp USART_RX_ISR_END
+00028f c008                      		rjmp USART_RX_ISR_END
                                  	USART_RX_ISR_CASE_DEFAULT:
-00028c e000
-00028d 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
-00028f e603
-000290 2f40                      		ldi r16, 99 mov current_state, r16   ; Change state
+000290 e000
+000291 9300 0070                 		ldi r16, 0b00000000 sts TIMSK2, r16 ; Disable move frame timer interrupts
+000293 e603
+000294 2f40                      		ldi r16, 99 mov current_state, r16   ; Change state
                                  		
                                  
-000291 df7b                      		rcall SEND_ERROR
-000292 df6c                      		rcall SEND_MENU
+000295 df77                      		rcall SEND_ERROR
+000296 df68                      		rcall SEND_MENU
                                  
-000293 c000                      		rjmp USART_RX_ISR_END
+000297 c000                      		rjmp USART_RX_ISR_END
                                  
                                  
                                  	USART_RX_ISR_END:
-000294 911f                      	pop r17 
-000295 910f                      	pop r16
-000296 bf0f                      	out SREG, r16
-000297 910f                      	pop r16	
-000298 9518                      	reti
+000298 911f                      	pop r17 
+000299 910f                      	pop r16
+00029a bf0f                      	out SREG, r16
+00029b 910f                      	pop r16	
+00029c 9518                      	reti
                                  
                                  
                                  INT0_ISR:			; ---------------------------------- INT0 ISR
-000299 930f                      	push r16 
-00029a b70f                          in r16, SREG 
-00029b 930f                      	push r16 
+00029d 930f                      	push r16 
+00029e b70f                          in r16, SREG 
+00029f 930f                      	push r16 
                                  
-00029c 910f                      	pop r16
-00029d bf0f                      	out SREG, r16
-00029e 910f                      	pop r16				
-00029f 9518                      	reti
+0002a0 910f                      	pop r16
+0002a1 bf0f                      	out SREG, r16
+0002a2 910f                      	pop r16				
+0002a3 9518                      	reti
                                  
                                  INT1_ISR:			; ---------------------------------- INT1 ISR
-0002a0 930f                      	push r16 
-0002a1 b70f                          in r16, SREG 
-0002a2 930f                      	push r16 
+0002a4 930f                      	push r16 
+0002a5 b70f                          in r16, SREG 
+0002a6 930f                      	push r16 
                                  
-0002a3 910f                      	pop r16
-0002a4 bf0f                      	out SREG, r16
-0002a5 910f                      	pop r16		
-0002a6 9518                      	reti
+0002a7 910f                      	pop r16
+0002a8 bf0f                      	out SREG, r16
+0002a9 910f                      	pop r16		
+0002aa 9518                      	reti
                                  
                                  T0_OVF_ISR:			; ---------------------------------- TIMER0_OVF ISR
-0002a7 930f                      	push r16 
-0002a8 b70f                          in r16, SREG 
-0002a9 930f                      	push r16 
+0002ab 930f                      	push r16 
+0002ac b70f                          in r16, SREG 
+0002ad 930f                      	push r16 
                                  
-0002aa 910f                      	pop r16
-0002ab bf0f                      	out SREG, r16
-0002ac 910f                      	pop r16		
-0002ad 9518                      	reti 
+0002ae 910f                      	pop r16
+0002af bf0f                      	out SREG, r16
+0002b0 910f                      	pop r16		
+0002b1 9518                      	reti 
                                  
                                  T2_OVF_ISR:			; ---------------------------------- TIMER2_OVF ISR
-0002ae 930f                      	push r16 
-0002af b70f                          in r16, SREG 
-0002b0 930f                      	push r16 
+0002b2 930f                      	push r16 
+0002b3 b70f                          in r16, SREG 
+0002b4 930f                      	push r16 
                                  	
-0002b1 9443                      	inc  timer2_ovf_counter
+0002b5 9443                      	inc  timer2_ovf_counter
                                  	
-0002b2 e002
-0002b3 1504                      	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
-0002b4 f410                          brsh T2_OVF_ISR_END 
+0002b6 e002
+0002b7 1504                      	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
+0002b8 f410                          brsh T2_OVF_ISR_END 
                                      
                                      ; Interruption code here -------------------
-0002b5 de6b                      	rcall MOVE_ANIMATION_FRAME
+0002b9 de67                      	rcall MOVE_ANIMATION_FRAME
                                  	
-0002b6 2444                      	clr timer2_ovf_counter
+0002ba 2444                      	clr timer2_ovf_counter
                                  
                                      T2_OVF_ISR_END:
-0002b7 910f                      		pop r16
-0002b8 bf0f                      		out SREG, r16
-0002b9 910f                      		pop r16	
-0002ba 9518                      		reti
+0002bb 910f                      		pop r16
+0002bc bf0f                      		out SREG, r16
+0002bd 910f                      		pop r16	
+0002be 9518                      		reti
                                  
                                  ;-----------------------------------------------------------------
                                  ; Datos (program memory)
@@ -1948,7 +1951,7 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :  13 r0 :   0 r1 :  10 r2 :   0 r3 :   0 r4 :   3 
 r5 :   4 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16: 140 r17:  32 r18:  17 r19:  14 r20:  30 
+r13:   0 r14:   0 r15:   0 r16: 144 r17:  32 r18:  17 r19:  14 r20:  30 
 r21:   0 r22:   0 r23:   9 r24:   9 r25:   0 r26:   8 r27:   8 r28:   0 
 r29:   0 r30:  34 r31:  34 
 Registers used: 15 out of 35 (42.9%)
@@ -1963,11 +1966,11 @@ brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0
 clc   :   1 clh   :   0 cli   :   0 cln   :   0 clr   :   6 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   1 cp    :   3 cpc   :   0 
 cpi   :  20 cpse  :   0 dec   :   3 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   5 inc   :   6 jmp   :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   6 inc   :   6 jmp   :   0 
 ld    :   3 ldd   :   0 ldi   :  66 lds   :   7 lpm   :  11 lsl   :   0 
 lsr   :   1 mov   :  16 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   1 or    :   1 ori   :   1 out   :  14 pop   :  60 
-push  :  54 rcall :  25 ret   :  14 reti  :   6 rjmp  :  30 rol   :   0 
+neg   :   0 nop   :   1 or    :   1 ori   :   1 out   :  15 pop   :  61 
+push  :  55 rcall :  25 ret   :  14 reti  :   6 rjmp  :  30 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   1 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
@@ -1978,7 +1981,7 @@ Instructions used: 37 out of 113 (32.7%)
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000c14    900    358   1258   32768   3.8%
+[.cseg] 0x000000 0x000c14    908    358   1266   32768   3.9%
 [.dseg] 0x000100 0x000202      0    258    258    2048  12.6%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
