@@ -1,2 +1,12 @@
 \section{Metodología}
-\subsection{Materiales}
+    \subsection{Punzonadora}
+    \subsection{Matriz}
+    \subsection{Conversor}\vspace{0.5em}
+    \hspace{2em}En este ejercicio se buscó visualizar en el osciloscopio la \textbf{señal 7}, correspondiente a una onda triangular.
+
+    \hspace{2em}Para ello se empleó un conversor digital-analógico (DAC) basado en una red de resistencias R-2R. El \textit{PORTD} del microcontrolador Arduino (pines digitales 0 a 7) se conectó directamente a las entradas del DAC, permitiendo convertir los valores digitales en niveles de tensión analógicos.
+
+    \hspace{2em}En la programación del Arduino se implementó una \textit{Look-Up Table} (LUT), en la cual se almacenaron los valores correspondientes a la forma de onda triangular. Posteriormente, estos datos se recorrieron utilizando el puntero \textbf{Z}, generando así la secuencia digital que, al pasar por el DAC, produjo la señal triangular observada en el osciloscopio.
+
+    \subsection{Plotter}
+    \subsection{Materiales}
