@@ -14,7 +14,7 @@
 .equ _BAUD = 9600
 .equ _BPS = (_F_CPU/16/_BAUD) - 1
 
-.equ T1_1S_PRESET = 49911		; Timer 1 starting point for 1s overflow time
+.equ T1_1S_PRESET = 49911 ; Timer preload for 1s (1024 prescaler)
 
 .equ ST_STOP = 0
 .equ ST_ADVANCE = 1
@@ -30,7 +30,7 @@
 
 
 ;-----------------------------------------------------------------
-; DSEG
+; DSEG (reservando SRAM)
 ;-----------------------------------------------------------------
 
 .dseg
@@ -49,6 +49,7 @@ tx_tail:   .byte 1                    ; dequeue index
 .org 0x0002 rjmp INT0_ISR		; Button press 1
 .org 0x001A rjmp T1_OVF_ISR		; Timer 2 overflow ISR
 .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
+.org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
 
 
 ;-----------------------------------------------------------------
@@ -72,7 +73,6 @@ RESET:
 	ldi r16, 0b00111111 out DDRB, r16
 	ldi r16, 0b00000000 out DDRD, r16
 	ldi r16, 0b00001100 out PORTD, r16
-
 	
 	; Init USART
 	ldi r16, low(_BPS)
@@ -85,8 +85,6 @@ RESET:
 
 	; Global interrupt
 	sei
-
-	rcall INT0_ISR
 
 	rjmp MAIN
 
@@ -120,6 +118,9 @@ STATE_MACHINE:
 
 	STATE_MACHINE_STOP: ; ---------------------------- ESTADO 0
 		ldi r16, 1 out PORTB, r16
+		ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
+   		ldi r16, 0b00000001 out EIMSK, r16 ; Enable external interruption 
+	
 		pop r16
 		out SREG, r16
 		pop r16
@@ -133,16 +134,13 @@ STATE_MACHINE:
 		cpi load, 2 breq STATE_MACHINE_ADVANCE_LOAD_2
 		rjmp STATE_MACHINE_END
 
-		STATE_MACHINE_ADVANCE_LOAD_0:
-		ldi r16, 3 
+		STATE_MACHINE_ADVANCE_LOAD_0: ldi r16, 3 
 		rjmp STATE_MACHINE_END
 		
-		STATE_MACHINE_ADVANCE_LOAD_1:
-		ldi r16, 4 
+		STATE_MACHINE_ADVANCE_LOAD_1: ldi r16, 4 
 		rjmp STATE_MACHINE_END
 		
-		STATE_MACHINE_ADVANCE_LOAD_2:
-		ldi r16, 5 
+		STATE_MACHINE_ADVANCE_LOAD_2: ldi r16, 5 
 		rjmp STATE_MACHINE_END
 
 
@@ -153,16 +151,13 @@ STATE_MACHINE:
 		cpi load, 2 breq STATE_MACHINE_WAIT_1_LOAD_2
 		rjmp STATE_MACHINE_END
 		
-		STATE_MACHINE_WAIT_1_LOAD_0:
-		ldi r16, 2 
+		STATE_MACHINE_WAIT_1_LOAD_0: ldi r16, 2 
 		rjmp STATE_MACHINE_END
 
-		STATE_MACHINE_WAIT_1_LOAD_1:
-		ldi r16, 2 
+		STATE_MACHINE_WAIT_1_LOAD_1: ldi r16, 2 
 		rjmp STATE_MACHINE_END
 
-		STATE_MACHINE_WAIT_1_LOAD_2:
-		ldi r16, 3 
+		STATE_MACHINE_WAIT_1_LOAD_2: ldi r16, 3 
 		rjmp STATE_MACHINE_END
 
 
@@ -172,7 +167,6 @@ STATE_MACHINE:
 		rjmp STATE_MACHINE_END
 
 
-
 	STATE_MACHINE_WAIT_2: ; ---------------------------- ESTADO 4
 		ldi r16, (1<<4) out PORTB, r16
 		cpi load, 0 breq STATE_MACHINE_WAIT_2_LOAD_0
@@ -180,16 +174,13 @@ STATE_MACHINE:
 		cpi load, 2 breq STATE_MACHINE_WAIT_2_LOAD_2
 		rjmp STATE_MACHINE_END
 		
-		STATE_MACHINE_WAIT_2_LOAD_0:
-		ldi r16, 2
+		STATE_MACHINE_WAIT_2_LOAD_0: ldi r16, 2
 		rjmp STATE_MACHINE_END
 
-		STATE_MACHINE_WAIT_2_LOAD_1:
-		ldi r16, 3
+		STATE_MACHINE_WAIT_2_LOAD_1: ldi r16, 3
 		rjmp STATE_MACHINE_END
 
-		STATE_MACHINE_WAIT_2_LOAD_2:
-		ldi r16, 4
+		STATE_MACHINE_WAIT_2_LOAD_2: ldi r16, 4
 		rjmp STATE_MACHINE_END
 
 
@@ -201,16 +192,13 @@ STATE_MACHINE:
 		cpi load, 2 breq STATE_MACHINE_EXTRACT_LOAD_2
 		rjmp STATE_MACHINE_END
 		
-		STATE_MACHINE_EXTRACT_LOAD_0:
-		ldi r16, 2
+		STATE_MACHINE_EXTRACT_LOAD_0: ldi r16, 2
 		rjmp STATE_MACHINE_END
 
-		STATE_MACHINE_EXTRACT_LOAD_1:
-		ldi r16, 3
+		STATE_MACHINE_EXTRACT_LOAD_1: ldi r16, 3
 		rjmp STATE_MACHINE_END
 
-		STATE_MACHINE_EXTRACT_LOAD_2:
-		ldi r16, 4
+		STATE_MACHINE_EXTRACT_LOAD_2: ldi r16, 4
 		rjmp STATE_MACHINE_END
 
 
@@ -222,31 +210,29 @@ STATE_MACHINE:
 	out SREG, r16
 	pop r16
 
-
 	ret
+
+
 
 DISABLE_TIMER_1:
 	push r16
-	
 	ldi r16, 0			 sts TCCR1A, r16
 	ldi r16, 0			 sts TCCR1B, r16
 	ldi r16, 0			 sts TCNT1H, r16
 	ldi r16, 0			 sts TCNT1L, r16 
 	ldi r16, (0<<TOIE1)	 sts TIMSK1, r16
 	ldi r16, (1<<TOV1)   out TIFR1,  r16 
-	
 	pop r16
 	ret
 
+
 ENABLE_TIMER_1:
 	push r16
-	
 	ldi r16, 0			 sts TCCR1A, r16
 	ldi r16, 0b101		 sts TCCR1B, r16
 	ldi r16, HIGH(49911) sts TCNT1H, r16
 	ldi r16, LOW(49911)	 sts TCNT1L, r16 
 	ldi r16, (1<<TOIE1)  sts TIMSK1, r16 
-
 	pop r16
 	ret
 	
@@ -264,24 +250,118 @@ USART_INIT:
 	sts UCSR0C,r16
 	ret
 	
-USART_TRANSMIT:
-	push r17
-		
-	; Wait for empty transmit buffer
-	lds r17, UCSR0A
-	sbrs r17 ,UDRE0
-	rjmp USART_TRANSMIT
-	; Put data (r16) into buffer, sends the data
-	sts UDR0,r16
+USART_WRITE_BYTE:
+    push r17
+    push r18
+    push ZH
+    push ZL
 
-	pop r17
-	ret
-	
+    ; leer head/tail actuales
+    lds  r17, tx_head
+    lds  r18, tx_tail
+
+    ; calcular next = (head + 1) & MASK
+    mov  ZL, r17
+    inc  ZL
+    andi ZL, TX_BUF_MASK
+
+    ; buffer lleno si next == tail  -> (opcional) esperar o desechar
+wait_space:
+    cp   ZL, r18
+    brne have_space
+    ; actualizar tail por si la ISR avanzó mientras esperábamos
+    lds  r18, tx_tail
+    cp   ZL, r18
+    breq wait_space
+
+have_space:
+    ; escribir en tx_buffer[head]
+    ldi  ZL, low(tx_buffer)
+    ldi  ZH, high(tx_buffer)
+    add  ZL, r17
+    adc  ZH, r1
+    st   Z, r16
+
+    ; head = next
+    mov  r17, ZL
+    sts  tx_head, r17
+
+    ; habilitar UDRIE0 (para que la ISR empiece/continúe a vaciar)
+    cli
+    lds  r18, UCSR0B
+    ori  r18, (1<<UDRIE0)
+    sts  UCSR0B, r18
+    sei
+
+    pop  ZL
+    pop  ZH
+    pop  r18
+    pop  r17
+    ret 
+
+
+;-----------------------------------------------------------------
+; Interrupciones (ISR)
+;-----------------------------------------------------------------
+
+USART_UDRE_ISR:
+    push r16
+    in   r16, SREG
+    push r16
+
+    push r17
+    push r18
+    push r20
+    push ZH
+    push ZL
+
+    ; r17 = head, r18 = tail
+    lds  r17, tx_head
+    lds  r18, tx_tail
+
+    ; buffer vacío? head == tail
+    cp   r17, r18
+    brne usart_udre_send
+
+    ; vacío: deshabilitar UDRIE0
+    lds  r20, UCSR0B
+    andi r20, ~(1<<UDRIE0)
+    sts  UCSR0B, r20
+    rjmp usart_udre_exit
+
+usart_udre_send:
+    ; Z = &tx_buffer[tail]
+    ldi  ZL, low(tx_buffer)
+    ldi  ZH, high(tx_buffer)
+    add  ZL, r18
+    adc  ZH, r1          ; requiere r1 = 0
+
+    ; enviar byte
+    ld   r16, Z
+    sts  UDR0, r16
+
+    ; tail = (tail + 1) & TX_BUF_MASK
+    inc  r18
+    andi r18, TX_BUF_MASK   ; con 256 es 0xFF: no cambia, pero deja claro el patrón
+    sts  tx_tail, r18
+
+usart_udre_exit:
+    pop  ZL
+    pop  ZH
+    pop  r20
+    pop  r18
+    pop  r17
+
+    pop  r16
+    out  SREG, r16
+    pop  r16
+    reti
+
+
 USART_RX_ISR:
 	push r16 
 	in r16, SREG
 	push r16
-
 	lds r16, UDR0
 	; Code here -----------
 	
@@ -289,12 +369,7 @@ USART_RX_ISR:
 	pop r16
 	out SREG, r16
 	pop r16
-
 	reti
-
-;-----------------------------------------------------------------
-; Interrupciones (ISR)
-;-----------------------------------------------------------------
 
 INT0_ISR:
 	push r16
@@ -312,6 +387,7 @@ INT0_ISR:
 	out SREG, r16
 	pop r16 
 	reti
+
 
 T1_OVF_ISR:
 	push r16
