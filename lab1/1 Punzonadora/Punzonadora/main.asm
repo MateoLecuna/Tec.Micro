@@ -1,12 +1,23 @@
 
+; PUNZONADORA ----------------------------------------------------
+
+
 .include "m328pdef.inc"
 .include "macros.inc"
 
+
+
+
+; ////////////////////////////////////////////////////////////////
 ;-----------------------------------------------------------------
 ; Constantes y definiciones
 ;-----------------------------------------------------------------
+; ////////////////////////////////////////////////////////////////
 
-; PUNZONADORA ----------------------------------------------------
+
+
+
+
 
 ; USART
 .equ TX_BUF_SIZE = 256				
@@ -17,18 +28,27 @@
 
 .equ T1_1S_PRESET = 49911 ; Timer preload for 1s (1024 prescaler)
 
-.equ _TIMER2_OVF_COUNT = 250 ; Overflow count
+.equ _TIMER2_OVF_COUNT = 61 ; Overflow count
 
-.def timer1_ovf_count = r2
+.def timer1_ovf_counter = r2
 .def timer2_ovf_counter = r4
 
 .def state = r20 ; 0, 1, 2, 3, 4, 5
 .def load  = r21 ; L, M, P
 
 
+
+
+
+; ////////////////////////////////////////////////////////////////
 ;-----------------------------------------------------------------
 ; DSEG (reservando SRAM)
 ;-----------------------------------------------------------------
+; ////////////////////////////////////////////////////////////////
+
+
+
+
 
 .dseg
 tx_buffer: .byte TX_BUF_SIZE          ; circular buffer storage
@@ -37,9 +57,19 @@ tx_tail:   .byte 1                    ; dequeue index
 event_pending: .byte 1
 
 
+
+
+
+
+; ////////////////////////////////////////////////////////////////
 ;-----------------------------------------------------------------
 ; Vectores 
 ;-----------------------------------------------------------------
+; ////////////////////////////////////////////////////////////////
+
+
+
+
 
 
 .cseg
@@ -52,13 +82,25 @@ event_pending: .byte 1
 .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
 
 
+
+
+
+
+; ////////////////////////////////////////////////////////////////
 ;-----------------------------------------------------------------
 ; Reset
 ;-----------------------------------------------------------------
+; ////////////////////////////////////////////////////////////////
+
+
+
 
 
 .org 0x100
 RESET:
+	clr r1
+	clr timer1_ovf_counter
+	clr timer2_ovf_counter
 
 	; Stack 
 	ldi r16, high(RAMEND) out SPH, r16
@@ -74,10 +116,11 @@ RESET:
 
 	; Inputs and outputs
 	ldi r16, 0b01111000 out DDRD, r16
-	ldi r16, 0b01111111 out DDRB, r16
+	ldi r16, 0b00001111 out DDRB, r16
 	ldi r16, 0b10000100 out PORTD, r16 ;Pull-up for INT0 and PD7
+	ldi r16, 0b00000000 out PORTB, r16
 
-	
+	;PCINT interruptions
 	ldi r16, (1<<PCIF2) sts PCIFR, r16		 ; clear pending flags
 	ldi r16, (1<<PCIE2) sts PCICR, r16       ; enable PCINT2 (grupo D)
 	ldi r16, (1<<PCINT23) sts PCMSK2, r16	 ; enable PD7
@@ -104,9 +147,19 @@ RESET:
 
 	rjmp MAIN
 
+
+
+
+
+; ////////////////////////////////////////////////////////////////
 ;-----------------------------------------------------------------
 ; Loop principal
 ;-----------------------------------------------------------------
+; ////////////////////////////////////////////////////////////////
+
+
+
+
 
 
 MAIN:
@@ -119,15 +172,27 @@ MAIN:
     rjmp MAIN
 
 
+
+
+
+; ////////////////////////////////////////////////////////////////
 ;-----------------------------------------------------------------
 ; Subrutinas 
 ;-----------------------------------------------------------------
+; ////////////////////////////////////////////////////////////////
+
+
+
+
 
 
 STATE_MACHINE:
 	push r16
 	in r16, SREG
 	push r16
+
+	ldi r16, 0b00000000 out PORTB, r16
+	ldi r16, 0b10000100 out PORTD, r16
 
 	cpi state, 0 breq STATE_MACHINE_STOP_NEAR
 	cpi state, 1 breq STATE_MACHINE_ADVANCE_NEAR
@@ -172,11 +237,6 @@ STATE_MACHINE:
 		STATE_MACHINE_STOP_SKIP:
 		ldi ZL, LOW(MSG_MENU<<1) ldi ZH, HIGH(MSG_MENU<<1)
 		rcall SEND_MESSAGE
-
-		ldi r16, 0b10000100 out PORTD, r16
-
-		ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
-   		ldi r16, 0b00000001 out EIMSK, r16 ; Enable external interruption 
 
 		rjmp STATE_MACHINE_END_SKIP
 		
@@ -275,42 +335,10 @@ STATE_MACHINE:
 
 
 	STATE_MACHINE_END: ; ----------------------------- Timer for next state
-	mov timer1_ovf_count, r16 
-	ENABLE_TIMER_1
+	ENABLE_TIMER_1 r16
 
 	STATE_MACHINE_END_SKIP:
-	cpi state, 0 breq STATE_MACHINE_LED_STOPPED
-	rjmp STATE_MACHINE_LED_RUNNING
-
-	STATE_MACHINE_LED_STOPPED: 
-	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b100
-	rjmp STATE_MACHINE_END_1
-
-	STATE_MACHINE_LED_RUNNING:
-	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b1000
-	rjmp STATE_MACHINE_END_1
-
-	STATE_MACHINE_END_1:
-	SET_BIT Z, r16
-
-	cpi load, 0 breq STATE_MACHINE_LED_LIGHT
-	cpi load, 1 breq STATE_MACHINE_LED_MEDIUM
-	cpi load, 2 breq STATE_MACHINE_LED_HIGH
-
-	STATE_MACHINE_LED_LIGHT:
-	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b10
-	rjmp STATE_MACHINE_END_2
-
-	STATE_MACHINE_LED_MEDIUM:
-	ldi ZH, HIGH(0x2B) ldi ZL, LOW(0x2B) ldi r16, 0b10000
-	rjmp STATE_MACHINE_END_2
-
-	STATE_MACHINE_LED_HIGH:
-	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b1
-	rjmp STATE_MACHINE_END_2
-
-	STATE_MACHINE_END_2:
-	SET_BIT Z, r16
+	TOGGLE_INDICATOR_LEDS
 
 	pop r16
 	out SREG, r16
@@ -400,29 +428,18 @@ SEND_MESSAGE:
 	ret
 
 
-;-----------------------------------------------------------------
-; Interrupciones (ISR)
-;-----------------------------------------------------------------
 
-T2_OVF_ISR:
-	push r16 
-    in r16, SREG 
-	push r16 
-	
-	inc  timer2_ovf_counter
-	
-	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
-    brsh T2_OVF_ISR_END 
-    
-    ; Interruption code here -------------------
-	DISABLE_TIMER_2
-	ENABLE_BUTTONS
-    
-    T2_OVF_ISR_END:
-		pop r16
-		out SREG, r16
-		pop r16	
-		reti
+
+; ////////////////////////////////////////////////////////////////
+;-----------------------------------------------------------------
+; Interrupciones (ISRs)
+;-----------------------------------------------------------------
+; ////////////////////////////////////////////////////////////////
+
+
+
+
+
 
 
 USART_UDRE_ISR:
@@ -529,6 +546,8 @@ USART_RX_ISR:
 	pop r16
 	reti
 
+; External interruptions -----------------------------------
+
 INT0_ISR:
 	push r16
 	in r16, SREG
@@ -536,7 +555,6 @@ INT0_ISR:
 
 	DISABLE_BUTTONS
 	DISABLE_RX
-
 	
 	ldi state, 1
 	ldi r16, 1 sts event_pending, r16
@@ -545,6 +563,8 @@ INT0_ISR:
 	out SREG, r16
 	pop r16 
 	reti
+
+
 
 PCINT2_ISR:
     push r16
@@ -557,73 +577,108 @@ PCINT2_ISR:
     rjmp PCINT2_ISR_PD7_HIGH
     ; PD7=0 -> presionado (activo en bajo)
 
-    rjmp PCINT2_ISR_DONE
-PCINT2_ISR_PD7_HIGH:
+    rjmp PCINT2_ISR_END
 
-	ENABLE_TIMER_2
-	DISABLE_BUTTONS
+	PCINT2_ISR_PD7_HIGH:
 
-	
-	inc load
-	cpi load, 3 brsh PCINT2_ISR_RESET_LOAD
-	rjmp PCINT2_ISR_END
+		ENABLE_TIMER_2
+		DISABLE_BUTTONS
+
+		ldi r16, 0b10000100 out PORTD, r16 ;Pull-up for INT0 and PD7
+		ldi r16, 0b00000000 out PORTB, r16
+
+		inc load
+		cpi load, 3 brsh PCINT2_ISR_RESET_LOAD
+		
+		ldi r16, 1 sts event_pending, r16
+		rjmp PCINT2_ISR_END
 
 	PCINT2_ISR_RESET_LOAD:
-	clr load
+		clr load
+		ldi r16, 1 sts event_pending, r16
+
+
 
 	PCINT2_ISR_END:
-	ldi r16, 1 sts event_pending, r16
 
-PCINT2_ISR_DONE:
-    pop  r16
-    out  SREG, r16
-    pop  r16
-    reti
+	PCINT2_ISR_DONE:
+		pop  r16
+		out  SREG, r16
+		pop  r16
+		reti
 
 
-T1_OVF_ISR:
+; Timer interruptions  -----------------------------------
+
+T1_OVF_ISR: 
 	push r16
 	in r16, SREG
 	push r16
 
-	dec timer1_ovf_count    ; Decrement timer
+	dec timer1_ovf_counter    ; Decrement timer
 	
-	cp timer1_ovf_count, r1 ; Check timer overflow counter with 0 
+	cp timer1_ovf_counter, r1 ; Check timer overflow counter with 0 
 	breq T1_OVF_ISR_STOP	
 
-	ENABLE_TIMER_1	
-	
+	ENABLE_TIMER_1 timer1_ovf_counter 
 	rjmp T1_OVF_ISR_END		
 
 	T1_OVF_ISR_STOP:
-			
-	DISABLE_TIMER_1	
-	
-	cpi state, 5			; Check if state = last_state
-	breq RESET_STATE			
-	inc state				; Increment state
-	ldi r16, 1 sts event_pending, r16; Call back state machine
-	rjmp T1_OVF_ISR_END 	
+		DISABLE_TIMER_1	
+		cpi state, 5			; Check if state = last_state
+		breq RESET_STATE			
+		inc state				; Increment state
+		ldi r16, 1 sts event_pending, r16; Call back state machine
+		rjmp T1_OVF_ISR_END 	
 
 	RESET_STATE:			
-	clr state				; Reset state back to 0
-	ldi r16, 1 sts event_pending, r16
-
-	ENABLE_RX
-
-	rjmp T1_OVF_ISR_END     ; Program stops.
+		clr state				; Reset state back to 0
+		ENABLE_BUTTONS
+		ENABLE_RX
+		ldi r16, 1 sts event_pending, r16
+		rjmp T1_OVF_ISR_END     
 
 	T1_OVF_ISR_END:
-	pop r16
-	out SREG, r16
-	pop r16
-	reti 
+		pop r16
+		out SREG, r16
+		pop r16
+		reti 
 
 
 
+T2_OVF_ISR:
+	push r16 
+    in r16, SREG 
+	push r16 
+	
+	inc  timer2_ovf_counter
+	
+	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
+    breq T2_OVF_ISR_END 
+    
+    ; Interruption code here -------------------
+	DISABLE_TIMER_2
+	ENABLE_BUTTONS
+    
+    T2_OVF_ISR_END:
+		pop r16
+		out SREG, r16
+		pop r16	
+		reti
+
+
+
+
+
+; ////////////////////////////////////////////////////////////////
 ;-----------------------------------------------------------------
 ; Datos (program memory)
 ;-----------------------------------------------------------------
+; ////////////////////////////////////////////////////////////////
+
+
+
+
 
 .cseg 
 .org 0x400 
@@ -640,10 +695,10 @@ T1_OVF_ISR:
 			
 	MSG_STATE_1: .db "Estado actual: Alimentación", 0x0A, 0x0A, 0  
 	MSG_STATE_2: .db "Estado actual: Espera", 0x0A, 0x0A, 0
-	MSG_STATE_3: .db "Estado actual: Punzonando", 0x0A, 0x0A, 0
+	MSG_STATE_3: .db "Estado actual: Punzonado ", 0x0A, 0x0A, 0
 	MSG_STATE_4: .db "Estado actual: Espera 2", 0x0A, 0x0A, 0
 	MSG_STATE_5: .db "Estado actual: Extracción", 0x0A, 0x0A, 0
 
-	MSG_LOAD_0:	 .db "Carga configurada: Liviana", 0x0A, 0
+	MSG_LOAD_0:	 .db "Carga configurada: Ligera ", 0x0A, 0
 	MSG_LOAD_1:	 .db "Carga configurada: Mediana", 0x0A, 0
 	MSG_LOAD_2:	 .db "Carga configurada: Pesada ", 0x0A, 0

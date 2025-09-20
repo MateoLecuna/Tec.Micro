@@ -10,11 +10,14 @@
 .endmacro
 
 .macro ENABLE_TIMER_1
+	; @0 Timer seconds
 	push r16
+	mov timer1_ovf_counter, @0
 	ldi r16, 0			 sts TCCR1A, r16
 	ldi r16, 0b101		 sts TCCR1B, r16
 	ldi r16, HIGH(49911) sts TCNT1H, r16
 	ldi r16, LOW(49911)	 sts TCNT1L, r16 
+	ldi r16, (1<<TOV1)   out TIFR1,  r16 
 	ldi r16, (1<<TOIE1)  sts TIMSK1, r16 
 	pop r16
 .endmacro
@@ -23,9 +26,11 @@
 
 
 .macro ENABLE_TIMER_2
+	push r16
 	ldi r16, (1<<TOV2)  sts TIFR2,  r16
 	ldi r16, 0b00000001 sts TIMSK2, r16 ; Interrupts
 	ldi r16, 0b00000111 sts TCCR2B, r16 ; Prescaler 1024
+	pop r16
 .endmacro
 
 .macro DISABLE_TIMER_2
@@ -116,4 +121,41 @@
 	ldi r16, (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0)
 	sts UCSR0B,r16
 	pop r16
+.endmacro
+
+
+
+.macro TOGGLE_INDICATOR_LEDS
+	cpi state, 0 breq STATE_MACHINE_LED_STOPPED
+	rjmp STATE_MACHINE_LED_RUNNING
+
+	STATE_MACHINE_LED_STOPPED: 
+	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b100
+	rjmp STATE_MACHINE_END_1
+
+	STATE_MACHINE_LED_RUNNING:
+	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b1000
+	rjmp STATE_MACHINE_END_1
+
+	STATE_MACHINE_END_1:
+	SET_BIT Z, r16
+
+	cpi load, 0 breq STATE_MACHINE_LED_LIGHT
+	cpi load, 1 breq STATE_MACHINE_LED_MEDIUM
+	cpi load, 2 breq STATE_MACHINE_LED_HIGH
+
+	STATE_MACHINE_LED_LIGHT:
+	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b10
+	rjmp STATE_MACHINE_END_2
+
+	STATE_MACHINE_LED_MEDIUM:
+	ldi ZH, HIGH(0x2B) ldi ZL, LOW(0x2B) ldi r16, 0b10000
+	rjmp STATE_MACHINE_END_2
+
+	STATE_MACHINE_LED_HIGH:
+	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b1
+	rjmp STATE_MACHINE_END_2
+
+	STATE_MACHINE_END_2:
+	SET_BIT Z, r16
 .endmacro
