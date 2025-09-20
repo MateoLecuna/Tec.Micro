@@ -32,7 +32,6 @@ MAIN_LOOP:
     ; Leer siguiente valor de la LUT y avanzar puntero
     lpm r16, Z+
     out PORTD, r16
-
     rcall delay
 
     ; ¿Llegamos al final?
