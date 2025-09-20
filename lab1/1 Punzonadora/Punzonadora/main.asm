@@ -1,5 +1,6 @@
 
 .include "m328pdef.inc"
+.include "macros.inc"
 
 ;-----------------------------------------------------------------
 ; Constantes y definiciones
@@ -16,7 +17,10 @@
 
 .equ T1_1S_PRESET = 49911 ; Timer preload for 1s (1024 prescaler)
 
+.equ _TIMER2_OVF_COUNT = 250 ; Overflow count
+
 .def timer1_ovf_count = r2
+.def timer2_ovf_counter = r4
 
 .def state = r20 ; 0, 1, 2, 3, 4, 5
 .def load  = r21 ; L, M, P
@@ -41,6 +45,8 @@ event_pending: .byte 1
 .cseg
 .org 0x0000 rjmp RESET			; Program start
 .org 0x0002 rjmp INT0_ISR		; Button press 1
+.org 0x000A rjmp PCINT2_ISR		; PCINT2_vect (PCINT[23:16] -> PORTD)
+.org 0x0012 rjmp T2_OVF_ISR		; Timer 2 overflow ISR
 .org 0x001A rjmp T1_OVF_ISR		; Timer 2 overflow ISR
 .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
 .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
@@ -62,10 +68,20 @@ RESET:
 	ldi r16, 0b00000010 sts EICRA, r16 
    	ldi r16, 0b00000001 out EIMSK, r16 
 
+	; Timer 2 configuration
+	ldi r16, 0b00000001 sts TIMSK2, r16 ; Interrupts
+	ldi r16, 0b00000111 sts TCCR2B, r16 ; Prescaler 1024
+
 	; Inputs and outputs
-	ldi r16, 0b01101000 out DDRD, r16
-	ldi r16, 0b00000100 out PORTD, r16 ;Pull-up for INT0
+	ldi r16, 0b01111000 out DDRD, r16
+	ldi r16, 0b01111111 out DDRB, r16
+	ldi r16, 0b10000100 out PORTD, r16 ;Pull-up for INT0 and PD7
+
 	
+	ldi r16, (1<<PCIF2) sts PCIFR, r16		 ; clear pending flags
+	ldi r16, (1<<PCIE2) sts PCICR, r16       ; enable PCINT2 (grupo D)
+	ldi r16, (1<<PCINT23) sts PCMSK2, r16	 ; enable PD7
+
 	; Init USART
 	ldi r16, low(_BPS)
 	ldi r17, high(_BPS)
@@ -80,8 +96,8 @@ RESET:
 	sts  tx_tail, r16
 	clr  r1      
 	
-	rcall STATE_MACHINE
-
+	; Initiate state machine
+	ldi r16, 1 sts event_pending, r16
 
 	; Global interrupt
 	sei
@@ -139,7 +155,7 @@ STATE_MACHINE:
 		rjmp STATE_MACHINE_STOP_SKIP
 
 		STATE_MACHINE_STOP_LOAD_0:
-		ldi ZL, LOW(MSG_LOAD_0<<1) ldi ZH, HIGH(MSG_LOAD_0<<1)
+		ldi ZL, LOW(MSG_LOAD_0<<1) ldi ZH, HIGH(MSG_LOAD_0<<1)	
 		rcall SEND_MESSAGE
 		rjmp STATE_MACHINE_STOP_SKIP
 
@@ -157,14 +173,12 @@ STATE_MACHINE:
 		ldi ZL, LOW(MSG_MENU<<1) ldi ZH, HIGH(MSG_MENU<<1)
 		rcall SEND_MESSAGE
 
-		ldi r16, 0b00000100 out PORTD, r16
+		ldi r16, 0b10000100 out PORTD, r16
+
 		ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
    		ldi r16, 0b00000001 out EIMSK, r16 ; Enable external interruption 
 
-		pop r16
-		out SREG, r16
-		pop r16
-		ret
+		rjmp STATE_MACHINE_END_SKIP
 		
 
 	STATE_MACHINE_ADVANCE: ; ---------------------------- AVANCE 
@@ -172,7 +186,7 @@ STATE_MACHINE:
 		ldi ZL, LOW(MSG_STATE_1<<1) ldi ZH, HIGH(MSG_STATE_1<<1)
 		rcall SEND_MESSAGE
 
-		ldi r16, 0b00100100 out PORTD, r16
+		ldi r16, 0b00100000 out PORTD, r16
 		cpi load, 0 breq STATE_MACHINE_ADVANCE_LOAD_0
 		cpi load, 1 breq STATE_MACHINE_ADVANCE_LOAD_1
 		cpi load, 2 breq STATE_MACHINE_ADVANCE_LOAD_2
@@ -193,7 +207,7 @@ STATE_MACHINE:
 		ldi ZL, LOW(MSG_STATE_2<<1) ldi ZH, HIGH(MSG_STATE_2<<1)
 		rcall SEND_MESSAGE
 
-		ldi r16, 0b00000100 out PORTD, r16
+		ldi r16, 0b00000000 out PORTD, r16
 		cpi load, 0 breq STATE_MACHINE_WAIT_1_LOAD_0
 		cpi load, 1 breq STATE_MACHINE_WAIT_1_LOAD_1
 		cpi load, 2 breq STATE_MACHINE_WAIT_1_LOAD_2
@@ -214,7 +228,7 @@ STATE_MACHINE:
 		ldi ZL, LOW(MSG_STATE_3<<1) ldi ZH, HIGH(MSG_STATE_3<<1)
 		rcall SEND_MESSAGE
 		
-		ldi r16, 0b01000100 out PORTD, r16
+		ldi r16, 0b01000000 out PORTD, r16
 		cpi load, 0 breq STATE_MACHINE_PUNCH_LOAD_0
 		cpi load, 1 breq STATE_MACHINE_PUNCH_LOAD_1
 		cpi load, 2 breq STATE_MACHINE_PUNCH_LOAD_2
@@ -232,8 +246,9 @@ STATE_MACHINE:
 		;ldi ZL, LOW(MSG_STATE_4<<1) ldi ZH, HIGH(MSG_STATE_4<<1)
 		;rcall SEND_MESSAGE
 
-		ldi r16, 0b00000100 out PORTD, r16
+		ldi r16, 0b00000000 out PORTD, r16
 		ldi r16, 1
+
 		rjmp STATE_MACHINE_END
 
 
@@ -243,7 +258,7 @@ STATE_MACHINE:
 		ldi ZL, LOW(MSG_STATE_5<<1) ldi ZH, HIGH(MSG_STATE_5<<1)
 		rcall SEND_MESSAGE
 
-		ldi r16, 0b00001100 out PORTD, r16
+		ldi r16, 0b00001000 out PORTD, r16
 		cpi load, 0 breq STATE_MACHINE_EXTRACT_LOAD_0
 		cpi load, 1 breq STATE_MACHINE_EXTRACT_LOAD_1
 		cpi load, 2 breq STATE_MACHINE_EXTRACT_LOAD_2
@@ -259,39 +274,49 @@ STATE_MACHINE:
 		rjmp STATE_MACHINE_END
 
 
-	STATE_MACHINE_END: ; ----------------------------- FINAL
+	STATE_MACHINE_END: ; ----------------------------- Timer for next state
 	mov timer1_ovf_count, r16 
-	rcall ENABLE_TIMER_1
+	ENABLE_TIMER_1
+
+	STATE_MACHINE_END_SKIP:
+	cpi state, 0 breq STATE_MACHINE_LED_STOPPED
+	rjmp STATE_MACHINE_LED_RUNNING
+
+	STATE_MACHINE_LED_STOPPED: 
+	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b100
+	rjmp STATE_MACHINE_END_1
+
+	STATE_MACHINE_LED_RUNNING:
+	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b1000
+	rjmp STATE_MACHINE_END_1
+
+	STATE_MACHINE_END_1:
+	SET_BIT Z, r16
+
+	cpi load, 0 breq STATE_MACHINE_LED_LIGHT
+	cpi load, 1 breq STATE_MACHINE_LED_MEDIUM
+	cpi load, 2 breq STATE_MACHINE_LED_HIGH
+
+	STATE_MACHINE_LED_LIGHT:
+	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b10
+	rjmp STATE_MACHINE_END_2
+
+	STATE_MACHINE_LED_MEDIUM:
+	ldi ZH, HIGH(0x2B) ldi ZL, LOW(0x2B) ldi r16, 0b10000
+	rjmp STATE_MACHINE_END_2
+
+	STATE_MACHINE_LED_HIGH:
+	ldi ZH, HIGH(0x25) ldi ZL, LOW(0x25) ldi r16, 0b1
+	rjmp STATE_MACHINE_END_2
+
+	STATE_MACHINE_END_2:
+	SET_BIT Z, r16
 
 	pop r16
 	out SREG, r16
 	pop r16
-
 	ret
 
-
-DISABLE_TIMER_1:
-	push r16
-	ldi r16, 0			 sts TCCR1A, r16
-	ldi r16, 0			 sts TCCR1B, r16
-	ldi r16, 0			 sts TCNT1H, r16
-	ldi r16, 0			 sts TCNT1L, r16 
-	ldi r16, (0<<TOIE1)	 sts TIMSK1, r16
-	ldi r16, (1<<TOV1)   out TIFR1,  r16 
-	pop r16
-	ret
-
-
-ENABLE_TIMER_1:
-	push r16
-	ldi r16, 0			 sts TCCR1A, r16
-	ldi r16, 0b101		 sts TCCR1B, r16
-	ldi r16, HIGH(49911) sts TCNT1H, r16
-	ldi r16, LOW(49911)	 sts TCNT1L, r16 
-	ldi r16, (1<<TOIE1)  sts TIMSK1, r16 
-	pop r16
-	ret
-	
 
 USART_INIT:		
 	; Set baud rate
@@ -378,6 +403,27 @@ SEND_MESSAGE:
 ;-----------------------------------------------------------------
 ; Interrupciones (ISR)
 ;-----------------------------------------------------------------
+
+T2_OVF_ISR:
+	push r16 
+    in r16, SREG 
+	push r16 
+	
+	inc  timer2_ovf_counter
+	
+	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
+    brsh T2_OVF_ISR_END 
+    
+    ; Interruption code here -------------------
+	DISABLE_TIMER_2
+	ENABLE_BUTTONS
+    
+    T2_OVF_ISR_END:
+		pop r16
+		out SREG, r16
+		pop r16	
+		reti
+
 
 USART_UDRE_ISR:
     push r16
@@ -468,16 +514,13 @@ USART_RX_ISR:
 	rjmp USART_RX_ISR_END
 
 	USART_RX_ISR_START:
-	ldi r16, 0b00000000 out EIMSK, r16 ; Disable external interruption 
-	ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
 	
-	;ldi r16, (1<<RXEN0)|(1<<TXEN0) sts UCSR0B, r16  ; Disable USART ISR
-	;ldi r16, (1<<RXC0) sts UCSR0A, r16				; Clear USART Rx flag
+	DISABLE_BUTTONS
+	DISABLE_RX
 	
 	ldi state, 1					
 	ldi r16, 1 sts event_pending, r16
 	rjmp USART_RX_ISR_END
-
 	
 
 	USART_RX_ISR_END:
@@ -491,21 +534,51 @@ INT0_ISR:
 	in r16, SREG
 	push r16 
 
-   	ldi r16, 0b00000000 out EIMSK, r16 ; Disable external interruption 
-	ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
+	DISABLE_BUTTONS
+	DISABLE_RX
 
-	lds  r16, UCSR0B
-	andi r16, ~(1<<RXCIE0)       ; disable RX interrupt only
-	ori  r16, (1<<UDRIE0)        ; make sure UDRE interrupt is enabled
-	sts  UCSR0B, r16
 	
-	ldi state, 1						
-	rcall STATE_MACHINE	; Start program cycle
+	ldi state, 1
+	ldi r16, 1 sts event_pending, r16
 	
 	pop r16
 	out SREG, r16
 	pop r16 
 	reti
+
+PCINT2_ISR:
+    push r16
+    in   r16, SREG
+    push r16
+
+    ; Lee el estado actual del pin
+    in   r16, PIND
+    sbrc r16, PD7          ; ¿PD7=1? (no presionado con pull-up)
+    rjmp PCINT2_ISR_PD7_HIGH
+    ; PD7=0 -> presionado (activo en bajo)
+
+    rjmp PCINT2_ISR_DONE
+PCINT2_ISR_PD7_HIGH:
+
+	ENABLE_TIMER_2
+	DISABLE_BUTTONS
+
+	
+	inc load
+	cpi load, 3 brsh PCINT2_ISR_RESET_LOAD
+	rjmp PCINT2_ISR_END
+
+	PCINT2_ISR_RESET_LOAD:
+	clr load
+
+	PCINT2_ISR_END:
+	ldi r16, 1 sts event_pending, r16
+
+PCINT2_ISR_DONE:
+    pop  r16
+    out  SREG, r16
+    pop  r16
+    reti
 
 
 T1_OVF_ISR:
@@ -518,21 +591,25 @@ T1_OVF_ISR:
 	cp timer1_ovf_count, r1 ; Check timer overflow counter with 0 
 	breq T1_OVF_ISR_STOP	
 
-	rcall ENABLE_TIMER_1	; Preload timer again
+	ENABLE_TIMER_1	
+	
 	rjmp T1_OVF_ISR_END		
 
-	T1_OVF_ISR_STOP:		
-	rcall DISABLE_TIMER_1	; Disable timer
+	T1_OVF_ISR_STOP:
+			
+	DISABLE_TIMER_1	
 	
 	cpi state, 5			; Check if state = last_state
 	breq RESET_STATE			
 	inc state				; Increment state
-	rcall STATE_MACHINE		; Call back state machine
+	ldi r16, 1 sts event_pending, r16; Call back state machine
 	rjmp T1_OVF_ISR_END 	
 
 	RESET_STATE:			
 	clr state				; Reset state back to 0
-	rcall STATE_MACHINE		; Call back state machine
+	ldi r16, 1 sts event_pending, r16
+
+	ENABLE_RX
 
 	rjmp T1_OVF_ISR_END     ; Program stops.
 
@@ -549,7 +626,7 @@ T1_OVF_ISR:
 ;-----------------------------------------------------------------
 
 .cseg 
-.org 0x300 
+.org 0x400 
 	MSG_ERROR: 
 		.db "Error: comando no encontrado ", 0x0A, 0x0A, 0
 	
@@ -561,7 +638,7 @@ T1_OVF_ISR:
 		.db "[3] -> Configurar carga pesada ", 0x0A
 		.db "[A] -> Iniciar proceso ", 0x0A, 0x0A, 0
 			
-	MSG_STATE_1: .db "Estado actual: Alimentación", 0x0A, 0x0A, 0
+	MSG_STATE_1: .db "Estado actual: Alimentación", 0x0A, 0x0A, 0  
 	MSG_STATE_2: .db "Estado actual: Espera", 0x0A, 0x0A, 0
 	MSG_STATE_3: .db "Estado actual: Punzonando", 0x0A, 0x0A, 0
 	MSG_STATE_4: .db "Estado actual: Espera 2", 0x0A, 0x0A, 0
