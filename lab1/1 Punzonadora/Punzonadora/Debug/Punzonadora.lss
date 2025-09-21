@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzonadora\main.asm Sat Sep 20 14:00:37 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzonadora\main.asm Sat Sep 20 19:03:58 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
 C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzonadora\main.asm(5): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
@@ -1924,31 +1924,31 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  
                                  	PCINT2_ISR_PD7_HIGH:
                                  
-0002ca e804
-0002cb b90b                      		ldi r16, 0b10000100 out PORTD, r16 ;Pull-up for INT0 and PD7
-0002cc e000
-0002cd b905                      		ldi r16, 0b00000000 out PORTB, r16
-                                 
-0002ce 930f
-0002cf e001
-0002d0 9300 0017
-0002d2 e001
-0002d3 9300 0070
-0002d5 e007
-0002d6 9300 00b1
-0002d8 910f                      		ENABLE_TIMER_2
-0002d9 930f
+0002ca 930f
+0002cb e001
+0002cc 9300 0017
+0002ce e001
+0002cf 9300 0070
+0002d1 e007
+0002d2 9300 00b1
+0002d4 910f                      		ENABLE_TIMER_2
+0002d5 930f
+0002d6 e000
+0002d7 bb0d
+0002d8 e001
+0002d9 bb0c
 0002da e000
-0002db bb0d
-0002dc e001
-0002dd bb0c
-0002de e000
-0002df 9300 0068
-0002e1 e000
-0002e2 9300 006d
-0002e4 e004
-0002e5 9300 001b
-0002e7 910f                      		DISABLE_BUTTONS
+0002db 9300 0068
+0002dd e000
+0002de 9300 006d
+0002e0 e004
+0002e1 9300 001b
+0002e3 910f                      		DISABLE_BUTTONS
+                                 
+0002e4 e804
+0002e5 b90b                      		ldi r16, 0b10000100 out PORTD, r16 ;Pull-up for INT0 and PD7
+0002e6 e000
+0002e7 b905                      		ldi r16, 0b00000000 out PORTB, r16
                                  
 0002e8 9553                      		inc load
 0002e9 3053
@@ -2053,6 +2053,12 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
 000347 910f                      		pop r16
 000348 9518                      		reti 
                                  
+                                 
+                                 .macro BREQ_RJMP target
+                                     brne 0f
+                                     rjmp \target
+                                 0:
+                                 .endmacro
                                  
                                  
                                  T2_OVF_ISR:

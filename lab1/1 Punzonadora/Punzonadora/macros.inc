@@ -1,3 +1,5 @@
+
+
 .macro DISABLE_TIMER_1
 	push r16
 	ldi r16, 0			 sts TCCR1A, r16
@@ -24,7 +26,6 @@
 
 
 
-
 .macro ENABLE_TIMER_2
 	push r16
 	ldi r16, (1<<TOV2)  sts TIFR2,  r16
@@ -43,11 +44,7 @@
 
 
 
-
-
 .macro SET_BIT	
-	;@0 -> Z
-	;@1 -> r16
 	push @1
 	push r17
 	
@@ -60,8 +57,6 @@
 .endmacro
 
 .macro CLEAR_BIT			
-	;@0 -> Z
-	;@1 -> r16
 	push @1
 	push r17
 
