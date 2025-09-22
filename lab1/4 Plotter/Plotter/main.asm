@@ -167,9 +167,12 @@ USART_INIT:				; ------------------- USART_INIT
 	; Set baud rate
 	sts UBRR0H, r17
 	sts UBRR0L, r16
-	; Enable receiver and transmitter, and interruptions
-	ldi r16, (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0)
+
+	; Enable receiver, transmitter
+	; and RX interruptions
+	ldi r16, 0b10011000
 	sts UCSR0B,r16
+
 	; Set frame format: 8data, 2stop bit
 	ldi r16, (1<<USBS0)|(3<<UCSZ00)
 	sts UCSR0C,r16
@@ -214,7 +217,7 @@ USART_SEND:
     ori  r20, (1<<UDRIE0)
     sts  UCSR0B, r20
 
-    clc                            ; success
+    clc ; success
 
 	pop ZH
 	pop ZL
