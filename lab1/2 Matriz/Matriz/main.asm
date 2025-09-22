@@ -42,10 +42,7 @@ tx_tail:   .byte 1                    ; dequeue index
 
 .cseg
 .org 0x0000 rjmp RESET			; Program start
-.org 0x0002 rjmp INT0_ISR		; External interrupt 1
-.org 0x0004 rjmp INT1_ISR		; External interrupt 2
 .org 0x0012 rjmp T2_OVF_ISR		; Timer 2 overflow ISR
-.org 0x0020 rjmp T0_OVF_ISR 	; Timer 0 overflow ISR
 .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
 .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
 
@@ -505,6 +502,7 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
 	push r17
 	
 	lds r16, UDR0
+
 	cpi r16, '0' 
 	breq USART_RX_ISR_CASE_0 ; Texto desplazante
 	cpi r16, '1' 
@@ -585,36 +583,6 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
 	pop r16	
 	reti
 
-
-INT0_ISR:			; ---------------------------------- INT0 ISR
-	push r16 
-    in r16, SREG 
-	push r16 
-
-	pop r16
-	out SREG, r16
-	pop r16				
-	reti
-
-INT1_ISR:			; ---------------------------------- INT1 ISR
-	push r16 
-    in r16, SREG 
-	push r16 
-
-	pop r16
-	out SREG, r16
-	pop r16		
-	reti
-
-T0_OVF_ISR:			; ---------------------------------- TIMER0_OVF ISR
-	push r16 
-    in r16, SREG 
-	push r16 
-
-	pop r16
-	out SREG, r16
-	pop r16		
-	reti 
 
 T2_OVF_ISR:			; ---------------------------------- TIMER2_OVF ISR
 	push r16 

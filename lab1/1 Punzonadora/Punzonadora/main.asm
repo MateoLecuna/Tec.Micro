@@ -54,6 +54,7 @@
 tx_buffer: .byte TX_BUF_SIZE          ; circular buffer storage
 tx_head:   .byte 1                    ; enqueue index
 tx_tail:   .byte 1                    ; dequeue index
+
 event_pending: .byte 1
 
 
@@ -137,7 +138,6 @@ RESET:
 	ldi  r16, 0
 	sts  tx_head, r16
 	sts  tx_tail, r16
-	clr  r1      
 	
 	; Initiate state machine
 	ldi r16, 1 sts event_pending, r16
@@ -359,7 +359,7 @@ USART_INIT:
 	ret
 	
 
-
+; write r16 to usart
 USART_WRITE_BYTE:
     push r17
     push r18
@@ -372,18 +372,17 @@ USART_WRITE_BYTE:
     lds  r18, tx_tail
 
     ; next = (head + 1) & MASK   (keep it in r19!)
-    mov  r19, r17
-    inc  r19
-    andi r19, TX_BUF_MASK
+    mov  r19, r17				; r17 holds the prev. value of tx_head
+    inc  r19					; 
+    andi r19, TX_BUF_MASK		; this is a clever reset function!
+								; Clamps the value between 0 and the TX_BUF_MASK
 
 wait_space:
-    ; full? next == tail
-    cp   r19, r18
-    brne have_space
-    ; maybe ISR advanced tail while we were here ? reload tail and re-check
-    lds  r18, tx_tail
-    cp   r19, r18
+    ; Active wait when buffer is full until space is 
+    lds r18, tx_tail
+    cp r19, r18
     breq wait_space
+	rjmp have_space
 
 have_space:
     ; Z = &tx_buffer[head]
@@ -394,7 +393,7 @@ have_space:
 
     st   Z, r16            ; write byte
 
-    ; head = next   (use r19, NOT ZL)
+    ; head = next
     sts  tx_head, r19
 
     ; enable UDRE interrupt so ISR starts/continues draining
@@ -446,7 +445,6 @@ USART_UDRE_ISR:
     push r16
     in   r16, SREG
     push r16
-
     push r17
     push r18
     push r20
@@ -459,47 +457,49 @@ USART_UDRE_ISR:
 
     ; buffer vacío? head == tail
     cp   r17, r18
-    brne usart_udre_send
+    brne USART_UDRE_ISR_SEND
 
     ; vacío: deshabilitar UDRIE0
     lds  r20, UCSR0B
     andi r20, ~(1<<UDRIE0)
     sts  UCSR0B, r20
-    rjmp usart_udre_exit
+    rjmp USART_UDRE_ISR_EXIT
 
-usart_udre_send:
-    ; Z = &tx_buffer[tail]
-    ldi  ZL, low(tx_buffer)
-    ldi  ZH, high(tx_buffer)
-    add  ZL, r18
-    adc  ZH, r1          ; requiere r1 = 0
+	USART_UDRE_ISR_SEND:
+		; Z = &tx_buffer[tail]
+		ldi  ZL, low(tx_buffer)
+		ldi  ZH, high(tx_buffer)
+		add  ZL, r18
+		adc  ZH, r1          ; requiere r1 = 0
 
-    ; enviar byte
-    ld   r16, Z
-    sts  UDR0, r16
+		; enviar byte
+		ld   r16, Z
+		sts  UDR0, r16
 
-    ; tail = (tail + 1) & TX_BUF_MASK
-    inc  r18
-    andi r18, TX_BUF_MASK   ; con 256 es 0xFF: no cambia, pero deja claro el patrón
-    sts  tx_tail, r18
+		; tail = (tail + 1) & TX_BUF_MASK
+		inc  r18
+		andi r18, TX_BUF_MASK	; Same fucking genius clamping thingy 
+								; con 256 es 0xFF: no cambia
+								; pero deja claro el patrón
+		sts  tx_tail, r18
 
-usart_udre_exit:
-    pop  ZL
-    pop  ZH
-    pop  r20
-    pop  r18
-    pop  r17
-
-    pop  r16
-    out  SREG, r16
-    pop  r16
-    reti
+	USART_UDRE_ISR_EXIT:
+		pop  ZL
+		pop  ZH
+		pop  r20
+		pop  r18
+		pop  r17
+		pop  r16
+		out  SREG, r16
+		pop  r16
+		reti
 
 
 USART_RX_ISR:
 	push r16 
 	in r16, SREG
 	push r16
+
 	lds r16, UDR0
 	; Code here -----------
 	

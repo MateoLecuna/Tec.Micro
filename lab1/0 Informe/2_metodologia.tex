@@ -1,12 +1,104 @@
 \section{Metodología}
-    \subsection{Punzonadora}
-    \subsection{Matriz}
-    \subsection{Conversor}\vspace{0.5em}
-    \hspace{2em}En este ejercicio se buscó visualizar en el osciloscopio la \textbf{señal 7}, correspondiente a una onda triangular.
+\subsection{Punzonadora}
+Maquina de estado
+Estados
 
-    \hspace{2em}Para ello se empleó un conversor digital-analógico (DAC) basado en una red de resistencias R-2R. El \textit{PORTD} del microcontrolador Arduino (pines digitales 0 a 7) se conectó directamente a las entradas del DAC, permitiendo convertir los valores digitales en niveles de tensión analógicos.
+\vspace{10em}
 
-    \hspace{2em}En la programación del Arduino se implementó una \textit{Look-Up Table} (LUT), en la cual se almacenaron los valores correspondientes a la forma de onda triangular. Posteriormente, estos datos se recorrieron utilizando el puntero \textbf{Z}, generando así la secuencia digital que, al pasar por el DAC, produjo la señal triangular observada en el osciloscopio.
+\subsection{Matriz}
 
-    \subsection{Plotter}
-    \subsection{Materiales}
+\subsubsection{Objetivo Inicial}
+\begin{itemize}[leftmargin=2em]
+    \item Construir el control de una \textbf{matriz de LEDs 8×8 (1088AS)}.
+    \item Empezar de forma sencilla: crear una manera de \textbf{encender un solo LED} especificando su fila y su columna.
+    \item Expandir paso a paso hasta poder \textbf{dibujar cuadros completos} y finalmente \textbf{animaciones}.
+\end{itemize}
+
+\subsubsection{Encendiendo un Solo LED}
+\begin{itemize}[leftmargin=2em]
+    \item Se crearon \textbf{lookup tables} en memoria de programa:
+    \begin{itemize}
+        \item Una para los \textbf{puertos} (a qué puerto está conectada cada fila/columna).
+        \item Otra para los \textbf{pines} (qué número de pin dentro del puerto).
+    \end{itemize}
+    \item Proceso:
+    \begin{itemize}
+        \item Cargar en registros (ej. R16 y R17) la fila y la columna deseadas.
+        \item Usar el \textbf{puntero Z} para recorrer la tabla y determinar el puerto y el pin correctos.
+        \item Construir una \textbf{máscara de bits}:
+        \begin{itemize}
+            \item Como se debe escribir el puerto completo, primero se toma su valor anterior.
+            \item Luego se aplica una máscara para encender o apagar el bit específico.
+            \item Se necesita manejo especial cuando filas y columnas comparten el mismo puerto.
+        \end{itemize}
+        \item Nota: filas y columnas funcionan de manera inversa (la fila se activa con ``0'', la columna con ``1''), por lo que se usaron máscaras invertidas según corresponda.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Multiplexado y Dibujo de Cuadros (Frames)}
+\begin{itemize}[leftmargin=2em]
+    \item Una vez resuelto el control de un LED individual, el siguiente paso fue el \textbf{multiplexado}:
+    \begin{itemize}
+        \item Refrescar continuamente la matriz para que múltiples LEDs parezcan encendidos a la vez.
+        \item Inicialmente se implementó con un \textbf{retardo activo} (luego se consideró el uso de un temporizador).
+    \end{itemize}
+    \item Se introdujeron las \textbf{tablas de frames}:
+    \begin{itemize}
+        \item Los cuadros se almacenan como mapas de bits de 8×8 (0 = apagado, 1 = encendido).
+        \item Una subrutina de dibujo recorre las 64 posiciones:
+        \begin{itemize}
+            \item Compara el bit del cuadro (usando desplazamientos como LSR).
+            \item Decide si debe encender el LED combinando la máscara con los puertos de hardware.
+            \item Operaciones lógicas aseguran que solo se actualicen los LEDs deseados.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{De Cuadros a Animación}
+\begin{itemize}[leftmargin=2em]
+    \item Con la capacidad de renderizar un cuadro:
+    \begin{itemize}
+        \item Llamar repetidamente a la subrutina de \textbf{dibujar frame} mantiene la imagen visible.
+        \item Ejemplo: mostrar una cara sonriente o cualquier figura estática.
+    \end{itemize}
+    \item Para lograr animaciones (ej.\@ texto desplazándose):
+    \begin{itemize}
+        \item El \textbf{Timer 2} se configuró para desbordarse cada 100 ms.
+        \item Entre desbordes, la subrutina de dibujo corre continuamente a gran velocidad ($\approx$ cada microsegundo).
+        \item En cada desborde, un \textbf{puntero índice (puntero C)} se incrementa.
+        \item Este puntero desplaza qué parte de los datos del cuadro se lee, generando un efecto de desplazamiento en la matriz.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Base para el Control por Estados}
+\begin{itemize}[leftmargin=2em]
+    \item En esta etapa:
+    \begin{itemize}
+        \item El sistema puede encender LEDs individuales.
+        \item Puede dibujar cuadros completos desde la memoria.
+        \item Puede ejecutar animaciones cuadro por cuadro, como texto desplazándose o patrones en movimiento.
+    \end{itemize}
+    \item Esto constituye el \textbf{motor de visualización básico}, que después se conecta a la \textbf{máquina de estados} y a la \textbf{entrada por USART} (para elegir entre texto desplazante, imágenes estáticas, etc.).
+\end{itemize}
+
+\vspace{10em}
+
+
+\subsection{Conversor}
+En este ejercicio se buscó visualizar en el osciloscopio la \textbf{señal 7}, correspondiente a una onda triangular.
+
+Para ello se empleó un conversor digital-analógico (DAC) basado en una red de resistencias R-2R. El \textit{PORTD} del microcontrolador Arduino (pines digitales 0 a 7) se conectó directamente a las entradas del DAC, permitiendo convertir los valores digitales en niveles de tensión analógicos.
+
+En la programación del Arduino se implementó una \textit{Look-Up Table} (LUT), en la cual se almacenaron los valores correspondientes a la forma de onda triangular. Posteriormente, estos datos se recorrieron utilizando el puntero \textbf{Z}, generando así la secuencia digital que, al pasar por el DAC, produjo la señal triangular observada en el osciloscopio.
+
+\subsection{Plotter}
+\subsection{Materiales}
+\begin{enumerate}
+    \item Kit Fischertechnik
+    \item Cable de red
+    \item Resistencias variadas
+    \item Pulsadores
+    \item Matriz de leds
+    \item Plotter 
+    \item Jumpers
+\end{enumerate}

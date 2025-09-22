@@ -1,13 +1,15 @@
 \section{Marco Teórico}
 
 \subsection{Microcontrolador ATmega328P}
-\begin{itemize}
-    \item Características principales (arquitectura AVR, memoria, periféricos).
-    \item Uso de puertos GPIO para control de actuadores (motores, LEDs, relés).
-    \item Temporizadores y su aplicación en control de tiempos.
-    \item Comunicación serial USART (principios de transmisión y recepción de datos).
-\end{itemize}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{./Anexos/Full Arduino Pinout.png}
+  \caption{Diagrama de pines del Arduino Uno. Fuente: \cite{arduino_uno_pinout}.}
+  \label{fig:arduino-uno-pinout}
+\end{figure}
+
+\subsection{Registros de propósito general}
 
 \subsection{Entradas y Salidas Digitales}
 \begin{itemize}
@@ -15,6 +17,157 @@
     \item Uso de pulsadores como entradas digitales (debouncing si es necesario).
     \item Uso de LEDs como indicadores de estado.
 \end{itemize}
+
+
+\subsection{Stack Pointer}
+
+Incialización del Stack Pointer:
+
+\begin{verbatim}
+RESET:
+    cli ldi r16, high(RAMEND)
+    out SPH, r16
+    ldi r16, low(RAMEND)
+    out SPL, r16 sei
+    ; ...
+\end{verbatim}
+
+Usos del Stack Pointer: rcall, call, interrupciones
+preservacion de datos entre subrutinas e ISRs
+
+\begin{verbatim}
+MI_ISR:
+    push r16
+    out r16, SREG
+    push r16
+    ; ... 
+    pop r16
+    in SREG, r16
+    push r16
+    reti
+\end{verbatim}
+
+\subsection{Timers}
+El atmega328p tiene 3 timers diferentes: Timer 0, Timer 1, y Timer 2.
+
+Timer 0 y 2 son de 8 bits
+Timer 1 es de 16 bits (puede contar más)
+
+La ecuacion para calcular el tiempo del timer es la siguiente.
+
+\begin{equation}
+    \frac{(2^{k} - C_{\text{inicio}})\cdot \text{Prescaler}}{f_{\text{contador}}} = t_{\text{deseado}}
+\end{equation}
+
+Esta ecuación determina el tiempo que le tomaría al contador hacer un desbordamiento (overflow) en base a la frecuencia a la cantidad de bits del contador (k), la frecuencia de trabajo del microcontrolador, el tiempo o conteo con el que se inicie el contador, y el prescaler con el que esté configurado.
+
+El prescaler del Temporizador 1 es configurado a través del registro TCCR1B el cual posee la siguiente configuración:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{./Anexos/Marco Teorico/Timers/TCCR1B.png}
+  \caption{Registro de control B (TCCR1B) para Timer/Counter1. Fuente: hoja de datos del ATmega328P\@\cite{atmega328p_datasheet}.}
+  \label{fig:TCCR1B}
+\end{figure}
+
+Los bits CS12 CS11 y CS10 configuran el prescaler del timer conforme a la siguiente tabla: 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{./Anexos/Marco Teorico/Timers/Prescaler Table.png}
+  \caption{Clock Select (CS12:0) opciones de prescaler para Timer/Counter1. Fuente: hoja de datos del ATmega328P\@\cite{atmega328p_datasheet}.}
+  \label{fig:prescaler-table}
+\end{figure}
+
+
+El máximo valor de tiempo que admite el Timer 1 (de 16 bits) con el prescaler de 1024 es de 4.19 segundos (aproximadamente). Para valores más grande de delay será necesario crear un contador de overflow aparte utilizando registros de uso general o SRAM
+
+Este es un ejemplo de inicialización de timer 1 para un overflow de 1s
+
+\begin{verbatim}
+ldi r16, 0b101       sts TCCR1B, r16
+ldi r16, HIGH(49911) sts TCNT1H, r16
+ldi r16, LOW(49911)  sts TCNT1L, r16 
+\end{verbatim}
+
+El primer registro (TCCR1B) determina el prescaler del reloj (según la figura\ \ref{fig:prescaler-table})
+
+Utilizando la tabla de vectores de interrupcion que se muestra en la figura\ \ref{fig:interrupt-vectors} se mapea el vector de interrupción con la etiqueta del ISR correspondiente:
+
+\begin{verbatim}
+.org 0x001A rjmp TIMER1_OVF_ISR
+
+TIMER1_OVF_ISR:
+    push r16
+    out r16, SREG
+    push r16
+    ; ... 
+    pop r16
+    in SREG, r16
+    push r16
+    reti
+\end{verbatim}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{\detokenize{./Anexos/Marco Teorico/Interrupt Vectors.png}}
+  \caption{Vectores de interrupciones en el ATmega328P. Fuente: hoja de datos del ATmega328P\@\cite{atmega328p_datasheet}.}
+  \label{fig:interrupt-vectors}
+\end{figure}
+
+El mismo proceso puede ser aplicado para configurar los otros dos Timers.
+
+\subsection{Interrupciones externas}
+
+    \subsubsection{EINT}
+
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{./Anexos/Marco Teorico/External Interrupts/EICRA table.png}
+    \caption{Tabla de configuraciones para EICRA. Fuente: hoja de datos del ATmega328P\@\cite{atmega328p_datasheet}.}
+    \label{fig:EICRA-table}
+    \end{figure}
+
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{./Anexos/Marco Teorico/External Interrupts/EICRA.png}
+    \caption{Registro de configucación de interrupciones externas EICRA. Fuente: hoja de datos del ATmega328P\@\cite{atmega328p_datasheet}.}
+    \label{fig:EICRA}
+    \end{figure}
+
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{./Anexos/Marco Teorico/External Interrupts/EIMSK.png}
+    \caption{Registro de configucación de máscaras de interrupciones externas EICRA. Fuente: hoja de datos del ATmega328P\@\cite{atmega328p_datasheet}.}
+    \label{fig:EIMSK}
+    \end{figure}
+
+    \subsubsection{PCINT}
+
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{./Anexos/Marco Teorico/External Interrupts/PCICR.png}
+    \caption{Registro de configucación interrupciones PCICR (PCINT). Fuente: hoja de datos del ATmega328P\@\cite{atmega328p_datasheet}.}
+    \label{fig:PCICR}
+    \end{figure}
+
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{./Anexos/Marco Teorico/External Interrupts/PCMSK.png}
+    \caption{Registro de configucación de mascara de pines para interrupciones PCIMSK0 (PCINT). Fuente: hoja de datos del ATmega328P\@\cite{atmega328p_datasheet}.}
+    \label{fig:PCIMSK}
+    \end{figure}
+
+
+
+\subsection{SRAM}
+\subsection{FLASH}
+\subsection{USART}
+    \subsubsection{Transmisión}
+    \subsubsection{Recepción}
+    \subsubsection{Ring Buffer}
+    
+
 
 
 \subsection{Automatización y Máquinas de Estado}
@@ -39,28 +192,37 @@
     \item Aplicaciones en sistemas embebidos para interacción con el usuario o con PC.
 \end{itemize}
 
+\begin{verbatim}
+PINB = (1 << PINB5);   // toggle PB5
+PINB = (1 << PINB5);   // toggle PB5
+PINB = (1 << PINB5);   // toggle PB5
+PINB = (1 << PINB5);   // toggle PB5
+PINB = (1 << PINB5);   // toggle PB5
+PINB = (1 << PINB5);   // toggle PB5
+\end{verbatim}
+
 
 \subsection{Conversión Digital-Analógica (DAC R-2R)}
 \begin{itemize}
     \item Concepto de DAC y su importancia.\vspace{0.5em}
     
-    \hspace{2em}Un DAC (Digital to Analog Converter) es un dispositivo o técnica que permite transformar valores digitales (códigos binarios) en señales analógicas (tensiones o corrientes continuas y variables en el tiempo). Su importancia radica en que la mayoría de los sistemas electrónicos trabajan de manera digital, pero el mundo físico es analógico: audio, imágenes, señales de control de motores, etc.
+    Un DAC (Digital to Analog Converter) es un dispositivo o técnica que permite transformar valores digitales (códigos binarios) en señales analógicas (tensiones o corrientes continuas y variables en el tiempo). Su importancia radica en que la mayoría de los sistemas electrónicos trabajan de manera digital, pero el mundo físico es analógico: audio, imágenes, señales de control de motores, etc.
     
-    \hspace{2em}En pocas palabras, el DAC es el “puente” entre lo digital y lo analógico.\vspace{1em}
+    En pocas palabras, el DAC es el “puente” entre lo digital y lo analógico.\vspace{1em}
 
-    \item Explicación del arreglo de resistencias R-2R.\vspace{0.5em}
+    \item Arreglo de resistencias R-2R.\vspace{0.5em}
 
-    \hspace{2em}El arreglo R-2R es una red de resistencias que se usa mucho para construir DACs simples y económicos. Se compone unicamente de dos valores de resistencias: una de valor R y otra de valor 2R, que se repiten en forma de escalera.
+    El arreglo R-2R es una red de resistencias que se usa mucho para construir DACs simples y económicos. Se compone unicamente de dos valores de resistencias: una de valor R y otra de valor 2R, que se repiten en forma de escalera.
     
-    \hspace{2em}Cada bit de nel número digital controla un interruptor (o transistor) que conecta la red a una referencia de tensión (Vref) o a tierra. Gracias a la proporción entre Ry 2R, la red genera tenciones que corresponden al valor binario aplicado.
+    Cada bit de nel número digital controla un interruptor (o transistor) que conecta la red a una referencia de tensión (Vref) o a tierra. Gracias a la proporción entre Ry 2R, la red genera tenciones que corresponden al valor binario aplicado.
     
-    \hspace{2em}La ventaja del arreglo R-2R es que es fácil de implementar, no requiere de resistencias con muchos valores distintos, y mantienen una buena presición.\vspace{1em}
+    La ventaja del arreglo R-2R es que es fácil de implementar, no requiere de resistencias con muchos valores distintos, y mantienen una buena presición.\vspace{1em}
     
     \item Uso de una Look-Up Table (LUT) para generar señales analógicas periódicas.\vspace{0.5em}
     
-    \hspace{2em}Una Look-up Table (LUT) es básicamente una tabla de valores precargada en la memoria que representa una señal digitalizada (por ejemplo, una onda seno). En lugar de calcular cada valor de la función en tiempo real, el monitor solo "lee" la tabla en orden y envía los valores a un puerto o a un DAC.
+    Una Look-up Table (LUT) es básicamente una tabla de valores precargada en la memoria que representa una señal digitalizada (por ejemplo, una onda seno). En lugar de calcular cada valor de la función en tiempo real, el monitor solo "lee" la tabla en orden y envía los valores a un puerto o a un DAC.
     
-    \hspace{2em}Cuando esos valores se aplican de manera periódica y con la velocidad adecuada, en la salida se reconstruye una señal analógica periodica.
+    Cuando esos valores se aplican de manera periódica y con la velocidad adecuada, en la salida se reconstruye una señal analógica periodica.
     
     El uso de una LUT simplifica mucho la generación de señales, por que evita cálculos complejos y garantiza que la forma de onda siempre tenga la misma calidad.\vspace{1em}
 \end{itemize}
