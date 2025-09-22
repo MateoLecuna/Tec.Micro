@@ -2,10 +2,7 @@
 
 .macro DISABLE_TIMER_1
 	push r16
-	ldi r16, 0			 sts TCCR1A, r16
 	ldi r16, 0			 sts TCCR1B, r16
-	ldi r16, 0			 sts TCNT1H, r16
-	ldi r16, 0			 sts TCNT1L, r16 
 	ldi r16, (0<<TOIE1)	 sts TIMSK1, r16
 	ldi r16, (1<<TOV1)   out TIFR1,  r16 
 	pop r16
@@ -15,7 +12,6 @@
 	; @0 Timer seconds
 	push r16
 	mov timer1_ovf_counter, @0
-	ldi r16, 0			 sts TCCR1A, r16
 	ldi r16, 0b101		 sts TCCR1B, r16
 	ldi r16, HIGH(49911) sts TCNT1H, r16
 	ldi r16, LOW(49911)	 sts TCNT1L, r16 
@@ -79,7 +75,6 @@
 	ldi r16, 0b00000000 out EIMSK, r16		; Disable external interruption 
 	ldi r16, 0b00000001 out EIFR,  r16		; Clear pending flags
 	
-	ldi r16, (1<<PCIF2) out PCIFR, r16		; clear pending flags
 	ldi r16, (0<<PCIE2) sts PCICR, r16		; disable PCINT2 (grupo D)
 	ldi r16, (0<<PCINT23) sts PCMSK2, r16	; disable PD7
 	pop r16										
@@ -90,7 +85,6 @@
 	ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
    	ldi r16, 0b00000001 out EIMSK, r16 ; Enable external interruption 
 	
-	ldi r16, (1<<PCIF2) out PCIFR, r16			; clear pending flags
 	ldi r16, (1<<PCIE2) sts PCICR, r16			; enable PCINT2 (grupo D)
 	ldi r16, (1<<PCINT23) sts PCMSK2, r16		; enable PD7
 	pop r16

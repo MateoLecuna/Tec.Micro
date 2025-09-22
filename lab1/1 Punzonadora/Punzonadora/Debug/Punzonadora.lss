@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzonadora\main.asm Mon Sep 22 12:22:02 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzonadora\main.asm Mon Sep 22 13:16:44 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
 C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzonadora\main.asm(5): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
@@ -1041,10 +1041,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  
                                  .macro DISABLE_TIMER_1
                                  	push r16
-                                 	ldi r16, 0			 sts TCCR1A, r16
                                  	ldi r16, 0			 sts TCCR1B, r16
-                                 	ldi r16, 0			 sts TCNT1H, r16
-                                 	ldi r16, 0			 sts TCNT1L, r16 
                                  	ldi r16, (0<<TOIE1)	 sts TIMSK1, r16
                                  	ldi r16, (1<<TOV1)   out TIFR1,  r16 
                                  	pop r16
@@ -1054,7 +1051,6 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  	; @0 Timer seconds
                                  	push r16
                                  	mov timer1_ovf_counter, @0
-                                 	ldi r16, 0			 sts TCCR1A, r16
                                  	ldi r16, 0b101		 sts TCCR1B, r16
                                  	ldi r16, HIGH(49911) sts TCNT1H, r16
                                  	ldi r16, LOW(49911)	 sts TCNT1L, r16 
@@ -1118,7 +1114,6 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  	ldi r16, 0b00000000 out EIMSK, r16		; Disable external interruption 
                                  	ldi r16, 0b00000001 out EIFR,  r16		; Clear pending flags
                                  	
-                                 	ldi r16, (1<<PCIF2) out PCIFR, r16		; clear pending flags
                                  	ldi r16, (0<<PCIE2) sts PCICR, r16		; disable PCINT2 (grupo D)
                                  	ldi r16, (0<<PCINT23) sts PCMSK2, r16	; disable PD7
                                  	pop r16										
@@ -1129,7 +1124,6 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  	ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
                                     	ldi r16, 0b00000001 out EIMSK, r16 ; Enable external interruption 
                                  	
-                                 	ldi r16, (1<<PCIF2) out PCIFR, r16			; clear pending flags
                                  	ldi r16, (1<<PCIE2) sts PCICR, r16			; enable PCINT2 (grupo D)
                                  	ldi r16, (1<<PCINT23) sts PCMSK2, r16		; enable PD7
                                  	pop r16
@@ -1263,12 +1257,12 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  
                                  .cseg
 000000 c0ff                      .org 0x0000 rjmp RESET			; Program start
-000002 c29b                      .org 0x0002 rjmp INT0_ISR		; Button press 1
-00000a c2b4                      .org 0x000A rjmp PCINT2_ISR		; PCINT2_vect (PCINT[23:16] -> PORTD)
-000012 c32d                      .org 0x0012 rjmp T2_OVF_ISR		; Timer 2 overflow ISR
-00001a c2d4                      .org 0x001A rjmp T1_OVF_ISR		; Timer 2 overflow ISR
-000024 c235                      .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
-000026 c20b                      .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
+000002 c296                      .org 0x0002 rjmp INT0_ISR		; Button press 1
+00000a c2ad                      .org 0x000A rjmp PCINT2_ISR		; PCINT2_vect (PCINT[23:16] -> PORTD)
+000012 c316                      .org 0x0012 rjmp T2_OVF_ISR		; Timer 2 overflow ISR
+00001a c2cb                      .org 0x001A rjmp T1_OVF_ISR		; Timer 2 overflow ISR
+000024 c232                      .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
+000026 c208                      .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
                                  
                                  
                                  
@@ -1330,7 +1324,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  	; Init USART
 000123 e100                      	ldi r16, low(_BPS)
 000124 e010                      	ldi r17, high(_BPS)
-000125 d0d4                      	rcall USART_INIT
+000125 d0d1                      	rcall USART_INIT
                                  
                                  	; Initial state
 000126 e040                      	ldi state, 0
@@ -1435,34 +1429,34 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  		STATE_MACHINE_STOP_LOAD_0:
 00015c e4ec
 00015d e0f9                      		ldi ZL, LOW(MSG_LOAD_0<<1) ldi ZH, HIGH(MSG_LOAD_0<<1)	
-00015e d0cb                      		rcall SEND_MESSAGE
+00015e d0c8                      		rcall SEND_MESSAGE
 00015f c008                      		rjmp STATE_MACHINE_STOP_SKIP
                                  
                                  		STATE_MACHINE_STOP_LOAD_1:
 000160 e6e8
 000161 e0f9                      		ldi ZL, LOW(MSG_LOAD_1<<1) ldi ZH, HIGH(MSG_LOAD_1<<1)
-000162 d0c7                      		rcall SEND_MESSAGE
+000162 d0c4                      		rcall SEND_MESSAGE
 000163 c004                      		rjmp STATE_MACHINE_STOP_SKIP
                                  		
                                  		STATE_MACHINE_STOP_LOAD_2:
 000164 e8e4
 000165 e0f9                      		ldi ZL, LOW(MSG_LOAD_2<<1) ldi ZH, HIGH(MSG_LOAD_2<<1)
-000166 d0c3                      		rcall SEND_MESSAGE
+000166 d0c0                      		rcall SEND_MESSAGE
 000167 c000                      		rjmp STATE_MACHINE_STOP_SKIP
                                  
                                  		STATE_MACHINE_STOP_SKIP:
 000168 e2e0
 000169 e0f8                      		ldi ZL, LOW(MSG_MENU<<1) ldi ZH, HIGH(MSG_MENU<<1)
-00016a d0bf                      		rcall SEND_MESSAGE
+00016a d0bc                      		rcall SEND_MESSAGE
                                  
-00016b c05f                      		rjmp STATE_MACHINE_END_SKIP
+00016b c05c                      		rjmp STATE_MACHINE_END_SKIP
                                  		
                                  
                                  	STATE_MACHINE_ADVANCE: ; ---------------------------- AVANCE 
                                  
 00016c ece4
 00016d e0f8                      		ldi ZL, LOW(MSG_STATE_1<<1) ldi ZH, HIGH(MSG_STATE_1<<1)
-00016e d0bb                      		rcall SEND_MESSAGE
+00016e d0b8                      		rcall SEND_MESSAGE
                                  
 00016f e200
 000170 b90b                      		ldi r16, 0b00100000 out PORTD, r16
@@ -1488,7 +1482,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  		
 00017e eee2
 00017f e0f8                      		ldi ZL, LOW(MSG_STATE_2<<1) ldi ZH, HIGH(MSG_STATE_2<<1)
-000180 d0a9                      		rcall SEND_MESSAGE
+000180 d0a6                      		rcall SEND_MESSAGE
                                  
 000181 e000
 000182 b90b                      		ldi r16, 0b00000000 out PORTD, r16
@@ -1514,7 +1508,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  
 000190 efea
 000191 e0f8                      		ldi ZL, LOW(MSG_STATE_3<<1) ldi ZH, HIGH(MSG_STATE_3<<1)
-000192 d097                      		rcall SEND_MESSAGE
+000192 d094                      		rcall SEND_MESSAGE
                                  		
 000193 e400
 000194 b90b                      		ldi r16, 0b01000000 out PORTD, r16
@@ -1550,7 +1544,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  		
 0001a5 e3e0
 0001a6 e0f9                      		ldi ZL, LOW(MSG_STATE_5<<1) ldi ZH, HIGH(MSG_STATE_5<<1)
-0001a7 d082                      		rcall SEND_MESSAGE
+0001a7 d07f                      		rcall SEND_MESSAGE
                                  
 0001a8 e008
 0001a9 b90b                      		ldi r16, 0b00001000 out PORTD, r16
@@ -1575,150 +1569,148 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  	STATE_MACHINE_END: ; ----------------------------- Timer for next state
 0001b7 930f
 0001b8 2e20
-0001b9 e000
-0001ba 9300 0080
-0001bc e005
-0001bd 9300 0081
-0001bf ec02
-0001c0 9300 0085
-0001c2 ef07
-0001c3 9300 0084
-0001c5 e001
-0001c6 bb06
-0001c7 e001
-0001c8 9300 006f
-0001ca 910f                      	ENABLE_TIMER_1 r16
+0001b9 e005
+0001ba 9300 0081
+0001bc ec02
+0001bd 9300 0085
+0001bf ef07
+0001c0 9300 0084
+0001c2 e001
+0001c3 bb06
+0001c4 e001
+0001c5 9300 006f
+0001c7 910f                      	ENABLE_TIMER_1 r16
                                  
                                  	STATE_MACHINE_END_SKIP:
-0001cb 3040
-0001cc f009
-0001cd c004
-0001ce e0f0
-0001cf e2e5
-0001d0 e004
-0001d1 c004
-0001d2 e0f0
-0001d3 e2e5
-0001d4 e008
-0001d5 c000
-0001d6 930f
-0001d7 931f
-0001d8 8110
-0001d9 2b10
-0001da 8310
-0001db 911f
-0001dc 910f
-0001dd 3050
-0001de f021
-0001df 3051
-0001e0 f031
-0001e1 3052
-0001e2 f041
-0001e3 e0f0
-0001e4 e2e5
-0001e5 e002
-0001e6 c008
-0001e7 e0f0
-0001e8 e2eb
-0001e9 e100
-0001ea c004
-0001eb e0f0
-0001ec e2e5
-0001ed e001
-0001ee c000
-0001ef 930f
-0001f0 931f
-0001f1 8110
-0001f2 2b10
-0001f3 8310
-0001f4 911f
-0001f5 910f                      	TOGGLE_INDICATOR_LEDS
+0001c8 3040
+0001c9 f009
+0001ca c004
+0001cb e0f0
+0001cc e2e5
+0001cd e004
+0001ce c004
+0001cf e0f0
+0001d0 e2e5
+0001d1 e008
+0001d2 c000
+0001d3 930f
+0001d4 931f
+0001d5 8110
+0001d6 2b10
+0001d7 8310
+0001d8 911f
+0001d9 910f
+0001da 3050
+0001db f021
+0001dc 3051
+0001dd f031
+0001de 3052
+0001df f041
+0001e0 e0f0
+0001e1 e2e5
+0001e2 e002
+0001e3 c008
+0001e4 e0f0
+0001e5 e2eb
+0001e6 e100
+0001e7 c004
+0001e8 e0f0
+0001e9 e2e5
+0001ea e001
+0001eb c000
+0001ec 930f
+0001ed 931f
+0001ee 8110
+0001ef 2b10
+0001f0 8310
+0001f1 911f
+0001f2 910f                      	TOGGLE_INDICATOR_LEDS
                                  
-0001f6 910f                      	pop r16
-0001f7 bf0f                      	out SREG, r16
-0001f8 910f                      	pop r16
-0001f9 9508                      	ret
+0001f3 910f                      	pop r16
+0001f4 bf0f                      	out SREG, r16
+0001f5 910f                      	pop r16
+0001f6 9508                      	ret
                                  
                                  
                                  USART_INIT:		
                                  	; Set baud rate
-0001fa 9310 00c5                 	sts UBRR0H, r17
-0001fc 9300 00c4                 	sts UBRR0L, r16
+0001f7 9310 00c5                 	sts UBRR0H, r17
+0001f9 9300 00c4                 	sts UBRR0L, r16
                                  	; Enable receiver and transmitter, and interruptions
-0001fe e908                      	ldi r16, (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0)
-0001ff 9300 00c1                 	sts UCSR0B,r16
+0001fb e908                      	ldi r16, (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0)
+0001fc 9300 00c1                 	sts UCSR0B,r16
                                  	; Set frame format: 8data, 1stop bit
-000201 e006                      	ldi r16, (0<<USBS0)|(3<<UCSZ00)
-000202 9300 00c2                 	sts UCSR0C, r16
-000204 9508                      	ret
+0001fe e006                      	ldi r16, (0<<USBS0)|(3<<UCSZ00)
+0001ff 9300 00c2                 	sts UCSR0C, r16
+000201 9508                      	ret
                                  	
                                  
                                  ; write r16 to usart
                                  USART_WRITE_BYTE:
-000205 931f                          push r17
-000206 932f                          push r18
-000207 933f                          push r19
-000208 93ff                          push ZH
-000209 93ef                          push ZL
+000202 931f                          push r17
+000203 932f                          push r18
+000204 933f                          push r19
+000205 93ff                          push ZH
+000206 93ef                          push ZL
                                  
                                      ; head/tail
-00020a 9110 0200                     lds  r17, tx_head
-00020c 9120 0201                     lds  r18, tx_tail
+000207 9110 0200                     lds  r17, tx_head
+000209 9120 0201                     lds  r18, tx_tail
                                  
                                      ; next = (head + 1) & MASK   (keep it in r19!)
-00020e 2f31                          mov  r19, r17				; r17 holds the prev. value of tx_head
-00020f 9533                          inc  r19					; 
-000210 7f3f                          andi r19, TX_BUF_MASK		; this is a clever reset function!
+00020b 2f31                          mov  r19, r17				; r17 holds the prev. value of tx_head
+00020c 9533                          inc  r19					; 
+00020d 7f3f                          andi r19, TX_BUF_MASK		; this is a clever reset function!
                                  								; Clamps the value between 0 and the TX_BUF_MASK
                                  
                                  wait_space:
                                      ; Active wait when buffer is full until space is 
-000211 9120 0201                     lds r18, tx_tail
-000213 1732                          cp r19, r18
-000214 f3e1                          breq wait_space
-000215 c000                      	rjmp have_space
+00020e 9120 0201                     lds r18, tx_tail
+000210 1732                          cp r19, r18
+000211 f3e1                          breq wait_space
+000212 c000                      	rjmp have_space
                                  
                                  have_space:
                                      ; Z = &tx_buffer[head]
-000216 e0e0                          ldi  ZL, low(tx_buffer)
-000217 e0f1                          ldi  ZH, high(tx_buffer)
-000218 0fe1                          add  ZL, r17
-000219 1df1                          adc  ZH, r1            ; r1 must be 0
+000213 e0e0                          ldi  ZL, low(tx_buffer)
+000214 e0f1                          ldi  ZH, high(tx_buffer)
+000215 0fe1                          add  ZL, r17
+000216 1df1                          adc  ZH, r1            ; r1 must be 0
                                  
-00021a 8300                          st   Z, r16            ; write byte
+000217 8300                          st   Z, r16            ; write byte
                                  
                                      ; head = next
-00021b 9330 0200                     sts  tx_head, r19
+000218 9330 0200                     sts  tx_head, r19
                                  
                                      ; enable UDRE interrupt so ISR starts/continues draining
-00021d 94f8                          cli
-00021e 9120 00c1                     lds  r18, UCSR0B
-000220 6220                          ori  r18, (1<<UDRIE0)
-000221 9320 00c1                     sts  UCSR0B, r18
-000223 9478                          sei
+00021a 94f8                          cli
+00021b 9120 00c1                     lds  r18, UCSR0B
+00021d 6220                          ori  r18, (1<<UDRIE0)
+00021e 9320 00c1                     sts  UCSR0B, r18
+000220 9478                          sei
                                  
-000224 91ef                          pop  ZL
-000225 91ff                          pop  ZH
-000226 913f                          pop  r19
-000227 912f                          pop  r18
-000228 911f                          pop  r17
-000229 9508                          ret
+000221 91ef                          pop  ZL
+000222 91ff                          pop  ZH
+000223 913f                          pop  r19
+000224 912f                          pop  r18
+000225 911f                          pop  r17
+000226 9508                          ret
                                  
                                  ; Preload Z with the message
                                  SEND_MESSAGE:
-00022a 930f                      	push r16
+000227 930f                      	push r16
                                  
                                  	SEND_MESSAGE_LOOP:
-00022b 9105                      	lpm r16, Z+
-00022c 3000                      	cpi r16, 0
+000228 9105                      	lpm r16, Z+
+000229 3000                      	cpi r16, 0
                                  
-00022d f011                      	breq SEND_MESSAGE_END
-00022e dfd6                      	rcall USART_WRITE_BYTE
-00022f cffb                      	rjmp SEND_MESSAGE_LOOP
+00022a f011                      	breq SEND_MESSAGE_END
+00022b dfd6                      	rcall USART_WRITE_BYTE
+00022c cffb                      	rjmp SEND_MESSAGE_LOOP
                                  
                                  	SEND_MESSAGE_END:
-000230 910f                      	pop r16
-000231 9508                      	ret
+00022d 910f                      	pop r16
+00022e 9508                      	ret
                                  
                                  
                                  
@@ -1734,355 +1726,336 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\1 Punzonadora\Punzona
                                  
                                  
                                  
-                                 
                                  USART_UDRE_ISR:
-000232 930f                          push r16
-000233 b70f                          in   r16, SREG
-000234 930f                          push r16
-000235 931f                          push r17
-000236 932f                          push r18
-000237 934f                          push r20
-000238 93ff                          push ZH
-000239 93ef                          push ZL
+00022f 930f                          push r16
+000230 b70f                          in   r16, SREG
+000231 930f                          push r16
+000232 931f                          push r17
+000233 932f                          push r18
+000234 934f                          push r20
+000235 93ff                          push ZH
+000236 93ef                          push ZL
                                  
                                      ; r17 = head, r18 = tail
-00023a 9110 0200                     lds  r17, tx_head
-00023c 9120 0201                     lds  r18, tx_tail
+000237 9110 0200                     lds  r17, tx_head
+000239 9120 0201                     lds  r18, tx_tail
                                  
                                      ; buffer vacío? head == tail
-00023e 1712                          cp   r17, r18
-00023f f431                          brne USART_UDRE_ISR_SEND
+00023b 1712                          cp   r17, r18
+00023c f431                          brne USART_UDRE_ISR_SEND
                                  
                                      ; vacío: deshabilitar UDRIE0
-000240 9140 00c1                     lds  r20, UCSR0B
-000242 7d4f                          andi r20, ~(1<<UDRIE0)
-000243 9340 00c1                     sts  UCSR0B, r20
-000245 c00b                          rjmp USART_UDRE_ISR_EXIT
+00023d 9140 00c1                     lds  r20, UCSR0B
+00023f 7d4f                          andi r20, ~(1<<UDRIE0)
+000240 9340 00c1                     sts  UCSR0B, r20
+000242 c00b                          rjmp USART_UDRE_ISR_EXIT
                                  
                                  	USART_UDRE_ISR_SEND:
                                  		; Z = &tx_buffer[tail]
-000246 e0e0                      		ldi  ZL, low(tx_buffer)
-000247 e0f1                      		ldi  ZH, high(tx_buffer)
-000248 0fe2                      		add  ZL, r18
-000249 1df1                      		adc  ZH, r1          ; requiere r1 = 0
+000243 e0e0                      		ldi  ZL, low(tx_buffer)
+000244 e0f1                      		ldi  ZH, high(tx_buffer)
+000245 0fe2                      		add  ZL, r18
+000246 1df1                      		adc  ZH, r1          ; requiere r1 = 0
                                  
                                  		; enviar byte
-00024a 8100                      		ld   r16, Z
-00024b 9300 00c6                 		sts  UDR0, r16
+000247 8100                      		ld   r16, Z
+000248 9300 00c6                 		sts  UDR0, r16
                                  
                                  		; tail = (tail + 1) & TX_BUF_MASK
-00024d 9523                      		inc  r18
-00024e 7f2f                      		andi r18, TX_BUF_MASK	; Same fucking genius clamping thingy 
+00024a 9523                      		inc  r18
+00024b 7f2f                      		andi r18, TX_BUF_MASK	; Same fucking genius clamping thingy 
                                  								; con 256 es 0xFF: no cambia
                                  								; pero deja claro el patrón
-00024f 9320 0201                 		sts  tx_tail, r18
+00024c 9320 0201                 		sts  tx_tail, r18
                                  
                                  	USART_UDRE_ISR_EXIT:
-000251 91ef                      		pop  ZL
-000252 91ff                      		pop  ZH
-000253 914f                      		pop  r20
-000254 912f                      		pop  r18
-000255 911f                      		pop  r17
-000256 910f                      		pop  r16
-000257 bf0f                      		out  SREG, r16
-000258 910f                      		pop  r16
-000259 9518                      		reti
+00024e 91ef                      		pop  ZL
+00024f 91ff                      		pop  ZH
+000250 914f                      		pop  r20
+000251 912f                      		pop  r18
+000252 911f                      		pop  r17
+000253 910f                      		pop  r16
+000254 bf0f                      		out  SREG, r16
+000255 910f                      		pop  r16
+000256 9518                      		reti
                                  
                                  
                                  USART_RX_ISR:
-00025a 930f                      	push r16 
-00025b b70f                      	in r16, SREG
-00025c 930f                      	push r16
+000257 930f                      	push r16 
+000258 b70f                      	in r16, SREG
+000259 930f                      	push r16
                                  
-00025d 9100 00c6                 	lds r16, UDR0
+00025a 9100 00c6                 	lds r16, UDR0
                                  	; Code here -----------
                                  	
-00025f 3040
-000260 f5c9                      	cpi state, 0 brne USART_RX_ISR_END
-000261 3301
-000262 f069                      	cpi r16, '1' breq USART_RX_ISR_LIGHT
-000263 3302
-000264 f081                      	cpi r16, '2' breq USART_RX_ISR_MEDIUM
-000265 3303
-000266 f099                      	cpi r16, '3' breq USART_RX_ISR_HEAVY
-000267 3401
-000268 f0b1                      	cpi r16, 'A' breq USART_RX_ISR_START
+00025c 3040
+00025d f5b9                      	cpi state, 0 brne USART_RX_ISR_END
+00025e 3301
+00025f f069                      	cpi r16, '1' breq USART_RX_ISR_LIGHT
+000260 3302
+000261 f081                      	cpi r16, '2' breq USART_RX_ISR_MEDIUM
+000262 3303
+000263 f099                      	cpi r16, '3' breq USART_RX_ISR_HEAVY
+000264 3401
+000265 f0b1                      	cpi r16, 'A' breq USART_RX_ISR_START
                                  	
-000269 e0e0
-00026a e0f8                      	ldi ZL, LOW(MSG_ERROR<<1) ldi ZH, HIGH(MSG_ERROR<<1)
-00026b dfbe                      	rcall SEND_MESSAGE
+000266 e0e0
+000267 e0f8                      	ldi ZL, LOW(MSG_ERROR<<1) ldi ZH, HIGH(MSG_ERROR<<1)
+000268 dfbe                      	rcall SEND_MESSAGE
                                  
-00026c e001
-00026d 9300 0202                 	ldi r16, 1 sts event_pending, r16
-00026f c02a                      	rjmp USART_RX_ISR_END
+000269 e001
+00026a 9300 0202                 	ldi r16, 1 sts event_pending, r16
+00026c c028                      	rjmp USART_RX_ISR_END
                                  	
                                  	USART_RX_ISR_LIGHT:
-000270 e050                      	ldi load, 0
-000271 e001
-000272 9300 0202                 	ldi r16, 1 sts event_pending, r16
-000274 c025                      	rjmp USART_RX_ISR_END
+00026d e050                      	ldi load, 0
+00026e e001
+00026f 9300 0202                 	ldi r16, 1 sts event_pending, r16
+000271 c023                      	rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_MEDIUM:
-000275 e051                      	ldi load, 1
-000276 e001
-000277 9300 0202                 	ldi r16, 1 sts event_pending, r16
-000279 c020                      	rjmp USART_RX_ISR_END
+000272 e051                      	ldi load, 1
+000273 e001
+000274 9300 0202                 	ldi r16, 1 sts event_pending, r16
+000276 c01e                      	rjmp USART_RX_ISR_END
                                  	
                                  	USART_RX_ISR_HEAVY:
-00027a e052                      	ldi load, 2
-00027b e001
-00027c 9300 0202                 	ldi r16, 1 sts event_pending, r16
-00027e c01b                      	rjmp USART_RX_ISR_END
+000277 e052                      	ldi load, 2
+000278 e001
+000279 9300 0202                 	ldi r16, 1 sts event_pending, r16
+00027b c019                      	rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_START:
                                  	
-00027f 930f
-000280 e000
-000281 bb0d
-000282 e001
-000283 bb0c
-000284 e004
-000285 bb0b
-000286 e000
-000287 9300 0068
-000289 e000
-00028a 9300 006d
-00028c 910f                      	DISABLE_BUTTONS
-00028d 930f
-00028e 9100 00c1
-000290 770f
-000291 6200
-000292 9300 00c1
-000294 910f                      	DISABLE_RX
+00027c 930f
+00027d e000
+00027e bb0d
+00027f e001
+000280 bb0c
+000281 e000
+000282 9300 0068
+000284 e000
+000285 9300 006d
+000287 910f                      	DISABLE_BUTTONS
+000288 930f
+000289 9100 00c1
+00028b 770f
+00028c 6200
+00028d 9300 00c1
+00028f 910f                      	DISABLE_RX
                                  	
-000295 e041                      	ldi state, 1					
-000296 e001
-000297 9300 0202                 	ldi r16, 1 sts event_pending, r16
-000299 c000                      	rjmp USART_RX_ISR_END
+000290 e041                      	ldi state, 1					
+000291 e001
+000292 9300 0202                 	ldi r16, 1 sts event_pending, r16
+000294 c000                      	rjmp USART_RX_ISR_END
                                  	
                                  
                                  	USART_RX_ISR_END:
-00029a 910f                      	pop r16
-00029b bf0f                      	out SREG, r16
-00029c 910f                      	pop r16
-00029d 9518                      	reti
+000295 910f                      	pop r16
+000296 bf0f                      	out SREG, r16
+000297 910f                      	pop r16
+000298 9518                      	reti
                                  
                                  ; External interruptions -----------------------------------
                                  
                                  INT0_ISR:
-00029e 930f                      	push r16
-00029f b70f                      	in r16, SREG
-0002a0 930f                      	push r16 
+000299 930f                      	push r16
+00029a b70f                      	in r16, SREG
+00029b 930f                      	push r16 
                                  
-0002a1 930f
-0002a2 e000
-0002a3 bb0d
-0002a4 e001
-0002a5 bb0c
-0002a6 e004
-0002a7 bb0b
-0002a8 e000
-0002a9 9300 0068
-0002ab e000
-0002ac 9300 006d
-0002ae 910f                      	DISABLE_BUTTONS
-0002af 930f
-0002b0 9100 00c1
-0002b2 770f
-0002b3 6200
-0002b4 9300 00c1
-0002b6 910f                      	DISABLE_RX
+00029c 930f
+00029d e000
+00029e bb0d
+00029f e001
+0002a0 bb0c
+0002a1 e000
+0002a2 9300 0068
+0002a4 e000
+0002a5 9300 006d
+0002a7 910f                      	DISABLE_BUTTONS
+0002a8 930f
+0002a9 9100 00c1
+0002ab 770f
+0002ac 6200
+0002ad 9300 00c1
+0002af 910f                      	DISABLE_RX
                                  	
-0002b7 e041                      	ldi state, 1
-0002b8 e001
-0002b9 9300 0202                 	ldi r16, 1 sts event_pending, r16
+0002b0 e041                      	ldi state, 1
+0002b1 e001
+0002b2 9300 0202                 	ldi r16, 1 sts event_pending, r16
                                  	
-0002bb 910f                      	pop r16
-0002bc bf0f                      	out SREG, r16
-0002bd 910f                      	pop r16 
-0002be 9518                      	reti
+0002b4 910f                      	pop r16
+0002b5 bf0f                      	out SREG, r16
+0002b6 910f                      	pop r16 
+0002b7 9518                      	reti
                                  
                                  
                                  
                                  PCINT2_ISR:
-0002bf 930f                          push r16
-0002c0 b70f                          in   r16, SREG
-0002c1 930f                          push r16
+0002b8 930f                          push r16
+0002b9 b70f                          in   r16, SREG
+0002ba 930f                          push r16
                                  
                                      ; Lee el estado actual del pin
-0002c2 b109                          in   r16, PIND
-0002c3 fd07                          sbrc r16, PD7          ; ¿PD7=1? (no presionado con pull-up)
-0002c4 c001                          rjmp PCINT2_ISR_PD7_HIGH
+0002bb b109                          in   r16, PIND
+0002bc fd07                          sbrc r16, PD7          ; ¿PD7=1? (no presionado con pull-up)
+0002bd c001                          rjmp PCINT2_ISR_PD7_HIGH
                                      ; PD7=0 -> presionado (activo en bajo)
                                  
-0002c5 c025                          rjmp PCINT2_ISR_END
+0002be c023                          rjmp PCINT2_ISR_END
                                  
                                  	PCINT2_ISR_PD7_HIGH:
                                  
-0002c6 930f
-0002c7 e007
-0002c8 9300 00b1
+0002bf 930f
+0002c0 e007
+0002c1 9300 00b1
+0002c3 e001
+0002c4 9300 0070
+0002c6 910f                      		ENABLE_TIMER_2
+0002c7 930f
+0002c8 e000
+0002c9 bb0d
 0002ca e001
-0002cb 9300 0070
-0002cd 910f                      		ENABLE_TIMER_2
-0002ce 930f
+0002cb bb0c
+0002cc e000
+0002cd 9300 0068
 0002cf e000
-0002d0 bb0d
-0002d1 e001
-0002d2 bb0c
-0002d3 e004
-0002d4 bb0b
+0002d0 9300 006d
+0002d2 910f                      		DISABLE_BUTTONS
+                                 
+0002d3 e804
+0002d4 b90b                      		ldi r16, 0b10000100 out PORTD, r16 ;Pull-up for INT0 and PD7
 0002d5 e000
-0002d6 9300 0068
-0002d8 e000
-0002d9 9300 006d
-0002db 910f                      		DISABLE_BUTTONS
+0002d6 b905                      		ldi r16, 0b00000000 out PORTB, r16
                                  
-0002dc e804
-0002dd b90b                      		ldi r16, 0b10000100 out PORTD, r16 ;Pull-up for INT0 and PD7
-0002de e000
-0002df b905                      		ldi r16, 0b00000000 out PORTB, r16
-                                 
-0002e0 9553                      		inc load
-0002e1 3053
-0002e2 f420                      		cpi load, 3 brsh PCINT2_ISR_RESET_LOAD
+0002d7 9553                      		inc load
+0002d8 3053
+0002d9 f420                      		cpi load, 3 brsh PCINT2_ISR_RESET_LOAD
                                  		
-0002e3 e001
-0002e4 9300 0202                 		ldi r16, 1 sts event_pending, r16
-0002e6 c004                      		rjmp PCINT2_ISR_END
+0002da e001
+0002db 9300 0202                 		ldi r16, 1 sts event_pending, r16
+0002dd c004                      		rjmp PCINT2_ISR_END
                                  
                                  	PCINT2_ISR_RESET_LOAD:
-0002e7 2755                      		clr load
-0002e8 e001
-0002e9 9300 0202                 		ldi r16, 1 sts event_pending, r16
+0002de 2755                      		clr load
+0002df e001
+0002e0 9300 0202                 		ldi r16, 1 sts event_pending, r16
                                  
                                  	PCINT2_ISR_END:
-0002eb 910f                      		pop  r16
-0002ec bf0f                      		out  SREG, r16
-0002ed 910f                      		pop  r16
-0002ee 9518                      		reti
+0002e2 910f                      		pop  r16
+0002e3 bf0f                      		out  SREG, r16
+0002e4 910f                      		pop  r16
+0002e5 9518                      		reti
                                  
                                  
                                  ; Timer interruptions  -----------------------------------
                                  
                                  T1_OVF_ISR: 
-0002ef 930f                      	push r16
-0002f0 b70f                      	in r16, SREG
-0002f1 930f                      	push r16
+0002e6 930f                      	push r16
+0002e7 b70f                      	in r16, SREG
+0002e8 930f                      	push r16
                                  
-0002f2 942a                      	dec timer1_ovf_counter    ; Decrement timer
+0002e9 942a                      	dec timer1_ovf_counter    ; Decrement timer
                                  	
-0002f3 1421                      	cp timer1_ovf_counter, r1 ; Check timer overflow counter with 0 
-0002f4 f0a9                      	breq T1_OVF_ISR_STOP	
+0002ea 1421                      	cp timer1_ovf_counter, r1 ; Check timer overflow counter with 0 
+0002eb f091                      	breq T1_OVF_ISR_STOP	
                                  
-0002f5 930f
-0002f6 2c22
-0002f7 e000
-0002f8 9300 0080
-0002fa e005
-0002fb 9300 0081
-0002fd ec02
-0002fe 9300 0085
-000300 ef07
-000301 9300 0084
-000303 e001
-000304 bb06
-000305 e001
-000306 9300 006f
-000308 910f                      	ENABLE_TIMER_1 timer1_ovf_counter 
-000309 c032                      	rjmp T1_OVF_ISR_END		
+0002ec 930f
+0002ed 2c22
+0002ee e005
+0002ef 9300 0081
+0002f1 ec02
+0002f2 9300 0085
+0002f4 ef07
+0002f5 9300 0084
+0002f7 e001
+0002f8 bb06
+0002f9 e001
+0002fa 9300 006f
+0002fc 910f                      	ENABLE_TIMER_1 timer1_ovf_counter 
+0002fd c027                      	rjmp T1_OVF_ISR_END		
                                  
                                  	T1_OVF_ISR_STOP:
-00030a 930f
-00030b e000
-00030c 9300 0080
-00030e e000
-00030f 9300 0081
-000311 e000
-000312 9300 0085
-000314 e000
-000315 9300 0084
-000317 e000
-000318 9300 006f
-00031a e001
-00031b bb06
-00031c 910f                      		DISABLE_TIMER_1	
-00031d 3045                      		cpi state, 5			; Check if state = last_state
-00031e f029                      		breq RESET_STATE			
-00031f 9543                      		inc state				; Increment state
-000320 e001
-000321 9300 0202                 		ldi r16, 1 sts event_pending, r16; Call back state machine
-000323 c018                      		rjmp T1_OVF_ISR_END 	
+0002fe 930f
+0002ff e000
+000300 9300 0081
+000302 e000
+000303 9300 006f
+000305 e001
+000306 bb06
+000307 910f                      		DISABLE_TIMER_1	
+000308 3045                      		cpi state, 5			; Check if state = last_state
+000309 f029                      		breq RESET_STATE			
+00030a 9543                      		inc state				; Increment state
+00030b e001
+00030c 9300 0202                 		ldi r16, 1 sts event_pending, r16; Call back state machine
+00030e c016                      		rjmp T1_OVF_ISR_END 	
                                  
                                  	RESET_STATE:			
-000324 2744                      		clr state				; Reset state back to 0
-000325 930f
-000326 e001
-000327 bb0c
-000328 e001
-000329 bb0d
-00032a e004
-00032b bb0b
-00032c e004
-00032d 9300 0068
-00032f e800
-000330 9300 006d
-000332 910f                      		ENABLE_BUTTONS
-000333 930f
-000334 e908
-000335 9300 00c1
-000337 910f                      		ENABLE_RX
-000338 e001
-000339 9300 0202                 		ldi r16, 1 sts event_pending, r16
-00033b c000                      		rjmp T1_OVF_ISR_END     
+00030f 2744                      		clr state				; Reset state back to 0
+000310 930f
+000311 e001
+000312 bb0c
+000313 e001
+000314 bb0d
+000315 e004
+000316 9300 0068
+000318 e800
+000319 9300 006d
+00031b 910f                      		ENABLE_BUTTONS
+00031c 930f
+00031d e908
+00031e 9300 00c1
+000320 910f                      		ENABLE_RX
+000321 e001
+000322 9300 0202                 		ldi r16, 1 sts event_pending, r16
+000324 c000                      		rjmp T1_OVF_ISR_END     
                                  
                                  	T1_OVF_ISR_END:
-00033c 910f                      		pop r16
-00033d bf0f                      		out SREG, r16
-00033e 910f                      		pop r16
-00033f 9518                      		reti 
+000325 910f                      		pop r16
+000326 bf0f                      		out SREG, r16
+000327 910f                      		pop r16
+000328 9518                      		reti 
                                  
                                  
                                  
                                  
                                  
                                  T2_OVF_ISR:
-000340 930f                      	push r16 
-000341 b70f                          in r16, SREG 
-000342 930f                      	push r16 
+000329 930f                      	push r16 
+00032a b70f                          in r16, SREG 
+00032b 930f                      	push r16 
                                  	
-000343 9443                      	inc timer2_ovf_counter
+00032c 9443                      	inc timer2_ovf_counter
                                  	
-000344 e104
-000345 1504                      	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
-000346 f4b8                          brsh T2_OVF_ISR_END 
+00032d e104
+00032e 1504                      	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
+00032f f4a8                          brsh T2_OVF_ISR_END 
                                      
                                      ; Interruption code here -------------------
-000347 930f
-000348 e000
-000349 9300 00b1
-00034b e000
-00034c 9300 0070
-00034e 910f                      	DISABLE_TIMER_2
-00034f 930f
-000350 e001
-000351 bb0c
-000352 e001
-000353 bb0d
-000354 e004
-000355 bb0b
-000356 e004
-000357 9300 0068
-000359 e800
-00035a 9300 006d
-00035c 910f                      	ENABLE_BUTTONS
-00035d 2444                      	clr timer2_ovf_counter
+000330 930f
+000331 e000
+000332 9300 00b1
+000334 e000
+000335 9300 0070
+000337 910f                      	DISABLE_TIMER_2
+000338 930f
+000339 e001
+00033a bb0c
+00033b e001
+00033c bb0d
+00033d e004
+00033e 9300 0068
+000340 e800
+000341 9300 006d
+000343 910f                      	ENABLE_BUTTONS
+000344 2444                      	clr timer2_ovf_counter
                                      
                                      T2_OVF_ISR_END:
-00035e 910f                      		pop r16
-00035f bf0f                      		out SREG, r16
-000360 910f                      		pop r16	
-000361 9518                      		reti
+000345 910f                      		pop r16
+000346 bf0f                      		out SREG, r16
+000347 910f                      		pop r16	
+000348 9518                      		reti
                                  
                                  
                                  
@@ -2331,7 +2304,7 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   7 r0 :   0 r1 :   4 r2 :   6 r3 :   0 r4 :   4 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16: 292 r17:  21 r18:  16 r19:   7 r20:  19 
+r13:   0 r14:   0 r15:   0 r16: 272 r17:  21 r18:  16 r19:   7 r20:  19 
 r21:  25 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
 r29:   0 r30:  22 r31:  22 
 Registers used: 12 out of 35 (34.3%)
@@ -2347,21 +2320,21 @@ clc   :   0 clh   :   0 cli   :   1 cln   :   0 clr   :   6 cls   :   0
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   4 cpc   :   0 
 cpi   :  33 cpse  :   0 dec   :   1 eor   :   0 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :   8 inc   :   5 jmp   :   0 
-ld    :   3 ldd   :   0 ldi   : 145 lds   :  11 lpm   :   1 lsl   :   0 
+ld    :   3 ldd   :   0 ldi   : 135 lds   :  11 lpm   :   1 lsl   :   0 
 lsr   :   0 mov   :   3 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   0 or    :   2 ori   :   3 out   :  41 pop   :  42 
+neg   :   0 nop   :   0 or    :   2 ori   :   3 out   :  36 pop   :  42 
 push  :  42 rcall :  12 ret   :   4 reti  :   6 rjmp  :  57 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   1 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   2 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   3 std   :   0 sts   :  61 
+sez   :   0 sleep :   0 spm   :   0 st    :   3 std   :   0 sts   :  56 
 sub   :   0 subi  :   0 swap  :   0 tst   :   1 wdr   :   0 
 Instructions used: 32 out of 113 (28.3%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0009a0   1234    416   1650   32768   5.0%
+[.cseg] 0x000000 0x0009a0   1184    416   1600   32768   4.9%
 [.dseg] 0x000100 0x000203      0    259    259    2048  12.6%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
