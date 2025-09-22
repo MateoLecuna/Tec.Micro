@@ -119,7 +119,16 @@ El mismo proceso puede ser aplicado para configurar los otros dos Timers.
 
 \subsection{Interrupciones externas}
 
+   \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{./Anexos/Marco Teorico/External Interrupts/Interrupt diagram.png}
+    \caption{Flujo de configuración de interrupciones exeternas. Fuente: Elaboración própia.}
+    \label{fig:InterruptDiagram}
+    \end{figure}
+
+
     \subsubsection{EINT}
+    Interrupciones externas 
 
     \begin{figure}[H]
     \centering
@@ -143,6 +152,8 @@ El mismo proceso puede ser aplicado para configurar los otros dos Timers.
     \end{figure}
 
     \subsubsection{PCINT}
+    Interrupciones por cambio en PIN
+
 
     \begin{figure}[H]
     \centering
@@ -161,7 +172,47 @@ El mismo proceso puede ser aplicado para configurar los otros dos Timers.
 
 
 \subsection{SRAM}
+
+\begin{verbatim}
+.dseg
+variable: byte 1  
+arreglo: byte 100
+\end{verbatim}
+
+Usando dseg se puede reservar espacio en memoria la SRAM para utilizarlo luego. Posteriormete con ``variable'' podremos leer o escribir el valor guardado con ``lds'' o ``sts'' respectivamente. O incluse se podría utilizar un puntero (X, Y, Z) para acceder a un lugar en memoria de manera iterativa donde quisieramos guardar múltiples valores subsecuentes (como un arreglo). 
+
+Nota: Existen 2kb de memoria RAM, el stack pointer vive dentro de la RAM así que uno debe ser precabido con el uso excesivo de este recurso.
+
 \subsection{FLASH}
+
+\begin{verbatim}
+.cseg
+.org 0x300 TABLA:
+    .db 0xFF, 0x30, 0x30, 0xFF
+\end{verbatim}
+
+Utilizando .cseg y una dirección segura como 0x300 para guardar datos, se puede utilizar la misma memoria FLASH para guardar datos constantes como LUTs, fotogramas, cadenas de texto, etc. Estos datos no pueden ser modificados, pero existen 32kb de espacio en memoria FLASH para guardar información, por lo que es menos limitante que la SRAM (2kb)
+
+Para acceder a datos guardados en program memoria del programa (FLASH) se puede hacer haciendo uso del puntero Z y la instrucción ``lpm'':
+
+\begin{verbatim}
+GET_DATA:
+    ldi ZH, high(TABLA<<1)
+    ldi ZL, low(TABLA<<1)
+    lpm r16, Z+
+    ret
+\end{verbatim}
+
+Se carga la dirección a Z cargando las partes bajas y altas de la dirección a ZL y ZH respectivamente. En los AVR  ``clásicos'' (como el ATmega328P), las etiquetas en memoria de programa (.cseg) están en direcciones de palabra (cada instrucción ocupa 16 bits), pero la instrucción LPM usa una dirección en bytes en el registro Z. Por eso se hace $<$$<$ 1 (multiplicar por 2): convierte la dirección en palabras de la etiqueta a dirección en bytes para LPM. Y ``Z+'' indica que luego de realizar lpm, se incremente en 1 el puntero ``Z''
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{./Anexos/Memory Map.jpg}
+  \caption{Mapa de memoria y espacios de direcciones en AVR de 8 bits. Fuente: \cite{arxterra_avr_addressing_modes}.}
+  \label{fig:avr-memory-map}
+\end{figure}
+
+
 \subsection{USART}
     \subsubsection{Transmisión}
     \subsubsection{Recepción}
@@ -191,15 +242,6 @@ El mismo proceso puede ser aplicado para configurar los otros dos Timers.
     \item Ejemplos de comandos y monitoreo remoto.
     \item Aplicaciones en sistemas embebidos para interacción con el usuario o con PC.
 \end{itemize}
-
-\begin{verbatim}
-PINB = (1 << PINB5);   // toggle PB5
-PINB = (1 << PINB5);   // toggle PB5
-PINB = (1 << PINB5);   // toggle PB5
-PINB = (1 << PINB5);   // toggle PB5
-PINB = (1 << PINB5);   // toggle PB5
-PINB = (1 << PINB5);   // toggle PB5
-\end{verbatim}
 
 
 \subsection{Conversión Digital-Analógica (DAC R-2R)}
