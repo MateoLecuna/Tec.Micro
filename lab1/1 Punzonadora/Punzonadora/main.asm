@@ -28,7 +28,7 @@
 
 .equ T1_1S_PRESET = 49911 ; Timer preload for 1s (1024 prescaler)
 
-.equ _TIMER2_OVF_COUNT = 61 ; Overflow count
+.equ _TIMER2_OVF_COUNT = 20 ; Overflow count
 
 .def timer1_ovf_counter = r2
 .def timer2_ovf_counter = r4
@@ -597,11 +597,7 @@ PCINT2_ISR:
 		clr load
 		ldi r16, 1 sts event_pending, r16
 
-
-
 	PCINT2_ISR_END:
-
-	PCINT2_ISR_DONE:
 		pop  r16
 		out  SREG, r16
 		pop  r16
@@ -653,14 +649,15 @@ T2_OVF_ISR:
     in r16, SREG 
 	push r16 
 	
-	inc  timer2_ovf_counter
+	inc timer2_ovf_counter
 	
 	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
-    breq T2_OVF_ISR_END 
+    brsh T2_OVF_ISR_END 
     
     ; Interruption code here -------------------
 	DISABLE_TIMER_2
 	ENABLE_BUTTONS
+	clr timer2_ovf_counter
     
     T2_OVF_ISR_END:
 		pop r16

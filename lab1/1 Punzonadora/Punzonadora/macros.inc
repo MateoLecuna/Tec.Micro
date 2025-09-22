@@ -28,17 +28,17 @@
 
 .macro ENABLE_TIMER_2
 	push r16
-	ldi r16, (1<<TOV2)  sts TIFR2,  r16
-	ldi r16, 0b00000001 sts TIMSK2, r16 ; Interrupts
+	;ldi r16, (1<<TOV2)  sts TIFR2,  r16
 	ldi r16, 0b00000111 sts TCCR2B, r16 ; Prescaler 1024
+	ldi r16, 0b00000001 sts TIMSK2, r16 ; Interrupts
 	pop r16
 .endmacro
 
 .macro DISABLE_TIMER_2
 	push r16
-	ldi r16, 0b00000000 sts TIMSK2, r16			; Interrupts
 	ldi r16, 0b00000000 sts TCCR2B, r16			; Prescaler 1024
-	ldi r16, (1<<TOV2)  sts TIFR2,  r16			; clear pending flags
+	ldi r16, 0b00000000 sts TIMSK2, r16			; Interrupts
+	;ldi r16, (1<<TOV2)  sts TIFR2,  r16			; clear pending flags
 	pop r16
 .endmacro
 
@@ -79,9 +79,9 @@
 	ldi r16, 0b00000000 out EIMSK, r16		; Disable external interruption 
 	ldi r16, 0b00000001 out EIFR,  r16		; Clear pending flags
 	
+	ldi r16, (1<<PCIF2) out PCIFR, r16		; clear pending flags
 	ldi r16, (0<<PCIE2) sts PCICR, r16		; disable PCINT2 (grupo D)
 	ldi r16, (0<<PCINT23) sts PCMSK2, r16	; disable PD7
-	ldi r16, (1<<PCIF2) sts PCIFR, r16		; clear pending flags
 	pop r16										
 .endmacro
 
@@ -90,7 +90,7 @@
 	ldi r16, 0b00000001 out EIFR,  r16 ; Clear pending flags
    	ldi r16, 0b00000001 out EIMSK, r16 ; Enable external interruption 
 	
-	ldi r16, (1<<PCIF2) sts PCIFR, r16			; clear pending flags
+	ldi r16, (1<<PCIF2) out PCIFR, r16			; clear pending flags
 	ldi r16, (1<<PCIE2) sts PCICR, r16			; enable PCINT2 (grupo D)
 	ldi r16, (1<<PCINT23) sts PCMSK2, r16		; enable PD7
 	pop r16
