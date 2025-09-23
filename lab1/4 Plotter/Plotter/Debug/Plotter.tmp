@@ -27,50 +27,50 @@
   <tx_head><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>38</LINE></tx_head>
   <tx_tail><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>39</LINE></tx_tail>
   <RESET><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>60</LINE></RESET>
-  <INT0_ISR><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>439</LINE></INT0_ISR>
-  <TIMER0_OVF><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>442</LINE></TIMER0_OVF>
-  <USART_RX_ISR><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>334</LINE></USART_RX_ISR>
-  <USART_UDRE_ISR><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>285</LINE></USART_UDRE_ISR>
-  <USART_INIT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>163</LINE></USART_INIT>
-  <SEND_MENU><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>241</LINE></SEND_MENU>
+  <INT0_ISR><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>435</LINE></INT0_ISR>
+  <TIMER0_OVF><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>438</LINE></TIMER0_OVF>
+  <USART_RX_ISR><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>330</LINE></USART_RX_ISR>
+  <USART_UDRE_ISR><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>281</LINE></USART_UDRE_ISR>
+  <USART_INIT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>159</LINE></USART_INIT>
+  <SEND_MENU><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>237</LINE></SEND_MENU>
   <MAIN><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>90</LINE></MAIN>
   <DRAW><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>102</LINE></DRAW>
   <DRAW_LOOP><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>111</LINE></DRAW_LOOP>
   <DRAW_END><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>126</LINE></DRAW_END>
   <DRAW_TIMER_LOOP><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>120</LINE></DRAW_TIMER_LOOP>
   <S1><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>137</LINE></S1>
-  <L3><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>145</LINE></L3>
-  <USART_SEND><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>182</LINE></USART_SEND>
-  <usart_send_full><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>230</LINE></usart_send_full>
-  <MENU_TEXT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1050</LINE></MENU_TEXT>
-  <SEND_MENU_LOOP><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>248</LINE></SEND_MENU_LOOP>
-  <SEND_MENU_END><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>255</LINE></SEND_MENU_END>
-  <SEND_ERROR><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>261</LINE></SEND_ERROR>
-  <ERROR_TEXT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1061</LINE></ERROR_TEXT>
-  <SEND_ERROR_LOOP><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>268</LINE></SEND_ERROR_LOOP>
-  <SEND_ERROR_END><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>275</LINE></SEND_ERROR_END>
-  <usart_udre_send><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>307</LINE></usart_udre_send>
-  <usart_udre_exit><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>323</LINE></usart_udre_exit>
-  <USART_RX_ISR_CASE_0><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>363</LINE></USART_RX_ISR_CASE_0>
-  <USART_RX_ISR_CASE_1><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>368</LINE></USART_RX_ISR_CASE_1>
-  <USART_RX_ISR_CASE_2><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>373</LINE></USART_RX_ISR_CASE_2>
-  <USART_RX_ISR_CASE_3><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>378</LINE></USART_RX_ISR_CASE_3>
-  <USART_RX_ISR_CASE_4><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>383</LINE></USART_RX_ISR_CASE_4>
-  <USART_RX_ISR_CASE_5><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>388</LINE></USART_RX_ISR_CASE_5>
-  <USART_RX_ISR_CASE_6><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>393</LINE></USART_RX_ISR_CASE_6>
-  <USART_RX_ISR_CASE_T><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>398</LINE></USART_RX_ISR_CASE_T>
-  <USART_RX_ISR_CASE_BERSERK><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>419</LINE></USART_RX_ISR_CASE_BERSERK>
-  <USART_RX_ISR_CASE_DEFAULT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>424</LINE></USART_RX_ISR_CASE_DEFAULT>
-  <MOVE_UP><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1042</LINE></MOVE_UP>
-  <USART_RX_ISR_END><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>430</LINE></USART_RX_ISR_END>
-  <MOVE_DOWN><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1038</LINE></MOVE_DOWN>
-  <MOVE_LEFT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1046</LINE></MOVE_LEFT>
-  <MOVE_RIGHT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1034</LINE></MOVE_RIGHT>
-  <TRIANGLE_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>450</LINE></TRIANGLE_DATA>
-  <CIRCLE_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>476</LINE></CIRCLE_DATA>
-  <CROSS_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>467</LINE></CROSS_DATA>
-  <BERSERK_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1014</LINE></BERSERK_DATA>
-  <SQUARE_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>458</LINE></SQUARE_DATA>
-  <MOVE_START><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1029</LINE></MOVE_START>
+  <L1><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>144</LINE></L1>
+  <USART_SEND><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>178</LINE></USART_SEND>
+  <usart_send_full><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>226</LINE></usart_send_full>
+  <MENU_TEXT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1329</LINE></MENU_TEXT>
+  <SEND_MENU_LOOP><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>244</LINE></SEND_MENU_LOOP>
+  <SEND_MENU_END><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>251</LINE></SEND_MENU_END>
+  <SEND_ERROR><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>257</LINE></SEND_ERROR>
+  <ERROR_TEXT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1340</LINE></ERROR_TEXT>
+  <SEND_ERROR_LOOP><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>264</LINE></SEND_ERROR_LOOP>
+  <SEND_ERROR_END><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>271</LINE></SEND_ERROR_END>
+  <usart_udre_send><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>303</LINE></usart_udre_send>
+  <usart_udre_exit><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>319</LINE></usart_udre_exit>
+  <USART_RX_ISR_CASE_0><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>359</LINE></USART_RX_ISR_CASE_0>
+  <USART_RX_ISR_CASE_1><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>364</LINE></USART_RX_ISR_CASE_1>
+  <USART_RX_ISR_CASE_2><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>369</LINE></USART_RX_ISR_CASE_2>
+  <USART_RX_ISR_CASE_3><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>374</LINE></USART_RX_ISR_CASE_3>
+  <USART_RX_ISR_CASE_4><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>379</LINE></USART_RX_ISR_CASE_4>
+  <USART_RX_ISR_CASE_5><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>384</LINE></USART_RX_ISR_CASE_5>
+  <USART_RX_ISR_CASE_6><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>389</LINE></USART_RX_ISR_CASE_6>
+  <USART_RX_ISR_CASE_T><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>394</LINE></USART_RX_ISR_CASE_T>
+  <USART_RX_ISR_CASE_BERSERK><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>415</LINE></USART_RX_ISR_CASE_BERSERK>
+  <USART_RX_ISR_CASE_DEFAULT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>420</LINE></USART_RX_ISR_CASE_DEFAULT>
+  <MOVE_UP><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1321</LINE></MOVE_UP>
+  <USART_RX_ISR_END><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>426</LINE></USART_RX_ISR_END>
+  <MOVE_DOWN><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1317</LINE></MOVE_DOWN>
+  <MOVE_LEFT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1325</LINE></MOVE_LEFT>
+  <MOVE_RIGHT><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1313</LINE></MOVE_RIGHT>
+  <TRIANGLE_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>446</LINE></TRIANGLE_DATA>
+  <CIRCLE_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>472</LINE></CIRCLE_DATA>
+  <CROSS_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>463</LINE></CROSS_DATA>
+  <BERSERK_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1293</LINE></BERSERK_DATA>
+  <SQUARE_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>454</LINE></SQUARE_DATA>
+  <MOVE_START><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>1308</LINE></MOVE_START>
  </LABELS>
 </ASSEMBLER_INFO>
