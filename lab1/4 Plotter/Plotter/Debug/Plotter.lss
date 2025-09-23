@@ -1,10 +1,10 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm Fri Sep 12 16:30:53 2025
+AVRASM ver. 2.2.8  D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm Tue Sep 23 19:50:24 2025
 
-[builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
-C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
-[builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
-C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
+[builtin](2): Including file 'D:/Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
+D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): Including file 'D:/Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
+[builtin](2): Including file 'D:/Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
+D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): Including file 'D:/Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
                                  
                                  
                                  
@@ -1206,9 +1206,12 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
                                  	; Set baud rate
 000141 9310 00c5                 	sts UBRR0H, r17
 000143 9300 00c4                 	sts UBRR0L, r16
-                                 	; Enable receiver and transmitter, and interruptions
-000145 e908                      	ldi r16, (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0)
+                                 
+                                 	; Enable receiver, transmitter
+                                 	; and RX interruptions
+000145 e908                      	ldi r16, 0b10011000
 000146 9300 00c1                 	sts UCSR0B,r16
+                                 
                                  	; Set frame format: 8data, 2stop bit
 000148 e00e                      	ldi r16, (1<<USBS0)|(3<<UCSZ00)
 000149 9300 00c2                 	sts UCSR0C,r16
@@ -1253,7 +1256,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 000164 6240                          ori  r20, (1<<UDRIE0)
 000165 9340 00c1                     sts  UCSR0B, r20
                                  
-000167 9488                          clc                            ; success
+000167 9488                          clc ; success
                                  
 000168 91ff                      	pop ZH
 000169 91ef                      	pop ZL
@@ -1279,8 +1282,8 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 000178 93ef                      	push ZL
 000179 93ff                      	push ZH
                                  	
-00017a e6ee
-00017b e0f6                      	ldi ZL, low(MENU_TEXT<<1) ldi ZH, high(MENU_TEXT<<1)
+00017a e7ea
+00017b e0fa                      	ldi ZL, low(MENU_TEXT<<1) ldi ZH, high(MENU_TEXT<<1)
                                  
                                  	SEND_MENU_LOOP:
 00017c 9105                      	lpm r16, Z+
@@ -1300,8 +1303,8 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 000186 93ef                      	push ZL
 000187 93ff                      	push ZH
                                  		
-000188 eee0
-000189 e0f6                      	ldi ZL, low(ERROR_TEXT<<1) ldi ZH, high(ERROR_TEXT<<1)
+000188 eeec
+000189 e0fa                      	ldi ZL, low(ERROR_TEXT<<1) ldi ZH, high(ERROR_TEXT<<1)
                                  
                                  	SEND_ERROR_LOOP:
 00018a 9105                      	lpm r16, Z+
@@ -1399,26 +1402,26 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 0001d1 c036                      	rjmp USART_RX_ISR_CASE_DEFAULT 
                                  
                                  	USART_RX_ISR_CASE_0: ; UP
-0001d2 e606
-0001d3 e016                      		ldi r16, low(MOVE_UP<<1) ldi r17, high(MOVE_UP<<1)
+0001d2 e702
+0001d3 e01a                      		ldi r16, low(MOVE_UP<<1) ldi r17, high(MOVE_UP<<1)
 0001d4 df3f                      		rcall DRAW
 0001d5 c035                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_1: ; DOWN
-0001d6 e602
-0001d7 e016                      		ldi r16, low(MOVE_DOWN<<1) ldi r17, high(MOVE_DOWN<<1)
+0001d6 e60e
+0001d7 e01a                      		ldi r16, low(MOVE_DOWN<<1) ldi r17, high(MOVE_DOWN<<1)
 0001d8 df3b                      		rcall DRAW
 0001d9 c031                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_2: ; LEFT
-0001da e60a
-0001db e016                      		ldi r16, low(MOVE_LEFT<<1) ldi r17, high(MOVE_LEFT<<1)
+0001da e706
+0001db e01a                      		ldi r16, low(MOVE_LEFT<<1) ldi r17, high(MOVE_LEFT<<1)
 0001dc df37                      		rcall DRAW
 0001dd c02d                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_3: ; RIGHT
-0001de e50e
-0001df e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+0001de e60a
+0001df e01a                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 0001e0 df33                      		rcall DRAW
 0001e1 c029                      		rjmp USART_RX_ISR_END
                                  
@@ -1445,20 +1448,20 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 0001ee e000
 0001ef e016                      		ldi r16, low(TRIANGLE_DATA<<1) ldi r17, high(TRIANGLE_DATA<<1)
 0001f0 df23                      		rcall DRAW
-0001f1 e50e
-0001f2 e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+0001f1 e60a
+0001f2 e01a                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 0001f3 df20                      		rcall DRAW
-0001f4 e50e
-0001f5 e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+0001f4 e60a
+0001f5 e01a                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 0001f6 df1d                      		rcall DRAW
 0001f7 e208
 0001f8 e016                      		ldi r16, low(CIRCLE_DATA<<1) ldi r17, high(CIRCLE_DATA<<1)
 0001f9 df1a                      		rcall DRAW
-0001fa e50e
-0001fb e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+0001fa e60a
+0001fb e01a                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 0001fc df17                      		rcall DRAW
-0001fd e50e
-0001fe e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+0001fd e60a
+0001fe e01a                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 0001ff df14                      		rcall DRAW
 000200 e10a
 000201 e016                      		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
@@ -1469,8 +1472,8 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 000203 c007                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_BERSERK: ; BRAND OF SACRIFICE
-000204 e30e
-000205 e016                      		ldi r16, low(BERSERK_DATA<<1) ldi r17, high(BERSERK_DATA<<1)
+000204 e40a
+000205 e01a                      		ldi r16, low(BERSERK_DATA<<1) ldi r17, high(BERSERK_DATA<<1)
 000206 df0d                      		rcall DRAW
 000207 c003                      		rjmp USART_RX_ISR_END
                                  
@@ -1527,123 +1530,648 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 000313 0001                      	.db 1, STOP
                                  
                                  CIRCLE_DATA:
-000314 0401                      	.db 1, SOLENOID_DOWN	
-000315 4402                      	.db 2, SOLENOID_DOWN + RIGHT		
-000316 6401                      	.db 1, SOLENOID_DOWN + UP + RIGHT		
-000317 2402                      	.db 2, SOLENOID_DOWN + UP				
-000318 a401                      	.db 1, SOLENOID_DOWN + UP + LEFT			
-000319 8402                      	.db 2, SOLENOID_DOWN + LEFT		
-00031a 9401                      	.db 1, SOLENOID_DOWN + DOWN + LEFT		
-00031b 1402                      	.db 2, SOLENOID_DOWN + DOWN		
-00031c 5401                      	.db 1, SOLENOID_DOWN + DOWN + RIGHT		
-00031d 0801                      	.db 1, SOLENOID_UP
-00031e 0001                      	.db 1, STOP		
+000314 90b8                      	.db 3000, LEFT + DOWN
+000315 90b8                      	.db 3000, LEFT + DOWN
+000316 90b8                      	.db 3000, LEFT + DOWN
+000317 90b8                      	.db 3000, LEFT + DOWN
+000318 90b8                      	.db 3000, LEFT + DOWN
+000319 90b8                      	.db 3000, LEFT + DOWN
+00031a 90b8                      	.db 3000, LEFT + DOWN
+00031b 90b8                      	.db 3000, LEFT + DOWN
+00031c 90b8                      	.db 3000, LEFT + DOWN
+00031d 90b8                      	.db 3000, LEFT + DOWN
+00031e 90b8                      	.db 3000, LEFT + DOWN
+00031f 80b8                      	.db 3000, LEFT
+000320 80b8                      	.db 3000, LEFT
+000321 80b8                      	.db 3000, LEFT
+000322 80b8                      	.db 3000, LEFT
+000323 80b8                      	.db 3000, LEFT
+000324 80b8                      	.db 3000, LEFT
+000325 80b8                      	.db 3000, LEFT
+000326 80b8                      	.db 3000, LEFT
+000327 80b8                      	.db 3000, LEFT
+000328 80b8                      	.db 3000, LEFT
+000329 80b8                      	.db 3000, LEFT
+00032a 0401                      	.db 1, SOLENOID_DOWN	
+                                 	; Quadrant 1: RIGHT & UP
+00032b 2064                      	.db 100, UP
+00032c 6002                      	.db 2, RIGHT + UP
+00032d 2062                      	.db 98, UP
+00032e 6005                      	.db 5, RIGHT + UP
+00032f 205f                      	.db 95, UP
+000330 6007                      	.db 7, RIGHT + UP
+000331 205d                      	.db 93, UP
+000332 600a                      	.db 10, RIGHT + UP
+000333 205a                      	.db 90, UP
+000334 600d                      	.db 13, RIGHT + UP
+000335 2057                      	.db 87, UP
+000336 600f                      	.db 15, RIGHT + UP
+000337 2055                      	.db 85, UP
+000338 6012                      	.db 18, RIGHT + UP
+000339 2052                      	.db 82, UP
+00033a 6014                      	.db 20, RIGHT + UP
+00033b 2050                      	.db 80, UP
+00033c 6017                      	.db 23, RIGHT + UP
+00033d 204d                      	.db 77, UP
+00033e 6019                      	.db 25, RIGHT + UP
+00033f 204b                      	.db 75, UP
+000340 601c                      	.db 28, RIGHT + UP
+000341 2048                      	.db 72, UP
+000342 601f                      	.db 31, RIGHT + UP
+000343 2045                      	.db 69, UP
+000344 6022                      	.db 34, RIGHT + UP
+000345 2042                      	.db 66, UP
+000346 6024                      	.db 36, RIGHT + UP
+000347 2040                      	.db 64, UP
+000348 6027                      	.db 39, RIGHT + UP
+000349 203d                      	.db 61, UP
+00034a 602a                      	.db 42, RIGHT + UP
+00034b 203a                      	.db 58, UP
+00034c 602d                      	.db 45, RIGHT + UP
+00034d 2037                      	.db 55, UP
+00034e 6030                      	.db 48, RIGHT + UP
+00034f 2034                      	.db 52, UP
+000350 6033                      	.db 51, RIGHT + UP
+000351 2031                      	.db 49, UP
+000352 6036                      	.db 54, RIGHT + UP
+000353 202e                      	.db 46, UP
+000354 603a                      	.db 58, RIGHT + UP
+000355 202a                      	.db 42, UP
+000356 603d                      	.db 61, RIGHT + UP
+000357 2027                      	.db 39, UP
+000358 6041                      	.db 65, RIGHT + UP
+000359 2023                      	.db 35, UP
+00035a 6044                      	.db 68, RIGHT + UP
+00035b 2020                      	.db 32, UP
+00035c 6048                      	.db 72, RIGHT + UP
+00035d 201c                      	.db 28, UP
+00035e 604c                      	.db 76, RIGHT + UP
+00035f 2018                      	.db 24, UP
+000360 6050                      	.db 80, RIGHT + UP
+000361 2014                      	.db 20, UP
+000362 6054                      	.db 84, RIGHT + UP
+000363 2010                      	.db 16, UP
+000364 6058                      	.db 88, RIGHT + UP
+000365 200c                      	.db 12, UP
+000366 605d                      	.db 93, RIGHT + UP
+000367 2007                      	.db 7, UP
+000368 6062                      	.db 98, RIGHT + UP
+000369 2002                      	.db 2, UP
+00036a 6062                      	.db 98, RIGHT + UP
+00036b 4002                      	.db 2, RIGHT
+00036c 605d                      	.db 93, RIGHT + UP
+00036d 4007                      	.db 7, RIGHT
+00036e 6058                      	.db 88, RIGHT + UP
+00036f 400c                      	.db 12, RIGHT
+000370 6054                      	.db 84, RIGHT + UP
+000371 4010                      	.db 16, RIGHT
+000372 6050                      	.db 80, RIGHT + UP
+000373 4014                      	.db 20, RIGHT
+000374 604c                      	.db 76, RIGHT + UP
+000375 4018                      	.db 24, RIGHT
+000376 6048                      	.db 72, RIGHT + UP
+000377 401c                      	.db 28, RIGHT
+000378 6044                      	.db 68, RIGHT + UP
+000379 4020                      	.db 32, RIGHT
+00037a 6041                      	.db 65, RIGHT + UP
+00037b 4023                      	.db 35, RIGHT
+00037c 603d                      	.db 61, RIGHT + UP
+00037d 4027                      	.db 39, RIGHT
+00037e 603a                      	.db 58, RIGHT + UP
+00037f 402a                      	.db 42, RIGHT
+000380 6036                      	.db 54, RIGHT + UP
+000381 402e                      	.db 46, RIGHT
+000382 6033                      	.db 51, RIGHT + UP
+000383 4031                      	.db 49, RIGHT
+000384 6030                      	.db 48, RIGHT + UP
+000385 4034                      	.db 52, RIGHT
+000386 602d                      	.db 45, RIGHT + UP
+000387 4037                      	.db 55, RIGHT
+000388 602a                      	.db 42, RIGHT + UP
+000389 403a                      	.db 58, RIGHT
+00038a 6027                      	.db 39, RIGHT + UP
+00038b 403d                      	.db 61, RIGHT
+00038c 6024                      	.db 36, RIGHT + UP
+00038d 4040                      	.db 64, RIGHT
+00038e 6022                      	.db 34, RIGHT + UP
+00038f 4042                      	.db 66, RIGHT
+000390 601f                      	.db 31, RIGHT + UP
+000391 4045                      	.db 69, RIGHT
+000392 601c                      	.db 28, RIGHT + UP
+000393 4048                      	.db 72, RIGHT
+000394 6019                      	.db 25, RIGHT + UP
+000395 404b                      	.db 75, RIGHT
+000396 6017                      	.db 23, RIGHT + UP
+000397 404d                      	.db 77, RIGHT
+000398 6014                      	.db 20, RIGHT + UP
+000399 4050                      	.db 80, RIGHT
+00039a 6012                      	.db 18, RIGHT + UP
+00039b 4052                      	.db 82, RIGHT
+00039c 600f                      	.db 15, RIGHT + UP
+00039d 4055                      	.db 85, RIGHT
+00039e 600d                      	.db 13, RIGHT + UP
+00039f 4057                      	.db 87, RIGHT
+0003a0 600a                      	.db 10, RIGHT + UP
+0003a1 405a                      	.db 90, RIGHT
+0003a2 6007                      	.db 7, RIGHT + UP
+0003a3 405d                      	.db 93, RIGHT
+0003a4 6005                      	.db 5, RIGHT + UP
+0003a5 405f                      	.db 95, RIGHT
+0003a6 6002                      	.db 2, RIGHT + UP
+0003a7 4062                      	.db 98, RIGHT
+0003a8 4064                      	.db 100, RIGHT
+                                 
+                                 ; Quadrant 2: DOWN & RIGHT
+0003a9 4064                      	.db 100, RIGHT
+0003aa 5002                      	.db 2, DOWN + RIGHT
+0003ab 4062                      	.db 98, RIGHT
+0003ac 5005                      	.db 5, DOWN + RIGHT
+0003ad 405f                      	.db 95, RIGHT
+0003ae 5007                      	.db 7, DOWN + RIGHT
+0003af 405d                      	.db 93, RIGHT
+0003b0 500a                      	.db 10, DOWN + RIGHT
+0003b1 405a                      	.db 90, RIGHT
+0003b2 500d                      	.db 13, DOWN + RIGHT
+0003b3 4057                      	.db 87, RIGHT
+0003b4 500f                      	.db 15, DOWN + RIGHT
+0003b5 4055                      	.db 85, RIGHT
+0003b6 5012                      	.db 18, DOWN + RIGHT
+0003b7 4052                      	.db 82, RIGHT
+0003b8 5014                      	.db 20, DOWN + RIGHT
+0003b9 4050                      	.db 80, RIGHT
+0003ba 5017                      	.db 23, DOWN + RIGHT
+0003bb 404d                      	.db 77, RIGHT
+0003bc 5019                      	.db 25, DOWN + RIGHT
+0003bd 404b                      	.db 75, RIGHT
+0003be 501c                      	.db 28, DOWN + RIGHT
+0003bf 4048                      	.db 72, RIGHT
+0003c0 501f                      	.db 31, DOWN + RIGHT
+0003c1 4045                      	.db 69, RIGHT
+0003c2 5022                      	.db 34, DOWN + RIGHT
+0003c3 4042                      	.db 66, RIGHT
+0003c4 5024                      	.db 36, DOWN + RIGHT
+0003c5 4040                      	.db 64, RIGHT
+0003c6 5027                      	.db 39, DOWN + RIGHT
+0003c7 403d                      	.db 61, RIGHT
+0003c8 502a                      	.db 42, DOWN + RIGHT
+0003c9 403a                      	.db 58, RIGHT
+0003ca 502d                      	.db 45, DOWN + RIGHT
+0003cb 4037                      	.db 55, RIGHT
+0003cc 5030                      	.db 48, DOWN + RIGHT
+0003cd 4034                      	.db 52, RIGHT
+0003ce 5033                      	.db 51, DOWN + RIGHT
+0003cf 4031                      	.db 49, RIGHT
+0003d0 5036                      	.db 54, DOWN + RIGHT
+0003d1 402e                      	.db 46, RIGHT
+0003d2 503a                      	.db 58, DOWN + RIGHT
+0003d3 402a                      	.db 42, RIGHT
+0003d4 503d                      	.db 61, DOWN + RIGHT
+0003d5 4027                      	.db 39, RIGHT
+0003d6 5041                      	.db 65, DOWN + RIGHT
+0003d7 4023                      	.db 35, RIGHT
+0003d8 5044                      	.db 68, DOWN + RIGHT
+0003d9 4020                      	.db 32, RIGHT
+0003da 5048                      	.db 72, DOWN + RIGHT
+0003db 401c                      	.db 28, RIGHT
+0003dc 504c                      	.db 76, DOWN + RIGHT
+0003dd 4018                      	.db 24, RIGHT
+0003de 5050                      	.db 80, DOWN + RIGHT
+0003df 4014                      	.db 20, RIGHT
+0003e0 5054                      	.db 84, DOWN + RIGHT
+0003e1 4010                      	.db 16, RIGHT
+0003e2 5058                      	.db 88, DOWN + RIGHT
+0003e3 400c                      	.db 12, RIGHT
+0003e4 505d                      	.db 93, DOWN + RIGHT
+0003e5 4007                      	.db 7, RIGHT
+0003e6 5062                      	.db 98, DOWN + RIGHT
+0003e7 4002                      	.db 2, RIGHT
+0003e8 5062                      	.db 98, DOWN + RIGHT
+0003e9 1002                      	.db 2, DOWN
+0003ea 505d                      	.db 93, DOWN + RIGHT
+0003eb 1007                      	.db 7, DOWN
+0003ec 5058                      	.db 88, DOWN + RIGHT
+0003ed 100c                      	.db 12, DOWN
+0003ee 5054                      	.db 84, DOWN + RIGHT
+0003ef 1010                      	.db 16, DOWN
+0003f0 5050                      	.db 80, DOWN + RIGHT
+0003f1 1014                      	.db 20, DOWN
+0003f2 504c                      	.db 76, DOWN + RIGHT
+0003f3 1018                      	.db 24, DOWN
+0003f4 5048                      	.db 72, DOWN + RIGHT
+0003f5 101c                      	.db 28, DOWN
+0003f6 5044                      	.db 68, DOWN + RIGHT
+0003f7 1020                      	.db 32, DOWN
+0003f8 5041                      	.db 65, DOWN + RIGHT
+0003f9 1023                      	.db 35, DOWN
+0003fa 503d                      	.db 61, DOWN + RIGHT
+0003fb 1027                      	.db 39, DOWN
+0003fc 503a                      	.db 58, DOWN + RIGHT
+0003fd 102a                      	.db 42, DOWN
+0003fe 5036                      	.db 54, DOWN + RIGHT
+0003ff 102e                      	.db 46, DOWN
+000400 5033                      	.db 51, DOWN + RIGHT
+000401 1031                      	.db 49, DOWN
+000402 5030                      	.db 48, DOWN + RIGHT
+000403 1034                      	.db 52, DOWN
+000404 502d                      	.db 45, DOWN + RIGHT
+000405 1037                      	.db 55, DOWN
+000406 502a                      	.db 42, DOWN + RIGHT
+000407 103a                      	.db 58, DOWN
+000408 5027                      	.db 39, DOWN + RIGHT
+000409 103d                      	.db 61, DOWN
+00040a 5024                      	.db 36, DOWN + RIGHT
+00040b 1040                      	.db 64, DOWN
+00040c 5022                      	.db 34, DOWN + RIGHT
+00040d 1042                      	.db 66, DOWN
+00040e 501f                      	.db 31, DOWN + RIGHT
+00040f 1045                      	.db 69, DOWN
+000410 501c                      	.db 28, DOWN + RIGHT
+000411 1048                      	.db 72, DOWN
+000412 5019                      	.db 25, DOWN + RIGHT
+000413 104b                      	.db 75, DOWN
+000414 5017                      	.db 23, DOWN + RIGHT
+000415 104d                      	.db 77, DOWN
+000416 5014                      	.db 20, DOWN + RIGHT
+000417 1050                      	.db 80, DOWN
+000418 5012                      	.db 18, DOWN + RIGHT
+000419 1052                      	.db 82, DOWN
+00041a 500f                      	.db 15, DOWN + RIGHT
+00041b 1055                      	.db 85, DOWN
+00041c 500d                      	.db 13, DOWN + RIGHT
+00041d 1057                      	.db 87, DOWN
+00041e 500a                      	.db 10, DOWN + RIGHT
+00041f 105a                      	.db 90, DOWN
+000420 5007                      	.db 7, DOWN + RIGHT
+000421 105d                      	.db 93, DOWN
+000422 5005                      	.db 5, DOWN + RIGHT
+000423 105f                      	.db 95, DOWN
+000424 5002                      	.db 2, DOWN + RIGHT
+000425 1062                      	.db 98, DOWN
+000426 1064                      	.db 100, DOWN
+                                 
+                                 ; Quadrant 3: LEFT & DOWN
+000427 1064                      	.db 100, DOWN
+000428 9002                      	.db 2, LEFT + DOWN
+000429 1062                      	.db 98, DOWN
+00042a 9005                      	.db 5, LEFT + DOWN
+00042b 105f                      	.db 95, DOWN
+00042c 9007                      	.db 7, LEFT + DOWN
+00042d 105d                      	.db 93, DOWN
+00042e 900a                      	.db 10, LEFT + DOWN
+00042f 105a                      	.db 90, DOWN
+000430 900d                      	.db 13, LEFT + DOWN
+000431 1057                      	.db 87, DOWN
+000432 900f                      	.db 15, LEFT + DOWN
+000433 1055                      	.db 85, DOWN
+000434 9012                      	.db 18, LEFT + DOWN
+000435 1052                      	.db 82, DOWN
+000436 9014                      	.db 20, LEFT + DOWN
+000437 1050                      	.db 80, DOWN
+000438 9017                      	.db 23, LEFT + DOWN
+000439 104d                      	.db 77, DOWN
+00043a 9019                      	.db 25, LEFT + DOWN
+00043b 104b                      	.db 75, DOWN
+00043c 901c                      	.db 28, LEFT + DOWN
+00043d 1048                      	.db 72, DOWN
+00043e 901f                      	.db 31, LEFT + DOWN
+00043f 1045                      	.db 69, DOWN
+000440 9022                      	.db 34, LEFT + DOWN
+000441 1042                      	.db 66, DOWN
+000442 9024                      	.db 36, LEFT + DOWN
+000443 1040                      	.db 64, DOWN
+000444 9027                      	.db 39, LEFT + DOWN
+000445 103d                      	.db 61, DOWN
+000446 902a                      	.db 42, LEFT + DOWN
+000447 103a                      	.db 58, DOWN
+000448 902d                      	.db 45, LEFT + DOWN
+000449 1037                      	.db 55, DOWN
+00044a 9030                      	.db 48, LEFT + DOWN
+00044b 1034                      	.db 52, DOWN
+00044c 9033                      	.db 51, LEFT + DOWN
+00044d 1031                      	.db 49, DOWN
+00044e 9036                      	.db 54, LEFT + DOWN
+00044f 102e                      	.db 46, DOWN
+000450 903a                      	.db 58, LEFT + DOWN
+000451 102a                      	.db 42, DOWN
+000452 903d                      	.db 61, LEFT + DOWN
+000453 1027                      	.db 39, DOWN
+000454 9041                      	.db 65, LEFT + DOWN
+000455 1023                      	.db 35, DOWN
+000456 9044                      	.db 68, LEFT + DOWN
+000457 1020                      	.db 32, DOWN
+000458 9048                      	.db 72, LEFT + DOWN
+000459 101c                      	.db 28, DOWN
+00045a 904c                      	.db 76, LEFT + DOWN
+00045b 1018                      	.db 24, DOWN
+00045c 9050                      	.db 80, LEFT + DOWN
+00045d 1014                      	.db 20, DOWN
+00045e 9054                      	.db 84, LEFT + DOWN
+00045f 1010                      	.db 16, DOWN
+000460 9058                      	.db 88, LEFT + DOWN
+000461 100c                      	.db 12, DOWN
+000462 905d                      	.db 93, LEFT + DOWN
+000463 1007                      	.db 7, DOWN
+000464 9062                      	.db 98, LEFT + DOWN
+000465 1002                      	.db 2, DOWN
+000466 9062                      	.db 98, LEFT + DOWN
+000467 8002                      	.db 2, LEFT
+000468 905d                      	.db 93, LEFT + DOWN
+000469 8007                      	.db 7, LEFT
+00046a 9058                      	.db 88, LEFT + DOWN
+00046b 800c                      	.db 12, LEFT
+00046c 9054                      	.db 84, LEFT + DOWN
+00046d 8010                      	.db 16, LEFT
+00046e 9050                      	.db 80, LEFT + DOWN
+00046f 8014                      	.db 20, LEFT
+000470 904c                      	.db 76, LEFT + DOWN
+000471 8018                      	.db 24, LEFT
+000472 9048                      	.db 72, LEFT + DOWN
+000473 801c                      	.db 28, LEFT
+000474 9044                      	.db 68, LEFT + DOWN
+000475 8020                      	.db 32, LEFT
+000476 9041                      	.db 65, LEFT + DOWN
+000477 8023                      	.db 35, LEFT
+000478 903d                      	.db 61, LEFT + DOWN
+000479 8027                      	.db 39, LEFT
+00047a 903a                      	.db 58, LEFT + DOWN
+00047b 802a                      	.db 42, LEFT
+00047c 9036                      	.db 54, LEFT + DOWN
+00047d 802e                      	.db 46, LEFT
+00047e 9033                      	.db 51, LEFT + DOWN
+00047f 8031                      	.db 49, LEFT
+000480 9030                      	.db 48, LEFT + DOWN
+000481 8034                      	.db 52, LEFT
+000482 902d                      	.db 45, LEFT + DOWN
+000483 8037                      	.db 55, LEFT
+000484 902a                      	.db 42, LEFT + DOWN
+000485 803a                      	.db 58, LEFT
+000486 9027                      	.db 39, LEFT + DOWN
+000487 803d                      	.db 61, LEFT
+000488 9024                      	.db 36, LEFT + DOWN
+000489 8040                      	.db 64, LEFT
+00048a 9022                      	.db 34, LEFT + DOWN
+00048b 8042                      	.db 66, LEFT
+00048c 901f                      	.db 31, LEFT + DOWN
+00048d 8045                      	.db 69, LEFT
+00048e 901c                      	.db 28, LEFT + DOWN
+00048f 8048                      	.db 72, LEFT
+000490 9019                      	.db 25, LEFT + DOWN
+000491 804b                      	.db 75, LEFT
+000492 9017                      	.db 23, LEFT + DOWN
+000493 804d                      	.db 77, LEFT
+000494 9014                      	.db 20, LEFT + DOWN
+000495 8050                      	.db 80, LEFT
+000496 9012                      	.db 18, LEFT + DOWN
+000497 8052                      	.db 82, LEFT
+000498 900f                      	.db 15, LEFT + DOWN
+000499 8055                      	.db 85, LEFT
+00049a 900d                      	.db 13, LEFT + DOWN
+00049b 8057                      	.db 87, LEFT
+00049c 900a                      	.db 10, LEFT + DOWN
+00049d 805a                      	.db 90, LEFT
+00049e 9007                      	.db 7, LEFT + DOWN
+00049f 805d                      	.db 93, LEFT
+0004a0 9005                      	.db 5, LEFT + DOWN
+0004a1 805f                      	.db 95, LEFT
+0004a2 9002                      	.db 2, LEFT + DOWN
+0004a3 8062                      	.db 98, LEFT
+0004a4 8064                      	.db 100, LEFT
+                                 
+                                 ; Quadrant 4: UP & LEFT
+0004a5 8064                      	.db 100, LEFT
+0004a6 a002                      	.db 2, UP + LEFT
+0004a7 8062                      	.db 98, LEFT
+0004a8 a005                      	.db 5, UP + LEFT
+0004a9 805f                      	.db 95, LEFT
+0004aa a007                      	.db 7, UP + LEFT
+0004ab 805d                      	.db 93, LEFT
+0004ac a00a                      	.db 10, UP + LEFT
+0004ad 805a                      	.db 90, LEFT
+0004ae a00d                      	.db 13, UP + LEFT
+0004af 8057                      	.db 87, LEFT
+0004b0 a00f                      	.db 15, UP + LEFT
+0004b1 8055                      	.db 85, LEFT
+0004b2 a012                      	.db 18, UP + LEFT
+0004b3 8052                      	.db 82, LEFT
+0004b4 a014                      	.db 20, UP + LEFT
+0004b5 8050                      	.db 80, LEFT
+0004b6 a017                      	.db 23, UP + LEFT
+0004b7 804d                      	.db 77, LEFT
+0004b8 a019                      	.db 25, UP + LEFT
+0004b9 804b                      	.db 75, LEFT
+0004ba a01c                      	.db 28, UP + LEFT
+0004bb 8048                      	.db 72, LEFT
+0004bc a01f                      	.db 31, UP + LEFT
+0004bd 8045                      	.db 69, LEFT
+0004be a022                      	.db 34, UP + LEFT
+0004bf 8042                      	.db 66, LEFT
+0004c0 a024                      	.db 36, UP + LEFT
+0004c1 8040                      	.db 64, LEFT
+0004c2 a027                      	.db 39, UP + LEFT
+0004c3 803d                      	.db 61, LEFT
+0004c4 a02a                      	.db 42, UP + LEFT
+0004c5 803a                      	.db 58, LEFT
+0004c6 a02d                      	.db 45, UP + LEFT
+0004c7 8037                      	.db 55, LEFT
+0004c8 a030                      	.db 48, UP + LEFT
+0004c9 8034                      	.db 52, LEFT
+0004ca a033                      	.db 51, UP + LEFT
+0004cb 8031                      	.db 49, LEFT
+0004cc a036                      	.db 54, UP + LEFT
+0004cd 802e                      	.db 46, LEFT
+0004ce a03a                      	.db 58, UP + LEFT
+0004cf 802a                      	.db 42, LEFT
+0004d0 a03d                      	.db 61, UP + LEFT
+0004d1 8027                      	.db 39, LEFT
+0004d2 a041                      	.db 65, UP + LEFT
+0004d3 8023                      	.db 35, LEFT
+0004d4 a044                      	.db 68, UP + LEFT
+0004d5 8020                      	.db 32, LEFT
+0004d6 a048                      	.db 72, UP + LEFT
+0004d7 801c                      	.db 28, LEFT
+0004d8 a04c                      	.db 76, UP + LEFT
+0004d9 8018                      	.db 24, LEFT
+0004da a050                      	.db 80, UP + LEFT
+0004db 8014                      	.db 20, LEFT
+0004dc a054                      	.db 84, UP + LEFT
+0004dd 8010                      	.db 16, LEFT
+0004de a058                      	.db 88, UP + LEFT
+0004df 800c                      	.db 12, LEFT
+0004e0 a05d                      	.db 93, UP + LEFT
+0004e1 8007                      	.db 7, LEFT
+0004e2 a062                      	.db 98, UP + LEFT
+0004e3 8002                      	.db 2, LEFT
+0004e4 a062                      	.db 98, UP + LEFT
+0004e5 2002                      	.db 2, UP
+0004e6 a05d                      	.db 93, UP + LEFT
+0004e7 2007                      	.db 7, UP
+0004e8 a058                      	.db 88, UP + LEFT
+0004e9 200c                      	.db 12, UP
+0004ea a054                      	.db 84, UP + LEFT
+0004eb 2010                      	.db 16, UP
+0004ec a050                      	.db 80, UP + LEFT
+0004ed 2014                      	.db 20, UP
+0004ee a04c                      	.db 76, UP + LEFT
+0004ef 2018                      	.db 24, UP
+0004f0 a048                      	.db 72, UP + LEFT
+0004f1 201c                      	.db 28, UP
+0004f2 a044                      	.db 68, UP + LEFT
+0004f3 2020                      	.db 32, UP
+0004f4 a041                      	.db 65, UP + LEFT
+0004f5 2023                      	.db 35, UP
+0004f6 a03d                      	.db 61, UP + LEFT
+0004f7 2027                      	.db 39, UP
+0004f8 a03a                      	.db 58, UP + LEFT
+0004f9 202a                      	.db 42, UP
+0004fa a036                      	.db 54, UP + LEFT
+0004fb 202e                      	.db 46, UP
+0004fc a033                      	.db 51, UP + LEFT
+0004fd 2031                      	.db 49, UP
+0004fe a030                      	.db 48, UP + LEFT
+0004ff 2034                      	.db 52, UP
+000500 a02d                      	.db 45, UP + LEFT
+000501 2037                      	.db 55, UP
+000502 a02b                      	.db 43, UP + LEFT
+000503 203a                      	.db 58, UP
+000504 a02a                      	.db 42, UP + LEFT
+000505 203d                      	.db 61, UP
+000506 a028                      	.db 40, UP + LEFT
+000507 2040                      	.db 64, UP
+000508 a027                      	.db 39, UP + LEFT
+000509 2042                      	.db 66, UP
+00050a a023                      	.db 35, UP + LEFT
+00050b 2045                      	.db 69, UP
+00050c a020                      	.db 32, UP + LEFT
+00050d 2048                      	.db 72, UP
+00050e a01c                      	.db 28, UP + LEFT
+00050f 204b                      	.db 75, UP
+000510 a01b                      	.db 27, UP + LEFT
+000511 204d                      	.db 77, UP
+000512 a018                      	.db 24, UP + LEFT
+000513 2050                      	.db 80, UP
+000514 a016                      	.db 22, UP + LEFT
+000515 2052                      	.db 82, UP
+000516 a012                      	.db 18, UP + LEFT
+000517 2055                      	.db 85, UP
+000518 a010                      	.db 16, UP + LEFT
+000519 2057                      	.db 87, UP
+00051a a00d                      	.db 13, UP + LEFT
+00051b 205a                      	.db 90, UP
+00051c a009                      	.db 9, UP + LEFT
+00051d 205d                      	.db 93, UP
+00051e a005                      	.db 5, UP + LEFT
+00051f 205f                      	.db 95, UP
+000520 a005                      	.db 5, UP + LEFT
+000521 2062                      	.db 98, UP
+000522 2064                      	.db 100, UP
+000523 0801                      	.db 1, SOLENOID_UP
+000524 0001                      	.db 1, STOP	
                                  
                                  BERSERK_DATA:
-00031f 0401                      	.db 1, SOLENOID_DOWN
-000320 a402                      	.db 2, SOLENOID_DOWN + UP + LEFT
-000321 6404                      	.db 4, SOLENOID_DOWN + UP + RIGHT
-000322 a401                      	.db 1, SOLENOID_DOWN + UP + LEFT
-000323 0801                      	.db 1, SOLENOID_UP
-000324 8802                      	.db 2, SOLENOID_UP + LEFT
-000325 0401                      	.db 1, SOLENOID_DOWN
-000326 9401                      	.db 1, SOLENOID_DOWN + DOWN + LEFT
-000327 5404                      	.db 4, SOLENOID_DOWN + DOWN + RIGHT
-000328 9402                      	.db 2, SOLENOID_DOWN + DOWN + LEFT
-000329 2407                      	.db 7, SOLENOID_DOWN + UP
-00032a 0801                      	.db 1, SOLENOID_UP
-00032b 0001                      	.db 1, STOP
+000525 0401                      	.db 1, SOLENOID_DOWN
+000526 a402                      	.db 2, SOLENOID_DOWN + UP + LEFT
+000527 6404                      	.db 4, SOLENOID_DOWN + UP + RIGHT
+000528 a401                      	.db 1, SOLENOID_DOWN + UP + LEFT
+000529 0801                      	.db 1, SOLENOID_UP
+00052a 8802                      	.db 2, SOLENOID_UP + LEFT
+00052b 0401                      	.db 1, SOLENOID_DOWN
+00052c 9401                      	.db 1, SOLENOID_DOWN + DOWN + LEFT
+00052d 5404                      	.db 4, SOLENOID_DOWN + DOWN + RIGHT
+00052e 9402                      	.db 2, SOLENOID_DOWN + DOWN + LEFT
+00052f 2407                      	.db 7, SOLENOID_DOWN + UP
+000530 0801                      	.db 1, SOLENOID_UP
+000531 0001                      	.db 1, STOP
                                  
                                  MOVE_START:
-00032c 980f                      	.db 15, SOLENOID_UP + DOWN + LEFT
-00032d 880f                      	.db 15, SOLENOID_UP + LEFT 	
-00032e 0001                      	.db 1, STOP
+000532 980f                      	.db 15, SOLENOID_UP + DOWN + LEFT
+000533 880f                      	.db 15, SOLENOID_UP + LEFT 	
+000534 0001                      	.db 1, STOP
                                  
                                  MOVE_RIGHT:
-00032f 4805                      	.db 5, SOLENOID_UP + RIGHT	
-000330 0001                      	.db 1, STOP
+000535 4805                      	.db 5, SOLENOID_UP + RIGHT	
+000536 0001                      	.db 1, STOP
                                  
                                  MOVE_DOWN:
-000331 1805                      	.db 5, SOLENOID_UP + DOWN
-000332 0001                      	.db 1, STOP
+000537 1805                      	.db 5, SOLENOID_UP + DOWN
+000538 0001                      	.db 1, STOP
                                  
                                  MOVE_UP: 
-000333 2805                      	.db 5, SOLENOID_UP + UP
-000334 0001                      	.db 1, STOP
+000539 2805                      	.db 5, SOLENOID_UP + UP
+00053a 0001                      	.db 1, STOP
                                  
                                  MOVE_LEFT:
-000335 8805                      	.db 5, SOLENOID_UP + LEFT	
-000336 0001                      	.db 1, STOP
+00053b 8805                      	.db 5, SOLENOID_UP + LEFT	
+00053c 0001                      	.db 1, STOP
                                  
                                  MENU_TEXT:
-000337 6c45
-000338 6a69
-000339 2061
-00033a 6e75
-00033b 2061
-00033c 706f
-00033d 6963
-00033e 6e6f
-00033f 0a3a                      	.db "Elija una opcion:", 0x0A
-000340 305b
-000341 205d
-000342 7241
-000343 6972
-000344 6162
-000345 0a20                      	.db "[0] Arriba ", 0x0A
-000346 315b
-000347 205d
-000348 6241
-000349 6a61
-00034a 0a6f                      	.db "[1] Abajo", 0x0A
-00034b 325b
-00034c 205d
-00034d 7a49
-00034e 7571
-00034f 6569
-000350 6472
-000351 0a61                      	.db "[2] Izquierda", 0x0A
-000352 335b
-000353 205d
-000354 6544
-000355 6572
-000356 6863
-000357 0a61                      	.db "[3] Derecha", 0x0A
-000358 345b
-000359 205d
-00035a 7254
-00035b 6169
-00035c 676e
-00035d 6c75
-00035e 0a6f                      	.db "[4] Triangulo", 0x0A
-00035f 355b
-000360 205d
-000361 6943
-000362 6372
-000363 6c75
-000364 0a6f                      	.db "[5] Circulo", 0x0A
-000365 365b
-000366 205d
-000367 7243
-000368 7a75
-000369 0a20                      	.db "[6] Cruz ", 0x0A
-00036a 545b
-00036b 205d
-00036c 6f54
-00036d 6f64
-00036e 0a0a
-00036f 0000                      	.db "[T] Todo", 0x0A, 0x0A, 0, 0
+00053d 6c45
+00053e 6a69
+00053f 2061
+000540 6e75
+000541 2061
+000542 706f
+000543 6963
+000544 6e6f
+000545 0a3a                      	.db "Elija una opcion:", 0x0A
+000546 305b
+000547 205d
+000548 7241
+000549 6972
+00054a 6162
+00054b 0a20                      	.db "[0] Arriba ", 0x0A
+00054c 315b
+00054d 205d
+00054e 6241
+00054f 6a61
+000550 0a6f                      	.db "[1] Abajo", 0x0A
+000551 325b
+000552 205d
+000553 7a49
+000554 7571
+000555 6569
+000556 6472
+000557 0a61                      	.db "[2] Izquierda", 0x0A
+000558 335b
+000559 205d
+00055a 6544
+00055b 6572
+00055c 6863
+00055d 0a61                      	.db "[3] Derecha", 0x0A
+00055e 345b
+00055f 205d
+000560 7254
+000561 6169
+000562 676e
+000563 6c75
+000564 0a6f                      	.db "[4] Triangulo", 0x0A
+000565 355b
+000566 205d
+000567 6943
+000568 6372
+000569 6c75
+00056a 0a6f                      	.db "[5] Circulo", 0x0A
+00056b 365b
+00056c 205d
+00056d 7243
+00056e 7a75
+00056f 0a20                      	.db "[6] Cruz ", 0x0A
+000570 545b
+000571 205d
+000572 6f54
+000573 6f64
+000574 0a0a
+000575 0000                      	.db "[T] Todo", 0x0A, 0x0A, 0, 0
                                  
                                  ERROR_TEXT:
-000370 704f
-000371 6963
-000372 6e6f
-000373 6920
-000374 766e
-000375 6c61
-000376 6469
-000377 2161
-000378 0a0a
+000576 704f
+000577 6963
+000578 6e6f
+000579 6920
+00057a 766e
+00057b 6c61
+00057c 6469
+00057d 2161
+00057e 0a0a
 
 
 RESOURCE USE INFORMATION
@@ -1693,7 +2221,7 @@ Instructions used: 29 out of 113 (25.7%)
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0006f4    558    244    802   32768   2.4%
+[.cseg] 0x000000 0x000b00    558   1280   1838   32768   5.6%
 [.dseg] 0x000100 0x000202      0    258    258    2048  12.6%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

@@ -474,17 +474,542 @@ CROSS_DATA:
 	.db 1, STOP
 
 CIRCLE_DATA:
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT + DOWN
+	.db 3000, LEFT
+	.db 3000, LEFT
+	.db 3000, LEFT
+	.db 3000, LEFT
+	.db 3000, LEFT
+	.db 3000, LEFT
+	.db 3000, LEFT
+	.db 3000, LEFT
+	.db 3000, LEFT
+	.db 3000, LEFT
+	.db 3000, LEFT
 	.db 1, SOLENOID_DOWN	
-	.db 2, SOLENOID_DOWN + RIGHT		
-	.db 1, SOLENOID_DOWN + UP + RIGHT		
-	.db 2, SOLENOID_DOWN + UP				
-	.db 1, SOLENOID_DOWN + UP + LEFT			
-	.db 2, SOLENOID_DOWN + LEFT		
-	.db 1, SOLENOID_DOWN + DOWN + LEFT		
-	.db 2, SOLENOID_DOWN + DOWN		
-	.db 1, SOLENOID_DOWN + DOWN + RIGHT		
+	; Quadrant 1: RIGHT & UP
+	.db 100, UP
+	.db 2, RIGHT + UP
+	.db 98, UP
+	.db 5, RIGHT + UP
+	.db 95, UP
+	.db 7, RIGHT + UP
+	.db 93, UP
+	.db 10, RIGHT + UP
+	.db 90, UP
+	.db 13, RIGHT + UP
+	.db 87, UP
+	.db 15, RIGHT + UP
+	.db 85, UP
+	.db 18, RIGHT + UP
+	.db 82, UP
+	.db 20, RIGHT + UP
+	.db 80, UP
+	.db 23, RIGHT + UP
+	.db 77, UP
+	.db 25, RIGHT + UP
+	.db 75, UP
+	.db 28, RIGHT + UP
+	.db 72, UP
+	.db 31, RIGHT + UP
+	.db 69, UP
+	.db 34, RIGHT + UP
+	.db 66, UP
+	.db 36, RIGHT + UP
+	.db 64, UP
+	.db 39, RIGHT + UP
+	.db 61, UP
+	.db 42, RIGHT + UP
+	.db 58, UP
+	.db 45, RIGHT + UP
+	.db 55, UP
+	.db 48, RIGHT + UP
+	.db 52, UP
+	.db 51, RIGHT + UP
+	.db 49, UP
+	.db 54, RIGHT + UP
+	.db 46, UP
+	.db 58, RIGHT + UP
+	.db 42, UP
+	.db 61, RIGHT + UP
+	.db 39, UP
+	.db 65, RIGHT + UP
+	.db 35, UP
+	.db 68, RIGHT + UP
+	.db 32, UP
+	.db 72, RIGHT + UP
+	.db 28, UP
+	.db 76, RIGHT + UP
+	.db 24, UP
+	.db 80, RIGHT + UP
+	.db 20, UP
+	.db 84, RIGHT + UP
+	.db 16, UP
+	.db 88, RIGHT + UP
+	.db 12, UP
+	.db 93, RIGHT + UP
+	.db 7, UP
+	.db 98, RIGHT + UP
+	.db 2, UP
+	.db 98, RIGHT + UP
+	.db 2, RIGHT
+	.db 93, RIGHT + UP
+	.db 7, RIGHT
+	.db 88, RIGHT + UP
+	.db 12, RIGHT
+	.db 84, RIGHT + UP
+	.db 16, RIGHT
+	.db 80, RIGHT + UP
+	.db 20, RIGHT
+	.db 76, RIGHT + UP
+	.db 24, RIGHT
+	.db 72, RIGHT + UP
+	.db 28, RIGHT
+	.db 68, RIGHT + UP
+	.db 32, RIGHT
+	.db 65, RIGHT + UP
+	.db 35, RIGHT
+	.db 61, RIGHT + UP
+	.db 39, RIGHT
+	.db 58, RIGHT + UP
+	.db 42, RIGHT
+	.db 54, RIGHT + UP
+	.db 46, RIGHT
+	.db 51, RIGHT + UP
+	.db 49, RIGHT
+	.db 48, RIGHT + UP
+	.db 52, RIGHT
+	.db 45, RIGHT + UP
+	.db 55, RIGHT
+	.db 42, RIGHT + UP
+	.db 58, RIGHT
+	.db 39, RIGHT + UP
+	.db 61, RIGHT
+	.db 36, RIGHT + UP
+	.db 64, RIGHT
+	.db 34, RIGHT + UP
+	.db 66, RIGHT
+	.db 31, RIGHT + UP
+	.db 69, RIGHT
+	.db 28, RIGHT + UP
+	.db 72, RIGHT
+	.db 25, RIGHT + UP
+	.db 75, RIGHT
+	.db 23, RIGHT + UP
+	.db 77, RIGHT
+	.db 20, RIGHT + UP
+	.db 80, RIGHT
+	.db 18, RIGHT + UP
+	.db 82, RIGHT
+	.db 15, RIGHT + UP
+	.db 85, RIGHT
+	.db 13, RIGHT + UP
+	.db 87, RIGHT
+	.db 10, RIGHT + UP
+	.db 90, RIGHT
+	.db 7, RIGHT + UP
+	.db 93, RIGHT
+	.db 5, RIGHT + UP
+	.db 95, RIGHT
+	.db 2, RIGHT + UP
+	.db 98, RIGHT
+	.db 100, RIGHT
+
+; Quadrant 2: DOWN & RIGHT
+	.db 100, RIGHT
+	.db 2, DOWN + RIGHT
+	.db 98, RIGHT
+	.db 5, DOWN + RIGHT
+	.db 95, RIGHT
+	.db 7, DOWN + RIGHT
+	.db 93, RIGHT
+	.db 10, DOWN + RIGHT
+	.db 90, RIGHT
+	.db 13, DOWN + RIGHT
+	.db 87, RIGHT
+	.db 15, DOWN + RIGHT
+	.db 85, RIGHT
+	.db 18, DOWN + RIGHT
+	.db 82, RIGHT
+	.db 20, DOWN + RIGHT
+	.db 80, RIGHT
+	.db 23, DOWN + RIGHT
+	.db 77, RIGHT
+	.db 25, DOWN + RIGHT
+	.db 75, RIGHT
+	.db 28, DOWN + RIGHT
+	.db 72, RIGHT
+	.db 31, DOWN + RIGHT
+	.db 69, RIGHT
+	.db 34, DOWN + RIGHT
+	.db 66, RIGHT
+	.db 36, DOWN + RIGHT
+	.db 64, RIGHT
+	.db 39, DOWN + RIGHT
+	.db 61, RIGHT
+	.db 42, DOWN + RIGHT
+	.db 58, RIGHT
+	.db 45, DOWN + RIGHT
+	.db 55, RIGHT
+	.db 48, DOWN + RIGHT
+	.db 52, RIGHT
+	.db 51, DOWN + RIGHT
+	.db 49, RIGHT
+	.db 54, DOWN + RIGHT
+	.db 46, RIGHT
+	.db 58, DOWN + RIGHT
+	.db 42, RIGHT
+	.db 61, DOWN + RIGHT
+	.db 39, RIGHT
+	.db 65, DOWN + RIGHT
+	.db 35, RIGHT
+	.db 68, DOWN + RIGHT
+	.db 32, RIGHT
+	.db 72, DOWN + RIGHT
+	.db 28, RIGHT
+	.db 76, DOWN + RIGHT
+	.db 24, RIGHT
+	.db 80, DOWN + RIGHT
+	.db 20, RIGHT
+	.db 84, DOWN + RIGHT
+	.db 16, RIGHT
+	.db 88, DOWN + RIGHT
+	.db 12, RIGHT
+	.db 93, DOWN + RIGHT
+	.db 7, RIGHT
+	.db 98, DOWN + RIGHT
+	.db 2, RIGHT
+	.db 98, DOWN + RIGHT
+	.db 2, DOWN
+	.db 93, DOWN + RIGHT
+	.db 7, DOWN
+	.db 88, DOWN + RIGHT
+	.db 12, DOWN
+	.db 84, DOWN + RIGHT
+	.db 16, DOWN
+	.db 80, DOWN + RIGHT
+	.db 20, DOWN
+	.db 76, DOWN + RIGHT
+	.db 24, DOWN
+	.db 72, DOWN + RIGHT
+	.db 28, DOWN
+	.db 68, DOWN + RIGHT
+	.db 32, DOWN
+	.db 65, DOWN + RIGHT
+	.db 35, DOWN
+	.db 61, DOWN + RIGHT
+	.db 39, DOWN
+	.db 58, DOWN + RIGHT
+	.db 42, DOWN
+	.db 54, DOWN + RIGHT
+	.db 46, DOWN
+	.db 51, DOWN + RIGHT
+	.db 49, DOWN
+	.db 48, DOWN + RIGHT
+	.db 52, DOWN
+	.db 45, DOWN + RIGHT
+	.db 55, DOWN
+	.db 42, DOWN + RIGHT
+	.db 58, DOWN
+	.db 39, DOWN + RIGHT
+	.db 61, DOWN
+	.db 36, DOWN + RIGHT
+	.db 64, DOWN
+	.db 34, DOWN + RIGHT
+	.db 66, DOWN
+	.db 31, DOWN + RIGHT
+	.db 69, DOWN
+	.db 28, DOWN + RIGHT
+	.db 72, DOWN
+	.db 25, DOWN + RIGHT
+	.db 75, DOWN
+	.db 23, DOWN + RIGHT
+	.db 77, DOWN
+	.db 20, DOWN + RIGHT
+	.db 80, DOWN
+	.db 18, DOWN + RIGHT
+	.db 82, DOWN
+	.db 15, DOWN + RIGHT
+	.db 85, DOWN
+	.db 13, DOWN + RIGHT
+	.db 87, DOWN
+	.db 10, DOWN + RIGHT
+	.db 90, DOWN
+	.db 7, DOWN + RIGHT
+	.db 93, DOWN
+	.db 5, DOWN + RIGHT
+	.db 95, DOWN
+	.db 2, DOWN + RIGHT
+	.db 98, DOWN
+	.db 100, DOWN
+
+; Quadrant 3: LEFT & DOWN
+	.db 100, DOWN
+	.db 2, LEFT + DOWN
+	.db 98, DOWN
+	.db 5, LEFT + DOWN
+	.db 95, DOWN
+	.db 7, LEFT + DOWN
+	.db 93, DOWN
+	.db 10, LEFT + DOWN
+	.db 90, DOWN
+	.db 13, LEFT + DOWN
+	.db 87, DOWN
+	.db 15, LEFT + DOWN
+	.db 85, DOWN
+	.db 18, LEFT + DOWN
+	.db 82, DOWN
+	.db 20, LEFT + DOWN
+	.db 80, DOWN
+	.db 23, LEFT + DOWN
+	.db 77, DOWN
+	.db 25, LEFT + DOWN
+	.db 75, DOWN
+	.db 28, LEFT + DOWN
+	.db 72, DOWN
+	.db 31, LEFT + DOWN
+	.db 69, DOWN
+	.db 34, LEFT + DOWN
+	.db 66, DOWN
+	.db 36, LEFT + DOWN
+	.db 64, DOWN
+	.db 39, LEFT + DOWN
+	.db 61, DOWN
+	.db 42, LEFT + DOWN
+	.db 58, DOWN
+	.db 45, LEFT + DOWN
+	.db 55, DOWN
+	.db 48, LEFT + DOWN
+	.db 52, DOWN
+	.db 51, LEFT + DOWN
+	.db 49, DOWN
+	.db 54, LEFT + DOWN
+	.db 46, DOWN
+	.db 58, LEFT + DOWN
+	.db 42, DOWN
+	.db 61, LEFT + DOWN
+	.db 39, DOWN
+	.db 65, LEFT + DOWN
+	.db 35, DOWN
+	.db 68, LEFT + DOWN
+	.db 32, DOWN
+	.db 72, LEFT + DOWN
+	.db 28, DOWN
+	.db 76, LEFT + DOWN
+	.db 24, DOWN
+	.db 80, LEFT + DOWN
+	.db 20, DOWN
+	.db 84, LEFT + DOWN
+	.db 16, DOWN
+	.db 88, LEFT + DOWN
+	.db 12, DOWN
+	.db 93, LEFT + DOWN
+	.db 7, DOWN
+	.db 98, LEFT + DOWN
+	.db 2, DOWN
+	.db 98, LEFT + DOWN
+	.db 2, LEFT
+	.db 93, LEFT + DOWN
+	.db 7, LEFT
+	.db 88, LEFT + DOWN
+	.db 12, LEFT
+	.db 84, LEFT + DOWN
+	.db 16, LEFT
+	.db 80, LEFT + DOWN
+	.db 20, LEFT
+	.db 76, LEFT + DOWN
+	.db 24, LEFT
+	.db 72, LEFT + DOWN
+	.db 28, LEFT
+	.db 68, LEFT + DOWN
+	.db 32, LEFT
+	.db 65, LEFT + DOWN
+	.db 35, LEFT
+	.db 61, LEFT + DOWN
+	.db 39, LEFT
+	.db 58, LEFT + DOWN
+	.db 42, LEFT
+	.db 54, LEFT + DOWN
+	.db 46, LEFT
+	.db 51, LEFT + DOWN
+	.db 49, LEFT
+	.db 48, LEFT + DOWN
+	.db 52, LEFT
+	.db 45, LEFT + DOWN
+	.db 55, LEFT
+	.db 42, LEFT + DOWN
+	.db 58, LEFT
+	.db 39, LEFT + DOWN
+	.db 61, LEFT
+	.db 36, LEFT + DOWN
+	.db 64, LEFT
+	.db 34, LEFT + DOWN
+	.db 66, LEFT
+	.db 31, LEFT + DOWN
+	.db 69, LEFT
+	.db 28, LEFT + DOWN
+	.db 72, LEFT
+	.db 25, LEFT + DOWN
+	.db 75, LEFT
+	.db 23, LEFT + DOWN
+	.db 77, LEFT
+	.db 20, LEFT + DOWN
+	.db 80, LEFT
+	.db 18, LEFT + DOWN
+	.db 82, LEFT
+	.db 15, LEFT + DOWN
+	.db 85, LEFT
+	.db 13, LEFT + DOWN
+	.db 87, LEFT
+	.db 10, LEFT + DOWN
+	.db 90, LEFT
+	.db 7, LEFT + DOWN
+	.db 93, LEFT
+	.db 5, LEFT + DOWN
+	.db 95, LEFT
+	.db 2, LEFT + DOWN
+	.db 98, LEFT
+	.db 100, LEFT
+
+; Quadrant 4: UP & LEFT
+	.db 100, LEFT
+	.db 2, UP + LEFT
+	.db 98, LEFT
+	.db 5, UP + LEFT
+	.db 95, LEFT
+	.db 7, UP + LEFT
+	.db 93, LEFT
+	.db 10, UP + LEFT
+	.db 90, LEFT
+	.db 13, UP + LEFT
+	.db 87, LEFT
+	.db 15, UP + LEFT
+	.db 85, LEFT
+	.db 18, UP + LEFT
+	.db 82, LEFT
+	.db 20, UP + LEFT
+	.db 80, LEFT
+	.db 23, UP + LEFT
+	.db 77, LEFT
+	.db 25, UP + LEFT
+	.db 75, LEFT
+	.db 28, UP + LEFT
+	.db 72, LEFT
+	.db 31, UP + LEFT
+	.db 69, LEFT
+	.db 34, UP + LEFT
+	.db 66, LEFT
+	.db 36, UP + LEFT
+	.db 64, LEFT
+	.db 39, UP + LEFT
+	.db 61, LEFT
+	.db 42, UP + LEFT
+	.db 58, LEFT
+	.db 45, UP + LEFT
+	.db 55, LEFT
+	.db 48, UP + LEFT
+	.db 52, LEFT
+	.db 51, UP + LEFT
+	.db 49, LEFT
+	.db 54, UP + LEFT
+	.db 46, LEFT
+	.db 58, UP + LEFT
+	.db 42, LEFT
+	.db 61, UP + LEFT
+	.db 39, LEFT
+	.db 65, UP + LEFT
+	.db 35, LEFT
+	.db 68, UP + LEFT
+	.db 32, LEFT
+	.db 72, UP + LEFT
+	.db 28, LEFT
+	.db 76, UP + LEFT
+	.db 24, LEFT
+	.db 80, UP + LEFT
+	.db 20, LEFT
+	.db 84, UP + LEFT
+	.db 16, LEFT
+	.db 88, UP + LEFT
+	.db 12, LEFT
+	.db 93, UP + LEFT
+	.db 7, LEFT
+	.db 98, UP + LEFT
+	.db 2, LEFT
+	.db 98, UP + LEFT
+	.db 2, UP
+	.db 93, UP + LEFT
+	.db 7, UP
+	.db 88, UP + LEFT
+	.db 12, UP
+	.db 84, UP + LEFT
+	.db 16, UP
+	.db 80, UP + LEFT
+	.db 20, UP
+	.db 76, UP + LEFT
+	.db 24, UP
+	.db 72, UP + LEFT
+	.db 28, UP
+	.db 68, UP + LEFT
+	.db 32, UP
+	.db 65, UP + LEFT
+	.db 35, UP
+	.db 61, UP + LEFT
+	.db 39, UP
+	.db 58, UP + LEFT
+	.db 42, UP
+	.db 54, UP + LEFT
+	.db 46, UP
+	.db 51, UP + LEFT
+	.db 49, UP
+	.db 48, UP + LEFT
+	.db 52, UP
+	.db 45, UP + LEFT
+	.db 55, UP
+	.db 43, UP + LEFT
+	.db 58, UP
+	.db 42, UP + LEFT
+	.db 61, UP
+	.db 40, UP + LEFT
+	.db 64, UP
+	.db 39, UP + LEFT
+	.db 66, UP
+	.db 35, UP + LEFT
+	.db 69, UP
+	.db 32, UP + LEFT
+	.db 72, UP
+	.db 28, UP + LEFT
+	.db 75, UP
+	.db 27, UP + LEFT
+	.db 77, UP
+	.db 24, UP + LEFT
+	.db 80, UP
+	.db 22, UP + LEFT
+	.db 82, UP
+	.db 18, UP + LEFT
+	.db 85, UP
+	.db 16, UP + LEFT
+	.db 87, UP
+	.db 13, UP + LEFT
+	.db 90, UP
+	.db 9, UP + LEFT
+	.db 93, UP
+	.db 5, UP + LEFT
+	.db 95, UP
+	.db 5, UP + LEFT
+	.db 98, UP
+	.db 100, UP
 	.db 1, SOLENOID_UP
-	.db 1, STOP		
+	.db 1, STOP	
 
 BERSERK_DATA:
 	.db 1, SOLENOID_DOWN

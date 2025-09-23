@@ -984,7 +984,7 @@ CIRCLE_DATA:
 	.db 5, UP + LEFT
 	.db 98, UP
 	.db 100, UP
-	.db 100, SOLENOID_UP
+	.db 1, SOLENOID_UP
 	.db 1, STOP
 
 MOVE_START:
