@@ -138,7 +138,7 @@ S1: ;1 second delay timer
 	push r19
 	push r20
 
-    ldi  r18, 40
+    ldi  r18, 20
     ldi  r19, 30
     ldi  r20, 0
 L3: dec  r20
