@@ -1,0 +1,1130 @@
+
+.include "m328pdef.inc"
+
+;-----------------------------------------------------------------
+; Constantes y definiciones
+;-----------------------------------------------------------------
+
+.cseg
+.equ _TIMER0_OVF_COUNT = 60		; Button cooldown
+.equ _TIMER2_OVF_COUNT = 2		; Bottom led blink speed
+
+.equ TX_BUF_SIZE = 256                 ; power of two
+.equ TX_BUF_MASK = TX_BUF_SIZE - 1    ; 0x0F for size 1
+
+.equ _F_CPU = 16000000
+.equ _BAUD = 9600
+.equ _BPS = (_F_CPU/16/_BAUD) - 1
+
+.equ SOLENOID_DOWN =	0b00000100
+.equ SOLENOID_UP =		0b00001000
+.equ DOWN =				0b00010000
+.equ UP =				0b00100000
+.equ RIGHT =			0b01000000
+.equ LEFT =				0b10000000
+.equ STOP =				0b00000000
+
+.def timer0_ovf_counter = r2
+.def timer1_ovf_counter = r3
+.def timer2_ovf_counter = r4
+
+
+;-----------------------------------------------------------------
+; DSEG
+;-----------------------------------------------------------------
+
+.dseg
+tx_buffer: .byte TX_BUF_SIZE          ; circular buffer storage
+tx_head:   .byte 1                    ; enqueue index
+tx_tail:   .byte 1                    ; dequeue index
+
+
+;-----------------------------------------------------------------
+; Vectores 
+;-----------------------------------------------------------------
+
+.cseg
+.org 0x0000 rjmp RESET			; Program start
+.org 0x0002 rjmp INT0_ISR		; Button press 1
+.org 0x0020 rjmp TIMER0_OVF 	; Timer 0 overflow
+.org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
+.org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
+
+
+
+;-----------------------------------------------------------------
+; Reset
+;-----------------------------------------------------------------
+
+.org 0x100
+RESET:
+	; Stack 
+	ldi r16, high(RAMEND) out SPH, r16
+	ldi r16, low(RAMEND)  out SPL, r16
+
+	; External interrupt
+	ldi r16, 0b00000010 sts EICRA, r16 
+   	ldi r16, 0b00000001 out EIMSK, r16 
+
+	; Port Configuration
+	ldi r16, 0b11111100 out DDRD, r16
+	ldi r16, 0b00100000 out DDRB, r16
+
+	; Init USART
+	ldi r16, low(_BPS)
+	ldi r17, high(_BPS)
+	rcall USART_INIT
+
+	
+	; Global interrupt
+	sei
+	
+	rcall SEND_MENU 
+
+	rjmp MAIN
+
+;-----------------------------------------------------------------
+; Loop principal
+;-----------------------------------------------------------------
+
+MAIN:
+	rjmp MAIN
+
+;-----------------------------------------------------------------
+; Subrutinas 
+;-----------------------------------------------------------------
+
+
+
+;------------------------------------------------
+; DRAW_CIRCLE - Draws a semicircle using LUTs
+;------------------------------------------------
+; Assumes:
+; - PORTD controls motors and pen
+; - Bit masks: UP, DOWN, LEFT, RIGHT, PEN_UP, PEN_DOWN
+; - LUTs: LUT_X_CYCLES, LUT_Y_CYCLES, LUT_X_DIR, LUT_Y_DIR
+; - A delay routine called MOTOR_DELAY that takes cycles in r16
+;------------------------------------------------
+
+DRAW_CIRCLE:
+    ; --- PEN DOWN ---
+    sbi PORTD, PEN_DOWN
+
+    ; Setup Z pointers to LUTs
+    ldi ZH, high(LUT_X_CYCLES*2)
+    ldi ZL, low(LUT_X_CYCLES*2)
+
+    ldi YH, high(LUT_Y_CYCLES*2)
+    ldi YL, low(LUT_Y_CYCLES*2)
+
+    ldi r20, 0        ; index counter
+
+DRAW_LOOP:
+    ; --- Load LUT values ---
+    lpm r16, Z+       ; X cycles
+    lpm r17, Z+       ; X direction (1=RIGHT, -1=LEFT)
+
+    lpm r18, Y+       ; Y cycles
+    lpm r19, Y+       ; Y direction (1=UP, -1=DOWN)
+
+    ; --- Set direction bits ---
+    clr r21           ; command register
+
+    cpi r17, 1
+    breq X_RIGHT
+    ori r21, (1<<LEFT)
+    rjmp X_DIR_DONE
+X_RIGHT:
+    ori r21, (1<<RIGHT)
+X_DIR_DONE:
+
+    cpi r19, 1
+    breq Y_UP
+    ori r21, (1<<DOWN)
+    rjmp Y_DIR_DONE
+Y_UP:
+    ori r21, (1<<UP)
+Y_DIR_DONE:
+
+    ; --- Output command to motors ---
+    out PORTD, r21
+
+    ; --- Run X motor for X cycles ---
+    mov r16, r16      ; already in r16
+    rcall MOTOR_DELAY
+
+    ; --- Run Y motor for Y cycles ---
+    mov r16, r18
+    rcall MOTOR_DELAY
+
+    ; --- Next index ---
+    inc r20
+    cpi r20, 255
+    brlt DRAW_LOOP
+
+    ; --- PEN UP at the end ---
+    sbi PORTD, PEN_UP
+
+    ret
+
+
+
+; r16 image adress low
+; r17 image adress high
+DRAW:
+	push r16
+	push r17
+	push r18
+	push r19
+	push ZL
+	push ZH
+
+	mov ZL, r16 mov ZH, r17
+	DRAW_LOOP:
+	lpm r18, Z+ ; Time
+	lpm r19, Z+ ; Instruction
+	
+	out PORTD, r19 ; Send instruction
+
+	cpi r19, STOP
+	breq DRAW_END ; Stop drawing
+
+	DRAW_TIMER_LOOP: ; Timer
+	rcall S1
+	dec r18 brne DRAW_TIMER_LOOP 
+	
+	rjmp DRAW_LOOP ; Next instruction
+
+	DRAW_END:
+
+	pop ZH
+	pop ZL
+	pop r19
+	pop r18
+	pop r17
+	pop r16
+	ret
+
+
+S1: ;1 second delay timer
+	push r18
+	push r19
+	push r20
+
+    ldi  r18, 40
+    ldi  r19, 30
+    ldi  r20, 0
+L3: dec  r20
+    brne L3
+    dec  r19
+    brne L3
+    dec  r18
+    brne L3
+    nop
+
+	pop r20
+	pop r19
+	pop r18
+	ret
+
+
+
+
+
+
+USART_INIT:				; ------------------- USART_INIT
+    sts  tx_head, r1
+    sts  tx_tail, r1
+
+	; Set baud rate
+	sts UBRR0H, r17
+	sts UBRR0L, r16
+
+	; Enable receiver, transmitter
+	; and RX interruptions
+	ldi r16, 0b10011000
+	sts UCSR0B,r16
+
+	; Set frame format: 8data, 2stop bit
+	ldi r16, (1<<USBS0)|(3<<UCSZ00)
+	sts UCSR0C,r16
+	ret
+
+
+USART_SEND:
+	push r17
+	push r18
+	push r19
+	push r20
+	push ZL
+	push ZH
+
+    ; load head and tail
+    lds  r17, tx_head               ; r17 = head
+    lds  r18, tx_tail               ; r18 = tail
+
+    ; next_head = (head + 1) & MASK
+    mov  r19, r17
+    inc  r19
+    andi r19, TX_BUF_MASK
+
+    ; if next_head == tail => buffer full
+    cp   r19, r18
+    breq usart_send_full            ; full ? fail (SEC)
+
+    ; compute &tx_buffer[head] into Z
+    ldi  ZL, low(tx_buffer)
+    ldi  ZH, high(tx_buffer)
+    add  ZL, r17
+    adc  ZH, r1           ; assumes r1==0 (standard AVR ABI)
+
+    ; store data
+    st   Z, r16
+
+    ; commit new head
+    sts  tx_head, r19
+
+    ; enable UDRE interrupt so ISR starts draining
+    lds  r20, UCSR0B
+    ori  r20, (1<<UDRIE0)
+    sts  UCSR0B, r20
+
+    clc ; success
+
+	pop ZH
+	pop ZL
+	pop r20
+	pop r19
+	pop r18
+	pop r17
+    ret
+
+usart_send_full:
+    sec                            ; fail: buffer full
+
+	pop ZH
+	pop ZL
+	pop r20
+	pop r19
+	pop r18
+	pop r17
+    ret
+
+SEND_MENU:
+	push r16
+	push ZL
+	push ZH
+	
+	ldi ZL, low(MENU_TEXT<<1) ldi ZH, high(MENU_TEXT<<1)
+
+	SEND_MENU_LOOP:
+	lpm r16, Z+
+	cpi r16, 0
+	breq SEND_MENU_END
+	rcall USART_SEND
+	rjmp SEND_MENU_LOOP
+
+	SEND_MENU_END:
+	pop ZH
+	pop ZL
+	pop r16
+	ret
+
+SEND_ERROR:
+	push r16
+	push ZL
+	push ZH
+		
+	ldi ZL, low(ERROR_TEXT<<1) ldi ZH, high(ERROR_TEXT<<1)
+
+	SEND_ERROR_LOOP:
+	lpm r16, Z+
+	cpi r16, 0
+	breq SEND_ERROR_END
+	rcall USART_SEND
+	rjmp SEND_ERROR_LOOP
+
+	SEND_ERROR_END:
+	pop ZH
+	pop ZL
+	pop r16
+	ret
+
+;-----------------------------------------------------------------
+; Interrupciones (ISR)
+;-----------------------------------------------------------------
+
+USART_UDRE_ISR:
+    push r16
+    push r17
+    push r18
+    push r19
+    push r20
+    push ZH
+    push ZL
+
+    ; load head/tail
+    lds  r17, tx_head              ; r17 = head
+    lds  r18, tx_tail              ; r18 = tail
+
+    ; buffer empty? (head == tail)
+    cp   r17, r18
+    brne usart_udre_send
+    ; empty ? disable UDRE interrupt
+    lds  r20, UCSR0B
+    andi r20, ~(1<<UDRIE0)
+    sts  UCSR0B, r20
+    rjmp usart_udre_exit
+
+	usart_udre_send:
+    ; Z = &tx_buffer[tail]
+    ldi  ZL, low(tx_buffer)
+    ldi  ZH, high(tx_buffer)
+    add  ZL, r18
+    adc  ZH, r1
+
+    ; r16 = byte to send
+    ld   r16, Z
+    sts  UDR0, r16                 ; write to data register (starts shift)
+
+    ; tail = (tail + 1) & MASK
+    inc  r18
+    andi r18, TX_BUF_MASK
+    sts  tx_tail, r18
+
+	usart_udre_exit:
+    pop  ZL
+    pop  ZH
+    pop  r20
+    pop  r19
+    pop  r18
+    pop  r17
+    pop  r16
+    reti
+
+
+USART_RX_ISR:		; ---------------------------------- USART ISR
+	push r16 
+    in r16, SREG 
+	push r16 
+	push r17
+
+	lds r16, UDR0
+	
+	cpi r16, '0' 
+	breq USART_RX_ISR_CASE_0 ; UP
+	cpi r16, '1' 
+	breq USART_RX_ISR_CASE_1 ; DOWN
+	cpi r16, '2' 
+	breq USART_RX_ISR_CASE_2 ; LEFT
+	cpi r16, '3'
+	breq USART_RX_ISR_CASE_3 ; RIGHT
+	cpi r16, '4' 
+	breq USART_RX_ISR_CASE_4 ; TRIANGE
+	cpi r16, '5' 
+	breq USART_RX_ISR_CASE_5 ; CIRCLE
+	cpi r16, '6' 
+	breq USART_RX_ISR_CASE_6 ; CROSS
+	cpi r16, 'T' 
+	breq USART_RX_ISR_CASE_T ; ALL
+	cpi r16, 'B' 
+	breq USART_RX_ISR_CASE_BERSERK ; BRAND OF SACRIFICE
+
+	rjmp USART_RX_ISR_CASE_DEFAULT 
+
+	USART_RX_ISR_CASE_0: ; UP
+		ldi r16, low(MOVE_UP<<1) ldi r17, high(MOVE_UP<<1)
+		rcall DRAW
+		rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_CASE_1: ; DOWN
+		ldi r16, low(MOVE_DOWN<<1) ldi r17, high(MOVE_DOWN<<1)
+		rcall DRAW
+		rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_CASE_2: ; LEFT
+		ldi r16, low(MOVE_LEFT<<1) ldi r17, high(MOVE_LEFT<<1)
+		rcall DRAW
+		rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_CASE_3: ; RIGHT
+		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+		rcall DRAW
+		rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_CASE_4: ; TRIANGLE
+		ldi r16, low(TRIANGLE_DATA<<1) ldi r17, high(TRIANGLE_DATA<<1)
+		rcall DRAW
+		rjmp USART_RX_ISR_END
+	
+	USART_RX_ISR_CASE_5: ; CIRCLE
+		ldi r16, low(CIRCLE_DATA<<1) ldi r17, high(CIRCLE_DATA<<1)
+		rcall DRAW
+		rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_CASE_6: ; CROSS
+		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
+		rcall DRAW
+		rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_CASE_T: ; ALL FIGURES
+		
+		ldi r16, low(TRIANGLE_DATA<<1) ldi r17, high(TRIANGLE_DATA<<1)
+		rcall DRAW
+		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+		rcall DRAW
+		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+		rcall DRAW
+		ldi r16, low(CIRCLE_DATA<<1) ldi r17, high(CIRCLE_DATA<<1)
+		rcall DRAW
+		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+		rcall DRAW
+		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+		rcall DRAW
+		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
+		rcall DRAW
+
+		
+
+		rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_CASE_BERSERK: ; BRAND OF SACRIFICE
+		ldi r16, low(BERSERK_DATA<<1) ldi r17, high(BERSERK_DATA<<1)
+		rcall DRAW
+		rjmp USART_RX_ISR_END
+
+	USART_RX_ISR_CASE_DEFAULT: 
+		rcall SEND_ERROR
+		rcall SEND_MENU
+		rjmp USART_RX_ISR_END
+
+
+	USART_RX_ISR_END:
+
+	pop r17 
+	pop r16
+	out SREG, r16
+	pop r16	
+	reti
+
+
+INT0_ISR:
+	reti
+
+TIMER0_OVF:
+	reti 
+
+;-----------------------------------------------------------------
+; Datos (program memory)
+;-----------------------------------------------------------------
+
+.org 0x300 
+TRIANGLE_DATA:
+	.db 1, SOLENOID_DOWN	
+	.db 4, SOLENOID_DOWN + RIGHT			
+	.db 2, SOLENOID_DOWN + UP + LEFT		
+	.db 2, SOLENOID_DOWN + DOWN + LEFT
+	.db 1, SOLENOID_UP		
+	.db 1, STOP
+	
+SQUARE_DATA:
+	.db 1, SOLENOID_DOWN	
+	.db 2, SOLENOID_DOWN + RIGHT			
+	.db 2, SOLENOID_DOWN + UP				
+	.db 2, SOLENOID_DOWN + LEFT		
+	.db 2, SOLENOID_DOWN + DOWN
+	.db 1, SOLENOID_UP
+	.db 1, STOP
+
+CROSS_DATA:
+	.db 1, SOLENOID_DOWN
+	.db 6, SOLENOID_DOWN + UP
+	.db 2, SOLENOID_DOWN + DOWN	
+	.db 2, SOLENOID_DOWN + LEFT
+	.db 4, SOLENOID_DOWN + RIGHT
+	.db 1, SOLENOID_UP
+	.db 1, STOP
+
+CIRCLE_DATA:
+	.db 1, SOLENOID_DOWN	
+	.db 2, SOLENOID_DOWN + RIGHT		
+	.db 1, SOLENOID_DOWN + UP + RIGHT		
+	.db 2, SOLENOID_DOWN + UP				
+	.db 1, SOLENOID_DOWN + UP + LEFT			
+	.db 2, SOLENOID_DOWN + LEFT		
+	.db 1, SOLENOID_DOWN + DOWN + LEFT		
+	.db 2, SOLENOID_DOWN + DOWN		
+	.db 1, SOLENOID_DOWN + DOWN + RIGHT		
+	.db 1, SOLENOID_UP
+	.db 1, STOP		
+
+
+LUT_X_CYCLES:
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 99, 99, 99, 99, 99, 99, 99
+    .db 99, 99, 99, 99, 99, 98, 98, 98
+    .db 98, 98, 98, 98, 98, 97, 97, 97
+    .db 97, 97, 97, 97, 96, 96, 96, 96
+    .db 96, 95, 95, 95, 95, 95, 95, 94
+    .db 94, 94, 94, 93, 93, 93, 93, 93
+    .db 92, 92, 92, 92, 91, 91, 91, 91
+    .db 90, 90, 90, 90, 89, 89, 89, 88
+    .db 88, 88, 88, 87, 87, 87, 86, 86
+    .db 86, 85, 85, 85, 84, 84, 84, 83
+    .db 83, 83, 82, 82, 82, 81, 81, 81
+    .db 80, 80, 79, 79, 79, 78, 78, 78
+    .db 77, 77, 76, 76, 76, 75, 75, 74
+    .db 74, 73, 73, 73, 72, 72, 71, 71
+    .db 70, 70, 70, 69, 69, 68, 68, 67
+    .db 67, 66, 66, 66, 65, 65, 64, 64
+    .db 63, 63, 62, 62, 61, 61, 60, 60
+    .db 59, 59, 58, 58, 57, 57, 56, 56
+    .db 55, 55, 54, 54, 53, 53, 52, 52
+    .db 51, 51, 50, 49, 49, 48, 48, 47
+    .db 47, 46, 46, 45, 45, 44, 43, 43
+    .db 42, 42, 41, 41, 40, 40, 39, 38
+    .db 38, 37, 37, 36, 36, 35, 34, 34
+    .db 33, 33, 32, 31, 31, 30, 30, 29
+    .db 29, 28, 27, 27, 26, 26, 25, 24
+    .db 24, 23, 23, 22, 21, 21, 20, 20
+    .db 19, 18, 18, 17, 17, 16, 15, 15
+    .db 14, 14, 13, 12, 12, 11, 10, 10
+    .db 9, 9, 8, 7, 7, 6, 6, 5
+    .db 4, 4, 3, 2, 2, 1, 1, 0
+    .db 0, 1, 1, 2, 2, 3, 4, 4
+    .db 5, 6, 6, 7, 7, 8, 9, 9
+    .db 10, 10, 11, 12, 12, 13, 14, 14
+    .db 15, 15, 16, 17, 17, 18, 18, 19
+    .db 20, 20, 21, 21, 22, 23, 23, 24
+    .db 24, 25, 26, 26, 27, 27, 28, 29
+    .db 29, 30, 30, 31, 31, 32, 33, 33
+    .db 34, 34, 35, 36, 36, 37, 37, 38
+    .db 38, 39, 40, 40, 41, 41, 42, 42
+    .db 43, 43, 44, 45, 45, 46, 46, 47
+    .db 47, 48, 48, 49, 49, 50, 51, 51
+    .db 52, 52, 53, 53, 54, 54, 55, 55
+    .db 56, 56, 57, 57, 58, 58, 59, 59
+    .db 60, 60, 61, 61, 62, 62, 63, 63
+    .db 64, 64, 65, 65, 66, 66, 66, 67
+    .db 67, 68, 68, 69, 69, 70, 70, 70
+    .db 71, 71, 72, 72, 73, 73, 73, 74
+    .db 74, 75, 75, 76, 76, 76, 77, 77
+    .db 78, 78, 78, 79, 79, 79, 80, 80
+    .db 81, 81, 81, 82, 82, 82, 83, 83
+    .db 83, 84, 84, 84, 85, 85, 85, 86
+    .db 86, 86, 87, 87, 87, 88, 88, 88
+    .db 88, 89, 89, 89, 90, 90, 90, 90
+    .db 91, 91, 91, 91, 92, 92, 92, 92
+    .db 93, 93, 93, 93, 93, 94, 94, 94
+    .db 94, 95, 95, 95, 95, 95, 95, 96
+    .db 96, 96, 96, 96, 97, 97, 97, 97
+    .db 97, 97, 97, 98, 98, 98, 98, 98
+    .db 98, 98, 98, 99, 99, 99, 99, 99
+    .db 99, 99, 99, 99, 99, 99, 99, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 99, 99, 99, 99, 99, 99, 99
+    .db 99, 99, 99, 99, 99, 98, 98, 98
+    .db 98, 98, 98, 98, 98, 97, 97, 97
+    .db 97, 97, 97, 97, 96, 96, 96, 96
+    .db 96, 95, 95, 95, 95, 95, 95, 94
+    .db 94, 94, 94, 93, 93, 93, 93, 93
+    .db 92, 92, 92, 92, 91, 91, 91, 91
+    .db 90, 90, 90, 90, 89, 89, 89, 88
+    .db 88, 88, 88, 87, 87, 87, 86, 86
+    .db 86, 85, 85, 85, 84, 84, 84, 83
+    .db 83, 83, 82, 82, 82, 81, 81, 81
+    .db 80, 80, 79, 79, 79, 78, 78, 78
+    .db 77, 77, 76, 76, 76, 75, 75, 74
+    .db 74, 73, 73, 73, 72, 72, 71, 71
+    .db 70, 70, 70, 69, 69, 68, 68, 67
+    .db 67, 66, 66, 66, 65, 65, 64, 64
+    .db 63, 63, 62, 62, 61, 61, 60, 60
+    .db 59, 59, 58, 58, 57, 57, 56, 56
+    .db 55, 55, 54, 54, 53, 53, 52, 52
+    .db 51, 51, 50, 49, 49, 48, 48, 47
+    .db 47, 46, 46, 45, 45, 44, 43, 43
+    .db 42, 42, 41, 41, 40, 40, 39, 38
+    .db 38, 37, 37, 36, 36, 35, 34, 34
+    .db 33, 33, 32, 31, 31, 30, 30, 29
+    .db 29, 28, 27, 27, 26, 26, 25, 24
+    .db 24, 23, 23, 22, 21, 21, 20, 20
+    .db 19, 18, 18, 17, 17, 16, 15, 15
+    .db 14, 14, 13, 12, 12, 11, 10, 10
+    .db 9, 9, 8, 7, 7, 6, 6, 5
+    .db 4, 4, 3, 2, 2, 1, 1, 0
+    .db 0, 1, 1, 2, 2, 3, 4, 4
+    .db 5, 6, 6, 7, 7, 8, 9, 9
+    .db 10, 10, 11, 12, 12, 13, 14, 14
+    .db 15, 15, 16, 17, 17, 18, 18, 19
+    .db 20, 20, 21, 21, 22, 23, 23, 24
+    .db 24, 25, 26, 26, 27, 27, 28, 29
+    .db 29, 30, 30, 31, 31, 32, 33, 33
+    .db 34, 34, 35, 36, 36, 37, 37, 38
+    .db 38, 39, 40, 40, 41, 41, 42, 42
+    .db 43, 43, 44, 45, 45, 46, 46, 47
+    .db 47, 48, 48, 49, 49, 50, 51, 51
+    .db 52, 52, 53, 53, 54, 54, 55, 55
+    .db 56, 56, 57, 57, 58, 58, 59, 59
+    .db 60, 60, 61, 61, 62, 62, 63, 63
+    .db 64, 64, 65, 65, 66, 66, 66, 67
+    .db 67, 68, 68, 69, 69, 70, 70, 70
+    .db 71, 71, 72, 72, 73, 73, 73, 74
+    .db 74, 75, 75, 76, 76, 76, 77, 77
+    .db 78, 78, 78, 79, 79, 79, 80, 80
+    .db 81, 81, 81, 82, 82, 82, 83, 83
+    .db 83, 84, 84, 84, 85, 85, 85, 86
+    .db 86, 86, 87, 87, 87, 88, 88, 88
+    .db 88, 89, 89, 89, 90, 90, 90, 90
+    .db 91, 91, 91, 91, 92, 92, 92, 92
+    .db 93, 93, 93, 93, 93, 94, 94, 94
+    .db 94, 95, 95, 95, 95, 95, 95, 96
+    .db 96, 96, 96, 96, 97, 97, 97, 97
+    .db 97, 97, 97, 98, 98, 98, 98, 98
+    .db 98, 98, 98, 99, 99, 99, 99, 99
+    .db 99, 99, 99, 99, 99, 99, 99, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+
+LUT_Y_CYCLES:
+    .db 0, 1, 1, 2, 2, 3, 4, 4
+    .db 5, 6, 6, 7, 7, 8, 9, 9
+    .db 10, 10, 11, 12, 12, 13, 14, 14
+    .db 15, 15, 16, 17, 17, 18, 18, 19
+    .db 20, 20, 21, 21, 22, 23, 23, 24
+    .db 24, 25, 26, 26, 27, 27, 28, 29
+    .db 29, 30, 30, 31, 31, 32, 33, 33
+    .db 34, 34, 35, 36, 36, 37, 37, 38
+    .db 38, 39, 40, 40, 41, 41, 42, 42
+    .db 43, 43, 44, 45, 45, 46, 46, 47
+    .db 47, 48, 48, 49, 49, 50, 51, 51
+    .db 52, 52, 53, 53, 54, 54, 55, 55
+    .db 56, 56, 57, 57, 58, 58, 59, 59
+    .db 60, 60, 61, 61, 62, 62, 63, 63
+    .db 64, 64, 65, 65, 66, 66, 66, 67
+    .db 67, 68, 68, 69, 69, 70, 70, 70
+    .db 71, 71, 72, 72, 73, 73, 73, 74
+    .db 74, 75, 75, 76, 76, 76, 77, 77
+    .db 78, 78, 78, 79, 79, 79, 80, 80
+    .db 81, 81, 81, 82, 82, 82, 83, 83
+    .db 83, 84, 84, 84, 85, 85, 85, 86
+    .db 86, 86, 87, 87, 87, 88, 88, 88
+    .db 88, 89, 89, 89, 90, 90, 90, 90
+    .db 91, 91, 91, 91, 92, 92, 92, 92
+    .db 93, 93, 93, 93, 93, 94, 94, 94
+    .db 94, 95, 95, 95, 95, 95, 95, 96
+    .db 96, 96, 96, 96, 97, 97, 97, 97
+    .db 97, 97, 97, 98, 98, 98, 98, 98
+    .db 98, 98, 98, 99, 99, 99, 99, 99
+    .db 99, 99, 99, 99, 99, 99, 99, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 99, 99, 99, 99, 99, 99, 99
+    .db 99, 99, 99, 99, 99, 98, 98, 98
+    .db 98, 98, 98, 98, 98, 97, 97, 97
+    .db 97, 97, 97, 97, 96, 96, 96, 96
+    .db 96, 95, 95, 95, 95, 95, 95, 94
+    .db 94, 94, 94, 93, 93, 93, 93, 93
+    .db 92, 92, 92, 92, 91, 91, 91, 91
+    .db 90, 90, 90, 90, 89, 89, 89, 88
+    .db 88, 88, 88, 87, 87, 87, 86, 86
+    .db 86, 85, 85, 85, 84, 84, 84, 83
+    .db 83, 83, 82, 82, 82, 81, 81, 81
+    .db 80, 80, 79, 79, 79, 78, 78, 78
+    .db 77, 77, 76, 76, 76, 75, 75, 74
+    .db 74, 73, 73, 73, 72, 72, 71, 71
+    .db 70, 70, 70, 69, 69, 68, 68, 67
+    .db 67, 66, 66, 66, 65, 65, 64, 64
+    .db 63, 63, 62, 62, 61, 61, 60, 60
+    .db 59, 59, 58, 58, 57, 57, 56, 56
+    .db 55, 55, 54, 54, 53, 53, 52, 52
+    .db 51, 51, 50, 49, 49, 48, 48, 47
+    .db 47, 46, 46, 45, 45, 44, 43, 43
+    .db 42, 42, 41, 41, 40, 40, 39, 38
+    .db 38, 37, 37, 36, 36, 35, 34, 34
+    .db 33, 33, 32, 31, 31, 30, 30, 29
+    .db 29, 28, 27, 27, 26, 26, 25, 24
+    .db 24, 23, 23, 22, 21, 21, 20, 20
+    .db 19, 18, 18, 17, 17, 16, 15, 15
+    .db 14, 14, 13, 12, 12, 11, 10, 10
+    .db 9, 9, 8, 7, 7, 6, 6, 5
+    .db 4, 4, 3, 2, 2, 1, 1, 0
+    .db 0, 1, 1, 2, 2, 3, 4, 4
+    .db 5, 6, 6, 7, 7, 8, 9, 9
+    .db 10, 10, 11, 12, 12, 13, 14, 14
+    .db 15, 15, 16, 17, 17, 18, 18, 19
+    .db 20, 20, 21, 21, 22, 23, 23, 24
+    .db 24, 25, 26, 26, 27, 27, 28, 29
+    .db 29, 30, 30, 31, 31, 32, 33, 33
+    .db 34, 34, 35, 36, 36, 37, 37, 38
+    .db 38, 39, 40, 40, 41, 41, 42, 42
+    .db 43, 43, 44, 45, 45, 46, 46, 47
+    .db 47, 48, 48, 49, 49, 50, 51, 51
+    .db 52, 52, 53, 53, 54, 54, 55, 55
+    .db 56, 56, 57, 57, 58, 58, 59, 59
+    .db 60, 60, 61, 61, 62, 62, 63, 63
+    .db 64, 64, 65, 65, 66, 66, 66, 67
+    .db 67, 68, 68, 69, 69, 70, 70, 70
+    .db 71, 71, 72, 72, 73, 73, 73, 74
+    .db 74, 75, 75, 76, 76, 76, 77, 77
+    .db 78, 78, 78, 79, 79, 79, 80, 80
+    .db 81, 81, 81, 82, 82, 82, 83, 83
+    .db 83, 84, 84, 84, 85, 85, 85, 86
+    .db 86, 86, 87, 87, 87, 88, 88, 88
+    .db 88, 89, 89, 89, 90, 90, 90, 90
+    .db 91, 91, 91, 91, 92, 92, 92, 92
+    .db 93, 93, 93, 93, 93, 94, 94, 94
+    .db 94, 95, 95, 95, 95, 95, 95, 96
+    .db 96, 96, 96, 96, 97, 97, 97, 97
+    .db 97, 97, 97, 98, 98, 98, 98, 98
+    .db 98, 98, 98, 99, 99, 99, 99, 99
+    .db 99, 99, 99, 99, 99, 99, 99, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 100, 100, 100, 100, 100, 100, 100
+    .db 100, 99, 99, 99, 99, 99, 99, 99
+    .db 99, 99, 99, 99, 99, 98, 98, 98
+    .db 98, 98, 98, 98, 98, 97, 97, 97
+    .db 97, 97, 97, 97, 96, 96, 96, 96
+    .db 96, 95, 95, 95, 95, 95, 95, 94
+    .db 94, 94, 94, 93, 93, 93, 93, 93
+    .db 92, 92, 92, 92, 91, 91, 91, 91
+    .db 90, 90, 90, 90, 89, 89, 89, 88
+    .db 88, 88, 88, 87, 87, 87, 86, 86
+    .db 86, 85, 85, 85, 84, 84, 84, 83
+    .db 83, 83, 82, 82, 82, 81, 81, 81
+    .db 80, 80, 79, 79, 79, 78, 78, 78
+    .db 77, 77, 76, 76, 76, 75, 75, 74
+    .db 74, 73, 73, 73, 72, 72, 71, 71
+    .db 70, 70, 70, 69, 69, 68, 68, 67
+    .db 67, 66, 66, 66, 65, 65, 64, 64
+    .db 63, 63, 62, 62, 61, 61, 60, 60
+    .db 59, 59, 58, 58, 57, 57, 56, 56
+    .db 55, 55, 54, 54, 53, 53, 52, 52
+    .db 51, 51, 50, 49, 49, 48, 48, 47
+    .db 47, 46, 46, 45, 45, 44, 43, 43
+    .db 42, 42, 41, 41, 40, 40, 39, 38
+    .db 38, 37, 37, 36, 36, 35, 34, 34
+    .db 33, 33, 32, 31, 31, 30, 30, 29
+    .db 29, 28, 27, 27, 26, 26, 25, 24
+    .db 24, 23, 23, 22, 21, 21, 20, 20
+    .db 19, 18, 18, 17, 17, 16, 15, 15
+    .db 14, 14, 13, 12, 12, 11, 10, 10
+    .db 9, 9, 8, 7, 7, 6, 6, 5
+    .db 4, 4, 3, 2, 2, 1, 1, 0
+
+LUT_X_DIR:
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+
+LUT_Y_DIR:
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db 1, 1, 1, 1, 1, 1, 1, 1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+    .db -1, -1, -1, -1, -1, -1, -1, -1
+
+BERSERK_DATA:
+	.db 1, SOLENOID_DOWN
+	.db 2, SOLENOID_DOWN + UP + LEFT
+	.db 4, SOLENOID_DOWN + UP + RIGHT
+	.db 1, SOLENOID_DOWN + UP + LEFT
+	.db 1, SOLENOID_UP
+	.db 2, SOLENOID_UP + LEFT
+	.db 1, SOLENOID_DOWN
+	.db 1, SOLENOID_DOWN + DOWN + LEFT
+	.db 4, SOLENOID_DOWN + DOWN + RIGHT
+	.db 2, SOLENOID_DOWN + DOWN + LEFT
+	.db 7, SOLENOID_DOWN + UP
+	.db 1, SOLENOID_UP
+	.db 1, STOP
+
+MOVE_START:
+	.db 15, SOLENOID_UP + DOWN + LEFT
+	.db 15, SOLENOID_UP + LEFT 	
+	.db 1, STOP
+
+MOVE_RIGHT:
+	.db 5, SOLENOID_UP + RIGHT	
+	.db 1, STOP
+
+MOVE_DOWN:
+	.db 5, SOLENOID_UP + DOWN
+	.db 1, STOP
+
+MOVE_UP: 
+	.db 5, SOLENOID_UP + UP
+	.db 1, STOP
+
+MOVE_LEFT:
+	.db 5, SOLENOID_UP + LEFT	
+	.db 1, STOP
+
+MENU_TEXT:
+	.db "Elija una opcion:", 0x0A
+	.db "[0] Arriba ", 0x0A
+	.db "[1] Abajo", 0x0A
+	.db "[2] Izquierda", 0x0A
+	.db "[3] Derecha", 0x0A
+	.db "[4] Triangulo", 0x0A
+	.db "[5] Circulo", 0x0A
+	.db "[6] Cruz ", 0x0A
+	.db "[T] Todo", 0x0A, 0x0A, 0, 0
+
+ERROR_TEXT:
+	.db "Opcion invalida!", 0x0A, 0x0A, 0, 0
