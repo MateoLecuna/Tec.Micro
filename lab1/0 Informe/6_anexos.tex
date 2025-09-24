@@ -31,7 +31,36 @@ MI_ISR:
     reti
 \end{verbatim}
 
-\section{Timer 1}
+\subsection{Delay activo}
+\begin{verbatim}
+ACTIVE_DELAY:	
+  push r18 push r19 push r20
+
+  ldi  r18, 1
+  ldi  r19, 10
+  ldi  r20, 229
+L1: 
+  dec  r20
+  brne L1
+  dec  r19
+  brne L1
+  dec  r18
+  brne L1
+  nop
+
+  pop r20 pop r19 pop r18
+  ret
+\end{verbatim}
+
+\subsection{Vectores de interrupcion}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{\detokenize{./Anexos/Marco Teorico/Interrupt Vectors.png}}
+  \caption{Vectores de interrupciones en el ATmega328P. Fuente: hoja de datos del ATmega328P\@\cite{atmega328p_datasheet}.}
+  \label{fig:interrupt-vectors}
+\end{figure}
+
+\subsection{Timer 1}
 
 El prescaler del Temporizador 1 es configurado a través del registro TCCR1B el cual posee la siguiente configuración:
 
@@ -199,188 +228,337 @@ GET_DATA:
     pop r16	
     reti
     \end{verbatim}
-    
-\subsection{USART asíncrono con Ring Buffer}
 
-    \subsubsection{Inicialización}
-    \begin{verbatim}
-    .dseg ; Ring buffer ram alocation
+\subsection{Ring Buffer}
+
+Reservando ram para el buffer
+\begin{verbatim}
+    .dseg 
     tx_buffer: .byte TX_BUF_SIZE  
     tx_head:   .byte 1            
-    tx_tail:   .byte 1           
+    tx_tail:   .byte 1
+\end{verbatim}
 
+Tamaño de buffer y máscara de clamping
+\begin{verbatim}
     .cseg
-    .equ TX_BUF_SIZE = 256
+    .equ TX_BUF_SIZE = 16 ; Pot. de 2
     .equ TX_BUF_MASK = TX_BUF_SIZE - 1
+\end{verbatim}
 
-    .equ _F_CPU = 16000000
-    .equ _BAUD = 57600 
-    .equ _BPS = (_F_CPU/16/_BAUD) - 1
-    
-    ; Recieved USART data
-    .org 0x0024 rjmp USART_RX_ISR	
-    ; USART Data register clear
-    .org 0x0026 rjmp USART_UDRE_ISR 
-
-    RESET:
-    clr r1
-
-    ; Stack 
-    ldi r16, high(RAMEND) out SPH, r16
-    ldi r16, low(RAMEND)  out SPL, r16
-
-    ; Init USART
-    ldi r16, low(_BPS)
-    ldi r17, high(_BPS)
-    rcall USART_INIT
-
-    sei
-    ; ...
-
-    USART_INIT:	
-    sts  tx_head, r1
-    sts  tx_tail, r1
-
-    sts UBRR0H, r17
-    sts UBRR0L, r16
-
-    ldi r16, 0b10011000
-    sts UCSR0B,r16
-
-    ldi r16, (1<<USBS0)|(3<<UCSZ00)
-    sts UCSR0C,r16
-    ret
-    \end{verbatim}
-
-
-    \subsubsection{Subrutina USART WRITE BYTE}
-    \begin{verbatim}
-    USART_WRITE_BYTE:
-    push r17
-    push r18
-    push r19
-    push ZH
-    push ZL
-
-    ; head/tail
+Avanzar head, y clampear con BUF MASK. Tail se puede avanzar utilizando la mísma lógica
+\begin{verbatim}
     lds  r17, tx_head
-    lds  r18, tx_tail
-
-    ; r16 -> next = (head + 1) & MASK 
-    mov  r19, r17
+    mov  r19, r17 ; Copiar para despues
     inc  r19
-    andi r19, TX_BUF_MASK 
-    ; Clamping:
-    ; Con 256 es 0xFF: no cambia, 
-    ; pero deja claro el patrón
+    andi r19, TX_BUF_MASK
+\end{verbatim}
 
+El truco de utilizar un múltiplo de 2 y una máscara tiene la ventaja de poder limitar el rango de una variable (clamping) con tan solo una instrucción: ``andi''. 
+
+Si luego de incrementar head, en el caso de que head == tail (buffer lleno), se realiza una espera activa. 
+\begin{verbatim}
     wait_space: 
     ; buffer lleno? next == tail
     lds  r18, tx_tail
     cp   r19, r18
-    breq wait_space ; espera activa
+    breq wait_space
+\end{verbatim}
 
-    have_space:
+Guardar un valor en el buffer
+\begin{verbatim}
     ; Z -> Cabeza de buffer
     ldi  ZL, low(tx_buffer)
     ldi  ZH, high(tx_buffer)
     add  ZL, r17 
     adc  ZH, r1
+    st   Z, r16 ; Guardar r16 en buffer
+\end{verbatim}
 
-    st   Z, r16 ; Guardar en buffer
-
-    ; Cabeza = next
-    sts  tx_head, r19
-
-    ; Habilitar interrupcion UDRE
-    ; así el ISR comienza/continúa 
-    ; drenando el buffer
-    cli
-    lds  r18, UCSR0B
-    ori  r18, (1<<UDRIE0)
-    sts  UCSR0B, r18
-    sei
-
-    pop  ZL
-    pop  ZH
-    pop  r19
-    pop  r18
-    pop  r17
-    ret
-    \end{verbatim}
-
-
-    \subsubsection{Interrución USART UDRE ISR}
-    \begin{verbatim}
-    USART_UDRE_ISR:
-    push r16
-    in   r16, SREG
-    push r16
-    push r17
-    push r18
-    push r20
-    push ZH
-    push ZL
-
-    ; r17 = head, r18 = tail
-    lds  r17, tx_head
-    lds  r18, tx_tail
-
-    ; buffer vacío? head == tail
-    cp   r17, r18
-    brne usart_udre_send
-
-    ; vacío: deshabilitar UDRIE0
-    lds  r20, UCSR0B
-    andi r20, ~(1<<UDRIE0)
-    sts  UCSR0B, r20
-    rjmp usart_udre_exit
-
-    usart_udre_send:
-    ; Z -> Cola de buffer
-    ldi  ZL, low(tx_buffer)
-    ldi  ZH, high(tx_buffer)
-    add  ZL, r18
-    adc  ZH, r1 
-
-    ; Transmitir byte
-    ld   r16, Z
-    sts  UDR0, r16
-
-    ; cola = (cola + 1)
-    inc  r18                
-    andi r18, TX_BUF_MASK 
-    ; Clamping:
-    ; Con 256 es 0xFF: no cambia, 
-    ; pero deja claro el patrón
-
-    sts  tx_tail, r18
-
-    usart_udre_exit:
-    pop  ZL
-    pop  ZH
-    pop  r20
-    pop  r18
-    pop  r17
-    pop  r16
-    out  SREG, r16
-    pop  r16
-    reti
-    \end{verbatim}
+En este caso se decide utilizar una espera activa, pero podría llegar a no ser una buena práctica. Otra alternativa sería simplemente descartar el dato si el buffer está lleno.
 
     
+\subsection{USART asíncrono con Ring Buffer}
+
+    \subsubsection{Inicialización}
+    \begin{verbatim}
+.dseg ; Ring buffer ram alocation
+tx_buffer: .byte TX_BUF_SIZE  
+tx_head:   .byte 1            
+tx_tail:   .byte 1           
+
+.cseg
+.equ TX_BUF_SIZE = 256
+.equ TX_BUF_MASK = TX_BUF_SIZE - 1
+
+.equ _F_CPU = 16000000
+.equ _BAUD = 57600 
+.equ _BPS = (_F_CPU/16/_BAUD) - 1
+
+; Recieved USART data
+.org 0x0024 rjmp USART_RX_ISR	
+; USART Data register clear
+.org 0x0026 rjmp USART_UDRE_ISR 
+
+RESET:
+  clr r1
+
+  ; Stack 
+  ldi r16, high(RAMEND) out SPH, r16
+  ldi r16, low(RAMEND)  out SPL, r16
+
+  ; Init USART
+  ldi r16, low(_BPS)
+  ldi r17, high(_BPS)
+  rcall USART_INIT
+
+  sei
+  ; ...
+
+USART_INIT:	
+  sts  tx_head, r1
+  sts  tx_tail, r1
+
+  sts UBRR0H, r17
+  sts UBRR0L, r16
+
+  ldi r16, 0b10011000
+  sts UCSR0B,r16
+
+  ldi r16, (1<<USBS0)|(3<<UCSZ00)
+  sts UCSR0C,r16
+  ret
+    \end{verbatim}
+    \subsubsection{Subrutina USART WRITE BYTE}
+    \begin{verbatim}
+USART_WRITE_BYTE:
+  push r17
+  push r18
+  push r19
+  push ZH
+  push ZL
+
+  ; head/tail
+  lds  r17, tx_head
+  lds  r18, tx_tail
+
+  ; r16 -> next = (head + 1) & MASK 
+  mov  r19, r17
+  inc  r19
+  andi r19, TX_BUF_MASK 
+  ; Clamping:
+  ; Con 256 es 0xFF: no cambia, 
+  ; pero deja claro el patrón
+
+  wait_space: 
+  ; buffer lleno? next == tail
+  lds  r18, tx_tail
+  cp   r19, r18
+  breq wait_space ; espera activa
+
+  have_space:
+  ; Z -> Cabeza de buffer
+  ldi  ZL, low(tx_buffer)
+  ldi  ZH, high(tx_buffer)
+  add  ZL, r17 
+  adc  ZH, r1
+
+  st   Z, r16 ; Guardar en buffer
+
+  ; Cabeza = next
+  sts  tx_head, r19
+
+  ; Habilitar interrupcion UDRE
+  ; así el ISR comienza/continúa 
+  ; drenando el buffer
+  cli
+  lds  r18, UCSR0B
+  ori  r18, (1<<UDRIE0)
+  sts  UCSR0B, r18
+  sei
+
+  pop  ZL
+  pop  ZH
+  pop  r19
+  pop  r18
+  pop  r17
+ret
+\end{verbatim}
+    \subsubsection{Interrución USART UDRE ISR}
+    \begin{verbatim}
+USART_UDRE_ISR:
+  push r16
+  in   r16, SREG
+  push r16
+  push r17
+  push r18
+  push r20
+  push ZH
+  push ZL
+
+  ; r17 = head, r18 = tail
+  lds  r17, tx_head
+  lds  r18, tx_tail
+
+  ; buffer vacío? head == tail
+  cp   r17, r18
+  brne usart_udre_send
+
+  ; vacío: deshabilitar UDRIE0
+  lds  r20, UCSR0B
+  andi r20, ~(1<<UDRIE0)
+  sts  UCSR0B, r20
+  rjmp usart_udre_exit
+
+  usart_udre_send:
+  ; Z -> Cola de buffer
+  ldi  ZL, low(tx_buffer)
+  ldi  ZH, high(tx_buffer)
+  add  ZL, r18
+  adc  ZH, r1 
+
+  ; Transmitir byte
+  ld   r16, Z
+  sts  UDR0, r16
+
+  ; cola = (cola + 1)
+  inc  r18                
+  andi r18, TX_BUF_MASK 
+  ; Clamping:
+  ; Con 256 es 0xFF: no cambia, 
+  ; pero deja claro el patrón
+
+  sts  tx_tail, r18
+
+  usart_udre_exit:
+  pop  ZL
+  pop  ZH
+  pop  r20
+  pop  r18
+  pop  r17
+  pop  r16
+  out  SREG, r16
+  pop  r16
+  reti
+   \end{verbatim}
     \subsubsection{Interrución USART RX ISR}
     \begin{verbatim}
-    USART_RX_ISR:
-    push r16 
-    in r16, SREG
-    push r16
+USART_RX_ISR:
+  push r16 
+  in r16, SREG
+  push r16
 
-    lds r16, UDR0 
-    ; ...
+  ; Leer datos recibidos en r16
+  lds r16, UDR0 
+  ; ...
 
-    pop r16
-    out SREG, r16
-    pop r16
-    reti
+  pop r16
+  out SREG, r16
+  pop r16
+  reti
     \end{verbatim}
+
+\subsection{Bit masks}
+\subsubsection{SET BIT}
+\begin{verbatim}
+SET_BIT:	
+  push r16
+  push r17
+  push ZL
+  push ZH
+
+  ld  r17, Z     ; read current value
+  or  r17, r16   ; set bit
+  st  Z, r17     ; write back
+
+  pop ZH
+  pop ZL
+  pop r17
+  pop r16
+  ret
+\end{verbatim}
+
+\subsubsection{CLEAR BIT}
+\begin{verbatim}
+CLEAR_BIT:		
+  push r16
+  push r17
+  push ZL
+  push ZH
+
+  ld  r17, Z    ; read current value
+  com r16       ; invert mask (11110111)
+  and r17, r16  ; clear bit
+  st  Z, r17    ; write back
+
+  pop ZH
+  pop ZL
+  pop r17
+  pop r16
+  ret
+\end{verbatim}
+
+\subsection{Look Up Table (LUT)}
+\begin{verbatim}
+; Config. de puertos filas
+.org 0x310 ROW_PORTS:
+  .db 0x25, 0x25, 0x25, 0x25
+  .db 0x28, 0x25, 0x28, 0x28
+
+; Config. de pines de puertos
+.org 0x320 ROW_MASKS:
+  .db 0b00001000, 0b00000010
+  .db 0b00010000, 0b00000100
+  .db 0b00001000, 0b00100000
+  .db 0b00010000, 0b00100000
+
+; Config. de puertos columnas
+.org 0x330 COL_PORTS:
+  .db 0x2B, 0x2B, 0x2B, 0x28
+  .db 0x25, 0x28, 0x28, 0x2B
+
+; Config. de pines de puertos
+.org 0x340 COL_MASKS:
+  .db 0b00010000, 0b00100000
+  .db 0b10000000, 0b00000100
+  .db 0b00000001, 0b00000001
+  .db 0b00000010, 0b01000000 
+\end{verbatim}
+
+\subsection{Máquina de estados}
+\begin{verbatim}
+.def current_state = r20
+
+STATE_MACHINE:
+  cpi current_state, 0
+  breq STATE_MACHINE_STATE_0
+  cpi current_state, 1
+  breq STATE_MACHINE_STATE_1
+  cpi current_state, 2
+  breq STATE_MACHINE_STATE_2
+  cpi current_state, 3
+
+  rjmp STATE_MACHINE_DEFAULT
+  
+
+  STATE_MACHINE_STATE_0:
+    ; ... state logic
+    rjmp STATE_MACHINE_END
+
+  STATE_MACHINE_STATE_1:
+    ; ... state logic
+    rjmp STATE_MACHINE_END
+
+  STATE_MACHINE_STATE_2:
+    ; ... state logic
+    rjmp STATE_MACHINE_END
+
+  STATE_MACHINE_DEFAULT:
+    ; ... fail state logic
+    rjmp STATE_MACHINE_END
+
+  
+  STATE_MACHINE_END:
+    ; ...
+    ret
+\end{verbatim}

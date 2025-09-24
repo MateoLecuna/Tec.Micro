@@ -20,7 +20,12 @@
 
 
 \subsection{Stack Pointer}
+El stack pointer es una herramienta utilizada dentro de la programación del microcontrolador. El stack pointer es un no es nada más que un puntero interno del microcontrolador (similar a X, Y o Z) el cual tiene una serie de operaciones asignadas, y un comportamiento específico. El stack pointer se inicializa al final de la memoria RAM, alejado de todo para intentar no molestar al resto. Allí el stack pointer se % ... 
 
+Instrucciones como call, rcall, o las interrupciones dependen de la inicialización previa del Stack Pointer, para poder funcionar de manera adecuada, ya que el Stack Pointer es el que se encarga de guardar las direcciones de memoria a las cuales estas instrucciones deben retornar luego de terminar la ejecución, de no estar inicializado el Stack Pointer, el programa no sabría a donde volver luego de una interrupción, muy probablemente yendo a una dirección del programa aleatoria y rompiendo el flujo del codigo.
+
+\subsection{Delay activo}
+Un delay activo es una pieza de código que toma en cuenta el la velocidad de ejecución del microcontrolador, para ejecutar un número de instrucciones (inútiles) concreto, representando un pasaje de tiempo específico, para luego retornar al flujo del programa. Son fáciles de usar, pero no es recomendable abusard de ellas debido a ineficiencias energéticas, y que el programa se mantiene ocupado la mayor parte del tiempo en el temporizador, en lugar de poder dedicarse a hacer otras tareas.
 
 \subsection{Timers}
 El atmega328p tiene 3 timers diferentes: Timer 0, Timer 1, y Timer 2.
@@ -34,17 +39,7 @@ La ecuacion para calcular el tiempo del timer es la siguiente.
     \frac{(2^{k} - C_{\text{inicio}})\cdot \text{Prescaler}}{f_{\text{contador}}} = t_{\text{deseado}}
 \end{equation}
 
-Esta ecuación determina el tiempo que le tomaría al contador hacer un desbordamiento (overflow) en base a la frecuencia a la cantidad de bits del contador (k), la frecuencia de trabajo del microcontrolador, el tiempo o conteo con el que se inicie el contador, y el prescaler con el que esté configurado.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{\detokenize{./Anexos/Marco Teorico/Interrupt Vectors.png}}
-  \caption{Vectores de interrupciones en el ATmega328P. Fuente: hoja de datos del ATmega328P\@\cite{atmega328p_datasheet}.}
-  \label{fig:interrupt-vectors}
-\end{figure}
-
-Como se puede apreciar en el anexo
-El mismo proceso puede ser aplicado para configurar los otros dos Timers.
+Esta ecuación determina el tiempo que le tomaría al contador hacer un desbordamiento (overflow) en base a la frecuencia a la cantidad de bits del contador (k), la frecuencia de trabajo del microcontrolador, el tiempo o conteo con el que se inicie el contador, y el prescaler con el que esté configurado. 
 
 \subsection{Interrupciones externas}
 
@@ -75,7 +70,7 @@ Nota: Existen 2kb de memoria RAM, el stack pointer vive dentro de la RAM así qu
 
 % Anexo: como guardar en FLASH
 
-Utilizando .cseg y una dirección segura como 0x300 para guardar datos, se puede utilizar la misma memoria FLASH para guardar datos constantes como LUTs, fotogramas, cadenas de texto, etc. Estos datos no pueden ser modificados, pero existen 32kb de espacio en memoria FLASH para guardar información, por lo que es menos limitante que la SRAM (2kb)
+Utilizando .cseg y una dirección segura como 0x300 para guardar datos, se puede utilizar la misma memoria FLASH para guardar datos constantes como LUTs, fotogramas, cadenas de texto, etc. Estos datos no pueden ser modificados, pero existen 32kb de espacio en memoria FLASH para guardar información, por lo que es menos limitante que la SRAM (2kb).
 
 Para acceder a datos guardados en program memoria del programa (FLASH) se puede hacer haciendo uso del puntero Z y la instrucción ``lpm'':
 
@@ -83,6 +78,19 @@ Para acceder a datos guardados en program memoria del programa (FLASH) se puede 
 
 
 Se carga la dirección a Z cargando las partes bajas y altas de la dirección a ZL y ZH respectivamente. En los AVR  ``clásicos'' (como el ATmega328P), las etiquetas en memoria de programa (.cseg) están en direcciones de palabra (cada instrucción ocupa 16 bits), pero la instrucción LPM usa una dirección en bytes en el registro Z. Por eso se hace $<$$<$ 1 (multiplicar por 2): convierte la dirección en palabras de la etiqueta a dirección en bytes para LPM. Y ``Z+'' indica que luego de realizar lpm, se incremente en 1 el puntero ``Z''
+
+\subsection{Bit masks}
+Son numeros binarios pero lo que nos importa es la posición de los unos y ceros en lugar del valor mismo que representan. Un valor binario puede representar un número o una máscara, solo depende de como lo mires.  
+
+``ldi r16, 0b00001010 out PORTB, r16'' carga una máscara de bits al puerto B para encender los pines 1 y 3, y apagar el resto, pero también se puede ver como que se está cargado el número 10 al puerto B (``ldi r16, 10 out PORTB, r16'')
+
+Las máscaras son útiles cuando se busca afectar solo uno o varios de los bits de un registro. Lo que se hace primero es leer el registro, luego se realizar una operación lógica con la máscara que representa los bits que se quieren afectar, y por último se carga la máscara modificada al registro. Este tipo de operaciones se vuelve muy común cuando se trabajan con matrices LED, donde es muy común tener que mezclar puertos entre filas y columnas. Véase anexo % SET_BIT CLEAR_BIT
+
+
+\subsection{LUT}
+Para trabajar de manera ordenada en el desorden. Convierte al dolor de cabeza que son los puertos, en simples operaciones de lectura de FLASH, y modificación de punteros. Véase anexo %LUT
+
+
 
 \begin{figure}[H]
   \centering
@@ -94,33 +102,6 @@ Se carga la dirección a Z cargando las partes bajas y altas de la dirección a 
 
 \subsection{USART asíncrono}
 \subsection{Ring Buffer}
-
-Reservando ram para el buffer
-\begin{verbatim}
-    .dseg 
-    tx_buffer: .byte TX_BUF_SIZE  
-    tx_head:   .byte 1            
-    tx_tail:   .byte 1
-\end{verbatim}
-
-Tamaño de buffer y máscara de clamping
-
-\begin{verbatim}
-    .cseg
-    .equ TX_BUF_SIZE = 256 ; Pot. de 2
-    .equ TX_BUF_MASK = TX_BUF_SIZE - 1
-\end{verbatim}
-
-Avanzar head y tail
-\begin{verbatim}
-    lds  r17, tx_head
-    mov  r19, r17
-    inc  r19
-    andi r19, TX_BUF_MASK 
-\end{verbatim}
-
-
-
 \subsection{USART asíncrono con Ring Buffer}
 
 
