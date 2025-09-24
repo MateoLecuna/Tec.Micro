@@ -139,16 +139,17 @@ S1: ;1 second delay timer
 	push r19
 	push r20
 
-    ldi  r18, 40
+    ldi  r18, 9
     ldi  r19, 30
-    ldi  r20, 0
-L3: dec  r20
-    brne L3
+    ldi  r20, 229
+L1: dec  r20
+    brne L1
     dec  r19
-    brne L3
+    brne L1
     dec  r18
-    brne L3
+    brne L1
     nop
+
 
 	pop r20
 	pop r19
@@ -409,7 +410,9 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
 		rcall DRAW
 		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 		rcall DRAW
-		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
+		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+		rcall DRAW
+		 ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
 		rcall DRAW
 
 		
@@ -448,79 +451,115 @@ TIMER0_OVF:
 
 .org 0x300 
 TRIANGLE_DATA:
-	.db 1, SOLENOID_DOWN	
-	.db 4, SOLENOID_DOWN + RIGHT			
-	.db 2, SOLENOID_DOWN + UP + LEFT		
-	.db 2, SOLENOID_DOWN + DOWN + LEFT
-	.db 1, SOLENOID_UP		
-	.db 1, STOP
+	.db 5, SOLENOID_DOWN	
+	.db 20, SOLENOID_DOWN + RIGHT			
+	.db 10, SOLENOID_DOWN + UP + LEFT		
+	.db 10, SOLENOID_DOWN + DOWN + LEFT
+	.db 5, SOLENOID_UP		
+	.db 5, STOP
 	
 SQUARE_DATA:
-	.db 1, SOLENOID_DOWN	
-	.db 2, SOLENOID_DOWN + RIGHT			
-	.db 2, SOLENOID_DOWN + UP				
-	.db 2, SOLENOID_DOWN + LEFT		
-	.db 2, SOLENOID_DOWN + DOWN
-	.db 1, SOLENOID_UP
-	.db 1, STOP
+	.db 5, SOLENOID_DOWN	
+	.db 10, SOLENOID_DOWN + RIGHT			
+	.db 10, SOLENOID_DOWN + UP				
+	.db 10, SOLENOID_DOWN + LEFT		
+	.db 10, SOLENOID_DOWN + DOWN
+	.db 5, SOLENOID_UP
+	.db 5, STOP
 
 CROSS_DATA:
-	.db 1, SOLENOID_DOWN
-	.db 6, SOLENOID_DOWN + UP
-	.db 2, SOLENOID_DOWN + DOWN	
-	.db 2, SOLENOID_DOWN + LEFT
-	.db 4, SOLENOID_DOWN + RIGHT
-	.db 1, SOLENOID_UP
-	.db 1, STOP
+	.db 5, SOLENOID_DOWN
+	.db 30, SOLENOID_DOWN + UP
+	.db 10, SOLENOID_DOWN + DOWN	
+	.db 10, SOLENOID_DOWN + LEFT
+	.db 20, SOLENOID_DOWN + RIGHT
+	.db 5, SOLENOID_UP
+	.db 5, STOP
 
 CIRCLE_DATA:
-	.db 1, SOLENOID_DOWN	
-	.db 2, SOLENOID_DOWN + RIGHT		
-	.db 1, SOLENOID_DOWN + UP + RIGHT		
-	.db 2, SOLENOID_DOWN + UP				
-	.db 1, SOLENOID_DOWN + UP + LEFT			
-	.db 2, SOLENOID_DOWN + LEFT		
-	.db 1, SOLENOID_DOWN + DOWN + LEFT		
-	.db 2, SOLENOID_DOWN + DOWN		
-	.db 1, SOLENOID_DOWN + DOWN + RIGHT		
-	.db 1, SOLENOID_UP
-	.db 1, STOP		
+	.db 5, SOLENOID_DOWN	
+	.db 10, SOLENOID_DOWN + RIGHT		
+	.db 1,  SOLENOID_DOWN + UP + RIGHT
+	.db 3,  SOLENOID_DOWN + RIGHT
+	.db 2,  SOLENOID_DOWN + UP + RIGHT
+	.db 1,  SOLENOID_DOWN + RIGHT
+	.db 4,  SOLENOID_DOWN + UP + RIGHT
+	.db 1,  SOLENOID_DOWN + UP				
+	.db 2,  SOLENOID_DOWN + UP + RIGHT
+	.db 3,  SOLENOID_DOWN + UP				
+	.db 1,  SOLENOID_DOWN + UP + RIGHT
+	
+	.db 10, SOLENOID_DOWN + UP				
+	.db 1,  SOLENOID_DOWN + UP + LEFT
+	.db 3,  SOLENOID_DOWN + UP				
+	.db 2,  SOLENOID_DOWN + UP + LEFT
+	.db 1,  SOLENOID_DOWN + UP				
+	.db 4,  SOLENOID_DOWN + UP + LEFT
+	.db 1,  SOLENOID_DOWN + LEFT
+	.db 2,  SOLENOID_DOWN + UP + LEFT
+	.db 3,  SOLENOID_DOWN + LEFT
+	.db 1,  SOLENOID_DOWN + UP + LEFT
+
+	.db 10, SOLENOID_DOWN + LEFT				
+	.db 1,	SOLENOID_DOWN + DOWN + LEFT				
+	.db 3,  SOLENOID_DOWN + LEFT				
+	.db 2,	SOLENOID_DOWN + DOWN + LEFT				
+	.db 1,  SOLENOID_DOWN + LEFT				
+	.db 4,	SOLENOID_DOWN + DOWN + LEFT				
+	.db 1,	SOLENOID_DOWN + DOWN 
+	.db 2,	SOLENOID_DOWN + DOWN + LEFT				
+	.db 3,	SOLENOID_DOWN + DOWN 
+	.db 1,	SOLENOID_DOWN + DOWN + LEFT				
+
+	.db 10, SOLENOID_DOWN + DOWN
+	.db 1,	SOLENOID_DOWN + DOWN + RIGHT
+	.db 3,	SOLENOID_DOWN + DOWN 
+	.db 2,	SOLENOID_DOWN + DOWN + RIGHT
+	.db 1,	SOLENOID_DOWN + DOWN 
+	.db 4,	SOLENOID_DOWN + DOWN + RIGHT
+	.db 1,	SOLENOID_DOWN + RIGHT
+	.db 2,	SOLENOID_DOWN + DOWN + RIGHT
+	.db 3,	SOLENOID_DOWN + RIGHT
+	.db 1,	SOLENOID_DOWN + DOWN + RIGHT
+	
+	.db 5, SOLENOID_UP
+	.db 5, STOP		
 
 BERSERK_DATA:
-	.db 1, SOLENOID_DOWN
-	.db 2, SOLENOID_DOWN + UP + LEFT
-	.db 4, SOLENOID_DOWN + UP + RIGHT
-	.db 1, SOLENOID_DOWN + UP + LEFT
-	.db 1, SOLENOID_UP
-	.db 2, SOLENOID_UP + LEFT
-	.db 1, SOLENOID_DOWN
-	.db 1, SOLENOID_DOWN + DOWN + LEFT
-	.db 4, SOLENOID_DOWN + DOWN + RIGHT
-	.db 2, SOLENOID_DOWN + DOWN + LEFT
-	.db 7, SOLENOID_DOWN + UP
-	.db 1, SOLENOID_UP
-	.db 1, STOP
+	.db 5, SOLENOID_DOWN
+	.db 10, SOLENOID_DOWN + UP + LEFT
+	.db 20, SOLENOID_DOWN + UP + RIGHT
+	.db 5, SOLENOID_DOWN + UP + LEFT
+	.db 5, SOLENOID_UP
+	.db 10, SOLENOID_UP + LEFT
+	.db 5, SOLENOID_DOWN
+	.db 5, SOLENOID_DOWN + DOWN + LEFT
+	.db 20, SOLENOID_DOWN + DOWN + RIGHT
+	.db 10, SOLENOID_DOWN + DOWN + LEFT
+	.db 35, SOLENOID_DOWN + UP
+	.db 5, SOLENOID_UP
+	.db 5, STOP
 
 MOVE_START:
-	.db 15, SOLENOID_UP + DOWN + LEFT
-	.db 15, SOLENOID_UP + LEFT 	
-	.db 1, STOP
+	.db 75, SOLENOID_UP + DOWN + LEFT
+	.db 75, SOLENOID_UP + LEFT 	
+	.db 5, STOP
 
 MOVE_RIGHT:
-	.db 5, SOLENOID_UP + RIGHT	
-	.db 1, STOP
+	.db 15, SOLENOID_UP + RIGHT	
+	.db 5, STOP
 
 MOVE_DOWN:
-	.db 5, SOLENOID_UP + DOWN
-	.db 1, STOP
+	.db 15, SOLENOID_UP + DOWN
+	.db 5, STOP
 
 MOVE_UP: 
-	.db 5, SOLENOID_UP + UP
-	.db 1, STOP
+	.db 15, SOLENOID_UP + UP
+	.db 5, STOP
 
 MOVE_LEFT:
-	.db 5, SOLENOID_UP + LEFT	
-	.db 1, STOP
+	.db 15, SOLENOID_UP + LEFT	
+	.db 5, STOP
 
 MENU_TEXT:
 	.db "Elija una opcion:", 0x0A

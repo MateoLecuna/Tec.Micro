@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm Fri Sep 19 14:57:02 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm Tue Sep 23 01:07:58 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
 C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.asm(2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
@@ -1073,10 +1073,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
                                  
                                  .cseg
 000000 c0ff                      .org 0x0000 rjmp RESET			; Program start
-000002 c29a                      .org 0x0002 rjmp INT0_ISR		; External interrupt 1
-000004 c29f                      .org 0x0004 rjmp INT1_ISR		; External interrupt 2
-000012 c29f                      .org 0x0012 rjmp T2_OVF_ISR		; Timer 2 overflow ISR
-000020 c28a                      .org 0x0020 rjmp T0_OVF_ISR 	; Timer 0 overflow ISR
+000012 c28a                      .org 0x0012 rjmp T2_OVF_ISR		; Timer 2 overflow ISR
 000024 c220                      .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
 000026 c1f4                      .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
                                  
@@ -1178,7 +1175,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
 000130 2ffb                      	mov ZH, XH
                                  
 000131 e070                      	ldi row, 0 RENDER_FRAME_ROW_LOOP:  
-000132 e800                      		ldi r16, 0b10000000 ; Frame mask
+000132 e001                      		ldi r16, 0b00000001 ; Frame mask
 000133 9115                      		lpm r17, Z+
                                  
 000134 e080                      		ldi col, 0 RENDER_FRAME_COL_LOOP:
@@ -1197,7 +1194,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
                                  
                                  			RENDER_FRAME_SKIP_LED:
 00013c 910f                      			pop r16
-00013d 9506                      			lsr r16
+00013d 0f00                      			lsl r16
 00013e 9583
 00013f 3088
 000140 f3a0                      		inc col cpi col, 8 brlo RENDER_FRAME_COL_LOOP 
@@ -1324,12 +1321,12 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
                                  
                                  CLEAR_MATRIX:			; ------------------- CLEAR_MATRIX
 00019c 930f                      	push r16
-00019d e00f
-00019e b905                      	ldi r16, 0b00001111 out PORTB, r16
-00019f e000
-0001a0 b908                      	ldi r16, 0b00000000 out PORTC, r16
-0001a1 ef0c
-0001a2 b90b                      	ldi r16, 0b11111100 out PORTD, r16
+00019d e30e
+00019e b905                      	ldi r16, 0b00111110 out PORTB, r16
+00019f e308
+0001a0 b908                      	ldi r16, 0b00111000 out PORTC, r16
+0001a1 e000
+0001a2 b90b                      	ldi r16, 0b00000000 out PORTD, r16
 0001a3 910f                      	pop r16	
 0001a4 9508                      	ret
                                  
@@ -1569,6 +1566,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
 000248 931f                      	push r17
                                  	
 000249 9100 00c6                 	lds r16, UDR0
+                                 
 00024b 3300                      	cpi r16, '0' 
 00024c f069                      	breq USART_RX_ISR_CASE_0 ; Texto desplazante
 00024d 3301                      	cpi r16, '1' 
@@ -1671,57 +1669,27 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
 00029c 9518                      	reti
                                  
                                  
-                                 INT0_ISR:			; ---------------------------------- INT0 ISR
+                                 T2_OVF_ISR:			; ---------------------------------- TIMER2_OVF ISR
 00029d 930f                      	push r16 
 00029e b70f                          in r16, SREG 
 00029f 930f                      	push r16 
-                                 
-0002a0 910f                      	pop r16
-0002a1 bf0f                      	out SREG, r16
-0002a2 910f                      	pop r16				
-0002a3 9518                      	reti
-                                 
-                                 INT1_ISR:			; ---------------------------------- INT1 ISR
-0002a4 930f                      	push r16 
-0002a5 b70f                          in r16, SREG 
-0002a6 930f                      	push r16 
-                                 
-0002a7 910f                      	pop r16
-0002a8 bf0f                      	out SREG, r16
-0002a9 910f                      	pop r16		
-0002aa 9518                      	reti
-                                 
-                                 T0_OVF_ISR:			; ---------------------------------- TIMER0_OVF ISR
-0002ab 930f                      	push r16 
-0002ac b70f                          in r16, SREG 
-0002ad 930f                      	push r16 
-                                 
-0002ae 910f                      	pop r16
-0002af bf0f                      	out SREG, r16
-0002b0 910f                      	pop r16		
-0002b1 9518                      	reti 
-                                 
-                                 T2_OVF_ISR:			; ---------------------------------- TIMER2_OVF ISR
-0002b2 930f                      	push r16 
-0002b3 b70f                          in r16, SREG 
-0002b4 930f                      	push r16 
                                  	
-0002b5 9443                      	inc  timer2_ovf_counter
+0002a0 9443                      	inc  timer2_ovf_counter
                                  	
-0002b6 e002
-0002b7 1504                      	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
-0002b8 f410                          brsh T2_OVF_ISR_END 
+0002a1 e002
+0002a2 1504                      	ldi r16, _TIMER2_OVF_COUNT cp r16, timer2_ovf_counter 
+0002a3 f410                          brsh T2_OVF_ISR_END 
                                      
                                      ; Interruption code here -------------------
-0002b9 de67                      	rcall MOVE_ANIMATION_FRAME
+0002a4 de7c                      	rcall MOVE_ANIMATION_FRAME
                                  	
-0002ba 2444                      	clr timer2_ovf_counter
+0002a5 2444                      	clr timer2_ovf_counter
                                  
                                      T2_OVF_ISR_END:
-0002bb 910f                      		pop r16
-0002bc bf0f                      		out SREG, r16
-0002bd 910f                      		pop r16	
-0002be 9518                      		reti
+0002a6 910f                      		pop r16
+0002a7 bf0f                      		out SREG, r16
+0002a8 910f                      		pop r16	
+0002a9 9518                      		reti
                                  
                                  ;-----------------------------------------------------------------
                                  ; Datos (program memory)
@@ -1730,25 +1698,25 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\2 Matriz\Matriz\main.
                                  ; 0x300 es un lugar seguro para CUALQUIER tamaño de programa
                                  
                                  .org 0x310 ROW_PORTS:
-000310 2b2b
-000311 2b2b
-000312 2525
-000313 2525                      	.db 0x2B, 0x2B, 0x2B, 0x2B, 0x25, 0x25, 0x25, 0x25
+000310 2525
+000311 2525
+000312 2528
+000313 2828                      	.db 0x25, 0x25, 0x25, 0x25, 0x28, 0x25, 0x28, 0x28
                                  .org 0x320 ROW_MASKS:
-000320 2010
-000321 8040
-000322 0201
-000323 0804                      	.db 0b00010000, 0b00100000, 0b01000000, 0b10000000, 0b00000001, 0b00000010, 0b00000100, 0b00001000
+000320 0208
+000321 0410
+000322 2008
+000323 2010                      	.db 0b00001000, 0b00000010, 0b00010000, 0b00000100, 0b00001000, 0b00100000, 0b00010000, 0b00100000
                                  .org 0x330 COL_PORTS:
-000330 2525
-000331 2828
-000332 2828
-000333 2828                      	.db 0x25, 0x25, 0x28, 0x28, 0x28, 0x28, 0x28, 0x28
+000330 2b2b
+000331 282b
+000332 2825
+000333 2b28                      	.db 0x2B, 0x2B, 0x2B, 0x28, 0x25, 0x28, 0x28, 0x2B
                                  .org 0x340 COL_MASKS:
 000340 2010
-000341 0201
-000342 0804
-000343 2010                      	.db 0b00010000, 0b00100000, 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000 
+000341 0480
+000342 0101
+000343 4002                      	.db 0b00010000, 0b00100000, 0b10000000, 0b00000100, 0b00000001, 0b00000001, 0b00000010, 0b01000000 
                                  
                                  	
                                  .org 0x360 MATRIX_PATTERNS: ; JESUS IS GOD
@@ -1951,7 +1919,7 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :  13 r0 :   0 r1 :  10 r2 :   0 r3 :   0 r4 :   3 
 r5 :   4 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16: 144 r17:  32 r18:  17 r19:  14 r20:  30 
+r13:   0 r14:   0 r15:   0 r16: 126 r17:  32 r18:  17 r19:  14 r20:  30 
 r21:   0 r22:   0 r23:   9 r24:   9 r25:   0 r26:   8 r27:   8 r28:   0 
 r29:   0 r30:  34 r31:  34 
 Registers used: 15 out of 35 (42.9%)
@@ -1966,11 +1934,11 @@ brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0
 clc   :   1 clh   :   0 cli   :   0 cln   :   0 clr   :   6 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   1 cp    :   3 cpc   :   0 
 cpi   :  20 cpse  :   0 dec   :   3 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   6 inc   :   6 jmp   :   0 
-ld    :   3 ldd   :   0 ldi   :  66 lds   :   7 lpm   :  11 lsl   :   0 
-lsr   :   1 mov   :  16 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   1 or    :   1 ori   :   1 out   :  15 pop   :  61 
-push  :  55 rcall :  25 ret   :  14 reti  :   6 rjmp  :  30 rol   :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   3 inc   :   6 jmp   :   0 
+ld    :   3 ldd   :   0 ldi   :  66 lds   :   7 lpm   :  11 lsl   :   1 
+lsr   :   0 mov   :  16 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
+neg   :   0 nop   :   1 or    :   1 ori   :   1 out   :  12 pop   :  55 
+push  :  49 rcall :  25 ret   :  14 reti  :   3 rjmp  :  27 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   1 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
@@ -1981,7 +1949,7 @@ Instructions used: 37 out of 113 (32.7%)
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000c14    908    358   1266   32768   3.9%
+[.cseg] 0x000000 0x000c14    860    358   1218   32768   3.7%
 [.dseg] 0x000100 0x000202      0    258    258    2048  12.6%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

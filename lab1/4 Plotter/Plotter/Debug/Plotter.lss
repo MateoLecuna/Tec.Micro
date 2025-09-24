@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm Fri Sep 12 16:30:53 2025
+AVRASM ver. 2.2.8  C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm Mon Sep 22 20:45:23 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
 C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
@@ -1076,8 +1076,8 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
                                  
                                  .cseg
 000000 c0ff                      .org 0x0000 rjmp RESET			; Program start
-000002 c20d                      .org 0x0002 rjmp INT0_ISR		; Button press 1
-000020 c1f0                      .org 0x0020 rjmp TIMER0_OVF 	; Timer 0 overflow
+000002 c210                      .org 0x0002 rjmp INT0_ISR		; Button press 1
+000020 c1f3                      .org 0x0020 rjmp TIMER0_OVF 	; Timer 0 overflow
 000024 c194                      .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
 000026 c16c                      .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
                                  
@@ -1178,16 +1178,17 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 00012d 933f                      	push r19
 00012e 934f                      	push r20
                                  
-00012f e228                          ldi  r18, 40
+00012f e029                          ldi  r18, 9
 000130 e13e                          ldi  r19, 30
-000131 e040                          ldi  r20, 0
-000132 954a                      L3: dec  r20
-000133 f7f1                          brne L3
+000131 ee45                          ldi  r20, 229
+000132 954a                      L1: dec  r20
+000133 f7f1                          brne L1
 000134 953a                          dec  r19
-000135 f7e1                          brne L3
+000135 f7e1                          brne L1
 000136 952a                          dec  r18
-000137 f7d1                          brne L3
+000137 f7d1                          brne L1
 000138 0000                          nop
+                                 
                                  
 000139 914f                      	pop r20
 00013a 913f                      	pop r19
@@ -1206,9 +1207,12 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
                                  	; Set baud rate
 000141 9310 00c5                 	sts UBRR0H, r17
 000143 9300 00c4                 	sts UBRR0L, r16
-                                 	; Enable receiver and transmitter, and interruptions
-000145 e908                      	ldi r16, (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0)
+                                 
+                                 	; Enable receiver, transmitter
+                                 	; and RX interruptions
+000145 e908                      	ldi r16, 0b10011000
 000146 9300 00c1                 	sts UCSR0B,r16
+                                 
                                  	; Set frame format: 8data, 2stop bit
 000148 e00e                      	ldi r16, (1<<USBS0)|(3<<UCSZ00)
 000149 9300 00c2                 	sts UCSR0C,r16
@@ -1253,7 +1257,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 000164 6240                          ori  r20, (1<<UDRIE0)
 000165 9340 00c1                     sts  UCSR0B, r20
                                  
-000167 9488                          clc                            ; success
+000167 9488                          clc ; success
                                  
 000168 91ff                      	pop ZH
 000169 91ef                      	pop ZL
@@ -1279,7 +1283,7 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 000178 93ef                      	push ZL
 000179 93ff                      	push ZH
                                  	
-00017a e6ee
+00017a eaee
 00017b e0f6                      	ldi ZL, low(MENU_TEXT<<1) ldi ZH, high(MENU_TEXT<<1)
                                  
                                  	SEND_MENU_LOOP:
@@ -1300,8 +1304,8 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 000186 93ef                      	push ZL
 000187 93ff                      	push ZH
                                  		
-000188 eee0
-000189 e0f6                      	ldi ZL, low(ERROR_TEXT<<1) ldi ZH, high(ERROR_TEXT<<1)
+000188 e2e0
+000189 e0f7                      	ldi ZL, low(ERROR_TEXT<<1) ldi ZH, high(ERROR_TEXT<<1)
                                  
                                  	SEND_ERROR_LOOP:
 00018a 9105                      	lpm r16, Z+
@@ -1394,106 +1398,109 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
 0001cd 3504                      	cpi r16, 'T' 
 0001ce f0f9                      	breq USART_RX_ISR_CASE_T ; ALL
 0001cf 3402                      	cpi r16, 'B' 
-0001d0 f199                      	breq USART_RX_ISR_CASE_BERSERK ; BRAND OF SACRIFICE
+0001d0 f1b1                      	breq USART_RX_ISR_CASE_BERSERK ; BRAND OF SACRIFICE
                                  
-0001d1 c036                      	rjmp USART_RX_ISR_CASE_DEFAULT 
+0001d1 c039                      	rjmp USART_RX_ISR_CASE_DEFAULT 
                                  
                                  	USART_RX_ISR_CASE_0: ; UP
-0001d2 e606
+0001d2 ea06
 0001d3 e016                      		ldi r16, low(MOVE_UP<<1) ldi r17, high(MOVE_UP<<1)
 0001d4 df3f                      		rcall DRAW
-0001d5 c035                      		rjmp USART_RX_ISR_END
+0001d5 c038                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_1: ; DOWN
-0001d6 e602
+0001d6 ea02
 0001d7 e016                      		ldi r16, low(MOVE_DOWN<<1) ldi r17, high(MOVE_DOWN<<1)
 0001d8 df3b                      		rcall DRAW
-0001d9 c031                      		rjmp USART_RX_ISR_END
+0001d9 c034                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_2: ; LEFT
-0001da e60a
+0001da ea0a
 0001db e016                      		ldi r16, low(MOVE_LEFT<<1) ldi r17, high(MOVE_LEFT<<1)
 0001dc df37                      		rcall DRAW
-0001dd c02d                      		rjmp USART_RX_ISR_END
+0001dd c030                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_3: ; RIGHT
-0001de e50e
+0001de e90e
 0001df e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 0001e0 df33                      		rcall DRAW
-0001e1 c029                      		rjmp USART_RX_ISR_END
+0001e1 c02c                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_4: ; TRIANGLE
 0001e2 e000
 0001e3 e016                      		ldi r16, low(TRIANGLE_DATA<<1) ldi r17, high(TRIANGLE_DATA<<1)
 0001e4 df2f                      		rcall DRAW
-0001e5 c025                      		rjmp USART_RX_ISR_END
+0001e5 c028                      		rjmp USART_RX_ISR_END
                                  	
                                  	USART_RX_ISR_CASE_5: ; CIRCLE
 0001e6 e208
 0001e7 e016                      		ldi r16, low(CIRCLE_DATA<<1) ldi r17, high(CIRCLE_DATA<<1)
 0001e8 df2b                      		rcall DRAW
-0001e9 c021                      		rjmp USART_RX_ISR_END
+0001e9 c024                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_6: ; CROSS
 0001ea e10a
 0001eb e016                      		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
 0001ec df27                      		rcall DRAW
-0001ed c01d                      		rjmp USART_RX_ISR_END
+0001ed c020                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_T: ; ALL FIGURES
                                  		
 0001ee e000
 0001ef e016                      		ldi r16, low(TRIANGLE_DATA<<1) ldi r17, high(TRIANGLE_DATA<<1)
 0001f0 df23                      		rcall DRAW
-0001f1 e50e
+0001f1 e90e
 0001f2 e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 0001f3 df20                      		rcall DRAW
-0001f4 e50e
+0001f4 e90e
 0001f5 e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 0001f6 df1d                      		rcall DRAW
 0001f7 e208
 0001f8 e016                      		ldi r16, low(CIRCLE_DATA<<1) ldi r17, high(CIRCLE_DATA<<1)
 0001f9 df1a                      		rcall DRAW
-0001fa e50e
+0001fa e90e
 0001fb e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 0001fc df17                      		rcall DRAW
-0001fd e50e
+0001fd e90e
 0001fe e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 0001ff df14                      		rcall DRAW
-000200 e10a
-000201 e016                      		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
+000200 e90e
+000201 e016                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 000202 df11                      		rcall DRAW
+000203 e10a
+000204 e016                      		 ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
+000205 df0e                      		rcall DRAW
                                  
                                  		
                                  
-000203 c007                      		rjmp USART_RX_ISR_END
+000206 c007                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_BERSERK: ; BRAND OF SACRIFICE
-000204 e30e
-000205 e016                      		ldi r16, low(BERSERK_DATA<<1) ldi r17, high(BERSERK_DATA<<1)
-000206 df0d                      		rcall DRAW
-000207 c003                      		rjmp USART_RX_ISR_END
+000207 e70e
+000208 e016                      		ldi r16, low(BERSERK_DATA<<1) ldi r17, high(BERSERK_DATA<<1)
+000209 df0a                      		rcall DRAW
+00020a c003                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_DEFAULT: 
-000208 df7c                      		rcall SEND_ERROR
-000209 df6d                      		rcall SEND_MENU
-00020a c000                      		rjmp USART_RX_ISR_END
+00020b df79                      		rcall SEND_ERROR
+00020c df6a                      		rcall SEND_MENU
+00020d c000                      		rjmp USART_RX_ISR_END
                                  
                                  
                                  	USART_RX_ISR_END:
                                  
-00020b 911f                      	pop r17 
-00020c 910f                      	pop r16
-00020d bf0f                      	out SREG, r16
-00020e 910f                      	pop r16	
-00020f 9518                      	reti
+00020e 911f                      	pop r17 
+00020f 910f                      	pop r16
+000210 bf0f                      	out SREG, r16
+000211 910f                      	pop r16	
+000212 9518                      	reti
                                  
                                  
                                  INT0_ISR:
-000210 9518                      	reti
+000213 9518                      	reti
                                  
                                  TIMER0_OVF:
-000211 9518                      	reti 
+000214 9518                      	reti 
                                  
                                  ;-----------------------------------------------------------------
                                  ; Datos (program memory)
@@ -1501,149 +1508,185 @@ C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\mai
                                  
                                  .org 0x300 
                                  TRIANGLE_DATA:
-000300 0401                      	.db 1, SOLENOID_DOWN	
-000301 4404                      	.db 4, SOLENOID_DOWN + RIGHT			
-000302 a402                      	.db 2, SOLENOID_DOWN + UP + LEFT		
-000303 9402                      	.db 2, SOLENOID_DOWN + DOWN + LEFT
-000304 0801                      	.db 1, SOLENOID_UP		
-000305 0001                      	.db 1, STOP
+000300 0405                      	.db 5, SOLENOID_DOWN	
+000301 4414                      	.db 20, SOLENOID_DOWN + RIGHT			
+000302 a40a                      	.db 10, SOLENOID_DOWN + UP + LEFT		
+000303 940a                      	.db 10, SOLENOID_DOWN + DOWN + LEFT
+000304 0805                      	.db 5, SOLENOID_UP		
+000305 0005                      	.db 5, STOP
                                  	
                                  SQUARE_DATA:
-000306 0401                      	.db 1, SOLENOID_DOWN	
-000307 4402                      	.db 2, SOLENOID_DOWN + RIGHT			
-000308 2402                      	.db 2, SOLENOID_DOWN + UP				
-000309 8402                      	.db 2, SOLENOID_DOWN + LEFT		
-00030a 1402                      	.db 2, SOLENOID_DOWN + DOWN
-00030b 0801                      	.db 1, SOLENOID_UP
-00030c 0001                      	.db 1, STOP
+000306 0405                      	.db 5, SOLENOID_DOWN	
+000307 440a                      	.db 10, SOLENOID_DOWN + RIGHT			
+000308 240a                      	.db 10, SOLENOID_DOWN + UP				
+000309 840a                      	.db 10, SOLENOID_DOWN + LEFT		
+00030a 140a                      	.db 10, SOLENOID_DOWN + DOWN
+00030b 0805                      	.db 5, SOLENOID_UP
+00030c 0005                      	.db 5, STOP
                                  
                                  CROSS_DATA:
-00030d 0401                      	.db 1, SOLENOID_DOWN
-00030e 2406                      	.db 6, SOLENOID_DOWN + UP
-00030f 1402                      	.db 2, SOLENOID_DOWN + DOWN	
-000310 8402                      	.db 2, SOLENOID_DOWN + LEFT
-000311 4404                      	.db 4, SOLENOID_DOWN + RIGHT
-000312 0801                      	.db 1, SOLENOID_UP
-000313 0001                      	.db 1, STOP
+00030d 0405                      	.db 5, SOLENOID_DOWN
+00030e 241e                      	.db 30, SOLENOID_DOWN + UP
+00030f 140a                      	.db 10, SOLENOID_DOWN + DOWN	
+000310 840a                      	.db 10, SOLENOID_DOWN + LEFT
+000311 4414                      	.db 20, SOLENOID_DOWN + RIGHT
+000312 0805                      	.db 5, SOLENOID_UP
+000313 0005                      	.db 5, STOP
                                  
                                  CIRCLE_DATA:
-000314 0401                      	.db 1, SOLENOID_DOWN	
-000315 4402                      	.db 2, SOLENOID_DOWN + RIGHT		
-000316 6401                      	.db 1, SOLENOID_DOWN + UP + RIGHT		
-000317 2402                      	.db 2, SOLENOID_DOWN + UP				
-000318 a401                      	.db 1, SOLENOID_DOWN + UP + LEFT			
-000319 8402                      	.db 2, SOLENOID_DOWN + LEFT		
-00031a 9401                      	.db 1, SOLENOID_DOWN + DOWN + LEFT		
-00031b 1402                      	.db 2, SOLENOID_DOWN + DOWN		
-00031c 5401                      	.db 1, SOLENOID_DOWN + DOWN + RIGHT		
-00031d 0801                      	.db 1, SOLENOID_UP
-00031e 0001                      	.db 1, STOP		
+000314 0405                      	.db 5, SOLENOID_DOWN	
+000315 440a                      	.db 10, SOLENOID_DOWN + RIGHT		
+000316 6401                      	.db 1,  SOLENOID_DOWN + UP + RIGHT
+000317 4403                      	.db 3,  SOLENOID_DOWN + RIGHT
+000318 6402                      	.db 2,  SOLENOID_DOWN + UP + RIGHT
+000319 4401                      	.db 1,  SOLENOID_DOWN + RIGHT
+00031a 6404                      	.db 4,  SOLENOID_DOWN + UP + RIGHT
+00031b 2401                      	.db 1,  SOLENOID_DOWN + UP				
+00031c 6402                      	.db 2,  SOLENOID_DOWN + UP + RIGHT
+00031d 2403                      	.db 3,  SOLENOID_DOWN + UP				
+00031e 6401                      	.db 1,  SOLENOID_DOWN + UP + RIGHT
+                                 	
+00031f 240a                      	.db 10, SOLENOID_DOWN + UP				
+000320 a401                      	.db 1,  SOLENOID_DOWN + UP + LEFT
+000321 2403                      	.db 3,  SOLENOID_DOWN + UP				
+000322 a402                      	.db 2,  SOLENOID_DOWN + UP + LEFT
+000323 2401                      	.db 1,  SOLENOID_DOWN + UP				
+000324 a404                      	.db 4,  SOLENOID_DOWN + UP + LEFT
+000325 8401                      	.db 1,  SOLENOID_DOWN + LEFT
+000326 a402                      	.db 2,  SOLENOID_DOWN + UP + LEFT
+000327 8403                      	.db 3,  SOLENOID_DOWN + LEFT
+000328 a401                      	.db 1,  SOLENOID_DOWN + UP + LEFT
+                                 
+000329 840a                      	.db 10, SOLENOID_DOWN + LEFT				
+00032a 9401                      	.db 1,	SOLENOID_DOWN + DOWN + LEFT				
+00032b 8403                      	.db 3,  SOLENOID_DOWN + LEFT				
+00032c 9402                      	.db 2,	SOLENOID_DOWN + DOWN + LEFT				
+00032d 8401                      	.db 1,  SOLENOID_DOWN + LEFT				
+00032e 9404                      	.db 4,	SOLENOID_DOWN + DOWN + LEFT				
+00032f 1401                      	.db 1,	SOLENOID_DOWN + DOWN 
+000330 9402                      	.db 2,	SOLENOID_DOWN + DOWN + LEFT				
+000331 1403                      	.db 3,	SOLENOID_DOWN + DOWN 
+000332 9401                      	.db 1,	SOLENOID_DOWN + DOWN + LEFT				
+                                 
+000333 140a                      	.db 10, SOLENOID_DOWN + DOWN
+000334 5401                      	.db 1,	SOLENOID_DOWN + DOWN + RIGHT
+000335 1403                      	.db 3,	SOLENOID_DOWN + DOWN 
+000336 5402                      	.db 2,	SOLENOID_DOWN + DOWN + RIGHT
+000337 1401                      	.db 1,	SOLENOID_DOWN + DOWN 
+000338 5404                      	.db 4,	SOLENOID_DOWN + DOWN + RIGHT
+000339 4401                      	.db 1,	SOLENOID_DOWN + RIGHT
+00033a 5402                      	.db 2,	SOLENOID_DOWN + DOWN + RIGHT
+00033b 4403                      	.db 3,	SOLENOID_DOWN + RIGHT
+00033c 5401                      	.db 1,	SOLENOID_DOWN + DOWN + RIGHT
+                                 	
+00033d 0805                      	.db 5, SOLENOID_UP
+00033e 0005                      	.db 5, STOP		
                                  
                                  BERSERK_DATA:
-00031f 0401                      	.db 1, SOLENOID_DOWN
-000320 a402                      	.db 2, SOLENOID_DOWN + UP + LEFT
-000321 6404                      	.db 4, SOLENOID_DOWN + UP + RIGHT
-000322 a401                      	.db 1, SOLENOID_DOWN + UP + LEFT
-000323 0801                      	.db 1, SOLENOID_UP
-000324 8802                      	.db 2, SOLENOID_UP + LEFT
-000325 0401                      	.db 1, SOLENOID_DOWN
-000326 9401                      	.db 1, SOLENOID_DOWN + DOWN + LEFT
-000327 5404                      	.db 4, SOLENOID_DOWN + DOWN + RIGHT
-000328 9402                      	.db 2, SOLENOID_DOWN + DOWN + LEFT
-000329 2407                      	.db 7, SOLENOID_DOWN + UP
-00032a 0801                      	.db 1, SOLENOID_UP
-00032b 0001                      	.db 1, STOP
+00033f 0405                      	.db 5, SOLENOID_DOWN
+000340 a40a                      	.db 10, SOLENOID_DOWN + UP + LEFT
+000341 6414                      	.db 20, SOLENOID_DOWN + UP + RIGHT
+000342 a405                      	.db 5, SOLENOID_DOWN + UP + LEFT
+000343 0805                      	.db 5, SOLENOID_UP
+000344 880a                      	.db 10, SOLENOID_UP + LEFT
+000345 0405                      	.db 5, SOLENOID_DOWN
+000346 9405                      	.db 5, SOLENOID_DOWN + DOWN + LEFT
+000347 5414                      	.db 20, SOLENOID_DOWN + DOWN + RIGHT
+000348 940a                      	.db 10, SOLENOID_DOWN + DOWN + LEFT
+000349 2423                      	.db 35, SOLENOID_DOWN + UP
+00034a 0805                      	.db 5, SOLENOID_UP
+00034b 0005                      	.db 5, STOP
                                  
                                  MOVE_START:
-00032c 980f                      	.db 15, SOLENOID_UP + DOWN + LEFT
-00032d 880f                      	.db 15, SOLENOID_UP + LEFT 	
-00032e 0001                      	.db 1, STOP
+00034c 984b                      	.db 75, SOLENOID_UP + DOWN + LEFT
+00034d 884b                      	.db 75, SOLENOID_UP + LEFT 	
+00034e 0005                      	.db 5, STOP
                                  
                                  MOVE_RIGHT:
-00032f 4805                      	.db 5, SOLENOID_UP + RIGHT	
-000330 0001                      	.db 1, STOP
+00034f 480f                      	.db 15, SOLENOID_UP + RIGHT	
+000350 0005                      	.db 5, STOP
                                  
                                  MOVE_DOWN:
-000331 1805                      	.db 5, SOLENOID_UP + DOWN
-000332 0001                      	.db 1, STOP
+000351 180f                      	.db 15, SOLENOID_UP + DOWN
+000352 0005                      	.db 5, STOP
                                  
                                  MOVE_UP: 
-000333 2805                      	.db 5, SOLENOID_UP + UP
-000334 0001                      	.db 1, STOP
+000353 280f                      	.db 15, SOLENOID_UP + UP
+000354 0005                      	.db 5, STOP
                                  
                                  MOVE_LEFT:
-000335 8805                      	.db 5, SOLENOID_UP + LEFT	
-000336 0001                      	.db 1, STOP
+000355 880f                      	.db 15, SOLENOID_UP + LEFT	
+000356 0005                      	.db 5, STOP
                                  
                                  MENU_TEXT:
-000337 6c45
-000338 6a69
-000339 2061
-00033a 6e75
-00033b 2061
-00033c 706f
-00033d 6963
-00033e 6e6f
-00033f 0a3a                      	.db "Elija una opcion:", 0x0A
-000340 305b
-000341 205d
-000342 7241
-000343 6972
-000344 6162
-000345 0a20                      	.db "[0] Arriba ", 0x0A
-000346 315b
-000347 205d
-000348 6241
-000349 6a61
-00034a 0a6f                      	.db "[1] Abajo", 0x0A
-00034b 325b
-00034c 205d
-00034d 7a49
-00034e 7571
-00034f 6569
-000350 6472
-000351 0a61                      	.db "[2] Izquierda", 0x0A
-000352 335b
-000353 205d
-000354 6544
-000355 6572
-000356 6863
-000357 0a61                      	.db "[3] Derecha", 0x0A
-000358 345b
-000359 205d
-00035a 7254
-00035b 6169
-00035c 676e
-00035d 6c75
-00035e 0a6f                      	.db "[4] Triangulo", 0x0A
-00035f 355b
-000360 205d
-000361 6943
-000362 6372
-000363 6c75
-000364 0a6f                      	.db "[5] Circulo", 0x0A
-000365 365b
-000366 205d
-000367 7243
-000368 7a75
-000369 0a20                      	.db "[6] Cruz ", 0x0A
-00036a 545b
-00036b 205d
-00036c 6f54
-00036d 6f64
-00036e 0a0a
-00036f 0000                      	.db "[T] Todo", 0x0A, 0x0A, 0, 0
+000357 6c45
+000358 6a69
+000359 2061
+00035a 6e75
+00035b 2061
+00035c 706f
+00035d 6963
+00035e 6e6f
+00035f 0a3a                      	.db "Elija una opcion:", 0x0A
+000360 305b
+000361 205d
+000362 7241
+000363 6972
+000364 6162
+000365 0a20                      	.db "[0] Arriba ", 0x0A
+000366 315b
+000367 205d
+000368 6241
+000369 6a61
+00036a 0a6f                      	.db "[1] Abajo", 0x0A
+00036b 325b
+00036c 205d
+00036d 7a49
+00036e 7571
+00036f 6569
+000370 6472
+000371 0a61                      	.db "[2] Izquierda", 0x0A
+000372 335b
+000373 205d
+000374 6544
+000375 6572
+000376 6863
+000377 0a61                      	.db "[3] Derecha", 0x0A
+000378 345b
+000379 205d
+00037a 7254
+00037b 6169
+00037c 676e
+00037d 6c75
+00037e 0a6f                      	.db "[4] Triangulo", 0x0A
+00037f 355b
+000380 205d
+000381 6943
+000382 6372
+000383 6c75
+000384 0a6f                      	.db "[5] Circulo", 0x0A
+000385 365b
+000386 205d
+000387 7243
+000388 7a75
+000389 0a20                      	.db "[6] Cruz ", 0x0A
+00038a 545b
+00038b 205d
+00038c 6f54
+00038d 6f64
+00038e 0a0a
+00038f 0000                      	.db "[T] Todo", 0x0A, 0x0A, 0, 0
                                  
                                  ERROR_TEXT:
-000370 704f
-000371 6963
-000372 6e6f
-000373 6920
-000374 766e
-000375 6c61
-000376 6469
-000377 2161
-000378 0a0a
+000390 704f
+000391 6963
+000392 6e6f
+000393 6920
+000394 766e
+000395 6c61
+000396 6469
+000397 2161
+000398 0a0a
 
 
 RESOURCE USE INFORMATION
@@ -1663,7 +1706,7 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   6 r0 :   0 r1 :   4 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  65 r17:  32 r18:  21 r19:  19 r20:  15 
+r13:   0 r14:   0 r15:   0 r16:  66 r17:  33 r18:  21 r19:  19 r20:  15 
 r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
 r29:   0 r30:  18 r31:  18 
 Registers used: 9 out of 35 (25.7%)
@@ -1679,10 +1722,10 @@ clc   :   1 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   2 cpc   :   0 
 cpi   :  12 cpse  :   0 dec   :   4 eor   :   0 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :   1 inc   :   2 jmp   :   0 
-ld    :   1 ldd   :   0 ldi   :  51 lds   :   7 lpm   :   4 lsl   :   0 
+ld    :   1 ldd   :   0 ldi   :  53 lds   :   7 lpm   :   4 lsl   :   0 
 lsr   :   0 mov   :   3 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
 neg   :   0 nop   :   1 or    :   0 ori   :   1 out   :   7 pop   :  37 
-push  :  31 rcall :  22 ret   :   7 reti  :   4 rjmp  :  22 rol   :   0 
+push  :  31 rcall :  23 ret   :   7 reti  :   4 rjmp  :  22 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   1 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
@@ -1693,7 +1736,7 @@ Instructions used: 29 out of 113 (25.7%)
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0006f4    558    244    802   32768   2.4%
+[.cseg] 0x000000 0x000734    564    308    872   32768   2.7%
 [.dseg] 0x000100 0x000202      0    258    258    2048  12.6%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
