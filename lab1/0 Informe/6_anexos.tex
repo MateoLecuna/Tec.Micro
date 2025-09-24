@@ -231,7 +231,7 @@ GET_DATA:
 
 \subsection{Ring Buffer}
 
-Reservando ram para el buffer
+Reservando RAM para el buffer
 \begin{verbatim}
     .dseg 
     tx_buffer: .byte TX_BUF_SIZE  
@@ -385,7 +385,7 @@ USART_WRITE_BYTE:
 ret
 \end{verbatim}
     \subsubsection{Interrución USART UDRE ISR}
-    \begin{verbatim}
+\begin{verbatim}
 USART_UDRE_ISR:
   push r16
   in   r16, SREG
@@ -456,7 +456,8 @@ USART_RX_ISR:
   out SREG, r16
   pop r16
   reti
-    \end{verbatim}
+\end{verbatim}
+
 
 \subsection{Bit masks}
 \subsubsection{SET BIT}
@@ -477,6 +478,7 @@ SET_BIT:
   pop r16
   ret
 \end{verbatim}
+
 
 \subsubsection{CLEAR BIT}
 \begin{verbatim}
