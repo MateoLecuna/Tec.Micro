@@ -1,12 +1,12 @@
 
-AVRASM ver. 2.2.8  D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm Tue Sep 23 20:03:11 2025
+AVRASM ver. 2.2.8  D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm Tue Sep 23 22:57:24 2025
 
 [builtin](2): Including file 'D:/Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
-D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): Including file 'D:/Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
+D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(1): Including file 'D:/Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'D:/Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
-D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): Including file 'D:/Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
+D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(1): Including file 'D:/Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328pdef.inc'
                                  
-                                 
+                                 .include "m328pdef.inc"
                                  
                                  ;***** Created: 2011-02-09 12:03 ******* Source: ATmega328P.xml **********
                                  ;*************************************************************************
@@ -987,7 +987,6 @@ D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): In
                                  
                                  ; ***** END OF FILE ******************************************************
                                  
-                                 .include "m328pdef.inc"
                                  
                                  ;***** Created: 2011-02-09 12:03 ******* Source: ATmega328P.xml **********
                                  ;*************************************************************************
@@ -1032,7 +1031,7 @@ D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): In
                                  
                                  ; ***** END OF FILE ******************************************************
                                  
-                                 ;-----------------------------------------------------------------
+                                 ;----------------------------------------------------------------
                                  ; Constantes y definiciones
                                  ;-----------------------------------------------------------------
                                  
@@ -1076,8 +1075,8 @@ D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): In
                                  
                                  .cseg
 000000 c0ff                      .org 0x0000 rjmp RESET			; Program start
-000002 c209                      .org 0x0002 rjmp INT0_ISR		; Button press 1
-000020 c1ec                      .org 0x0020 rjmp TIMER0_OVF 	; Timer 0 overflow
+000002 c203                      .org 0x0002 rjmp INT0_ISR		; Button press 1
+000020 c1e6                      .org 0x0020 rjmp TIMER0_OVF 	; Timer 0 overflow
 000024 c190                      .org 0x0024 rjmp USART_RX_ISR	; Recieved USART data
 000026 c168                      .org 0x0026 rjmp USART_UDRE_ISR ; USART Data register clear
                                  
@@ -1278,8 +1277,8 @@ D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): In
 000174 93ef                      	push ZL
 000175 93ff                      	push ZH
                                  	
-000176 e8e0
-000177 e0fc                      	ldi ZL, low(MENU_TEXT<<1) ldi ZH, high(MENU_TEXT<<1)
+000176 e1ea
+000177 e0fa                      	ldi ZL, low(MENU_TEXT<<1) ldi ZH, high(MENU_TEXT<<1)
                                  
                                  	SEND_MENU_LOOP:
 000178 9105                      	lpm r16, Z+
@@ -1299,8 +1298,8 @@ D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): In
 000182 93ef                      	push ZL
 000183 93ff                      	push ZH
                                  		
-000184 efe2
-000185 e0fc                      	ldi ZL, low(ERROR_TEXT<<1) ldi ZH, high(ERROR_TEXT<<1)
+000184 e8ec
+000185 e0fa                      	ldi ZL, low(ERROR_TEXT<<1) ldi ZH, high(ERROR_TEXT<<1)
                                  
                                  	SEND_ERROR_LOOP:
 000186 9105                      	lpm r16, Z+
@@ -1377,122 +1376,113 @@ D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): In
 0001b9 9100 00c6                 	lds r16, UDR0
                                  	
 0001bb 3300                      	cpi r16, '0' 
-0001bc f089                      	breq USART_RX_ISR_CASE_0 ; UP
+0001bc f079                      	breq USART_RX_ISR_CASE_0 ; UP
 0001bd 3301                      	cpi r16, '1' 
-0001be f099                      	breq USART_RX_ISR_CASE_1 ; DOWN
+0001be f089                      	breq USART_RX_ISR_CASE_1 ; DOWN
 0001bf 3302                      	cpi r16, '2' 
-0001c0 f0a9                      	breq USART_RX_ISR_CASE_2 ; LEFT
+0001c0 f099                      	breq USART_RX_ISR_CASE_2 ; LEFT
 0001c1 3303                      	cpi r16, '3'
-0001c2 f0b9                      	breq USART_RX_ISR_CASE_3 ; RIGHT
+0001c2 f0a9                      	breq USART_RX_ISR_CASE_3 ; RIGHT
 0001c3 3304                      	cpi r16, '4' 
-0001c4 f0c9                      	breq USART_RX_ISR_CASE_4 ; TRIANGE
+0001c4 f0b9                      	breq USART_RX_ISR_CASE_4 ; TRIANGE
 0001c5 3305                      	cpi r16, '5' 
-0001c6 f0d9                      	breq USART_RX_ISR_CASE_5 ; CIRCLE
+0001c6 f0c9                      	breq USART_RX_ISR_CASE_5 ; CIRCLE
 0001c7 3306                      	cpi r16, '6' 
-0001c8 f0e9                      	breq USART_RX_ISR_CASE_6 ; CROSS
+0001c8 f0d9                      	breq USART_RX_ISR_CASE_6 ; CROSS
 0001c9 3504                      	cpi r16, 'T' 
-0001ca f0f9                      	breq USART_RX_ISR_CASE_T ; ALL
-0001cb 3402                      	cpi r16, 'B' 
-0001cc f199                      	breq USART_RX_ISR_CASE_BERSERK ; BRAND OF SACRIFICE
-                                 
-0001cd c036                      	rjmp USART_RX_ISR_CASE_DEFAULT 
+0001ca f0e9                      	breq USART_RX_ISR_CASE_T ; ALL
+0001cb c032                      	rjmp USART_RX_ISR_CASE_DEFAULT 
                                  
                                  	USART_RX_ISR_CASE_0: ; UP
-0001ce e708
-0001cf e01c                      		ldi r16, low(MOVE_UP<<1) ldi r17, high(MOVE_UP<<1)
-0001d0 df43                      		rcall DRAW
-0001d1 c035                      		rjmp USART_RX_ISR_END
+0001cc ed00
+0001cd e019                      		ldi r16, low(MOVE_UP<<1) ldi r17, high(MOVE_UP<<1)
+0001ce df45                      		rcall DRAW
+0001cf c031                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_1: ; DOWN
-0001d2 e704
-0001d3 e01c                      		ldi r16, low(MOVE_DOWN<<1) ldi r17, high(MOVE_DOWN<<1)
-0001d4 df3f                      		rcall DRAW
-0001d5 c031                      		rjmp USART_RX_ISR_END
+0001d0 eb06
+0001d1 e019                      		ldi r16, low(MOVE_DOWN<<1) ldi r17, high(MOVE_DOWN<<1)
+0001d2 df41                      		rcall DRAW
+0001d3 c02d                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_2: ; LEFT
-0001d6 e70c
-0001d7 e01c                      		ldi r16, low(MOVE_LEFT<<1) ldi r17, high(MOVE_LEFT<<1)
-0001d8 df3b                      		rcall DRAW
-0001d9 c02d                      		rjmp USART_RX_ISR_END
+0001d4 ef0a
+0001d5 e019                      		ldi r16, low(MOVE_LEFT<<1) ldi r17, high(MOVE_LEFT<<1)
+0001d6 df3d                      		rcall DRAW
+0001d7 c029                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_3: ; RIGHT
-0001da e700
-0001db e01c                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
-0001dc df37                      		rcall DRAW
-0001dd c029                      		rjmp USART_RX_ISR_END
+0001d8 e906
+0001d9 e019                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+0001da df39                      		rcall DRAW
+0001db c025                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_4: ; TRIANGLE
-0001de e000
-0001df e016                      		ldi r16, low(TRIANGLE_DATA<<1) ldi r17, high(TRIANGLE_DATA<<1)
-0001e0 df33                      		rcall DRAW
-0001e1 c025                      		rjmp USART_RX_ISR_END
+0001dc e000
+0001dd e016                      		ldi r16, low(TRIANGLE_DATA<<1) ldi r17, high(TRIANGLE_DATA<<1)
+0001de df35                      		rcall DRAW
+0001df c021                      		rjmp USART_RX_ISR_END
                                  	
                                  	USART_RX_ISR_CASE_5: ; CIRCLE
-0001e2 e208
-0001e3 e016                      		ldi r16, low(CIRCLE_DATA<<1) ldi r17, high(CIRCLE_DATA<<1)
-0001e4 df2f                      		rcall DRAW
-0001e5 c021                      		rjmp USART_RX_ISR_END
+0001e0 e002
+0001e1 e017                      		ldi r16, low(CIRCLE_DATA<<1) ldi r17, high(CIRCLE_DATA<<1)
+0001e2 df31                      		rcall DRAW
+0001e3 c01d                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_6: ; CROSS
-0001e6 e10a
-0001e7 e016                      		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
-0001e8 df2b                      		rcall DRAW
-0001e9 c01d                      		rjmp USART_RX_ISR_END
+0001e4 e80c
+0001e5 e016                      		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
+0001e6 df2d                      		rcall DRAW
+0001e7 c019                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_T: ; ALL FIGURES
                                  		
-0001ea e000
-0001eb e016                      		ldi r16, low(TRIANGLE_DATA<<1) ldi r17, high(TRIANGLE_DATA<<1)
-0001ec df27                      		rcall DRAW
-0001ed e700
-0001ee e01c                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
-0001ef df24                      		rcall DRAW
-0001f0 e700
-0001f1 e01c                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
-0001f2 df21                      		rcall DRAW
-0001f3 e208
-0001f4 e016                      		ldi r16, low(CIRCLE_DATA<<1) ldi r17, high(CIRCLE_DATA<<1)
-0001f5 df1e                      		rcall DRAW
-0001f6 e700
-0001f7 e01c                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
-0001f8 df1b                      		rcall DRAW
-0001f9 e700
-0001fa e01c                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
-0001fb df18                      		rcall DRAW
-0001fc e10a
-0001fd e016                      		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
-0001fe df15                      		rcall DRAW
+0001e8 e000
+0001e9 e016                      		ldi r16, low(TRIANGLE_DATA<<1) ldi r17, high(TRIANGLE_DATA<<1)
+0001ea df29                      		rcall DRAW
+0001eb e906
+0001ec e019                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+0001ed df26                      		rcall DRAW
+0001ee e906
+0001ef e019                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+0001f0 df23                      		rcall DRAW
+0001f1 e002
+0001f2 e017                      		ldi r16, low(CIRCLE_DATA<<1) ldi r17, high(CIRCLE_DATA<<1)
+0001f3 df20                      		rcall DRAW
+0001f4 e906
+0001f5 e019                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+0001f6 df1d                      		rcall DRAW
+0001f7 e906
+0001f8 e019                      		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+0001f9 df1a                      		rcall DRAW
+0001fa e80c
+0001fb e016                      		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
+0001fc df17                      		rcall DRAW
                                  
                                  		
                                  
-0001ff c007                      		rjmp USART_RX_ISR_END
-                                 
-                                 	USART_RX_ISR_CASE_BERSERK: ; BRAND OF SACRIFICE
-000200 e500
-000201 e01c                      		ldi r16, low(BERSERK_DATA<<1) ldi r17, high(BERSERK_DATA<<1)
-000202 df11                      		rcall DRAW
-000203 c003                      		rjmp USART_RX_ISR_END
+0001fd c003                      		rjmp USART_RX_ISR_END
                                  
                                  	USART_RX_ISR_CASE_DEFAULT: 
-000204 df7c                      		rcall SEND_ERROR
-000205 df6d                      		rcall SEND_MENU
-000206 c000                      		rjmp USART_RX_ISR_END
+0001fe df82                      		rcall SEND_ERROR
+0001ff df73                      		rcall SEND_MENU
+000200 c000                      		rjmp USART_RX_ISR_END
                                  
                                  
                                  	USART_RX_ISR_END:
                                  
-000207 911f                      	pop r17 
-000208 910f                      	pop r16
-000209 bf0f                      	out SREG, r16
-00020a 910f                      	pop r16	
-00020b 9518                      	reti
+000201 911f                      	pop r17 
+000202 910f                      	pop r16
+000203 bf0f                      	out SREG, r16
+000204 910f                      	pop r16	
+000205 9518                      	reti
                                  
                                  
                                  INT0_ISR:
-00020c 9518                      	reti
+000206 9518                      	reti
                                  
                                  TIMER0_OVF:
-00020d 9518                      	reti 
+000207 9518                      	reti 
                                  
                                  ;-----------------------------------------------------------------
                                  ; Datos (program memory)
@@ -1500,957 +1490,639 @@ D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm(2): In
                                  
                                  .org 0x300 
                                  TRIANGLE_DATA:
-000300 0401                      	.db 1, SOLENOID_DOWN	
-000301 4404                      	.db 4, SOLENOID_DOWN + RIGHT			
-000302 a402                      	.db 2, SOLENOID_DOWN + UP + LEFT		
-000303 9402                      	.db 2, SOLENOID_DOWN + DOWN + LEFT
-000304 0801                      	.db 1, SOLENOID_UP		
-000305 0001                      	.db 1, STOP
+000300 04ff                      	.db 255, SOLENOID_DOWN	
+                                 
+000301 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000302 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000303 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000304 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000305 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000306 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000307 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000308 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000309 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00030a 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00030b 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00030c 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00030d 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00030e 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00030f 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000310 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+                                 				
+000311 a4fa                      	.db 250, SOLENOID_DOWN + UP + LEFT
+000312 a4fa                      	.db 250, SOLENOID_DOWN + UP + LEFT
+000313 a4fa                      	.db 250, SOLENOID_DOWN + UP + LEFT
+000314 a4fa                      	.db 250, SOLENOID_DOWN + UP + LEFT
+000315 a4fa                      	.db 250, SOLENOID_DOWN + UP + LEFT
+000316 a4fa                      	.db 250, SOLENOID_DOWN + UP + LEFT
+000317 a4fa                      	.db 250, SOLENOID_DOWN + UP + LEFT
+000318 a4fa                      	.db 250, SOLENOID_DOWN + UP + LEFT
+                                 			
+000319 94fa                      	.db 250, SOLENOID_DOWN + DOWN + LEFT
+00031a 94fa                      	.db 250, SOLENOID_DOWN + DOWN + LEFT
+00031b 94fa                      	.db 250, SOLENOID_DOWN + DOWN + LEFT
+00031c 94fa                      	.db 250, SOLENOID_DOWN + DOWN + LEFT
+00031d 94fa                      	.db 250, SOLENOID_DOWN + DOWN + LEFT
+00031e 94fa                      	.db 250, SOLENOID_DOWN + DOWN + LEFT
+00031f 94fa                      	.db 250, SOLENOID_DOWN + DOWN + LEFT
+000320 94fa                      	.db 250, SOLENOID_DOWN + DOWN + LEFT
+                                 
+000321 08ff                      	.db 255, SOLENOID_UP		
+000322 0001                      	.db 1, STOP
                                  	
                                  SQUARE_DATA:
-000306 0401                      	.db 1, SOLENOID_DOWN	
-000307 4402                      	.db 2, SOLENOID_DOWN + RIGHT			
-000308 2402                      	.db 2, SOLENOID_DOWN + UP				
-000309 8402                      	.db 2, SOLENOID_DOWN + LEFT		
-00030a 1402                      	.db 2, SOLENOID_DOWN + DOWN
-00030b 0801                      	.db 1, SOLENOID_UP
-00030c 0001                      	.db 1, STOP
+000323 04ff                      	.db 255, SOLENOID_DOWN	
+                                 
+000324 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000325 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000326 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000327 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000328 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000329 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00032a 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00032b 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+                                 				
+00032c 24fa                      	.db 250, SOLENOID_DOWN + UP
+00032d 24fa                      	.db 250, SOLENOID_DOWN + UP
+00032e 24fa                      	.db 250, SOLENOID_DOWN + UP
+00032f 24fa                      	.db 250, SOLENOID_DOWN + UP
+000330 24fa                      	.db 250, SOLENOID_DOWN + UP
+000331 24fa                      	.db 250, SOLENOID_DOWN + UP
+000332 24fa                      	.db 250, SOLENOID_DOWN + UP
+000333 24fa                      	.db 250, SOLENOID_DOWN + UP
+                                 					
+000334 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+000335 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+000336 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+000337 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+000338 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+000339 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+00033a 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+00033b 84fa                      	.db 250, SOLENOID_DOWN + LEFT	
+                                 		
+00033c 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+00033d 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+00033e 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+00033f 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000340 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000341 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000342 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000343 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+                                 
+000344 08ff                      	.db 255, SOLENOID_UP
+000345 0001                      	.db 1, STOP
                                  
                                  CROSS_DATA:
-00030d 0401                      	.db 1, SOLENOID_DOWN
-00030e 2406                      	.db 6, SOLENOID_DOWN + UP
-00030f 1402                      	.db 2, SOLENOID_DOWN + DOWN	
-000310 8402                      	.db 2, SOLENOID_DOWN + LEFT
-000311 4404                      	.db 4, SOLENOID_DOWN + RIGHT
-000312 0801                      	.db 1, SOLENOID_UP
-000313 0001                      	.db 1, STOP
+000346 04ff                      	.db 255, SOLENOID_DOWN
                                  
-                                 CIRCLE_DATA:
-000314 0401                      	.db 1, SOLENOID_DOWN
-000315 9401                      	.db 1,  SOLENOID_DOWN + LEFT + DOWN
-000316 8431                      	.db 49, SOLENOID_DOWN + LEFT
-000317 9402                      	.db 2,  SOLENOID_DOWN + LEFT + DOWN
-000318 8430                      	.db 48, SOLENOID_DOWN + LEFT
-000319 9403                      	.db 3,  SOLENOID_DOWN + LEFT + DOWN
-00031a 842f                      	.db 47, SOLENOID_DOWN + LEFT
-00031b 9404                      	.db 4,  SOLENOID_DOWN + LEFT + DOWN
-00031c 842e                      	.db 46, SOLENOID_DOWN + LEFT
-00031d 9405                      	.db 5,  SOLENOID_DOWN + LEFT + DOWN
-00031e 842d                      	.db 45, SOLENOID_DOWN + LEFT
-00031f 9406                      	.db 6,  SOLENOID_DOWN + LEFT + DOWN
-000320 842c                      	.db 44, SOLENOID_DOWN + LEFT
-000321 9407                      	.db 7,  SOLENOID_DOWN + LEFT + DOWN
-000322 842b                      	.db 43, SOLENOID_DOWN + LEFT
-000323 9408                      	.db 8,  SOLENOID_DOWN + LEFT + DOWN
-000324 842a                      	.db 42, SOLENOID_DOWN + LEFT
-000325 9409                      	.db 9,  SOLENOID_DOWN + LEFT + DOWN
-000326 8429                      	.db 41, SOLENOID_DOWN + LEFT
-000327 940a                      	.db 10,  SOLENOID_DOWN + LEFT + DOWN
-000328 8428                      	.db 40, SOLENOID_DOWN + LEFT
-000329 940b                      	.db 11,  SOLENOID_DOWN + LEFT + DOWN
-00032a 8427                      	.db 39, SOLENOID_DOWN + LEFT
-00032b 940c                      	.db 12,  SOLENOID_DOWN + LEFT + DOWN
-00032c 8426                      	.db 38, SOLENOID_DOWN + LEFT
-00032d 940d                      	.db 13,  SOLENOID_DOWN + LEFT + DOWN
-00032e 8425                      	.db 37, SOLENOID_DOWN + LEFT
-00032f 940e                      	.db 14,  SOLENOID_DOWN + LEFT + DOWN
-000330 8424                      	.db 36, SOLENOID_DOWN + LEFT
-000331 940f                      	.db 15,  SOLENOID_DOWN + LEFT + DOWN
-000332 8423                      	.db 35, SOLENOID_DOWN + LEFT
-000333 9410                      	.db 16,  SOLENOID_DOWN + LEFT + DOWN
-000334 8422                      	.db 34, SOLENOID_DOWN + LEFT
-000335 9411                      	.db 17,  SOLENOID_DOWN + LEFT + DOWN
-000336 8421                      	.db 33, SOLENOID_DOWN + LEFT
-000337 9412                      	.db 18,  SOLENOID_DOWN + LEFT + DOWN
-000338 8420                      	.db 32, SOLENOID_DOWN + LEFT
-000339 9413                      	.db 19,  SOLENOID_DOWN + LEFT + DOWN
-00033a 841f                      	.db 31, SOLENOID_DOWN + LEFT
-00033b 9414                      	.db 20,  SOLENOID_DOWN + LEFT + DOWN
-00033c 841e                      	.db 30, SOLENOID_DOWN + LEFT
-00033d 9415                      	.db 21,  SOLENOID_DOWN + LEFT + DOWN
-00033e 841d                      	.db 29, SOLENOID_DOWN + LEFT
-00033f 9416                      	.db 22,  SOLENOID_DOWN + LEFT + DOWN
-000340 841c                      	.db 28, SOLENOID_DOWN + LEFT
-000341 9417                      	.db 23,  SOLENOID_DOWN + LEFT + DOWN
-000342 841b                      	.db 27, SOLENOID_DOWN + LEFT
-000343 9418                      	.db 24,  SOLENOID_DOWN + LEFT + DOWN
-000344 841a                      	.db 26, SOLENOID_DOWN + LEFT
-000345 9419                      	.db 25,  SOLENOID_DOWN + LEFT + DOWN
-000346 8419                      	.db 25, SOLENOID_DOWN + LEFT
-000347 941a                      	.db 26,  SOLENOID_DOWN + LEFT + DOWN
-000348 8418                      	.db 24, SOLENOID_DOWN + LEFT
-000349 941b                      	.db 27,  SOLENOID_DOWN + LEFT + DOWN
-00034a 8417                      	.db 23, SOLENOID_DOWN + LEFT
-00034b 941c                      	.db 28,  SOLENOID_DOWN + LEFT + DOWN
-00034c 8416                      	.db 22, SOLENOID_DOWN + LEFT
-00034d 941d                      	.db 29,  SOLENOID_DOWN + LEFT + DOWN
-00034e 8415                      	.db 21, SOLENOID_DOWN + LEFT
-00034f 941e                      	.db 30,  SOLENOID_DOWN + LEFT + DOWN
-000350 8414                      	.db 20, SOLENOID_DOWN + LEFT
-000351 941f                      	.db 31,  SOLENOID_DOWN + LEFT + DOWN
-000352 8413                      	.db 19, SOLENOID_DOWN + LEFT
-000353 9420                      	.db 32,  SOLENOID_DOWN + LEFT + DOWN
-000354 8412                      	.db 18, SOLENOID_DOWN + LEFT
-000355 9421                      	.db 33,  SOLENOID_DOWN + LEFT + DOWN
-000356 8411                      	.db 17, SOLENOID_DOWN + LEFT
-000357 9422                      	.db 34,  SOLENOID_DOWN + LEFT + DOWN
-000358 8410                      	.db 16, SOLENOID_DOWN + LEFT
-000359 9423                      	.db 35,  SOLENOID_DOWN + LEFT + DOWN
-00035a 840f                      	.db 15, SOLENOID_DOWN + LEFT
-00035b 9424                      	.db 36,  SOLENOID_DOWN + LEFT + DOWN
-00035c 840e                      	.db 14, SOLENOID_DOWN + LEFT
-00035d 9425                      	.db 37,  SOLENOID_DOWN + LEFT + DOWN
-00035e 840d                      	.db 13, SOLENOID_DOWN + LEFT
-00035f 9426                      	.db 38,  SOLENOID_DOWN + LEFT + DOWN
-000360 840c                      	.db 12, SOLENOID_DOWN + LEFT
-000361 9427                      	.db 39,  SOLENOID_DOWN + LEFT + DOWN
-000362 840b                      	.db 11, SOLENOID_DOWN + LEFT
-000363 9428                      	.db 40,  SOLENOID_DOWN + LEFT + DOWN
-000364 840a                      	.db 10, SOLENOID_DOWN + LEFT
-000365 9429                      	.db 41,  SOLENOID_DOWN + LEFT + DOWN
-000366 8409                      	.db 9, SOLENOID_DOWN + LEFT
-000367 942a                      	.db 42,  SOLENOID_DOWN + LEFT + DOWN
-000368 8408                      	.db 8, SOLENOID_DOWN + LEFT
-000369 942b                      	.db 43,  SOLENOID_DOWN + LEFT + DOWN
-00036a 8407                      	.db 7, SOLENOID_DOWN + LEFT
-00036b 942c                      	.db 44,  SOLENOID_DOWN + LEFT + DOWN
-00036c 8406                      	.db 6, SOLENOID_DOWN + LEFT
-00036d 942d                      	.db 45,  SOLENOID_DOWN + LEFT + DOWN
-00036e 8405                      	.db 5, SOLENOID_DOWN + LEFT
-00036f 942e                      	.db 46,  SOLENOID_DOWN + LEFT + DOWN
-000370 8404                      	.db 4, SOLENOID_DOWN + LEFT
-000371 942f                      	.db 47,  SOLENOID_DOWN + LEFT + DOWN
-000372 8403                      	.db 3, SOLENOID_DOWN + LEFT
-000373 9430                      	.db 48,  SOLENOID_DOWN + LEFT + DOWN
-000374 8402                      	.db 2, SOLENOID_DOWN + LEFT
-000375 9431                      	.db 49,  SOLENOID_DOWN + LEFT + DOWN
-000376 8401                      	.db 1, SOLENOID_DOWN + LEFT
+000347 24fa                      	.db 250, SOLENOID_DOWN + UP
+000348 24fa                      	.db 250, SOLENOID_DOWN + UP
+000349 24fa                      	.db 250, SOLENOID_DOWN + UP
+00034a 24fa                      	.db 250, SOLENOID_DOWN + UP
+00034b 24fa                      	.db 250, SOLENOID_DOWN + UP
+00034c 24fa                      	.db 250, SOLENOID_DOWN + UP
+00034d 24fa                      	.db 250, SOLENOID_DOWN + UP
+00034e 24fa                      	.db 250, SOLENOID_DOWN + UP
+00034f 24fa                      	.db 250, SOLENOID_DOWN + UP
+000350 24fa                      	.db 250, SOLENOID_DOWN + UP
+000351 24fa                      	.db 250, SOLENOID_DOWN + UP
+000352 24fa                      	.db 250, SOLENOID_DOWN + UP
+000353 24fa                      	.db 250, SOLENOID_DOWN + UP
+000354 24fa                      	.db 250, SOLENOID_DOWN + UP
+000355 24fa                      	.db 250, SOLENOID_DOWN + UP
+000356 24fa                      	.db 250, SOLENOID_DOWN + UP
+000357 24fa                      	.db 250, SOLENOID_DOWN + UP
+000358 24fa                      	.db 250, SOLENOID_DOWN + UP
+000359 24fa                      	.db 250, SOLENOID_DOWN + UP
+00035a 24fa                      	.db 250, SOLENOID_DOWN + UP
+00035b 24fa                      	.db 250, SOLENOID_DOWN + UP
+00035c 24fa                      	.db 250, SOLENOID_DOWN + UP
+00035d 24fa                      	.db 250, SOLENOID_DOWN + UP
+00035e 24fa                      	.db 250, SOLENOID_DOWN + UP
                                  
-                                 	; ------------------------------
-                                 	; Vuelta 2/8 (DOWN y LEFT+DOWN)
-                                 	; ------------------------------
-000377 1401                      	.db 1,  SOLENOID_DOWN + DOWN
-000378 9431                      	.db 49, SOLENOID_DOWN + LEFT + DOWN
-000379 1402                      	.db 2,  SOLENOID_DOWN + DOWN
-00037a 9430                      	.db 48, SOLENOID_DOWN + LEFT + DOWN
-00037b 1403                      	.db 3,  SOLENOID_DOWN + DOWN
-00037c 942f                      	.db 47, SOLENOID_DOWN + LEFT + DOWN
-00037d 1404                      	.db 4,  SOLENOID_DOWN + DOWN
-00037e 942e                      	.db 46, SOLENOID_DOWN + LEFT + DOWN
-00037f 1405                      	.db 5,  SOLENOID_DOWN + DOWN
-000380 942d                      	.db 45, SOLENOID_DOWN + LEFT + DOWN
-000381 1406                      	.db 6,  SOLENOID_DOWN + DOWN
-000382 942c                      	.db 44, SOLENOID_DOWN + LEFT + DOWN
-000383 1407                      	.db 7,  SOLENOID_DOWN + DOWN
-000384 942b                      	.db 43, SOLENOID_DOWN + LEFT + DOWN
-000385 1408                      	.db 8,  SOLENOID_DOWN + DOWN
-000386 942a                      	.db 42, SOLENOID_DOWN + LEFT + DOWN
-000387 1409                      	.db 9,  SOLENOID_DOWN + DOWN
-000388 9429                      	.db 41, SOLENOID_DOWN + LEFT + DOWN
-000389 140a                      	.db 10,  SOLENOID_DOWN + DOWN
-00038a 9428                      	.db 40, SOLENOID_DOWN + LEFT + DOWN
-00038b 140b                      	.db 11,  SOLENOID_DOWN + DOWN
-00038c 9427                      	.db 39, SOLENOID_DOWN + LEFT + DOWN
-00038d 140c                      	.db 12,  SOLENOID_DOWN + DOWN
-00038e 9426                      	.db 38, SOLENOID_DOWN + LEFT + DOWN
-00038f 140d                      	.db 13,  SOLENOID_DOWN + DOWN
-000390 9425                      	.db 37, SOLENOID_DOWN + LEFT + DOWN
-000391 140e                      	.db 14,  SOLENOID_DOWN + DOWN
-000392 9424                      	.db 36, SOLENOID_DOWN + LEFT + DOWN
-000393 140f                      	.db 15,  SOLENOID_DOWN + DOWN
-000394 9423                      	.db 35, SOLENOID_DOWN + LEFT + DOWN
-000395 1410                      	.db 16,  SOLENOID_DOWN + DOWN
-000396 9422                      	.db 34, SOLENOID_DOWN + LEFT + DOWN
-000397 1411                      	.db 17,  SOLENOID_DOWN + DOWN
-000398 9421                      	.db 33, SOLENOID_DOWN + LEFT + DOWN
-000399 1412                      	.db 18,  SOLENOID_DOWN + DOWN
-00039a 9420                      	.db 32, SOLENOID_DOWN + LEFT + DOWN
-00039b 1413                      	.db 19,  SOLENOID_DOWN + DOWN
-00039c 941f                      	.db 31, SOLENOID_DOWN + LEFT + DOWN
-00039d 1414                      	.db 20,  SOLENOID_DOWN + DOWN
-00039e 941e                      	.db 30, SOLENOID_DOWN + LEFT + DOWN
-00039f 1415                      	.db 21,  SOLENOID_DOWN + DOWN
-0003a0 941d                      	.db 29, SOLENOID_DOWN + LEFT + DOWN
-0003a1 1416                      	.db 22,  SOLENOID_DOWN + DOWN
-0003a2 941c                      	.db 28, SOLENOID_DOWN + LEFT + DOWN
-0003a3 1417                      	.db 23,  SOLENOID_DOWN + DOWN
-0003a4 941b                      	.db 27, SOLENOID_DOWN + LEFT + DOWN
-0003a5 1418                      	.db 24,  SOLENOID_DOWN + DOWN
-0003a6 941a                      	.db 26, SOLENOID_DOWN + LEFT + DOWN
-0003a7 1419                      	.db 25,  SOLENOID_DOWN + DOWN
-0003a8 9419                      	.db 25, SOLENOID_DOWN + LEFT + DOWN
-0003a9 141a                      	.db 26,  SOLENOID_DOWN + DOWN
-0003aa 9418                      	.db 24, SOLENOID_DOWN + LEFT + DOWN
-0003ab 141b                      	.db 27,  SOLENOID_DOWN + DOWN
-0003ac 9417                      	.db 23, SOLENOID_DOWN + LEFT + DOWN
-0003ad 141c                      	.db 28,  SOLENOID_DOWN + DOWN
-0003ae 9416                      	.db 22, SOLENOID_DOWN + LEFT + DOWN
-0003af 141d                      	.db 29,  SOLENOID_DOWN + DOWN
-0003b0 9415                      	.db 21, SOLENOID_DOWN + LEFT + DOWN
-0003b1 141e                      	.db 30,  SOLENOID_DOWN + DOWN
-0003b2 9414                      	.db 20, SOLENOID_DOWN + LEFT + DOWN
-0003b3 141f                      	.db 31,  SOLENOID_DOWN + DOWN
-0003b4 9413                      	.db 19, SOLENOID_DOWN + LEFT + DOWN
-0003b5 1420                      	.db 32,  SOLENOID_DOWN + DOWN
-0003b6 9412                      	.db 18, SOLENOID_DOWN + LEFT + DOWN
-0003b7 1421                      	.db 33,  SOLENOID_DOWN + DOWN
-0003b8 9411                      	.db 17, SOLENOID_DOWN + LEFT + DOWN
-0003b9 1422                      	.db 34,  SOLENOID_DOWN + DOWN
-0003ba 9410                      	.db 16, SOLENOID_DOWN + LEFT + DOWN
-0003bb 1423                      	.db 35,  SOLENOID_DOWN + DOWN
-0003bc 940f                      	.db 15, SOLENOID_DOWN + LEFT + DOWN
-0003bd 1424                      	.db 36,  SOLENOID_DOWN + DOWN
-0003be 940e                      	.db 14, SOLENOID_DOWN + LEFT + DOWN
-0003bf 1425                      	.db 37,  SOLENOID_DOWN + DOWN
-0003c0 940d                      	.db 13, SOLENOID_DOWN + LEFT + DOWN
-0003c1 1426                      	.db 38,  SOLENOID_DOWN + DOWN
-0003c2 940c                      	.db 12, SOLENOID_DOWN + LEFT + DOWN
-0003c3 1427                      	.db 39,  SOLENOID_DOWN + DOWN
-0003c4 940b                      	.db 11, SOLENOID_DOWN + LEFT + DOWN
-0003c5 1428                      	.db 40,  SOLENOID_DOWN + DOWN
-0003c6 940a                      	.db 10, SOLENOID_DOWN + LEFT + DOWN
-0003c7 1429                      	.db 41,  SOLENOID_DOWN + DOWN
-0003c8 9409                      	.db 9, SOLENOID_DOWN + LEFT + DOWN
-0003c9 142a                      	.db 42,  SOLENOID_DOWN + DOWN
-0003ca 9408                      	.db 8, SOLENOID_DOWN + LEFT + DOWN
-0003cb 142b                      	.db 43,  SOLENOID_DOWN + DOWN
-0003cc 9407                      	.db 7, SOLENOID_DOWN + LEFT + DOWN
-0003cd 142c                      	.db 44,  SOLENOID_DOWN + DOWN
-0003ce 9406                      	.db 6, SOLENOID_DOWN + LEFT + DOWN
-0003cf 142d                      	.db 45,  SOLENOID_DOWN + DOWN
-0003d0 9405                      	.db 5, SOLENOID_DOWN + LEFT + DOWN
-0003d1 142e                      	.db 46,  SOLENOID_DOWN + DOWN
-0003d2 9404                      	.db 4, SOLENOID_DOWN + LEFT + DOWN
-0003d3 142f                      	.db 47,  SOLENOID_DOWN + DOWN
-0003d4 9403                      	.db 3, SOLENOID_DOWN + LEFT + DOWN
-0003d5 1430                      	.db 48,  SOLENOID_DOWN + DOWN
-0003d6 9402                      	.db 2, SOLENOID_DOWN + LEFT + DOWN
-0003d7 1431                      	.db 49,  SOLENOID_DOWN + DOWN
-0003d8 9401                      	.db 1, SOLENOID_DOWN + LEFT + DOWN
+00035f 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000360 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000361 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000362 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000363 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000364 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000365 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+000366 14fa                      	.db 250, SOLENOID_DOWN + DOWN
+                                 		
+000367 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+000368 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+000369 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+00036a 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+00036b 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+00036c 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+00036d 84fa                      	.db 250, SOLENOID_DOWN + LEFT
+00036e 84fa                      	.db 250, SOLENOID_DOWN + LEFT
                                  
-                                 	; ------------------------------
-                                 	; Vuelta 3/8 (DOWN y DOWN+RIGHT)
-                                 	; ------------------------------
-0003d9 5401                      	.db 1,  SOLENOID_DOWN + DOWN + RIGHT
-0003da 1431                      	.db 49, SOLENOID_DOWN + DOWN
-0003db 5402                      	.db 2,  SOLENOID_DOWN + DOWN + RIGHT
-0003dc 1430                      	.db 48, SOLENOID_DOWN + DOWN
-0003dd 5403                      	.db 3,  SOLENOID_DOWN + DOWN + RIGHT
-0003de 142f                      	.db 47, SOLENOID_DOWN + DOWN
-0003df 5404                      	.db 4,  SOLENOID_DOWN + DOWN + RIGHT
-0003e0 142e                      	.db 46, SOLENOID_DOWN + DOWN
-0003e1 5405                      	.db 5,  SOLENOID_DOWN + DOWN + RIGHT
-0003e2 142d                      	.db 45, SOLENOID_DOWN + DOWN
-0003e3 5406                      	.db 6,  SOLENOID_DOWN + DOWN + RIGHT
-0003e4 142c                      	.db 44, SOLENOID_DOWN + DOWN
-0003e5 5407                      	.db 7,  SOLENOID_DOWN + DOWN + RIGHT
-0003e6 142b                      	.db 43, SOLENOID_DOWN + DOWN
-0003e7 5408                      	.db 8,  SOLENOID_DOWN + DOWN + RIGHT
-0003e8 142a                      	.db 42, SOLENOID_DOWN + DOWN
-0003e9 5409                      	.db 9,  SOLENOID_DOWN + DOWN + RIGHT
-0003ea 1429                      	.db 41, SOLENOID_DOWN + DOWN
-0003eb 540a                      	.db 10,  SOLENOID_DOWN + DOWN + RIGHT
-0003ec 1428                      	.db 40, SOLENOID_DOWN + DOWN
-0003ed 540b                      	.db 11,  SOLENOID_DOWN + DOWN + RIGHT
-0003ee 1427                      	.db 39, SOLENOID_DOWN + DOWN
-0003ef 540c                      	.db 12,  SOLENOID_DOWN + DOWN + RIGHT
-0003f0 1426                      	.db 38, SOLENOID_DOWN + DOWN
-0003f1 540d                      	.db 13,  SOLENOID_DOWN + DOWN + RIGHT
-0003f2 1425                      	.db 37, SOLENOID_DOWN + DOWN
-0003f3 540e                      	.db 14,  SOLENOID_DOWN + DOWN + RIGHT
-0003f4 1424                      	.db 36, SOLENOID_DOWN + DOWN
-0003f5 540f                      	.db 15,  SOLENOID_DOWN + DOWN + RIGHT
-0003f6 1423                      	.db 35, SOLENOID_DOWN + DOWN
-0003f7 5410                      	.db 16,  SOLENOID_DOWN + DOWN + RIGHT
-0003f8 1422                      	.db 34, SOLENOID_DOWN + DOWN
-0003f9 5411                      	.db 17,  SOLENOID_DOWN + DOWN + RIGHT
-0003fa 1421                      	.db 33, SOLENOID_DOWN + DOWN
-0003fb 5412                      	.db 18,  SOLENOID_DOWN + DOWN + RIGHT
-0003fc 1420                      	.db 32, SOLENOID_DOWN + DOWN
-0003fd 5413                      	.db 19,  SOLENOID_DOWN + DOWN + RIGHT
-0003fe 141f                      	.db 31, SOLENOID_DOWN + DOWN
-0003ff 5414                      	.db 20,  SOLENOID_DOWN + DOWN + RIGHT
-000400 141e                      	.db 30, SOLENOID_DOWN + DOWN
-000401 5415                      	.db 21,  SOLENOID_DOWN + DOWN + RIGHT
-000402 141d                      	.db 29, SOLENOID_DOWN + DOWN
-000403 5416                      	.db 22,  SOLENOID_DOWN + DOWN + RIGHT
-000404 141c                      	.db 28, SOLENOID_DOWN + DOWN
-000405 5417                      	.db 23,  SOLENOID_DOWN + DOWN + RIGHT
-000406 141b                      	.db 27, SOLENOID_DOWN + DOWN
-000407 5418                      	.db 24,  SOLENOID_DOWN + DOWN + RIGHT
-000408 141a                      	.db 26, SOLENOID_DOWN + DOWN
-000409 5419                      	.db 25,  SOLENOID_DOWN + DOWN + RIGHT
-00040a 1419                      	.db 25, SOLENOID_DOWN + DOWN
-00040b 541a                      	.db 26,  SOLENOID_DOWN + DOWN + RIGHT
-00040c 1418                      	.db 24, SOLENOID_DOWN + DOWN
-00040d 541b                      	.db 27,  SOLENOID_DOWN + DOWN + RIGHT
-00040e 1417                      	.db 23, SOLENOID_DOWN + DOWN
-00040f 541c                      	.db 28,  SOLENOID_DOWN + DOWN + RIGHT
-000410 1416                      	.db 22, SOLENOID_DOWN + DOWN
-000411 541d                      	.db 29,  SOLENOID_DOWN + DOWN + RIGHT
-000412 1415                      	.db 21, SOLENOID_DOWN + DOWN
-000413 541e                      	.db 30,  SOLENOID_DOWN + DOWN + RIGHT
-000414 1414                      	.db 20, SOLENOID_DOWN + DOWN
-000415 541f                      	.db 31,  SOLENOID_DOWN + DOWN + RIGHT
-000416 1413                      	.db 19, SOLENOID_DOWN + DOWN
-000417 5420                      	.db 32,  SOLENOID_DOWN + DOWN + RIGHT
-000418 1412                      	.db 18, SOLENOID_DOWN + DOWN
-000419 5421                      	.db 33,  SOLENOID_DOWN + DOWN + RIGHT
-00041a 1411                      	.db 17, SOLENOID_DOWN + DOWN
-00041b 5422                      	.db 34,  SOLENOID_DOWN + DOWN + RIGHT
-00041c 1410                      	.db 16, SOLENOID_DOWN + DOWN
-00041d 5423                      	.db 35,  SOLENOID_DOWN + DOWN + RIGHT
-00041e 140f                      	.db 15, SOLENOID_DOWN + DOWN
-00041f 5424                      	.db 36,  SOLENOID_DOWN + DOWN + RIGHT
-000420 140e                      	.db 14, SOLENOID_DOWN + DOWN
-000421 5425                      	.db 37,  SOLENOID_DOWN + DOWN + RIGHT
-000422 140d                      	.db 13, SOLENOID_DOWN + DOWN
-000423 5426                      	.db 38,  SOLENOID_DOWN + DOWN + RIGHT
-000424 140c                      	.db 12, SOLENOID_DOWN + DOWN
-000425 5427                      	.db 39,  SOLENOID_DOWN + DOWN + RIGHT
-000426 140b                      	.db 11, SOLENOID_DOWN + DOWN
-000427 5428                      	.db 40,  SOLENOID_DOWN + DOWN + RIGHT
-000428 140a                      	.db 10, SOLENOID_DOWN + DOWN
-000429 5429                      	.db 41,  SOLENOID_DOWN + DOWN + RIGHT
-00042a 1409                      	.db 9, SOLENOID_DOWN + DOWN
-00042b 542a                      	.db 42,  SOLENOID_DOWN + DOWN + RIGHT
-00042c 1408                      	.db 8, SOLENOID_DOWN + DOWN
-00042d 542b                      	.db 43,  SOLENOID_DOWN + DOWN + RIGHT
-00042e 1407                      	.db 7, SOLENOID_DOWN + DOWN
-00042f 542c                      	.db 44,  SOLENOID_DOWN + DOWN + RIGHT
-000430 1406                      	.db 6, SOLENOID_DOWN + DOWN
-000431 542d                      	.db 45,  SOLENOID_DOWN + DOWN + RIGHT
-000432 1405                      	.db 5, SOLENOID_DOWN + DOWN
-000433 542e                      	.db 46,  SOLENOID_DOWN + DOWN + RIGHT
-000434 1404                      	.db 4, SOLENOID_DOWN + DOWN
-000435 542f                      	.db 47,  SOLENOID_DOWN + DOWN + RIGHT
-000436 1403                      	.db 3, SOLENOID_DOWN + DOWN
-000437 5430                      	.db 48,  SOLENOID_DOWN + DOWN + RIGHT
-000438 1402                      	.db 2, SOLENOID_DOWN + DOWN
-000439 5431                      	.db 49,  SOLENOID_DOWN + DOWN + RIGHT
-00043a 1401                      	.db 1, SOLENOID_DOWN + DOWN
+00036f 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000370 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000371 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000372 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000373 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000374 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000375 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000376 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000377 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000378 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+000379 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00037a 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00037b 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00037c 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00037d 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
+00037e 44fa                      	.db 250, SOLENOID_DOWN + RIGHT
                                  
-                                 	; ------------------------------
-                                 	; Vuelta 4/8 (RIGHT y DOWN+RIGHT)
-                                 	; ------------------------------
-00043b 4401                      	.db 1,  SOLENOID_DOWN + RIGHT
-00043c 5431                      	.db 49, SOLENOID_DOWN + DOWN + RIGHT
-00043d 4402                      	.db 2,  SOLENOID_DOWN + RIGHT
-00043e 5430                      	.db 48, SOLENOID_DOWN + DOWN + RIGHT
-00043f 4403                      	.db 3,  SOLENOID_DOWN + RIGHT
-000440 542f                      	.db 47, SOLENOID_DOWN + DOWN + RIGHT
-000441 4404                      	.db 4,  SOLENOID_DOWN + RIGHT
-000442 542e                      	.db 46, SOLENOID_DOWN + DOWN + RIGHT
-000443 4405                      	.db 5,  SOLENOID_DOWN + RIGHT
-000444 542d                      	.db 45, SOLENOID_DOWN + DOWN + RIGHT
-000445 4406                      	.db 6,  SOLENOID_DOWN + RIGHT
-000446 542c                      	.db 44, SOLENOID_DOWN + DOWN + RIGHT
-000447 4407                      	.db 7,  SOLENOID_DOWN + RIGHT
-000448 542b                      	.db 43, SOLENOID_DOWN + DOWN + RIGHT
-000449 4408                      	.db 8,  SOLENOID_DOWN + RIGHT
-00044a 542a                      	.db 42, SOLENOID_DOWN + DOWN + RIGHT
-00044b 4409                      	.db 9,  SOLENOID_DOWN + RIGHT
-00044c 5429                      	.db 41, SOLENOID_DOWN + DOWN + RIGHT
-00044d 440a                      	.db 10,  SOLENOID_DOWN + RIGHT
-00044e 5428                      	.db 40, SOLENOID_DOWN + DOWN + RIGHT
-00044f 440b                      	.db 11,  SOLENOID_DOWN + RIGHT
-000450 5427                      	.db 39, SOLENOID_DOWN + DOWN + RIGHT
-000451 440c                      	.db 12,  SOLENOID_DOWN + RIGHT
-000452 5426                      	.db 38, SOLENOID_DOWN + DOWN + RIGHT
-000453 440d                      	.db 13,  SOLENOID_DOWN + RIGHT
-000454 5425                      	.db 37, SOLENOID_DOWN + DOWN + RIGHT
-000455 440e                      	.db 14,  SOLENOID_DOWN + RIGHT
-000456 5424                      	.db 36, SOLENOID_DOWN + DOWN + RIGHT
-000457 440f                      	.db 15,  SOLENOID_DOWN + RIGHT
-000458 5423                      	.db 35, SOLENOID_DOWN + DOWN + RIGHT
-000459 4410                      	.db 16,  SOLENOID_DOWN + RIGHT
-00045a 5422                      	.db 34, SOLENOID_DOWN + DOWN + RIGHT
-00045b 4411                      	.db 17,  SOLENOID_DOWN + RIGHT
-00045c 5421                      	.db 33, SOLENOID_DOWN + DOWN + RIGHT
-00045d 4412                      	.db 18,  SOLENOID_DOWN + RIGHT
-00045e 5420                      	.db 32, SOLENOID_DOWN + DOWN + RIGHT
-00045f 4413                      	.db 19,  SOLENOID_DOWN + RIGHT
-000460 541f                      	.db 31, SOLENOID_DOWN + DOWN + RIGHT
-000461 4414                      	.db 20,  SOLENOID_DOWN + RIGHT
-000462 541e                      	.db 30, SOLENOID_DOWN + DOWN + RIGHT
-000463 4415                      	.db 21,  SOLENOID_DOWN + RIGHT
-000464 541d                      	.db 29, SOLENOID_DOWN + DOWN + RIGHT
-000465 4416                      	.db 22,  SOLENOID_DOWN + RIGHT
-000466 541c                      	.db 28, SOLENOID_DOWN + DOWN + RIGHT
-000467 4417                      	.db 23,  SOLENOID_DOWN + RIGHT
-000468 541b                      	.db 27, SOLENOID_DOWN + DOWN + RIGHT
-000469 4418                      	.db 24,  SOLENOID_DOWN + RIGHT
-00046a 541a                      	.db 26, SOLENOID_DOWN + DOWN + RIGHT
-00046b 4419                      	.db 25,  SOLENOID_DOWN + RIGHT
-00046c 5419                      	.db 25, SOLENOID_DOWN + DOWN + RIGHT
-00046d 441a                      	.db 26,  SOLENOID_DOWN + RIGHT
-00046e 5418                      	.db 24, SOLENOID_DOWN + DOWN + RIGHT
-00046f 441b                      	.db 27,  SOLENOID_DOWN + RIGHT
-000470 5417                      	.db 23, SOLENOID_DOWN + DOWN + RIGHT
-000471 441c                      	.db 28,  SOLENOID_DOWN + RIGHT
-000472 5416                      	.db 22, SOLENOID_DOWN + DOWN + RIGHT
-000473 441d                      	.db 29,  SOLENOID_DOWN + RIGHT
-000474 5415                      	.db 21, SOLENOID_DOWN + DOWN + RIGHT
-000475 441e                      	.db 30,  SOLENOID_DOWN + RIGHT
-000476 5414                      	.db 20, SOLENOID_DOWN + DOWN + RIGHT
-000477 441f                      	.db 31,  SOLENOID_DOWN + RIGHT
-000478 5413                      	.db 19, SOLENOID_DOWN + DOWN + RIGHT
-000479 4420                      	.db 32,  SOLENOID_DOWN + RIGHT
-00047a 5412                      	.db 18, SOLENOID_DOWN + DOWN + RIGHT
-00047b 4421                      	.db 33,  SOLENOID_DOWN + RIGHT
-00047c 5411                      	.db 17, SOLENOID_DOWN + DOWN + RIGHT
-00047d 4422                      	.db 34,  SOLENOID_DOWN + RIGHT
-00047e 5410                      	.db 16, SOLENOID_DOWN + DOWN + RIGHT
-00047f 4423                      	.db 35,  SOLENOID_DOWN + RIGHT
-000480 540f                      	.db 15, SOLENOID_DOWN + DOWN + RIGHT
-000481 4424                      	.db 36,  SOLENOID_DOWN + RIGHT
-000482 540e                      	.db 14, SOLENOID_DOWN + DOWN + RIGHT
-000483 4425                      	.db 37,  SOLENOID_DOWN + RIGHT
-000484 540d                      	.db 13, SOLENOID_DOWN + DOWN + RIGHT
-000485 4426                      	.db 38,  SOLENOID_DOWN + RIGHT
-000486 540c                      	.db 12, SOLENOID_DOWN + DOWN + RIGHT
-000487 4427                      	.db 39,  SOLENOID_DOWN + RIGHT
-000488 540b                      	.db 11, SOLENOID_DOWN + DOWN + RIGHT
-000489 4428                      	.db 40,  SOLENOID_DOWN + RIGHT
-00048a 540a                      	.db 10, SOLENOID_DOWN + DOWN + RIGHT
-00048b 4429                      	.db 41,  SOLENOID_DOWN + RIGHT
-00048c 5409                      	.db 9, SOLENOID_DOWN + DOWN + RIGHT
-00048d 442a                      	.db 42,  SOLENOID_DOWN + RIGHT
-00048e 5408                      	.db 8, SOLENOID_DOWN + DOWN + RIGHT
-00048f 442b                      	.db 43,  SOLENOID_DOWN + RIGHT
-000490 5407                      	.db 7, SOLENOID_DOWN + DOWN + RIGHT
-000491 442c                      	.db 44,  SOLENOID_DOWN + RIGHT
-000492 5406                      	.db 6, SOLENOID_DOWN + DOWN + RIGHT
-000493 442d                      	.db 45,  SOLENOID_DOWN + RIGHT
-000494 5405                      	.db 5, SOLENOID_DOWN + DOWN + RIGHT
-000495 442e                      	.db 46,  SOLENOID_DOWN + RIGHT
-000496 5404                      	.db 4, SOLENOID_DOWN + DOWN + RIGHT
-000497 442f                      	.db 47,  SOLENOID_DOWN + RIGHT
-000498 5403                      	.db 3, SOLENOID_DOWN + DOWN + RIGHT
-000499 4430                      	.db 48,  SOLENOID_DOWN + RIGHT
-00049a 5402                      	.db 2, SOLENOID_DOWN + DOWN + RIGHT
-00049b 4431                      	.db 49,  SOLENOID_DOWN + RIGHT
-00049c 5401                      	.db 1, SOLENOID_DOWN + DOWN + RIGHT
+00037f 08ff                      	.db 255, SOLENOID_UP
+000380 0001                      	.db 1, STOP
                                  
-                                 	; ------------------------------
-                                 	; Vuelta 5/8 (RIGHT y RIGHT+UP)
-                                 	; ------------------------------
-00049d 6401                      	.db 1,  SOLENOID_DOWN + RIGHT + UP
-00049e 4431                      	.db 49, SOLENOID_DOWN + RIGHT
-00049f 6402                      	.db 2,  SOLENOID_DOWN + RIGHT + UP
-0004a0 4430                      	.db 48, SOLENOID_DOWN + RIGHT
-0004a1 6403                      	.db 3,  SOLENOID_DOWN + RIGHT + UP
-0004a2 442f                      	.db 47, SOLENOID_DOWN + RIGHT
-0004a3 6404                      	.db 4,  SOLENOID_DOWN + RIGHT + UP
-0004a4 442e                      	.db 46, SOLENOID_DOWN + RIGHT
-0004a5 6405                      	.db 5,  SOLENOID_DOWN + RIGHT + UP
-0004a6 442d                      	.db 45, SOLENOID_DOWN + RIGHT
-0004a7 6406                      	.db 6,  SOLENOID_DOWN + RIGHT + UP
-0004a8 442c                      	.db 44, SOLENOID_DOWN + RIGHT
-0004a9 6407                      	.db 7,  SOLENOID_DOWN + RIGHT + UP
-0004aa 442b                      	.db 43, SOLENOID_DOWN + RIGHT
-0004ab 6408                      	.db 8,  SOLENOID_DOWN + RIGHT + UP
-0004ac 442a                      	.db 42, SOLENOID_DOWN + RIGHT
-0004ad 6409                      	.db 9,  SOLENOID_DOWN + RIGHT + UP
-0004ae 4429                      	.db 41, SOLENOID_DOWN + RIGHT
-0004af 640a                      	.db 10,  SOLENOID_DOWN + RIGHT + UP
-0004b0 4428                      	.db 40, SOLENOID_DOWN + RIGHT
-0004b1 640b                      	.db 11,  SOLENOID_DOWN + RIGHT + UP
-0004b2 4427                      	.db 39, SOLENOID_DOWN + RIGHT
-0004b3 640c                      	.db 12,  SOLENOID_DOWN + RIGHT + UP
-0004b4 4426                      	.db 38, SOLENOID_DOWN + RIGHT
-0004b5 640d                      	.db 13,  SOLENOID_DOWN + RIGHT + UP
-0004b6 4425                      	.db 37, SOLENOID_DOWN + RIGHT
-0004b7 640e                      	.db 14,  SOLENOID_DOWN + RIGHT + UP
-0004b8 4424                      	.db 36, SOLENOID_DOWN + RIGHT
-0004b9 640f                      	.db 15,  SOLENOID_DOWN + RIGHT + UP
-0004ba 4423                      	.db 35, SOLENOID_DOWN + RIGHT
-0004bb 6410                      	.db 16,  SOLENOID_DOWN + RIGHT + UP
-0004bc 4422                      	.db 34, SOLENOID_DOWN + RIGHT
-0004bd 6411                      	.db 17,  SOLENOID_DOWN + RIGHT + UP
-0004be 4421                      	.db 33, SOLENOID_DOWN + RIGHT
-0004bf 6412                      	.db 18,  SOLENOID_DOWN + RIGHT + UP
-0004c0 4420                      	.db 32, SOLENOID_DOWN + RIGHT
-0004c1 6413                      	.db 19,  SOLENOID_DOWN + RIGHT + UP
-0004c2 441f                      	.db 31, SOLENOID_DOWN + RIGHT
-0004c3 6414                      	.db 20,  SOLENOID_DOWN + RIGHT + UP
-0004c4 441e                      	.db 30, SOLENOID_DOWN + RIGHT
-0004c5 6415                      	.db 21,  SOLENOID_DOWN + RIGHT + UP
-0004c6 441d                      	.db 29, SOLENOID_DOWN + RIGHT
-0004c7 6416                      	.db 22,  SOLENOID_DOWN + RIGHT + UP
-0004c8 441c                      	.db 28, SOLENOID_DOWN + RIGHT
-0004c9 6417                      	.db 23,  SOLENOID_DOWN + RIGHT + UP
-0004ca 441b                      	.db 27, SOLENOID_DOWN + RIGHT
-0004cb 6418                      	.db 24,  SOLENOID_DOWN + RIGHT + UP
-0004cc 441a                      	.db 26, SOLENOID_DOWN + RIGHT
-0004cd 6419                      	.db 25,  SOLENOID_DOWN + RIGHT + UP
-0004ce 4419                      	.db 25, SOLENOID_DOWN + RIGHT
-0004cf 641a                      	.db 26,  SOLENOID_DOWN + RIGHT + UP
-0004d0 4418                      	.db 24, SOLENOID_DOWN + RIGHT
-0004d1 641b                      	.db 27,  SOLENOID_DOWN + RIGHT + UP
-0004d2 4417                      	.db 23, SOLENOID_DOWN + RIGHT
-0004d3 641c                      	.db 28,  SOLENOID_DOWN + RIGHT + UP
-0004d4 4416                      	.db 22, SOLENOID_DOWN + RIGHT
-0004d5 641d                      	.db 29,  SOLENOID_DOWN + RIGHT + UP
-0004d6 4415                      	.db 21, SOLENOID_DOWN + RIGHT
-0004d7 641e                      	.db 30,  SOLENOID_DOWN + RIGHT + UP
-0004d8 4414                      	.db 20, SOLENOID_DOWN + RIGHT
-0004d9 641f                      	.db 31,  SOLENOID_DOWN + RIGHT + UP
-0004da 4413                      	.db 19, SOLENOID_DOWN + RIGHT
-0004db 6420                      	.db 32,  SOLENOID_DOWN + RIGHT + UP
-0004dc 4412                      	.db 18, SOLENOID_DOWN + RIGHT
-0004dd 6421                      	.db 33,  SOLENOID_DOWN + RIGHT + UP
-0004de 4411                      	.db 17, SOLENOID_DOWN + RIGHT
-0004df 6422                      	.db 34,  SOLENOID_DOWN + RIGHT + UP
-0004e0 4410                      	.db 16, SOLENOID_DOWN + RIGHT
-0004e1 6423                      	.db 35,  SOLENOID_DOWN + RIGHT + UP
-0004e2 440f                      	.db 15, SOLENOID_DOWN + RIGHT
-0004e3 6424                      	.db 36,  SOLENOID_DOWN + RIGHT + UP
-0004e4 440e                      	.db 14, SOLENOID_DOWN + RIGHT
-0004e5 6425                      	.db 37,  SOLENOID_DOWN + RIGHT + UP
-0004e6 440d                      	.db 13, SOLENOID_DOWN + RIGHT
-0004e7 6426                      	.db 38,  SOLENOID_DOWN + RIGHT + UP
-0004e8 440c                      	.db 12, SOLENOID_DOWN + RIGHT
-0004e9 6427                      	.db 39,  SOLENOID_DOWN + RIGHT + UP
-0004ea 440b                      	.db 11, SOLENOID_DOWN + RIGHT
-0004eb 6428                      	.db 40,  SOLENOID_DOWN + RIGHT + UP
-0004ec 440a                      	.db 10, SOLENOID_DOWN + RIGHT
-0004ed 6429                      	.db 41,  SOLENOID_DOWN + RIGHT + UP
-0004ee 4409                      	.db 9, SOLENOID_DOWN + RIGHT
-0004ef 642a                      	.db 42,  SOLENOID_DOWN + RIGHT + UP
-0004f0 4408                      	.db 8, SOLENOID_DOWN + RIGHT
-0004f1 642b                      	.db 43,  SOLENOID_DOWN + RIGHT + UP
-0004f2 4407                      	.db 7, SOLENOID_DOWN + RIGHT
-0004f3 642c                      	.db 44,  SOLENOID_DOWN + RIGHT + UP
-0004f4 4406                      	.db 6, SOLENOID_DOWN + RIGHT
-0004f5 642d                      	.db 45,  SOLENOID_DOWN + RIGHT + UP
-0004f6 4405                      	.db 5, SOLENOID_DOWN + RIGHT
-0004f7 642e                      	.db 46,  SOLENOID_DOWN + RIGHT + UP
-0004f8 4404                      	.db 4, SOLENOID_DOWN + RIGHT
-0004f9 642f                      	.db 47,  SOLENOID_DOWN + RIGHT + UP
-0004fa 4403                      	.db 3, SOLENOID_DOWN + RIGHT
-0004fb 6430                      	.db 48,  SOLENOID_DOWN + RIGHT + UP
-0004fc 4402                      	.db 2, SOLENOID_DOWN + RIGHT
-0004fd 6431                      	.db 49,  SOLENOID_DOWN + RIGHT + UP
-0004fe 4401                      	.db 1, SOLENOID_DOWN + RIGHT
+                                 CIRCLE_DATA:	
+000381 04ff                      	.db 255, SOLENOID_DOWN
+                                 		
+                                 ; Quadrant 1: RIGHT & UP
+000382 2064                      	.db 100, UP
+000383 6001                      	.db 1, RIGHT + UP
+000384 2060                      	.db 96, UP
+000385 6005                      	.db 5, RIGHT + UP
+000386 205c                      	.db 92, UP
+000387 6008                      	.db 8, RIGHT + UP
+000388 2058                      	.db 88, UP
+000389 600a                      	.db 10, RIGHT + UP
+00038a 2055                      	.db 85, UP
+00038b 6013                      	.db 19, RIGHT + UP
+00038c 2051                      	.db 81, UP
+00038d 6017                      	.db 23, RIGHT + UP
+00038e 204d                      	.db 77, UP
+00038f 601b                      	.db 27, RIGHT + UP
+000390 2049                      	.db 73, UP
+000391 6020                      	.db 32, RIGHT + UP
+000392 2044                      	.db 68, UP
+000393 6024                      	.db 36, RIGHT + UP
+000394 2040                      	.db 64, UP
+000395 6028                      	.db 40, RIGHT + UP
+000396 203c                      	.db 60, UP
+000397 602d                      	.db 45, RIGHT + UP
+000398 2037                      	.db 55, UP
+000399 6032                      	.db 50, RIGHT + UP
+00039a 2032                      	.db 50, UP
+00039b 6036                      	.db 54, RIGHT + UP
+00039c 202e                      	.db 46, UP
+00039d 603b                      	.db 59, RIGHT + UP
+00039e 2029                      	.db 41, UP
+00039f 6041                      	.db 65, RIGHT + UP
+0003a0 2023                      	.db 35, UP
+0003a1 6046                      	.db 70, RIGHT + UP
+0003a2 201e                      	.db 30, UP
+0003a3 604c                      	.db 76, RIGHT + UP
+0003a4 2018                      	.db 24, UP
+0003a5 6052                      	.db 82, RIGHT + UP
+0003a6 2012                      	.db 18, UP
+0003a7 6059                      	.db 89, RIGHT + UP
+0003a8 200b                      	.db 11, UP
+0003a9 6060                      	.db 96, RIGHT + UP
+0003aa 2004                      	.db 4, UP
+0003ab 6060                      	.db 96, RIGHT + UP
+0003ac 4004                      	.db 4, RIGHT
+0003ad 6059                      	.db 89, RIGHT + UP
+0003ae 400b                      	.db 11, RIGHT
+0003af 6052                      	.db 82, RIGHT + UP
+0003b0 4012                      	.db 18, RIGHT
+0003b1 604c                      	.db 76, RIGHT + UP
+0003b2 4018                      	.db 24, RIGHT
+0003b3 6046                      	.db 70, RIGHT + UP
+0003b4 401e                      	.db 30, RIGHT
+0003b5 6041                      	.db 65, RIGHT + UP
+0003b6 4023                      	.db 35, RIGHT
+0003b7 603b                      	.db 59, RIGHT + UP
+0003b8 4029                      	.db 41, RIGHT
+0003b9 6036                      	.db 54, RIGHT + UP
+0003ba 402e                      	.db 46, RIGHT
+0003bb 6032                      	.db 50, RIGHT + UP
+0003bc 4032                      	.db 50, RIGHT
+0003bd 602d                      	.db 45, RIGHT + UP
+0003be 4037                      	.db 55, RIGHT
+0003bf 6028                      	.db 40, RIGHT + UP
+0003c0 403c                      	.db 60, RIGHT
+0003c1 6024                      	.db 36, RIGHT + UP
+0003c2 4040                      	.db 64, RIGHT
+0003c3 6020                      	.db 32, RIGHT + UP
+0003c4 4044                      	.db 68, RIGHT
+0003c5 601b                      	.db 27, RIGHT + UP
+0003c6 4049                      	.db 73, RIGHT
+0003c7 6017                      	.db 23, RIGHT + UP
+0003c8 404d                      	.db 77, RIGHT
+0003c9 6013                      	.db 19, RIGHT + UP
+0003ca 4051                      	.db 81, RIGHT
+0003cb 600f                      	.db 15, RIGHT + UP
+0003cc 4055                      	.db 85, RIGHT
+0003cd 600c                      	.db 12, RIGHT + UP
+0003ce 4058                      	.db 88, RIGHT
+0003cf 6008                      	.db 8, RIGHT + UP
+0003d0 405c                      	.db 92, RIGHT
+0003d1 6004                      	.db 4, RIGHT + UP
+0003d2 4060                      	.db 96, RIGHT
+0003d3 4064                      	.db 100, RIGHT
                                  
-                                 	; ------------------------------
-                                 	; Vuelta 6/8 (UP y RIGHT+UP)
-                                 	; ------------------------------
-0004ff 2401                      	.db 1,  SOLENOID_DOWN + UP
-000500 6431                      	.db 49, SOLENOID_DOWN + RIGHT + UP
-000501 2402                      	.db 2,  SOLENOID_DOWN + UP
-000502 6430                      	.db 48, SOLENOID_DOWN + RIGHT + UP
-000503 2403                      	.db 3,  SOLENOID_DOWN + UP
-000504 642f                      	.db 47, SOLENOID_DOWN + RIGHT + UP
-000505 2404                      	.db 4,  SOLENOID_DOWN + UP
-000506 642e                      	.db 46, SOLENOID_DOWN + RIGHT + UP
-000507 2405                      	.db 5,  SOLENOID_DOWN + UP
-000508 642d                      	.db 45, SOLENOID_DOWN + RIGHT + UP
-000509 2406                      	.db 6,  SOLENOID_DOWN + UP
-00050a 642c                      	.db 44, SOLENOID_DOWN + RIGHT + UP
-00050b 2407                      	.db 7,  SOLENOID_DOWN + UP
-00050c 642b                      	.db 43, SOLENOID_DOWN + RIGHT + UP
-00050d 2408                      	.db 8,  SOLENOID_DOWN + UP
-00050e 642a                      	.db 42, SOLENOID_DOWN + RIGHT + UP
-00050f 2409                      	.db 9,  SOLENOID_DOWN + UP
-000510 6429                      	.db 41, SOLENOID_DOWN + RIGHT + UP
-000511 240a                      	.db 10,  SOLENOID_DOWN + UP
-000512 6428                      	.db 40, SOLENOID_DOWN + RIGHT + UP
-000513 240b                      	.db 11,  SOLENOID_DOWN + UP
-000514 6427                      	.db 39, SOLENOID_DOWN + RIGHT + UP
-000515 240c                      	.db 12,  SOLENOID_DOWN + UP
-000516 6426                      	.db 38, SOLENOID_DOWN + RIGHT + UP
-000517 240d                      	.db 13,  SOLENOID_DOWN + UP
-000518 6425                      	.db 37, SOLENOID_DOWN + RIGHT + UP
-000519 240e                      	.db 14,  SOLENOID_DOWN + UP
-00051a 6424                      	.db 36, SOLENOID_DOWN + RIGHT + UP
-00051b 240f                      	.db 15,  SOLENOID_DOWN + UP
-00051c 6423                      	.db 35, SOLENOID_DOWN + RIGHT + UP
-00051d 2410                      	.db 16,  SOLENOID_DOWN + UP
-00051e 6422                      	.db 34, SOLENOID_DOWN + RIGHT + UP
-00051f 2411                      	.db 17,  SOLENOID_DOWN + UP
-000520 6421                      	.db 33, SOLENOID_DOWN + RIGHT + UP
-000521 2412                      	.db 18,  SOLENOID_DOWN + UP
-000522 6420                      	.db 32, SOLENOID_DOWN + RIGHT + UP
-000523 2413                      	.db 19,  SOLENOID_DOWN + UP
-000524 641f                      	.db 31, SOLENOID_DOWN + RIGHT + UP
-000525 2414                      	.db 20,  SOLENOID_DOWN + UP
-000526 641e                      	.db 30, SOLENOID_DOWN + RIGHT + UP
-000527 2415                      	.db 21,  SOLENOID_DOWN + UP
-000528 641d                      	.db 29, SOLENOID_DOWN + RIGHT + UP
-000529 2416                      	.db 22,  SOLENOID_DOWN + UP
-00052a 641c                      	.db 28, SOLENOID_DOWN + RIGHT + UP
-00052b 2417                      	.db 23,  SOLENOID_DOWN + UP
-00052c 641b                      	.db 27, SOLENOID_DOWN + RIGHT + UP
-00052d 2418                      	.db 24,  SOLENOID_DOWN + UP
-00052e 641a                      	.db 26, SOLENOID_DOWN + RIGHT + UP
-00052f 2419                      	.db 25,  SOLENOID_DOWN + UP
-000530 6419                      	.db 25, SOLENOID_DOWN + RIGHT + UP
-000531 241a                      	.db 26,  SOLENOID_DOWN + UP
-000532 6418                      	.db 24, SOLENOID_DOWN + RIGHT + UP
-000533 241b                      	.db 27,  SOLENOID_DOWN + UP
-000534 6417                      	.db 23, SOLENOID_DOWN + RIGHT + UP
-000535 241c                      	.db 28,  SOLENOID_DOWN + UP
-000536 6416                      	.db 22, SOLENOID_DOWN + RIGHT + UP
-000537 241d                      	.db 29,  SOLENOID_DOWN + UP
-000538 6415                      	.db 21, SOLENOID_DOWN + RIGHT + UP
-000539 241e                      	.db 30,  SOLENOID_DOWN + UP
-00053a 6414                      	.db 20, SOLENOID_DOWN + RIGHT + UP
-00053b 241f                      	.db 31,  SOLENOID_DOWN + UP
-00053c 6413                      	.db 19, SOLENOID_DOWN + RIGHT + UP
-00053d 2420                      	.db 32,  SOLENOID_DOWN + UP
-00053e 6412                      	.db 18, SOLENOID_DOWN + RIGHT + UP
-00053f 2421                      	.db 33,  SOLENOID_DOWN + UP
-000540 6411                      	.db 17, SOLENOID_DOWN + RIGHT + UP
-000541 2422                      	.db 34,  SOLENOID_DOWN + UP
-000542 6410                      	.db 16, SOLENOID_DOWN + RIGHT + UP
-000543 2423                      	.db 35,  SOLENOID_DOWN + UP
-000544 640f                      	.db 15, SOLENOID_DOWN + RIGHT + UP
-000545 2424                      	.db 36,  SOLENOID_DOWN + UP
-000546 640e                      	.db 14, SOLENOID_DOWN + RIGHT + UP
-000547 2425                      	.db 37,  SOLENOID_DOWN + UP
-000548 640d                      	.db 13, SOLENOID_DOWN + RIGHT + UP
-000549 2426                      	.db 38,  SOLENOID_DOWN + UP
-00054a 640c                      	.db 12, SOLENOID_DOWN + RIGHT + UP
-00054b 2427                      	.db 39,  SOLENOID_DOWN + UP
-00054c 640b                      	.db 11, SOLENOID_DOWN + RIGHT + UP
-00054d 2428                      	.db 40,  SOLENOID_DOWN + UP
-00054e 640a                      	.db 10, SOLENOID_DOWN + RIGHT + UP
-00054f 2429                      	.db 41,  SOLENOID_DOWN + UP
-000550 6409                      	.db 9, SOLENOID_DOWN + RIGHT + UP
-000551 242a                      	.db 42,  SOLENOID_DOWN + UP
-000552 6408                      	.db 8, SOLENOID_DOWN + RIGHT + UP
-000553 242b                      	.db 43,  SOLENOID_DOWN + UP
-000554 6407                      	.db 7, SOLENOID_DOWN + RIGHT + UP
-000555 242c                      	.db 44,  SOLENOID_DOWN + UP
-000556 6406                      	.db 6, SOLENOID_DOWN + RIGHT + UP
-000557 242d                      	.db 45,  SOLENOID_DOWN + UP
-000558 6405                      	.db 5, SOLENOID_DOWN + RIGHT + UP
-000559 242e                      	.db 46,  SOLENOID_DOWN + UP
-00055a 6404                      	.db 4, SOLENOID_DOWN + RIGHT + UP
-00055b 242f                      	.db 47,  SOLENOID_DOWN + UP
-00055c 6403                      	.db 3, SOLENOID_DOWN + RIGHT + UP
-00055d 2430                      	.db 48,  SOLENOID_DOWN + UP
-00055e 6402                      	.db 2, SOLENOID_DOWN + RIGHT + UP
-00055f 2431                      	.db 49,  SOLENOID_DOWN + UP
-000560 6401                      	.db 1, SOLENOID_DOWN + RIGHT + UP
+                                 ; Quadrant 2: DOWN & RIGHT
+0003d4 4064                      	.db 100, RIGHT
+0003d5 5004                      	.db 4, DOWN + RIGHT
+0003d6 4060                      	.db 96, RIGHT
+0003d7 5008                      	.db 8, DOWN + RIGHT
+0003d8 405c                      	.db 92, RIGHT
+0003d9 500c                      	.db 12, DOWN + RIGHT
+0003da 4058                      	.db 88, RIGHT
+0003db 500f                      	.db 15, DOWN + RIGHT
+0003dc 4055                      	.db 85, RIGHT
+0003dd 5013                      	.db 19, DOWN + RIGHT
+0003de 4051                      	.db 81, RIGHT
+0003df 5017                      	.db 23, DOWN + RIGHT
+0003e0 404d                      	.db 77, RIGHT
+0003e1 501b                      	.db 27, DOWN + RIGHT
+0003e2 4049                      	.db 73, RIGHT
+0003e3 5020                      	.db 32, DOWN + RIGHT
+0003e4 4044                      	.db 68, RIGHT
+0003e5 5024                      	.db 36, DOWN + RIGHT
+0003e6 4040                      	.db 64, RIGHT
+0003e7 5028                      	.db 40, DOWN + RIGHT
+0003e8 403c                      	.db 60, RIGHT
+0003e9 502d                      	.db 45, DOWN + RIGHT
+0003ea 4037                      	.db 55, RIGHT
+0003eb 5032                      	.db 50, DOWN + RIGHT
+0003ec 4032                      	.db 50, RIGHT
+0003ed 5036                      	.db 54, DOWN + RIGHT
+0003ee 402e                      	.db 46, RIGHT
+0003ef 503b                      	.db 59, DOWN + RIGHT
+0003f0 4029                      	.db 41, RIGHT
+0003f1 5041                      	.db 65, DOWN + RIGHT
+0003f2 4023                      	.db 35, RIGHT
+0003f3 5046                      	.db 70, DOWN + RIGHT
+0003f4 401e                      	.db 30, RIGHT
+0003f5 504c                      	.db 76, DOWN + RIGHT
+0003f6 4018                      	.db 24, RIGHT
+0003f7 5052                      	.db 82, DOWN + RIGHT
+0003f8 4012                      	.db 18, RIGHT
+0003f9 5059                      	.db 89, DOWN + RIGHT
+0003fa 400b                      	.db 11, RIGHT
+0003fb 5060                      	.db 96, DOWN + RIGHT
+0003fc 4004                      	.db 4, RIGHT
+0003fd 5060                      	.db 96, DOWN + RIGHT
+0003fe 1004                      	.db 4, DOWN
+0003ff 5059                      	.db 89, DOWN + RIGHT
+000400 100b                      	.db 11, DOWN
+000401 5052                      	.db 82, DOWN + RIGHT
+000402 1012                      	.db 18, DOWN
+000403 504c                      	.db 76, DOWN + RIGHT
+000404 1018                      	.db 24, DOWN
+000405 5046                      	.db 70, DOWN + RIGHT
+000406 101e                      	.db 30, DOWN
+000407 5041                      	.db 65, DOWN + RIGHT
+000408 1023                      	.db 35, DOWN
+000409 503b                      	.db 59, DOWN + RIGHT
+00040a 1029                      	.db 41, DOWN
+00040b 5036                      	.db 54, DOWN + RIGHT
+00040c 102e                      	.db 46, DOWN
+00040d 5032                      	.db 50, DOWN + RIGHT
+00040e 1032                      	.db 50, DOWN
+00040f 502d                      	.db 45, DOWN + RIGHT
+000410 1037                      	.db 55, DOWN
+000411 5028                      	.db 40, DOWN + RIGHT
+000412 103c                      	.db 60, DOWN
+000413 5024                      	.db 36, DOWN + RIGHT
+000414 1040                      	.db 64, DOWN
+000415 5020                      	.db 32, DOWN + RIGHT
+000416 1044                      	.db 68, DOWN
+000417 501b                      	.db 27, DOWN + RIGHT
+000418 1049                      	.db 73, DOWN
+000419 5017                      	.db 23, DOWN + RIGHT
+00041a 104d                      	.db 77, DOWN
+00041b 5013                      	.db 19, DOWN + RIGHT
+00041c 1051                      	.db 81, DOWN
+00041d 500f                      	.db 15, DOWN + RIGHT
+00041e 1055                      	.db 85, DOWN
+00041f 500c                      	.db 12, DOWN + RIGHT
+000420 1058                      	.db 88, DOWN
+000421 5008                      	.db 8, DOWN + RIGHT
+000422 105c                      	.db 92, DOWN
+000423 5004                      	.db 4, DOWN + RIGHT
+000424 1060                      	.db 96, DOWN
+000425 1064                      	.db 100, DOWN
                                  
-                                 	; ------------------------------
-                                 	; Vuelta 7/8 (UP y UP+LEFT)
-                                 	; ------------------------------
-000561 a401                      	.db 1,  SOLENOID_DOWN + UP + LEFT
-000562 2431                      	.db 49, SOLENOID_DOWN + UP
-000563 a402                      	.db 2,  SOLENOID_DOWN + UP + LEFT
-000564 2430                      	.db 48, SOLENOID_DOWN + UP
-000565 a403                      	.db 3,  SOLENOID_DOWN + UP + LEFT
-000566 242f                      	.db 47, SOLENOID_DOWN + UP
-000567 a404                      	.db 4,  SOLENOID_DOWN + UP + LEFT
-000568 242e                      	.db 46, SOLENOID_DOWN + UP
-000569 a405                      	.db 5,  SOLENOID_DOWN + UP + LEFT
-00056a 242d                      	.db 45, SOLENOID_DOWN + UP
-00056b a406                      	.db 6,  SOLENOID_DOWN + UP + LEFT
-00056c 242c                      	.db 44, SOLENOID_DOWN + UP
-00056d a407                      	.db 7,  SOLENOID_DOWN + UP + LEFT
-00056e 242b                      	.db 43, SOLENOID_DOWN + UP
-00056f a408                      	.db 8,  SOLENOID_DOWN + UP + LEFT
-000570 242a                      	.db 42, SOLENOID_DOWN + UP
-000571 a409                      	.db 9,  SOLENOID_DOWN + UP + LEFT
-000572 2429                      	.db 41, SOLENOID_DOWN + UP
-000573 a40a                      	.db 10,  SOLENOID_DOWN + UP + LEFT
-000574 2428                      	.db 40, SOLENOID_DOWN + UP
-000575 a40b                      	.db 11,  SOLENOID_DOWN + UP + LEFT
-000576 2427                      	.db 39, SOLENOID_DOWN + UP
-000577 a40c                      	.db 12,  SOLENOID_DOWN + UP + LEFT
-000578 2426                      	.db 38, SOLENOID_DOWN + UP
-000579 a40d                      	.db 13,  SOLENOID_DOWN + UP + LEFT
-00057a 2425                      	.db 37, SOLENOID_DOWN + UP
-00057b a40e                      	.db 14,  SOLENOID_DOWN + UP + LEFT
-00057c 2424                      	.db 36, SOLENOID_DOWN + UP
-00057d a40f                      	.db 15,  SOLENOID_DOWN + UP + LEFT
-00057e 2423                      	.db 35, SOLENOID_DOWN + UP
-00057f a410                      	.db 16,  SOLENOID_DOWN + UP + LEFT
-000580 2422                      	.db 34, SOLENOID_DOWN + UP
-000581 a411                      	.db 17,  SOLENOID_DOWN + UP + LEFT
-000582 2421                      	.db 33, SOLENOID_DOWN + UP
-000583 a412                      	.db 18,  SOLENOID_DOWN + UP + LEFT
-000584 2420                      	.db 32, SOLENOID_DOWN + UP
-000585 a413                      	.db 19,  SOLENOID_DOWN + UP + LEFT
-000586 241f                      	.db 31, SOLENOID_DOWN + UP
-000587 a414                      	.db 20,  SOLENOID_DOWN + UP + LEFT
-000588 241e                      	.db 30, SOLENOID_DOWN + UP
-000589 a415                      	.db 21,  SOLENOID_DOWN + UP + LEFT
-00058a 241d                      	.db 29, SOLENOID_DOWN + UP
-00058b a416                      	.db 22,  SOLENOID_DOWN + UP + LEFT
-00058c 241c                      	.db 28, SOLENOID_DOWN + UP
-00058d a417                      	.db 23,  SOLENOID_DOWN + UP + LEFT
-00058e 241b                      	.db 27, SOLENOID_DOWN + UP
-00058f a418                      	.db 24,  SOLENOID_DOWN + UP + LEFT
-000590 241a                      	.db 26, SOLENOID_DOWN + UP
-000591 a419                      	.db 25,  SOLENOID_DOWN + UP + LEFT
-000592 2419                      	.db 25, SOLENOID_DOWN + UP
-000593 a41a                      	.db 26,  SOLENOID_DOWN + UP + LEFT
-000594 2418                      	.db 24, SOLENOID_DOWN + UP
-000595 a41b                      	.db 27,  SOLENOID_DOWN + UP + LEFT
-000596 2417                      	.db 23, SOLENOID_DOWN + UP
-000597 a41c                      	.db 28,  SOLENOID_DOWN + UP + LEFT
-000598 2416                      	.db 22, SOLENOID_DOWN + UP
-000599 a41d                      	.db 29,  SOLENOID_DOWN + UP + LEFT
-00059a 2415                      	.db 21, SOLENOID_DOWN + UP
-00059b a41e                      	.db 30,  SOLENOID_DOWN + UP + LEFT
-00059c 2414                      	.db 20, SOLENOID_DOWN + UP
-00059d a41f                      	.db 31,  SOLENOID_DOWN + UP + LEFT
-00059e 2413                      	.db 19, SOLENOID_DOWN + UP
-00059f a420                      	.db 32,  SOLENOID_DOWN + UP + LEFT
-0005a0 2412                      	.db 18, SOLENOID_DOWN + UP
-0005a1 a421                      	.db 33,  SOLENOID_DOWN + UP + LEFT
-0005a2 2411                      	.db 17, SOLENOID_DOWN + UP
-0005a3 a422                      	.db 34,  SOLENOID_DOWN + UP + LEFT
-0005a4 2410                      	.db 16, SOLENOID_DOWN + UP
-0005a5 a423                      	.db 35,  SOLENOID_DOWN + UP + LEFT
-0005a6 240f                      	.db 15, SOLENOID_DOWN + UP
-0005a7 a424                      	.db 36,  SOLENOID_DOWN + UP + LEFT
-0005a8 240e                      	.db 14, SOLENOID_DOWN + UP
-0005a9 a425                      	.db 37,  SOLENOID_DOWN + UP + LEFT
-0005aa 240d                      	.db 13, SOLENOID_DOWN + UP
-0005ab a426                      	.db 38,  SOLENOID_DOWN + UP + LEFT
-0005ac 240c                      	.db 12, SOLENOID_DOWN + UP
-0005ad a427                      	.db 39,  SOLENOID_DOWN + UP + LEFT
-0005ae 240b                      	.db 11, SOLENOID_DOWN + UP
-0005af a428                      	.db 40,  SOLENOID_DOWN + UP + LEFT
-0005b0 240a                      	.db 10, SOLENOID_DOWN + UP
-0005b1 a429                      	.db 41,  SOLENOID_DOWN + UP + LEFT
-0005b2 2409                      	.db 9, SOLENOID_DOWN + UP
-0005b3 a42a                      	.db 42,  SOLENOID_DOWN + UP + LEFT
-0005b4 2408                      	.db 8, SOLENOID_DOWN + UP
-0005b5 a42b                      	.db 43,  SOLENOID_DOWN + UP + LEFT
-0005b6 2407                      	.db 7, SOLENOID_DOWN + UP
-0005b7 a42c                      	.db 44,  SOLENOID_DOWN + UP + LEFT
-0005b8 2406                      	.db 6, SOLENOID_DOWN + UP
-0005b9 a42d                      	.db 45,  SOLENOID_DOWN + UP + LEFT
-0005ba 2405                      	.db 5, SOLENOID_DOWN + UP
-0005bb a42e                      	.db 46,  SOLENOID_DOWN + UP + LEFT
-0005bc 2404                      	.db 4, SOLENOID_DOWN + UP
-0005bd a42f                      	.db 47,  SOLENOID_DOWN + UP + LEFT
-0005be 2403                      	.db 3, SOLENOID_DOWN + UP
-0005bf a430                      	.db 48,  SOLENOID_DOWN + UP + LEFT
-0005c0 2402                      	.db 2, SOLENOID_DOWN + UP
-0005c1 a431                      	.db 49,  SOLENOID_DOWN + UP + LEFT
-0005c2 2401                      	.db 1, SOLENOID_DOWN + UP
+                                 ; Quadrant 3: LEFT & DOWN
+000426 1064                      	.db 100, DOWN
+000427 9004                      	.db 4, LEFT + DOWN
+000428 1060                      	.db 96, DOWN
+000429 9008                      	.db 8, LEFT + DOWN
+00042a 105c                      	.db 92, DOWN
+00042b 900c                      	.db 12, LEFT + DOWN
+00042c 1058                      	.db 88, DOWN
+00042d 900f                      	.db 15, LEFT + DOWN
+00042e 1055                      	.db 85, DOWN
+00042f 9013                      	.db 19, LEFT + DOWN
+000430 1051                      	.db 81, DOWN
+000431 9017                      	.db 23, LEFT + DOWN
+000432 104d                      	.db 77, DOWN
+000433 901b                      	.db 27, LEFT + DOWN
+000434 1049                      	.db 73, DOWN
+000435 9020                      	.db 32, LEFT + DOWN
+000436 1044                      	.db 68, DOWN
+000437 9024                      	.db 36, LEFT + DOWN
+000438 1040                      	.db 64, DOWN
+000439 9028                      	.db 40, LEFT + DOWN
+00043a 103c                      	.db 60, DOWN
+00043b 902d                      	.db 45, LEFT + DOWN
+00043c 1037                      	.db 55, DOWN
+00043d 9032                      	.db 50, LEFT + DOWN
+00043e 1032                      	.db 50, DOWN
+00043f 9036                      	.db 54, LEFT + DOWN
+000440 102e                      	.db 46, DOWN
+000441 903b                      	.db 59, LEFT + DOWN
+000442 1029                      	.db 41, DOWN
+000443 9041                      	.db 65, LEFT + DOWN
+000444 1023                      	.db 35, DOWN
+000445 9046                      	.db 70, LEFT + DOWN
+000446 101e                      	.db 30, DOWN
+000447 904c                      	.db 76, LEFT + DOWN
+000448 1018                      	.db 24, DOWN
+000449 9052                      	.db 82, LEFT + DOWN
+00044a 1012                      	.db 18, DOWN
+00044b 9059                      	.db 89, LEFT + DOWN
+00044c 100b                      	.db 11, DOWN
+00044d 9060                      	.db 96, LEFT + DOWN
+00044e 1004                      	.db 4, DOWN
+00044f 9060                      	.db 96, LEFT + DOWN
+000450 8004                      	.db 4, LEFT
+000451 9059                      	.db 89, LEFT + DOWN
+000452 800b                      	.db 11, LEFT
+000453 9052                      	.db 82, LEFT + DOWN
+000454 8012                      	.db 18, LEFT
+000455 904c                      	.db 76, LEFT + DOWN
+000456 8018                      	.db 24, LEFT
+000457 9046                      	.db 70, LEFT + DOWN
+000458 801e                      	.db 30, LEFT
+000459 9041                      	.db 65, LEFT + DOWN
+00045a 8023                      	.db 35, LEFT
+00045b 903b                      	.db 59, LEFT + DOWN
+00045c 8029                      	.db 41, LEFT
+00045d 9036                      	.db 54, LEFT + DOWN
+00045e 802e                      	.db 46, LEFT
+00045f 9032                      	.db 50, LEFT + DOWN
+000460 8032                      	.db 50, LEFT
+000461 902d                      	.db 45, LEFT + DOWN
+000462 8037                      	.db 55, LEFT
+000463 9028                      	.db 40, LEFT + DOWN
+000464 803c                      	.db 60, LEFT
+000465 9024                      	.db 36, LEFT + DOWN
+000466 8040                      	.db 64, LEFT
+000467 9020                      	.db 32, LEFT + DOWN
+000468 8044                      	.db 68, LEFT
+000469 901b                      	.db 27, LEFT + DOWN
+00046a 8049                      	.db 73, LEFT
+00046b 9017                      	.db 23, LEFT + DOWN
+00046c 804d                      	.db 77, LEFT
+00046d 9013                      	.db 19, LEFT + DOWN
+00046e 8051                      	.db 81, LEFT
+00046f 900f                      	.db 15, LEFT + DOWN
+000470 8055                      	.db 85, LEFT
+000471 900c                      	.db 12, LEFT + DOWN
+000472 8058                      	.db 88, LEFT
+000473 9008                      	.db 8, LEFT + DOWN
+000474 805c                      	.db 92, LEFT
+000475 9004                      	.db 4, LEFT + DOWN
+000476 8060                      	.db 96, LEFT
+000477 8064                      	.db 100, LEFT
                                  
-                                 	; ------------------------------
-                                 	; Vuelta 8/8 (LEFT y UP+LEFT)
-                                 	; ------------------------------
-0005c3 8401                      	.db 1,  SOLENOID_DOWN + LEFT
-0005c4 a431                      	.db 49, SOLENOID_DOWN + UP + LEFT
-0005c5 8402                      	.db 2,  SOLENOID_DOWN + LEFT
-0005c6 a430                      	.db 48, SOLENOID_DOWN + UP + LEFT
-0005c7 8403                      	.db 3,  SOLENOID_DOWN + LEFT
-0005c8 a42f                      	.db 47, SOLENOID_DOWN + UP + LEFT
-0005c9 8404                      	.db 4,  SOLENOID_DOWN + LEFT
-0005ca a42e                      	.db 46, SOLENOID_DOWN + UP + LEFT
-0005cb 8405                      	.db 5,  SOLENOID_DOWN + LEFT
-0005cc a42d                      	.db 45, SOLENOID_DOWN + UP + LEFT
-0005cd 8406                      	.db 6,  SOLENOID_DOWN + LEFT
-0005ce a42c                      	.db 44, SOLENOID_DOWN + UP + LEFT
-0005cf 8407                      	.db 7,  SOLENOID_DOWN + LEFT
-0005d0 a42b                      	.db 43, SOLENOID_DOWN + UP + LEFT
-0005d1 8408                      	.db 8,  SOLENOID_DOWN + LEFT
-0005d2 a42a                      	.db 42, SOLENOID_DOWN + UP + LEFT
-0005d3 8409                      	.db 9,  SOLENOID_DOWN + LEFT
-0005d4 a429                      	.db 41, SOLENOID_DOWN + UP + LEFT
-0005d5 840a                      	.db 10,  SOLENOID_DOWN + LEFT
-0005d6 a428                      	.db 40, SOLENOID_DOWN + UP + LEFT
-0005d7 840b                      	.db 11,  SOLENOID_DOWN + LEFT
-0005d8 a427                      	.db 39, SOLENOID_DOWN + UP + LEFT
-0005d9 840c                      	.db 12,  SOLENOID_DOWN + LEFT
-0005da a426                      	.db 38, SOLENOID_DOWN + UP + LEFT
-0005db 840d                      	.db 13,  SOLENOID_DOWN + LEFT
-0005dc a425                      	.db 37, SOLENOID_DOWN + UP + LEFT
-0005dd 840e                      	.db 14,  SOLENOID_DOWN + LEFT
-0005de a424                      	.db 36, SOLENOID_DOWN + UP + LEFT
-0005df 840f                      	.db 15,  SOLENOID_DOWN + LEFT
-0005e0 a423                      	.db 35, SOLENOID_DOWN + UP + LEFT
-0005e1 8410                      	.db 16,  SOLENOID_DOWN + LEFT
-0005e2 a422                      	.db 34, SOLENOID_DOWN + UP + LEFT
-0005e3 8411                      	.db 17,  SOLENOID_DOWN + LEFT
-0005e4 a421                      	.db 33, SOLENOID_DOWN + UP + LEFT
-0005e5 8412                      	.db 18,  SOLENOID_DOWN + LEFT
-0005e6 a420                      	.db 32, SOLENOID_DOWN + UP + LEFT
-0005e7 8413                      	.db 19,  SOLENOID_DOWN + LEFT
-0005e8 a41f                      	.db 31, SOLENOID_DOWN + UP + LEFT
-0005e9 8414                      	.db 20,  SOLENOID_DOWN + LEFT
-0005ea a41e                      	.db 30, SOLENOID_DOWN + UP + LEFT
-0005eb 8415                      	.db 21,  SOLENOID_DOWN + LEFT
-0005ec a41d                      	.db 29, SOLENOID_DOWN + UP + LEFT
-0005ed 8416                      	.db 22,  SOLENOID_DOWN + LEFT
-0005ee a41c                      	.db 28, SOLENOID_DOWN + UP + LEFT
-0005ef 8417                      	.db 23,  SOLENOID_DOWN + LEFT
-0005f0 a41b                      	.db 27, SOLENOID_DOWN + UP + LEFT
-0005f1 8418                      	.db 24,  SOLENOID_DOWN + LEFT
-0005f2 a41a                      	.db 26, SOLENOID_DOWN + UP + LEFT
-0005f3 8419                      	.db 25,  SOLENOID_DOWN + LEFT
-0005f4 a419                      	.db 25, SOLENOID_DOWN + UP + LEFT
-0005f5 841a                      	.db 26,  SOLENOID_DOWN + LEFT
-0005f6 a418                      	.db 24, SOLENOID_DOWN + UP + LEFT
-0005f7 841b                      	.db 27,  SOLENOID_DOWN + LEFT
-0005f8 a417                      	.db 23, SOLENOID_DOWN + UP + LEFT
-0005f9 841c                      	.db 28,  SOLENOID_DOWN + LEFT
-0005fa a416                      	.db 22, SOLENOID_DOWN + UP + LEFT
-0005fb 841d                      	.db 29,  SOLENOID_DOWN + LEFT
-0005fc a415                      	.db 21, SOLENOID_DOWN + UP + LEFT
-0005fd 841e                      	.db 30,  SOLENOID_DOWN + LEFT
-0005fe a414                      	.db 20, SOLENOID_DOWN + UP + LEFT
-0005ff 841f                      	.db 31,  SOLENOID_DOWN + LEFT
-000600 a413                      	.db 19, SOLENOID_DOWN + UP + LEFT
-000601 8420                      	.db 32,  SOLENOID_DOWN + LEFT
-000602 a412                      	.db 18, SOLENOID_DOWN + UP + LEFT
-000603 8421                      	.db 33,  SOLENOID_DOWN + LEFT
-000604 a411                      	.db 17, SOLENOID_DOWN + UP + LEFT
-000605 8422                      	.db 34,  SOLENOID_DOWN + LEFT
-000606 a410                      	.db 16, SOLENOID_DOWN + UP + LEFT
-000607 8423                      	.db 35,  SOLENOID_DOWN + LEFT
-000608 a40f                      	.db 15, SOLENOID_DOWN + UP + LEFT
-000609 8424                      	.db 36,  SOLENOID_DOWN + LEFT
-00060a a40e                      	.db 14, SOLENOID_DOWN + UP + LEFT
-00060b 8425                      	.db 37,  SOLENOID_DOWN + LEFT
-00060c a40d                      	.db 13, SOLENOID_DOWN + UP + LEFT
-00060d 8426                      	.db 38,  SOLENOID_DOWN + LEFT
-00060e a40c                      	.db 12, SOLENOID_DOWN + UP + LEFT
-00060f 8427                      	.db 39,  SOLENOID_DOWN + LEFT
-000610 a40b                      	.db 11, SOLENOID_DOWN + UP + LEFT
-000611 8428                      	.db 40,  SOLENOID_DOWN + LEFT
-000612 a40a                      	.db 10, SOLENOID_DOWN + UP + LEFT
-000613 8429                      	.db 41,  SOLENOID_DOWN + LEFT
-000614 a409                      	.db 9, SOLENOID_DOWN + UP + LEFT
-000615 842a                      	.db 42,  SOLENOID_DOWN + LEFT
-000616 a408                      	.db 8, SOLENOID_DOWN + UP + LEFT
-000617 842b                      	.db 43,  SOLENOID_DOWN + LEFT
-000618 a407                      	.db 7, SOLENOID_DOWN + UP + LEFT
-000619 842c                      	.db 44,  SOLENOID_DOWN + LEFT
-00061a a406                      	.db 6, SOLENOID_DOWN + UP + LEFT
-00061b 842d                      	.db 45,  SOLENOID_DOWN + LEFT
-00061c a405                      	.db 5, SOLENOID_DOWN + UP + LEFT
-00061d 842e                      	.db 46,  SOLENOID_DOWN + LEFT
-00061e a404                      	.db 4, SOLENOID_DOWN + UP + LEFT
-00061f 842f                      	.db 47,  SOLENOID_DOWN + LEFT
-000620 a403                      	.db 3, SOLENOID_DOWN + UP + LEFT
-000621 8430                      	.db 48,  SOLENOID_DOWN + LEFT
-000622 a402                      	.db 2, SOLENOID_DOWN + UP + LEFT
-000623 8431                      	.db 49,  SOLENOID_DOWN + LEFT
-000624 a401                      	.db 1, SOLENOID_DOWN + UP + LEFT
-                                 	; ------------------------------
-                                 	; Finalización
-                                 	; ------------------------------
-000625 0801                      	.db 1, SOLENOID_UP
-000626 0801                      	.db 1, SOLENOID_UP
-000627 0001                      	.db 1, STOP	
+                                 ; Quadrant 4: UP & LEFT
+000478 8064                      	.db 100, LEFT
+000479 a004                      	.db 4, UP + LEFT
+00047a 8060                      	.db 96, LEFT
+00047b a008                      	.db 8, UP + LEFT
+00047c 805c                      	.db 92, LEFT
+00047d a00c                      	.db 12, UP + LEFT
+00047e 8058                      	.db 88, LEFT
+00047f a00f                      	.db 15, UP + LEFT
+000480 8055                      	.db 85, LEFT
+000481 a013                      	.db 19, UP + LEFT
+000482 8051                      	.db 81, LEFT
+000483 a017                      	.db 23, UP + LEFT
+000484 804d                      	.db 77, LEFT
+000485 a01b                      	.db 27, UP + LEFT
+000486 8049                      	.db 73, LEFT
+000487 a020                      	.db 32, UP + LEFT
+000488 8044                      	.db 68, LEFT
+000489 a024                      	.db 36, UP + LEFT
+00048a 8040                      	.db 64, LEFT
+00048b a028                      	.db 40, UP + LEFT
+00048c 803c                      	.db 60, LEFT
+00048d a02d                      	.db 45, UP + LEFT
+00048e 8037                      	.db 55, LEFT
+00048f a032                      	.db 50, UP + LEFT
+000490 8032                      	.db 50, LEFT
+000491 a036                      	.db 54, UP + LEFT
+000492 802e                      	.db 46, LEFT
+000493 a03b                      	.db 59, UP + LEFT
+000494 8029                      	.db 41, LEFT
+000495 a041                      	.db 65, UP + LEFT
+000496 8023                      	.db 35, LEFT
+000497 a046                      	.db 70, UP + LEFT
+000498 801e                      	.db 30, LEFT
+000499 a04c                      	.db 76, UP + LEFT
+00049a 8018                      	.db 24, LEFT
+00049b a052                      	.db 82, UP + LEFT
+00049c 8012                      	.db 18, LEFT
+00049d a059                      	.db 89, UP + LEFT
+00049e 800b                      	.db 11, LEFT
+00049f a060                      	.db 96, UP + LEFT
+0004a0 8004                      	.db 4, LEFT
+0004a1 a060                      	.db 96, UP + LEFT
+0004a2 2004                      	.db 4, UP
+0004a3 a059                      	.db 89, UP + LEFT
+0004a4 200b                      	.db 11, UP
+0004a5 a052                      	.db 82, UP + LEFT
+0004a6 2012                      	.db 18, UP
+0004a7 a04c                      	.db 76, UP + LEFT
+0004a8 2018                      	.db 24, UP
+0004a9 a046                      	.db 70, UP + LEFT
+0004aa 201e                      	.db 30, UP
+0004ab a041                      	.db 65, UP + LEFT
+0004ac 2023                      	.db 35, UP
+0004ad a03e                      	.db 62, UP + LEFT
+0004ae 2029                      	.db 41, UP
+0004af a039                      	.db 57, UP + LEFT
+0004b0 202e                      	.db 46, UP
+0004b1 a039                      	.db 57, UP + LEFT
+0004b2 2032                      	.db 50, UP
+0004b3 a030                      	.db 48, UP + LEFT
+0004b4 2037                      	.db 55, UP
+0004b5 a02c                      	.db 44, UP + LEFT
+0004b6 203c                      	.db 60, UP
+0004b7 a028                      	.db 40, UP + LEFT
+0004b8 2040                      	.db 64, UP
+0004b9 a024                      	.db 36, UP + LEFT
+0004ba 2044                      	.db 68, UP
+0004bb a01e                      	.db 30, UP + LEFT
+0004bc 2049                      	.db 73, UP
+0004bd a01a                      	.db 26, UP + LEFT
+0004be 204f                      	.db 79, UP
+0004bf a017                      	.db 23, UP + LEFT
+0004c0 2055                      	.db 85, UP
+0004c1 a012                      	.db 18, UP + LEFT
+0004c2 2057                      	.db 87, UP
+0004c3 a014                      	.db 20, UP + LEFT
+0004c4 205a                      	.db 90, UP
+0004c5 a00a                      	.db 10, UP + LEFT
+0004c6 2064                      	.db 100, UP
+0004c7 2096                      	.db 150, UP
+0004c8 2082                      	.db 130, UP
+0004c9 08ff                      	.db 255, SOLENOID_UP
+0004ca 0001                      	.db 1, STOP
                                  
-                                 BERSERK_DATA:
-000628 0401                      	.db 1, SOLENOID_DOWN
-000629 a402                      	.db 2, SOLENOID_DOWN + UP + LEFT
-00062a 6404                      	.db 4, SOLENOID_DOWN + UP + RIGHT
-00062b a401                      	.db 1, SOLENOID_DOWN + UP + LEFT
-00062c 0801                      	.db 1, SOLENOID_UP
-00062d 8802                      	.db 2, SOLENOID_UP + LEFT
-00062e 0401                      	.db 1, SOLENOID_DOWN
-00062f 9401                      	.db 1, SOLENOID_DOWN + DOWN + LEFT
-000630 5404                      	.db 4, SOLENOID_DOWN + DOWN + RIGHT
-000631 9402                      	.db 2, SOLENOID_DOWN + DOWN + LEFT
-000632 2407                      	.db 7, SOLENOID_DOWN + UP
-000633 0801                      	.db 1, SOLENOID_UP
-000634 0001                      	.db 1, STOP
-                                 
-                                 MOVE_START:
-000635 980f                      	.db 15, SOLENOID_UP + DOWN + LEFT
-000636 880f                      	.db 15, SOLENOID_UP + LEFT 	
-000637 0001                      	.db 1, STOP
                                  
                                  MOVE_RIGHT:
-000638 4805                      	.db 5, SOLENOID_UP + RIGHT	
-000639 0001                      	.db 1, STOP
+0004cb 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004cc 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004cd 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004ce 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004cf 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004d0 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004d1 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004d2 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004d3 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004d4 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004d5 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004d6 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004d7 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004d8 48fa                      	.db 250, SOLENOID_UP + RIGHT
+0004d9 48fa                      	.db 250, SOLENOID_UP + RIGHT	
+0004da 0001                      	.db 1, STOP
                                  
                                  MOVE_DOWN:
-00063a 1805                      	.db 5, SOLENOID_UP + DOWN
-00063b 0001                      	.db 1, STOP
+0004db 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004dc 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004dd 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004de 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004df 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004e0 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004e1 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004e2 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004e3 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004e4 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004e5 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004e6 18fa                      	.db 250, SOLENOID_UP + DOWN
+0004e7 0001                      	.db 1, STOP
                                  
                                  MOVE_UP: 
-00063c 2805                      	.db 5, SOLENOID_UP + UP
-00063d 0001                      	.db 1, STOP
+0004e8 28fa                      	.db 250, SOLENOID_UP + UP
+0004e9 28fa                      	.db 250, SOLENOID_UP + UP
+0004ea 28fa                      	.db 250, SOLENOID_UP + UP
+0004eb 28fa                      	.db 250, SOLENOID_UP + UP
+0004ec 28fa                      	.db 250, SOLENOID_UP + UP
+0004ed 28fa                      	.db 250, SOLENOID_UP + UP
+0004ee 28fa                      	.db 250, SOLENOID_UP + UP
+0004ef 28fa                      	.db 250, SOLENOID_UP + UP
+0004f0 28fa                      	.db 250, SOLENOID_UP + UP
+0004f1 28fa                      	.db 250, SOLENOID_UP + UP
+0004f2 28fa                      	.db 250, SOLENOID_UP + UP
+0004f3 28fa                      	.db 250, SOLENOID_UP + UP
+0004f4 28fa                      	.db 250, SOLENOID_UP + UP
+0004f5 28fa                      	.db 250, SOLENOID_UP + UP
+0004f6 28fa                      	.db 250, SOLENOID_UP + UP
+0004f7 28fa                      	.db 250, SOLENOID_UP + UP
+0004f8 28fa                      	.db 250, SOLENOID_UP + UP
+0004f9 28fa                      	.db 250, SOLENOID_UP + UP
+0004fa 28fa                      	.db 250, SOLENOID_UP + UP
+0004fb 28fa                      	.db 250, SOLENOID_UP + UP
+0004fc 0001                      	.db 1, STOP
                                  
                                  MOVE_LEFT:
-00063e 8805                      	.db 5, SOLENOID_UP + LEFT	
-00063f 0001                      	.db 1, STOP
+0004fd 88fa                      	.db 250, SOLENOID_UP + LEFT
+0004fe 88fa                      	.db 250, SOLENOID_UP + LEFT
+0004ff 88fa                      	.db 250, SOLENOID_UP + LEFT
+000500 88fa                      	.db 250, SOLENOID_UP + LEFT
+000501 88fa                      	.db 250, SOLENOID_UP + LEFT
+000502 88fa                      	.db 250, SOLENOID_UP + LEFT
+000503 88fa                      	.db 250, SOLENOID_UP + LEFT
+000504 88fa                      	.db 250, SOLENOID_UP + LEFT
+000505 88fa                      	.db 250, SOLENOID_UP + LEFT
+000506 88fa                      	.db 250, SOLENOID_UP + LEFT
+000507 88fa                      	.db 250, SOLENOID_UP + LEFT
+000508 88fa                      	.db 250, SOLENOID_UP + LEFT
+000509 88fa                      	.db 250, SOLENOID_UP + LEFT
+00050a 88fa                      	.db 250, SOLENOID_UP + LEFT
+00050b 88fa                      	.db 250, SOLENOID_UP + LEFT
+00050c 0001                      	.db 1, STOP
                                  
                                  MENU_TEXT:
-000640 6c45
-000641 6a69
-000642 2061
-000643 6e75
-000644 2061
-000645 706f
-000646 6963
-000647 6e6f
-000648 0a3a                      	.db "Elija una opcion:", 0x0A
-000649 305b
-00064a 205d
-00064b 7241
-00064c 6972
-00064d 6162
-00064e 0a20                      	.db "[0] Arriba ", 0x0A
-00064f 315b
-000650 205d
-000651 6241
-000652 6a61
-000653 0a6f                      	.db "[1] Abajo", 0x0A
-000654 325b
-000655 205d
-000656 7a49
-000657 7571
-000658 6569
-000659 6472
-00065a 0a61                      	.db "[2] Izquierda", 0x0A
-00065b 335b
-00065c 205d
-00065d 6544
-00065e 6572
-00065f 6863
-000660 0a61                      	.db "[3] Derecha", 0x0A
-000661 345b
-000662 205d
-000663 7254
-000664 6169
-000665 676e
-000666 6c75
-000667 0a6f                      	.db "[4] Triangulo", 0x0A
-000668 355b
-000669 205d
-00066a 6943
-00066b 6372
-00066c 6c75
-00066d 0a6f                      	.db "[5] Circulo", 0x0A
-00066e 365b
-00066f 205d
-000670 7243
-000671 7a75
-000672 0a20                      	.db "[6] Cruz ", 0x0A
-000673 545b
-000674 205d
-000675 6f54
-000676 6f64
-000677 0a0a
-000678 0000                      	.db "[T] Todo", 0x0A, 0x0A, 0, 0
+00050d 6c45
+00050e 6a69
+00050f 2061
+000510 6e75
+000511 2061
+000512 706f
+000513 6963
+000514 6e6f
+000515 0a3a                      	.db "Elija una opcion:", 0x0A
+000516 305b
+000517 205d
+000518 7241
+000519 6972
+00051a 6162
+00051b 0a20                      	.db "[0] Arriba ", 0x0A
+00051c 315b
+00051d 205d
+00051e 6241
+00051f 6a61
+000520 0a6f                      	.db "[1] Abajo", 0x0A
+000521 325b
+000522 205d
+000523 7a49
+000524 7571
+000525 6569
+000526 6472
+000527 0a61                      	.db "[2] Izquierda", 0x0A
+000528 335b
+000529 205d
+00052a 6544
+00052b 6572
+00052c 6863
+00052d 0a61                      	.db "[3] Derecha", 0x0A
+00052e 345b
+00052f 205d
+000530 7254
+000531 6169
+000532 676e
+000533 6c75
+000534 0a6f                      	.db "[4] Triangulo", 0x0A
+000535 355b
+000536 205d
+000537 6943
+000538 6372
+000539 6c75
+00053a 0a6f                      	.db "[5] Circulo", 0x0A
+00053b 365b
+00053c 205d
+00053d 7243
+00053e 7a75
+00053f 0a20                      	.db "[6] Cruz ", 0x0A
+000540 545b
+000541 205d
+000542 6f54
+000543 6f64
+000544 0a0a
+000545 0000                      	.db "[T] Todo", 0x0A, 0x0A, 0, 0
                                  
                                  ERROR_TEXT:
-000679 704f
-00067a 6963
-00067b 6e6f
-00067c 6920
-00067d 766e
-00067e 6c61
-00067f 6469
-000680 2161
-000681 0a0a
+000546 704f
+000547 6963
+000548 6e6f
+000549 6920
+00054a 766e
+00054b 6c61
+00054c 6469
+00054d 2161
+00054e 0a0a
+00054f 0000                      	.db "Opcion invalida!", 0x0A, 0x0A, 0, 0
 
 
 RESOURCE USE INFORMATION
@@ -2470,7 +2142,7 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   6 r0 :   0 r1 :   4 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  65 r17:  32 r18:  21 r19:  19 r20:  13 
+r13:   0 r14:   0 r15:   0 r16:  63 r17:  31 r18:  21 r19:  19 r20:  13 
 r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
 r29:   0 r30:  18 r31:  18 
 Registers used: 9 out of 35 (25.7%)
@@ -2478,18 +2150,18 @@ Registers used: 9 out of 35 (25.7%)
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   2 add   :   2 adiw  :   0 and   :   0 
 andi  :   3 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :  13 brge  :   0 brhc  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :  12 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
 brne  :   4 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   1 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   2 cpc   :   0 
-cpi   :  12 cpse  :   0 dec   :   3 eor   :   0 fmul  :   0 fmuls :   0 
+cpi   :  11 cpse  :   0 dec   :   3 eor   :   0 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :   1 inc   :   2 jmp   :   0 
-ld    :   1 ldd   :   0 ldi   :  50 lds   :   7 lpm   :   4 lsl   :   0 
+ld    :   1 ldd   :   0 ldi   :  48 lds   :   7 lpm   :   4 lsl   :   0 
 lsr   :   0 mov   :   3 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
 neg   :   0 nop   :   0 or    :   0 ori   :   1 out   :   7 pop   :  37 
-push  :  31 rcall :  22 ret   :   7 reti  :   4 rjmp  :  22 rol   :   0 
+push  :  31 rcall :  21 ret   :   7 reti  :   4 rjmp  :  21 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   1 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
@@ -2500,7 +2172,7 @@ Instructions used: 28 out of 113 (24.8%)
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000d06    550   1798   2348   32768   7.2%
+[.cseg] 0x000000 0x000aa0    538   1184   1722   32768   5.3%
 [.dseg] 0x000100 0x000202      0    258    258    2048  12.6%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
