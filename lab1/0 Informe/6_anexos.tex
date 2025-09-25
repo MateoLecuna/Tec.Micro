@@ -545,24 +545,25 @@ CLEAR_BIT:
 \subsection{Look Up Table (LUT)}\label{anexo:Look_Up_Table}
 \begin{verbatim}
 ; Config. de puertos filas
-.org 0x310 ROW_PORTS:
+.org 0x300 
+ROW_PORTS:
   .db 0x25, 0x25, 0x25, 0x25
   .db 0x28, 0x25, 0x28, 0x28
 
 ; Config. de pines de puertos
-.org 0x320 ROW_MASKS:
+ROW_MASKS:
   .db 0b00001000, 0b00000010
   .db 0b00010000, 0b00000100
   .db 0b00001000, 0b00100000
   .db 0b00010000, 0b00100000
 
 ; Config. de puertos columnas
-.org 0x330 COL_PORTS:
+COL_PORTS:
   .db 0x2B, 0x2B, 0x2B, 0x28
   .db 0x25, 0x28, 0x28, 0x2B
 
 ; Config. de pines de puertos
-.org 0x340 COL_MASKS:
+COL_MASKS:
   .db 0b00010000, 0b00100000
   .db 0b10000000, 0b00000100
   .db 0b00000001, 0b00000001
@@ -639,3 +640,87 @@ Importar macros a ``main.asm'':
 .include "macros.inc"
 \end{verbatim}
 
+\subsection{Plotter: Generador de círculos con Python}\label{anexo:Plotter_Python}
+\begin{verbatim}
+import math
+
+# Number of steps per quadrant
+divisions = 42          
+# Maximum cycles per motor
+max_cycles = 100         
+solenoid = "SOLENOID_DOWN"
+
+# Define quadrants with corresponding
+# directions and wave signs
+quadrants = [
+  ("RIGHT", "UP", 1, 1),     # Q I
+  ("DOWN", "RIGHT", -1, 1),  # Q II
+  ("LEFT", "DOWN", -1, -1),  # Q III
+  ("UP", "LEFT", 1, -1)      # Q IV
+]
+
+# Function to scale 
+# wave values to cycles
+def get_cycles(value1, 
+               value2, 
+               max_cycles):
+  max_val = max(value1, value2)
+  if max_val == 0:
+    return 0, 0
+
+  scale = max_cycles / max_val
+  return int(round(value1 * scale)), 
+  int(round(value2 * scale))
+
+# Generate commands
+for quad_index, (dir1, 
+                 dir2, 
+                 sign1, 
+                 sign2) 
+in enumerate(quadrants):
+
+  print(f"\n; Quadrant 
+  {quad_index + 1}: {dir1} & {dir2}")
+
+  for step in range(divisions):
+    # Calculate sine/cosine wave (0..1)
+    angle = (math.pi / 2) * 
+    (step / (divisions - 1))
+
+    wave1 = math.sin(angle) * sign1
+    wave2 = math.cos(angle) * sign2
+
+    # Take absolute value because 
+    # we only care about time cycles
+    wave1, wave2 = abs(wave1), 
+                   abs(wave2)
+
+    # Scale to cycles
+    cycles1, cycles2 = 
+    get_cycles(wave1, 
+               wave2, 
+               max_cycles)
+
+    # Both motors on for min(cycles1, 
+    #                        cycles2)
+    i_cycles = min(cycles1, cycles2)
+    # Only the “extra” cycles 
+    # for the motor that is ahead
+    j_cycles = abs(cycles1 - cycles2)
+
+    # Determine which motor 
+    # gets the extra cycles
+    if cycles1 > cycles2:
+      extra_motor = dir1
+    else:
+      extra_motor = dir2
+
+    # Output commands
+    if i_cycles > 0:
+      print(f" .db {i_cycles}, 
+      {solenoid} + {dir1} + {dir2}")
+
+    if j_cycles > 0:
+      print(f" .db {j_cycles}, 
+      {solenoid} + {extra_motor}")
+\end{verbatim}
