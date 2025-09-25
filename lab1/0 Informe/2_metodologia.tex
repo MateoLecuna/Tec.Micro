@@ -3,7 +3,6 @@
 Maquina de estado
 Estados
 
-\vspace{10em}
 
 \subsection{Matriz}
 
@@ -76,16 +75,11 @@ brlo RENDER_FRAME_ROW_LOOP
 \end{verbatim}
 
 \subsubsection{De cuadros a animación}
-Con la rutina de dibujo funcionando, basta con llamarla en bucle para mantener la imagen. Así se pueden mostrar figuras estáticas como una cara sonriente. Para animaciones, por ejemplo texto desplazándose, el \textbf{Timer 2} se configura con un desborde cada 100\,ms. Entre desbordes la rutina de dibujo corre a alta velocidad (del orden de microsegundos). En cada desborde se incrementa un \textbf{puntero índice} que desplaza el origen de lectura de los datos del cuadro y produce el efecto de movimiento sobre la matriz. Además se agrega una condición de comparación que retorna la animación al inicio cuando se llega al final.
-
-Vease anexo % Timers
+Con la rutina de dibujo funcionando, basta con llamarla en bucle para mantener la imagen. Así se pueden mostrar figuras estáticas como una cara sonriente. Para animaciones, por ejemplo texto desplazándose, el \textbf{Timer 2} se configura con un desborde cada 100\,ms. Entre desbordes la rutina de dibujo corre a alta velocidad (del orden de microsegundos). En cada desborde se incrementa un \textbf{puntero índice} que desplaza el origen de lectura de los datos del cuadro y produce el efecto de movimiento sobre la matriz. Además se agrega una condición de comparación que retorna la animación al inicio cuando se llega al final. Vease anexo \ref{anexo:Configuracion_Timer_1}
 
 
 \subsubsection{Base para el control por estados}
-Con estas piezas el sistema ya enciende LEDs individuales, dibuja cuadros desde memoria y ejecuta animaciones cuadro a cuadro. Este es el \textbf{motor de visualización básico} que luego se conecta a la \textbf{máquina de estados} y a la \textbf{entrada por USART} para seleccionar entre texto desplazante, imágenes estáticas u otros patrones.
-
-Vease anexo % Maquina de estados 
-Vease anexo % Comuniacación USART
+Con estas piezas el sistema ya enciende LEDs individuales, dibuja cuadros desde memoria y ejecuta animaciones cuadro a cuadro. Este es el \textbf{motor de visualización básico} que luego se conecta a la \textbf{máquina de estados} y a la \textbf{entrada por USART} para seleccionar entre texto desplazante, imágenes estáticas u otros patrones. Vease anexo \ref{anexo:Maquina_de_Estados} y anexo \ref{anexo:USART_Asincrono_con_Ring_Buffer}
 
 
 \subsection{Conversor}
@@ -97,7 +91,7 @@ En la programación del Arduino se implementó una \textit{Look-Up Table} (LUT),
 
 \subsection{Plotter}
 
-Para el plotter se tomaron las instrucciones de la tabla mostrada en el anexo % Tablas
+Para el plotter se tomaron las instrucciones de la tabla mostrada en el anexo \ref{anexo:Comandos_Plotter}
 
 
 \subsection{Materiales}

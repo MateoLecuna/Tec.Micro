@@ -2,7 +2,7 @@
 \subsection{Carpeta de laboratorio}
 \href{https://drive.google.com/drive/folders/1-pCu1uoGqFwTV82Zj6AoLYSWdHQhPP2F?usp=drive_link}{\textbf{Enlace}} de acceso a la carpeta de Google Drive con simulaciones y evidencias del laboratorio.
 
-\subsection{Microcontrolador ATmega328P}
+\subsection{Microcontrolador ATmega328P}\label{Microcontrolador_ATmega328P}
 
 \begin{figure}[H]
   \centering
@@ -12,7 +12,7 @@
 \end{figure}
 
 
-\subsection{Matriz de LEDs 1088AS}
+\subsection{Matriz de LEDs 1088AS}\label{anexo:Matriz_de_LEDs_1088AS}
 
 \begin{figure}[H]
   \centering
@@ -22,7 +22,7 @@
 \end{figure}
 
 
-\subsection{Comandos Plotter}
+\subsection{Comandos Plotter}\label{anexo:Comandos_Plotter}
 
 \begin{figure}[H]
   \centering
@@ -31,7 +31,7 @@
   \label{fig:comandos-plotter}
 \end{figure}
 
-\subsection{Señal para conversor digital analogo}
+\subsection{Señal para conversor digital analogo}\label{anexo:Senal_para_conversor_digital_analogo}
 \begin{verbatim}
 0x00,0x08,0x10,0x18,0x20,0x28,0x30,0x38,
 0x40,0x48,0x50,0x58,0x60,0x68,0x70,0x78,
@@ -43,7 +43,7 @@
 0x3f,0x37,0x2f,0x27,0x1f,0x17,0x0f,0x07
 \end{verbatim}
 
-\subsection{Stack Pointer}
+\subsection{Stack Pointer}\label{anexo:Stack_Pointer}
 
 Incialización del Stack Pointer:
 
@@ -59,7 +59,7 @@ RESET:
 Usos del Stack Pointer: rcall, call, interrupciones
 preservacion de datos entre subrutinas e ISRs
 
-\subsection{Interrupt service routines}
+\subsection{Interrupt service routines}\label{anexo:Interrupt_Service_Routines}
 
 \begin{verbatim}
 MI_ISR:
@@ -73,7 +73,7 @@ MI_ISR:
   reti
 \end{verbatim}
 
-\subsection{Delay activo}
+\subsection{Delay activo}\label{anexo:Delay_Activo}
 \begin{verbatim}
 ACTIVE_DELAY:	
   push r18 push r19 push r20
@@ -94,7 +94,7 @@ L1:
   ret
 \end{verbatim}
 
-\subsection{Vectores de interrupcion}
+\subsection{Vectores de interrupción}\label{anexo:Vectores_de_interrupcion}
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{\detokenize{./Anexos/Marco Teorico/Interrupt Vectors.png}}
@@ -102,7 +102,7 @@ L1:
   \label{fig:interrupt-vectors}
 \end{figure}
 
-\subsection{Timer 1}
+\subsection{Configuración Timer 1}\label{anexo:Configuracion_Timer_1}
 
 El prescaler del Temporizador 1 es configurado a través del registro TCCR1B el cual posee la siguiente configuración:
 
@@ -151,7 +151,7 @@ TIMER1_OVF_ISR:
     reti
 \end{verbatim}
 
-\subsection{Interrupciones Externas}
+\subsection{Interrupciones Externas}\label{anexo:Interrupciones_Externas}
    \subsubsection{EINT}
     Interrupciones externas 
 
@@ -194,7 +194,7 @@ TIMER1_OVF_ISR:
     \label{fig:PCIMSK}
     \end{figure}
 
-\subsection{SRAM}
+\subsection{SRAM}\label{anexo:SRAM}
 
 \begin{verbatim}
 .dseg
@@ -204,7 +204,7 @@ arreglo: byte 100
 
 % Como leer de sram
 
-\subsection{FLASH}
+\subsection{FLASH}\label{anexo:FLASH}
 
 \begin{verbatim}
 .cseg
@@ -222,7 +222,7 @@ GET_DATA:
 
 % USART
 
-\subsection{USART Asíncrono}
+\subsection{USART Asíncrono}\label{anexo:USART_Asincrono}
     \subsubsection{Inicialización}
     \begin{verbatim}
 .equ _F_CPU = 16000000
@@ -271,7 +271,7 @@ sei
     reti
     \end{verbatim}
 
-\subsection{Ring Buffer}
+\subsection{Ring Buffer}\label{anexo:Ring_Buffer}
 
 Reservando RAM para el buffer
 \begin{verbatim}
@@ -320,7 +320,7 @@ st   Z, r16 ; Guardar r16 en buffer
 En este caso se decide utilizar una espera activa, pero podría llegar a no ser una buena práctica. Otra alternativa sería simplemente descartar el dato si el buffer está lleno.
 
     
-\subsection{USART asíncrono con Ring Buffer}
+\subsection{USART Asíncrono con Ring Buffer}\label{anexo:USART_Asincrono_con_Ring_Buffer}
 
   \subsubsection{Inicialización}
   \begin{verbatim}
@@ -501,7 +501,7 @@ USART_RX_ISR:
 \end{verbatim}
 
 
-\subsection{Bit masks}
+\subsection{Bit Masks}\label{anexo:Bit_Masks}
 \subsubsection{SET BIT}
 \begin{verbatim}
 SET_BIT:	
@@ -542,7 +542,7 @@ CLEAR_BIT:
   ret
 \end{verbatim}
 
-\subsection{Look Up Table (LUT)}
+\subsection{Look Up Table (LUT)}\label{anexo:Look_Up_Table}
 \begin{verbatim}
 ; Config. de puertos filas
 .org 0x310 ROW_PORTS:
@@ -569,7 +569,7 @@ CLEAR_BIT:
   .db 0b00000010, 0b01000000 
 \end{verbatim}
 
-\subsection{Máquina de estados}
+\subsection{Máquina de estados}\label{anexo:Maquina_de_Estados}
 \begin{verbatim}
 .def current_state = r20
 
