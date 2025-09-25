@@ -7,81 +7,85 @@ Estados
 
 \subsection{Matriz}
 
-\subsubsection{Objetivo Inicial}
-\begin{itemize}[leftmargin=2em]
-    \item Construir el control de una \textbf{matriz de LEDs 8×8 (1088AS)}.
-    \item Empezar de forma sencilla: crear una manera de \textbf{encender un solo LED} especificando su fila y su columna.
-    \item Expandir paso a paso hasta poder \textbf{dibujar cuadros completos} y finalmente \textbf{animaciones}.
-\end{itemize}
+\subsubsection{Objetivo inicial}
+El objetivo es controlar una \textbf{matriz de LEDs 8×8 (1088AS)}. Se comienza con lo básico: encender un solo LED indicando su fila y su columna. A partir de ahí se progresa hasta dibujar cuadros completos y finalmente animaciones.
 
-\subsubsection{Encendiendo un Solo LED}
-\begin{itemize}[leftmargin=2em]
-    \item Se crearon \textbf{lookup tables} en memoria de programa:
-    \begin{itemize}
-        \item Una para los \textbf{puertos} (a qué puerto está conectada cada fila/columna).
-        \item Otra para los \textbf{pines} (qué número de pin dentro del puerto).
-    \end{itemize}
-    \item Proceso:
-    \begin{itemize}
-        \item Cargar en registros (ej. R16 y R17) la fila y la columna deseadas.
-        \item Usar el \textbf{puntero Z} para recorrer la tabla y determinar el puerto y el pin correctos.
-        \item Construir una \textbf{máscara de bits}:
-        \begin{itemize}
-            \item Como se debe escribir el puerto completo, primero se toma su valor anterior.
-            \item Luego se aplica una máscara para encender o apagar el bit específico.
-            \item Se necesita manejo especial cuando filas y columnas comparten el mismo puerto.
-        \end{itemize}
-        \item Nota: filas y columnas funcionan de manera inversa (la fila se activa con ``0'', la columna con ``1''), por lo que se usaron máscaras invertidas según corresponda.
-    \end{itemize}
-\end{itemize}
+\subsubsection{Encendiendo un solo LED}
+Para ubicar cada LED se prepararon \textbf{lookup tables} en memoria de programa. Una tabla indica el \textbf{puerto} asociado a cada fila y columna y otra el \textbf{pin} dentro de ese puerto. El flujo es simple: se cargan en registros la fila y la columna deseadas, se usa el \textbf{puntero Z} para leer puerto y pin desde las tablas y se construye una \textbf{máscara de bits}. Primero se lee el valor actual del puerto y luego se aplica la máscara para encender o apagar el bit. Cuando fila y columna comparten puerto se agrega un cuidado extra para no alterar otros bits. Recordatorio importante: las \textbf{filas} se activan con \texttt{0} y las \textbf{columnas} con \texttt{1}, por lo que se emplean máscaras invertidas según corresponda.
 
-\subsubsection{Multiplexado y Dibujo de Cuadros (Frames)}
-\begin{itemize}[leftmargin=2em]
-    \item Una vez resuelto el control de un LED individual, el siguiente paso fue el \textbf{multiplexado}:
-    \begin{itemize}
-        \item Refrescar continuamente la matriz para que múltiples LEDs parezcan encendidos a la vez.
-        \item Inicialmente se implementó con un \textbf{retardo activo} (luego se consideró el uso de un temporizador).
-    \end{itemize}
-    \item Se introdujeron las \textbf{tablas de frames}:
-    \begin{itemize}
-        \item Los cuadros se almacenan como mapas de bits de 8×8 (0 = apagado, 1 = encendido).
-        \item Una subrutina de dibujo recorre las 64 posiciones:
-        \begin{itemize}
-            \item Compara el bit del cuadro (usando desplazamientos como LSR).
-            \item Decide si debe encender el LED combinando la máscara con los puertos de hardware.
-            \item Operaciones lógicas aseguran que solo se actualicen los LEDs deseados.
-        \end{itemize}
-    \end{itemize}
-\end{itemize}
+\begin{verbatim}
+ldi ZH, high(ROW_PORTS<<1) 
+ldi ZL, low(ROW_PORTS<<1)
+add ZL, row adc ZH, r1  
+lpm r16, Z ; r16 = row port adress
+        
+ldi ZH, high(ROW_MASKS<<1) 
+ldi ZL, low(ROW_MASKS<<1)
+add ZL, row adc ZH, r1
+lpm r17, Z ; r18 = row pin mask
 
-\subsubsection{De Cuadros a Animación}
-\begin{itemize}[leftmargin=2em]
-    \item Con la capacidad de renderizar un cuadro:
-    \begin{itemize}
-        \item Llamar repetidamente a la subrutina de \textbf{dibujar frame} mantiene la imagen visible.
-        \item Ejemplo: mostrar una cara sonriente o cualquier figura estática.
-    \end{itemize}
-    \item Para lograr animaciones (ej.\@ texto desplazándose):
-    \begin{itemize}
-        \item El \textbf{Timer 2} se configuró para desbordarse cada 100 ms.
-        \item Entre desbordes, la subrutina de dibujo corre continuamente a gran velocidad ($\approx$ cada microsegundo).
-        \item En cada desborde, un \textbf{puntero índice (puntero C)} se incrementa.
-        \item Este puntero desplaza qué parte de los datos del cuadro se lee, generando un efecto de desplazamiento en la matriz.
-    \end{itemize}
-\end{itemize}
+; Encender fila
+clr ZH mov ZL, r16 
+mov r16, r17
+rcall CLEAR_BIT
 
-\subsubsection{Base para el Control por Estados}
-\begin{itemize}[leftmargin=2em]
-    \item En esta etapa:
-    \begin{itemize}
-        \item El sistema puede encender LEDs individuales.
-        \item Puede dibujar cuadros completos desde la memoria.
-        \item Puede ejecutar animaciones cuadro por cuadro, como texto desplazándose o patrones en movimiento.
-    \end{itemize}
-    \item Esto constituye el \textbf{motor de visualización básico}, que después se conecta a la \textbf{máquina de estados} y a la \textbf{entrada por USART} (para elegir entre texto desplazante, imágenes estáticas, etc.).
-\end{itemize}
+ldi ZH, high(COL_PORTS<<1) 
+ldi ZL, low(COL_PORTS<<1)  
+add ZL, col adc ZH, r1  
+lpm r16, Z ; r16 = column port adress
 
-\vspace{10em}
+ldi ZH, high(COL_MASKS<<1) 
+ldi ZL, low(COL_MASKS<<1)  
+add ZL, col adc ZH, r1  
+lpm r17, Z ; r17 = column pin mask
+
+; Encender columna
+clr ZH mov ZL, r16 
+mov r16, r17
+rcall SET_BIT
+\end{verbatim}
+
+\subsubsection{Multiplexado y dibujo de cuadros}
+Resuelto el encendido individual, se pasa al \textbf{multiplexado} para refrescar la matriz de forma continua y dar la ilusión de múltiples LEDs encendidos. Al principio se usó un retardo activo y luego se contempló el uso de un temporizador. Los \textbf{frames} se guardan como mapas de bits 8×8 donde 0 es apagado y 1 encendido. Una subrutina recorre las 64 posiciones, compara el bit del cuadro (con desplazamientos como \texttt{LSR}), decide si encender el LED combinando la máscara con los puertos y aplica operaciones lógicas para modificar solo los LEDs necesarios.
+
+\begin{verbatim}
+ldi row, 0 RENDER_FRAME_ROW_LOOP:  
+ldi r16, 0b00000001 ; Frame mask
+lpm r17, Z+
+
+ldi col, 0 RENDER_FRAME_COL_LOOP:
+    rcall CLEAR_MATRIX
+
+    push r16
+    and r16, r17
+
+    cpi r16, 0 
+    breq RENDER_FRAME_SKIP_LED
+
+    rcall TURN_LED
+    rcall TEST_DELAY
+
+    RENDER_FRAME_SKIP_LED:
+    pop r16
+    lsl r16
+inc col cpi col, 8 
+brlo RENDER_FRAME_COL_LOOP 
+
+inc row cpi row, 8 
+brlo RENDER_FRAME_ROW_LOOP
+\end{verbatim}
+
+\subsubsection{De cuadros a animación}
+Con la rutina de dibujo funcionando, basta con llamarla en bucle para mantener la imagen. Así se pueden mostrar figuras estáticas como una cara sonriente. Para animaciones, por ejemplo texto desplazándose, el \textbf{Timer 2} se configura con un desborde cada 100\,ms. Entre desbordes la rutina de dibujo corre a alta velocidad (del orden de microsegundos). En cada desborde se incrementa un \textbf{puntero índice} que desplaza el origen de lectura de los datos del cuadro y produce el efecto de movimiento sobre la matriz. Además se agrega una condición de comparación que retorna la animación al inicio cuando se llega al final.
+
+Vease anexo % Timers
+
+
+\subsubsection{Base para el control por estados}
+Con estas piezas el sistema ya enciende LEDs individuales, dibuja cuadros desde memoria y ejecuta animaciones cuadro a cuadro. Este es el \textbf{motor de visualización básico} que luego se conecta a la \textbf{máquina de estados} y a la \textbf{entrada por USART} para seleccionar entre texto desplazante, imágenes estáticas u otros patrones.
+
+Vease anexo % Maquina de estados 
+Vease anexo % Comuniacación USART
 
 
 \subsection{Conversor}
@@ -92,6 +96,10 @@ Para ello se empleó un conversor digital-analógico (DAC) basado en una red de 
 En la programación del Arduino se implementó una \textit{Look-Up Table} (LUT), en la cual se almacenaron los valores correspondientes a la forma de onda triangular. Posteriormente, estos datos se recorrieron utilizando el puntero \textbf{Z}, generando así la secuencia digital que, al pasar por el DAC, produjo la señal triangular observada en el osciloscopio.
 
 \subsection{Plotter}
+
+Para el plotter se tomaron las instrucciones de la tabla mostrada en el anexo % Tablas
+
+
 \subsection{Materiales}
 \begin{enumerate}
     \item Kit Fischertechnik

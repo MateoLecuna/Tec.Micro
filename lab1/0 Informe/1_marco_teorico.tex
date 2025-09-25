@@ -2,12 +2,7 @@
 
 \subsection{Microcontrolador ATmega328P}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{./Anexos/Full Arduino Pinout.png}
-  \caption{Diagrama de pines del Arduino Uno. Fuente: \cite{arduino_uno_pinout}.}
-  \label{fig:arduino-uno-pinout}
-\end{figure}
+
 
 \subsection{Registros de propósito general}
 
@@ -68,14 +63,11 @@ Nota: Existen 2kb de memoria RAM, el stack pointer vive dentro de la RAM así qu
 
 \subsection{FLASH}
 
-% Anexo: como guardar en FLASH
-
 Utilizando .cseg y una dirección segura como 0x300 para guardar datos, se puede utilizar la misma memoria FLASH para guardar datos constantes como LUTs, fotogramas, cadenas de texto, etc. Estos datos no pueden ser modificados, pero existen 32kb de espacio en memoria FLASH para guardar información, por lo que es menos limitante que la SRAM (2kb).
 
 Para acceder a datos guardados en program memoria del programa (FLASH) se puede hacer haciendo uso del puntero Z y la instrucción ``lpm'':
 
-%       como leer de flash
-
+% Anexo como guardar y leer de Flash
 
 Se carga la dirección a Z cargando las partes bajas y altas de la dirección a ZL y ZH respectivamente. En los AVR  ``clásicos'' (como el ATmega328P), las etiquetas en memoria de programa (.cseg) están en direcciones de palabra (cada instrucción ocupa 16 bits), pero la instrucción LPM usa una dirección en bytes en el registro Z. Por eso se hace $<$$<$ 1 (multiplicar por 2): convierte la dirección en palabras de la etiqueta a dirección en bytes para LPM. Y ``Z+'' indica que luego de realizar lpm, se incremente en 1 el puntero ``Z''
 
@@ -99,23 +91,21 @@ Para trabajar de manera ordenada en el desorden. Convierte al dolor de cabeza qu
   \label{fig:avr-memory-map}
 \end{figure}
 
-
 \subsection{USART asíncrono}
+
 \subsection{Ring Buffer}
+
 \subsection{USART asíncrono con Ring Buffer}
-
-
 
 \subsection{Automatización y Máquinas de Estado}
 
-
 \subsection{Kit FischerTechnik}
+
 \begin{itemize}
     \item Principios básicos de una cinta transportadora en automatización.
     \item Funcionamiento de un actuador lineal/solenoide como punzón.
     \item Diferentes modos de operación según carga (ligera, media, pesada).
 \end{itemize}
-
 
 
 \subsection{Conversión Digital-Analógica (DAC R-2R)}
@@ -124,7 +114,7 @@ Para trabajar de manera ordenada en el desorden. Convierte al dolor de cabeza qu
     
     Un DAC (Digital to Analog Converter) es un dispositivo o técnica que permite transformar valores digitales (códigos binarios) en señales analógicas (tensiones o corrientes continuas y variables en el tiempo). Su importancia radica en que la mayoría de los sistemas electrónicos trabajan de manera digital, pero el mundo físico es analógico: audio, imágenes, señales de control de motores, etc.
     
-    En pocas palabras, el DAC es el “puente” entre lo digital y lo analógico.\vspace{1em}
+    En pocas palabras, el DAC es el ``puente'' entre lo digital y lo analógico.\vspace{1em}
 
     \item Arreglo de resistencias R-2R.\vspace{0.5em}
 
@@ -136,7 +126,7 @@ Para trabajar de manera ordenada en el desorden. Convierte al dolor de cabeza qu
     
     \item Uso de una Look-Up Table (LUT) para generar señales analógicas periódicas.\vspace{0.5em}
     
-    Una Look-up Table (LUT) es básicamente una tabla de valores precargada en la memoria que representa una señal digitalizada (por ejemplo, una onda seno). En lugar de calcular cada valor de la función en tiempo real, el monitor solo "lee" la tabla en orden y envía los valores a un puerto o a un DAC.
+    Una Look-up Table (LUT) es básicamente una tabla de valores precargada en la memoria que representa una señal digitalizada (por ejemplo, una onda seno). En lugar de calcular cada valor de la función en tiempo real, el monitor solo ``lee'' la tabla en orden y envía los valores a un puerto o a un DAC.
     
     Cuando esos valores se aplican de manera periódica y con la velocidad adecuada, en la salida se reconstruye una señal analógica periodica.
     

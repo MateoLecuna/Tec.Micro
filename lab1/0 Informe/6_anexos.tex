@@ -2,6 +2,46 @@
 \subsection{Carpeta de laboratorio}
 \href{https://drive.google.com/drive/folders/1-pCu1uoGqFwTV82Zj6AoLYSWdHQhPP2F?usp=drive_link}{\textbf{Enlace}} de acceso a la carpeta de Google Drive con simulaciones y evidencias del laboratorio.
 
+\subsection{Microcontrolador ATmega328P}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{./Anexos/Full Arduino Pinout.png}
+  \caption{Diagrama de pines del Arduino Uno. Fuente: \cite{arduino_uno_pinout}.}
+  \label{fig:arduino-uno-pinout}
+\end{figure}
+
+
+\subsection{Matriz de LEDs 1088AS}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./Anexos/1088ASPinout.jpg}
+  \caption{Pinout de Matriz de LEDs 1088AS. Fuente: \cite{softwareparticles_8x8_arduino}.}
+  \label{fig:1088as-pinout}
+\end{figure}
+
+
+\subsection{Comandos Plotter}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./Anexos/Comandos Plotter.png}
+  \caption{Comandos del Plotter del laboratorio de Mecatrónica. Fuente: Hoja de laboratorio.}
+  \label{fig:comandos-plotter}
+\end{figure}
+
+\subsection{Señal para conversor digital analogo}
+\begin{verbatim}
+0x00,0x08,0x10,0x18,0x20,0x28,0x30,0x38,
+0x40,0x48,0x50,0x58,0x60,0x68,0x70,0x78,
+0x80,0x88,0x90,0x98,0xa0,0xa8,0xb0,0xb8,
+0xc0,0xc8,0xd0,0xd8,0xe0,0xe8,0xf0,0xf8,
+0xff,0xf7,0xef,0xe7,0xdf,0xd7,0xcf,0xc7,
+0xbf,0xb7,0xaf,0xa7,0x9f,0x97,0x8f,0x87,
+0x7f,0x77,0x6f,0x67,0x5f,0x57,0x4f,0x47,
+0x3f,0x37,0x2f,0x27,0x1f,0x17,0x0f,0x07
+\end{verbatim}
 
 \subsection{Stack Pointer}
 
@@ -9,26 +49,28 @@ Incialización del Stack Pointer:
 
 \begin{verbatim}
 RESET:
-    cli ldi r16, high(RAMEND)
-    out SPH, r16
-    ldi r16, low(RAMEND)
-    out SPL, r16 sei
-    ; ...
+  cli ldi r16, high(RAMEND)
+  out SPH, r16
+  ldi r16, low(RAMEND)
+  out SPL, r16 sei
+  ; ...
 \end{verbatim}
 
 Usos del Stack Pointer: rcall, call, interrupciones
 preservacion de datos entre subrutinas e ISRs
 
+\subsection{Interrupt service routines}
+
 \begin{verbatim}
 MI_ISR:
-    push r16
-    out r16, SREG
-    push r16
-    ; ... 
-    pop r16
-    in SREG, r16
-    push r16
-    reti
+  push r16
+  out r16, SREG
+  push r16
+  ; ... 
+  pop r16
+  in SREG, r16
+  push r16
+  reti
 \end{verbatim}
 
 \subsection{Delay activo}
@@ -183,28 +225,28 @@ GET_DATA:
 \subsection{USART Asíncrono}
     \subsubsection{Inicialización}
     \begin{verbatim}
-    .equ _F_CPU = 16000000
-    .equ _BAUD = 9600
-    .equ _BPS = (_F_CPU/16/_BAUD) - 1
+.equ _F_CPU = 16000000
+.equ _BAUD = 9600
+.equ _BPS = (_F_CPU/16/_BAUD) - 1
 
-    .org 0x0024 rjmp USART_RX_ISR
-    
-    RESET:
-    ; Configurar baudios
-    sts UBRR0H, high(_BPS)
-    sts UBRR0L, low(_BPS)
+.org 0x0024 rjmp USART_RX_ISR
 
-    ; Habilitar: receptor, transmisor
-    ; e interrupciones por RX
-    ldi r16, 0b10011000
-    sts UCSR0B,r16
+RESET:
+; Configurar baudios
+sts UBRR0H, high(_BPS)
+sts UBRR0L, low(_BPS)
 
-    ; Establecer formato:
-    ; 8 data bits, 2 stop bits
-    ldi r16, (1<<USBS0)|(3<<UCSZ00)
-    sts UCSR0C,r16
+; Habilitar: receptor, transmisor
+; e interrupciones por RX
+ldi r16, 0b10011000
+sts UCSR0B,r16
 
-    sei
+; Establecer formato:
+; 8 data bits, 2 stop bits
+ldi r16, (1<<USBS0)|(3<<UCSZ00)
+sts UCSR0C,r16
+
+sei
     \end{verbatim}
     \subsubsection{Transmisión}
     \begin{verbatim}
@@ -233,46 +275,46 @@ GET_DATA:
 
 Reservando RAM para el buffer
 \begin{verbatim}
-    .dseg 
-    tx_buffer: .byte TX_BUF_SIZE  
-    tx_head:   .byte 1            
-    tx_tail:   .byte 1
+.dseg 
+tx_buffer: .byte TX_BUF_SIZE  
+tx_head:   .byte 1            
+tx_tail:   .byte 1
 \end{verbatim}
 
 Tamaño de buffer y máscara de clamping
 \begin{verbatim}
-    .cseg
-    .equ TX_BUF_SIZE = 16 ; Pot. de 2
-    .equ TX_BUF_MASK = TX_BUF_SIZE - 1
+.cseg
+.equ TX_BUF_SIZE = 16 ; Pot. de 2
+.equ TX_BUF_MASK = TX_BUF_SIZE - 1
 \end{verbatim}
 
 Avanzar head, y clampear con BUF MASK. Tail se puede avanzar utilizando la mísma lógica
 \begin{verbatim}
-    lds  r17, tx_head
-    mov  r19, r17 ; Copiar para despues
-    inc  r19
-    andi r19, TX_BUF_MASK
+lds  r17, tx_head
+mov  r19, r17 ; Copiar para despues
+inc  r19
+andi r19, TX_BUF_MASK
 \end{verbatim}
 
 El truco de utilizar un múltiplo de 2 y una máscara tiene la ventaja de poder limitar el rango de una variable (clamping) con tan solo una instrucción: ``andi''. 
 
 Si luego de incrementar head, en el caso de que head == tail (buffer lleno), se realiza una espera activa. 
 \begin{verbatim}
-    wait_space: 
-    ; buffer lleno? next == tail
-    lds  r18, tx_tail
-    cp   r19, r18
-    breq wait_space
+wait_space: 
+; buffer lleno? next == tail
+lds  r18, tx_tail
+cp   r19, r18
+breq wait_space
 \end{verbatim}
 
 Guardar un valor en el buffer
 \begin{verbatim}
-    ; Z -> Cabeza de buffer
-    ldi  ZL, low(tx_buffer)
-    ldi  ZH, high(tx_buffer)
-    add  ZL, r17 
-    adc  ZH, r1
-    st   Z, r16 ; Guardar r16 en buffer
+; Z -> Cabeza de buffer
+ldi  ZL, low(tx_buffer)
+ldi  ZH, high(tx_buffer)
+add  ZL, r17 
+adc  ZH, r1
+st   Z, r16 ; Guardar r16 en buffer
 \end{verbatim}
 
 En este caso se decide utilizar una espera activa, pero podría llegar a no ser una buena práctica. Otra alternativa sería simplemente descartar el dato si el buffer está lleno.
@@ -280,8 +322,8 @@ En este caso se decide utilizar una espera activa, pero podría llegar a no ser 
     
 \subsection{USART asíncrono con Ring Buffer}
 
-    \subsubsection{Inicialización}
-    \begin{verbatim}
+  \subsubsection{Inicialización}
+  \begin{verbatim}
 .dseg ; Ring buffer ram alocation
 tx_buffer: .byte TX_BUF_SIZE  
 tx_head:   .byte 1            
