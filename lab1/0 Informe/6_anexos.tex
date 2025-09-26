@@ -1,6 +1,12 @@
+\newpage
+
 \section{Anexos}
 \subsection{Carpeta de laboratorio}
 \href{https://drive.google.com/drive/folders/1-pCu1uoGqFwTV82Zj6AoLYSWdHQhPP2F?usp=drive_link}{\textbf{Enlace}} de acceso a la carpeta de Google Drive con simulaciones y evidencias del laboratorio.
+
+\subsection{Repositorio del Laboratorio}
+Repositorio de Laboratorio de Microcontroladores (Tec.Micro) \cite{utec_tecmicro}
+
 
 \subsection{Microcontrolador ATmega328P}\label{anexo:Microcontrolador_ATmega328P}
 
@@ -31,7 +37,7 @@
   \label{fig:comandos-plotter}
 \end{figure}
 
-\subsection{Señal para conversor digital analogo}\label{anexo:Senal_para_conversor_digital_analogo}
+\subsection{Señal para conversor digital-analógico}\label{anexo:Senal_para_conversor_digital_analogo}
 \begin{verbatim}
 0x00,0x08,0x10,0x18,0x20,0x28,0x30,0x38,
 0x40,0x48,0x50,0x58,0x60,0x68,0x70,0x78,
@@ -72,11 +78,11 @@ preservacion de datos entre subrutinas e ISRs
 \begin{verbatim}
 MI_ISR:
   push r16
-  out r16, SREG
+  in r16, SREG
   push r16
   ; ... 
   pop r16
-  in SREG, r16
+  out SREG, r16
   push r16
   reti
 \end{verbatim}

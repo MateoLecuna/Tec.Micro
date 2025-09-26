@@ -1,7 +1,7 @@
 \section{Marco Teórico}
 
 \subsection{Microcontrolador ATmega328P}
-El ATmega328P es un MCU AVR de 8 bits con 32\,KB de memoria FLASH para programa, 2\,KB de SRAM y 1\,KB de EEPROM. Funciona típicamente a 16\,MHz y ofrece periféricos integrados: temporizadores, USART, SPI, I\textsuperscript{2}C (TWI), ADC de 10 bits e interrupciones internas y externas. Su arquitectura Harvard y las instrucciones sencillas permiten control en tiempo real con bajo consumo. 
+El ATmega328P es un microcontrolador de 8 bits con 32\,KB de memoria FLASH para programa, 2\,KB de SRAM y 1\,KB de EEPROM. Funciona típicamente a 16\,MHz y ofrece periféricos integrados: temporizadores, USART, SPI, I\textsuperscript{2}C (TWI), ADC de 10 bits e interrupciones internas y externas. Su arquitectura Harvard y las instrucciones sencillas permiten control en tiempo real con bajo consumo. 
 
 \subsection{Registros de propósito general}
 Dispone de 32 registros de 8 bits (R0–R31) de acceso rápido. Tres pares forman punteros de 16 bits: X (R27:R26), Y (R29:R28) y Z (R31:R30), útiles para direccionamiento indirecto y acceso a tablas. El uso disciplinado de estos registros (convención de qué se preserva y qué se clobbera) facilita escribir rutinas eficientes y evitar efectos laterales.
@@ -9,13 +9,14 @@ Dispone de 32 registros de 8 bits (R0–R31) de acceso rápido. Tres pares forma
 \subsection{Entradas y Salidas Digitales}
 Cada pin puede configurarse como entrada o salida mediante los registros DDRx; el estado lógico se escribe en PORTx y se lee en PINx. Como entrada, puede habilitarse la resistencia \textit{pull-up} interna; como salida, el pin puede manejar LEDs, pulsadores y otros dispositivos a través de resistencias o etapas de potencia. Para pulsadores se recomienda tratamiento de rebotes; para LEDs, usar resistencias limitadoras y respetar las corrientes máximas del puerto. El mapeo de los puertos para el ATmega328P en plataforma Arduino se encuentra en el anexo \ref{anexo:Microcontrolador_ATmega328P}.
 
+\newpage
 
 \subsection{Stack Pointer}
 El stack pointer es una herramienta utilizada dentro de la programación del microcontrolador. El stack pointer es un puntero interno del microcontrolador (similar a X, Y o Z) el cual tiene una serie de operaciones asignadas, y un comportamiento específico. El stack pointer se inicializa al final de la memoria RAM, alejado de todo para intentar no molestar al resto. Véase anexo \ref{anexo:Stack_Pointer}.
 
 Allí el stack pointer queda como la cima de la pila y, en AVR, la pila crece hacia direcciones más bajas: un PUSH decrementa primero el SP y luego escribe el dato; un POP lee el dato y después incrementa el SP. Las llamadas a subrutinas (CALL/RCALL) empujan automáticamente la dirección de retorno (PC) a la pila y RET la recupera. En una interrupción, el hardware apila el PC y el registro de estado SREG; RETI los restaura. Además, las rutinas suelen guardar con PUSH los registros que van a usar y devolverlos con POP al salir para no corromper el contexto.
 
-Instrucciones como call, rcall, o las interrupciones dependen de la inicialización previa del Stack Pointer, para poder funcionar de manera adecuada, ya que el Stack Pointer es el que se encarga de guardar las direcciones de memoria a las cuales estas instrucciones deben retornar luego de terminar la ejecución, de no estar inicializado el Stack Pointer, el programa no sabría a donde volver luego de una interrupción, muy probablemente yendo a una dirección del programa aleatoria y rompiendo el flujo del codigo. Véase anexo 
+Instrucciones como call, rcall, o las interrupciones dependen de la inicialización previa del Stack Pointer, para poder funcionar de manera adecuada, ya que el Stack Pointer es el que se encarga de guardar las direcciones de memoria a las cuales estas instrucciones deben retornar luego de terminar la ejecución, de no estar inicializado el Stack Pointer, el programa no sabría a donde volver luego de una interrupción, muy probablemente yendo a una dirección del programa aleatoria y rompiendo el flujo del codigo. 
 
 \subsection{Delay activo}
 Un delay activo es una pieza de código que toma en cuenta la velocidad de ejecución del microcontrolador, para ejecutar un número de instrucciones (inútiles) concreto, representando un pasaje de tiempo específico, para luego retornar al flujo del programa. Son fáciles de usar, pero no es recomendable abusar de ellas debido a ineficiencias energéticas, y que el programa se mantiene ocupado la mayor parte del tiempo en el temporizador, en lugar de poder dedicarse a hacer otras tareas. Véase anexo \ref{anexo:Delay_Activo}, allí se encuentra un ejemplo de un delay activo.
@@ -51,13 +52,22 @@ Esta ecuación determina el tiempo que le tomaría al contador hacer un desborda
 
 Usando \texttt{.dseg} se puede reservar espacio en SRAM. Luego, con \texttt{lds}/\texttt{sts} se lee o escribe esa variable. También pueden usarse punteros X, Y o Z para recorrer posiciones contiguas (como un arreglo). Ver anexo \ref{anexo:SRAM}.
 
-Nota: Existen 2kb de memoria RAM, el stack pointer vive dentro de la RAM así que uno debe ser precavido con el uso excesivo de este recurso, si se desea guardar gran cantidad de valores estáticos, una mejor alternativa podrá ser la memoria FLASH.
+Nota: Existen 2kb de memoria RAM, el stack pointer vive dentro de la RAM así que uno debe ser precavido con el uso excesivo de este recurso, si se desea guardar gran cantidad de valores estáticos, una mejor alternativa podría ser la memoria FLASH.
+
+\newpage
 
 \subsection{FLASH}
 
 Utilizando .cseg y una dirección segura como 0x300 para guardar datos, se puede utilizar la misma memoria FLASH para guardar datos constantes como LUTs, fotogramas, cadenas de texto, etc. Estos datos no pueden ser modificados, pero existen 32kb de espacio en memoria FLASH para guardar información, por lo que es menos limitante que la SRAM (2kb).
 
 Para acceder a datos guardados en program memoria del programa (FLASH) se puede hacer haciendo uso del puntero Z y la instrucción \texttt{lpm}. En ``Z'' Se carga la dirección a Z cargando las partes bajas y altas de la dirección a ZL y ZH respectivamente. En los AVR  ``clásicos'' (como el ATmega328P), las etiquetas en memoria de programa (\texttt{.cseg}) están en direcciones de palabra (cada instrucción ocupa 16 bits), pero la instrucción LPM usa una dirección en bytes en el registro Z. Por eso se hace $<$$<$ 1 (multiplicar por 2): convierte la dirección en palabras de la etiqueta a dirección en bytes para LPM. Y \texttt{Z+} indica que luego de realizar \texttt{lpm}, se incremente en 1 el puntero Z. Véase anexo \ref{anexo:FLASH}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{./Anexos/Memory Map.jpg}
+  \caption{Mapa de memoria y espacios de direcciones en AVR de 8 bits. Fuente: \cite{arxterra_avr_addressing_modes}.}
+  \label{fig:avr-memory-map}
+\end{figure}
 
 \subsection{Bit masks}
 Una máscara es un número binario, pero en una máscara lo que nos importa es la posición de los unos y ceros en lugar del valor mismo que representan. Un mismo valor binario puede representar un número o una máscara, solo depende de como lo mires.  
@@ -68,14 +78,8 @@ Saber operar con máscaras se vuelve útil cuando, por ejemplo, se busca afectar
 
 
 \subsection{LUT}
-Para trabajar de manera ordenada en el desorden. Convierte al dolor de cabeza que son los puertos, en simples operaciones de lectura de FLASH, y modificación de punteros. Véase anexo \ref{anexo:Look_Up_Table}
+Una LUT o Look Up Table, permite establecer un orden o mapear información de manera que se pueda trabjar de manera simplificada utilizando punteros dentro del programa. Una LUT suele ser utilizada para mapear la distribución de puertos y pines en la conexión de un circuito con elementos posicionales como lo es una matriz de LEDs (por ejemplo). Se vuelven de gran ayuda para no depender de lógica del circuito para adaptarse a diferentes configuraciones de pines, y poder adaptar circuitos de manera mucho más símple. Véase anexo \ref{anexo:Look_Up_Table}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{./Anexos/Memory Map.jpg}
-  \caption{Mapa de memoria y espacios de direcciones en AVR de 8 bits. Fuente: \cite{arxterra_avr_addressing_modes}.}
-  \label{fig:avr-memory-map}
-\end{figure}
 
 \subsection{USART asíncrono}
 La USART en modo asíncrono permite comunicación serie full-dúplex con tramas que incluyen un bit de inicio, 8 bits de datos (habitual), paridad opcional y 1–2 bits de parada. En el ATmega328P las líneas son RXD (PD0) y TXD (PD1).
@@ -109,6 +113,7 @@ Cada bit del número digital controla un pin de los puertos del microcontrolador
 
 Una Look-up Table (LUT) es básicamente una tabla de valores precargada en la memoria que representa una señal digitalizada (por ejemplo, una onda seno). En lugar de calcular cada valor de la función en tiempo real, el microcontrolador ``lee'' la tabla en orden y envía los valores a un puerto configurado con un DAC. Cuando esos valores se aplican de manera periódica y con la velocidad adecuada, en la salida se reconstruye una señal analógica periódica.
     
+\newpage
 
 \subsection{Matriz de LEDs}
 Modelo 1088AS: matriz 8×8 de cátodo/anodo multiplexado, apta para control por filas y columnas. La disposición exacta de pines se encuentra en el anexo \ref{anexo:Matriz_de_LEDs_1088AS}. Para encender un LED específico, se aplica nivel 0 a la fila correspondiente y nivel 1 a la columna correspondiente.

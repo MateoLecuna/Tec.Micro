@@ -1,3 +1,5 @@
+\newpage
+
 \section{Resultados}
 \subsection{Conversor digital-análogo}
 
@@ -7,9 +9,9 @@ RESET:
     ldi ZH, HIGH(LUT_START<<1)
     ldi ZL, LOW(LUT_START<<1)
 
-	; Apuntar Y al final de la LUT
-	ldi YH, HIGH(LUT_END<<1)
-	ldi YL, LOW(LUT_END<<1)
+    ; Apuntar Y al final de la LUT
+    ldi YH, HIGH(LUT_END<<1)
+    ldi YL, LOW(LUT_END<<1)
 \end{verbatim}
 
 \begin{verbatim}
@@ -146,6 +148,8 @@ USART_RX_ISR_CASE_1:
     ; ...
 \end{verbatim}
 
+\newpage
+
 Aparte del manejo del cambio de estado, se implementó una máquina de estados, como la que se puede encontrar en el anexo \ref{anexo:Maquina_de_Estados}.
 
 \begin{verbatim}
@@ -154,7 +158,6 @@ MAIN:
     rjmp MAIN
 \end{verbatim}
 
-Circuito final realizado:
 
 \begin{figure}[H]
   \centering
@@ -252,6 +255,8 @@ Temporizador de deboucing para botones de cambio de carga. Timer 2 configurado p
 		reti
 
 \end{verbatim}
+
+\newpage
 
 \subsubsection{USART}
 Identico para los otros casos, se configura un menú que es enviado en el RESET del programa para ser mostrado al inicio, y una serie de condicionales determinan el comportamiento del sistema dependiendo del comando que recibe. En este caso: 1, 2, y 3 para seleccionar el tipo de carga. Y A para iniciar la secuencia del programa.

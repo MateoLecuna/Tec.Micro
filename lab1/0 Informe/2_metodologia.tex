@@ -1,3 +1,5 @@
+\newpage
+
 \section{Metodología}
 
 \subsection{Materiales a utilizar}
@@ -14,7 +16,7 @@
 
 \subsection{Punzonadora}
 \subsubsection{Configuración de temporizador variable}
-Se configura al timer 1 con un overflow de 1s, pero un contador de overflow regresivo configurable, permitiendo realizar una acción después de una cantdiad especificada overflows consecutivos del temporizador. 
+Se configura al timer 1 con un overflow de 1s, pero un contador de overflow regresivo configurable, permitiendo realizar una acción después de una cantidad especificada overflows consecutivos del temporizador. 
 
 \subsubsection{Manejo de estados}
 Utilizando este temporizador variable, se realiza la lógica de cambio de estado utilizando una máquina de estados y diferentes condicionales para ajustar por los distintos tipos de carga. 
@@ -44,12 +46,13 @@ Para ubicar cada LED se prepararon \textbf{lookup tables} en memoria de programa
 Resuelto el encendido individual, se pasa al \textbf{multiplexado} para refrescar la matriz de forma continua y dar la ilusión de múltiples LEDs encendidos. Al principio se usó un retardo activo y luego se contempló el uso de un temporizador e interrupciones. Los \textbf{frames} se guardan como mapas de bits 8×8 donde 0 es apagado y 1 encendido. Una subrutina recorre las 64 posiciones, compara el bit del cuadro (con desplazamientos como \texttt{LSR}), decide si encender el LED combinando la máscara con los puertos y aplica operaciones lógicas para modificar solo los LEDs necesarios.
 
 \subsubsection{De cuadros a animación}
-Con la rutina de dibujo funcionando, basta con llamarla en bucle para mantener la imagen. Así se pueden mostrar figuras estáticas como una cara sonriente. Para animaciones, por ejemplo texto desplazándose, el \textbf{Timer 2} se configura con un desborde cada 100\,ms. Entre desbordes la rutina de dibujo corre a alta velocidad (del orden de microsegundos). En cada desborde se incrementa un \textbf{puntero índice} que desplaza el origen de lectura de los datos del cuadro y produce el efecto de movimiento sobre la matriz. Además se agrega una condición de comparación que retorna la animación al inicio cuando se llega al final. Vease anexo \ref{anexo:Configuracion_Timer_1}
+Con la rutina de dibujo funcionando, basta con llamarla en bucle para mantener la imagen. Así se pueden mostrar figuras estáticas como una cara sonriente. Para animaciones, por ejemplo texto desplazándose, el \textbf{Timer 2} se configura con un desborde cada 100\,ms. Entre desbordes la rutina de dibujo corre a alta velocidad (del orden de microsegundos). En cada desborde se incrementa un \textbf{puntero índice} que desplaza el origen de lectura de los datos del cuadro y produce el efecto de movimiento sobre la matriz. Además se agrega una condición de comparación que retorna la animación al inicio cuando se llega al final. Véase anexo \ref{anexo:Configuracion_Timer_1}
 
 
 \subsubsection{Base para el control por estados}
-Con estas piezas el sistema ya enciende LEDs individuales, dibuja cuadros desde memoria y ejecuta animaciones cuadro a cuadro. Este es el \textbf{motor de visualización básico} que luego se conecta a la \textbf{máquina de estados} y a la \textbf{entrada por USART} para seleccionar entre texto desplazante, imágenes estáticas u otros patrones. Vease anexo \ref{anexo:Maquina_de_Estados} y anexo \ref{anexo:USART_Asincrono_con_Ring_Buffer}
+Con estas piezas el sistema ya enciende LEDs individuales, dibuja cuadros desde memoria y ejecuta animaciones cuadro a cuadro. Este es el \textbf{motor de visualización básico} que luego se conecta a la \textbf{máquina de estados} y a la \textbf{entrada por USART} para seleccionar entre texto desplazante, imágenes estáticas u otros patrones. Véase anexo \ref{anexo:Maquina_de_Estados} y anexo \ref{anexo:USART_Asincrono_con_Ring_Buffer}
 
+\newpage
 
 \subsection{Conversor}
 En este ejercicio se buscó visualizar en el osciloscopio la \textbf{señal 7}, correspondiente a una onda triangular (verificada a través de python en el anexo \ref{anexo:Senal_para_conversor_digital_analogo}).
