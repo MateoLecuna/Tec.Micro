@@ -1,6 +1,36 @@
 \section{Resultados}
 \subsection{Conversor digital-análogo}
 
+\begin{verbatim}
+RESET:
+    ; Apuntar Z al inicio de la LUT
+    ldi ZH, HIGH(LUT_START<<1)
+    ldi ZL, LOW(LUT_START<<1)
+
+	; Apuntar Y al final de la LUT
+	ldi YH, HIGH(LUT_END<<1)
+	ldi YL, LOW(LUT_END<<1)
+\end{verbatim}
+
+\begin{verbatim}
+MAIN_LOOP:
+    ; Leer siguiente valor de la LUT
+    ; y avanzar puntero
+    lpm r16, Z+
+    out PORTD, r16
+    rcall delay
+
+    cp  ZL, YL
+    cpc ZH, YH
+    ; Si no es el fin, seguir
+    brne MAIN_LOOP
+
+    ; Volver al inicio de la tabla
+    ldi ZH, HIGH(LUT_START<<1)
+    ldi ZL, LOW(LUT_START<<1)
+    rjmp MAIN_LOOP
+\end{verbatim}
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{./Anexos/Resultados/DAC/Circuito.jpg}
@@ -14,7 +44,6 @@
   \caption{visualización de señal en osciloscopio. Fuente: \cite{LabDrive}.}
   \label{fig:conversor_osciloscopio}
 \end{figure}
-
 
 \subsection{Matriz}
 
