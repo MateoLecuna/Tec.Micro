@@ -12,67 +12,8 @@ El objetivo es controlar una \textbf{matriz de LEDs 8×8 (1088AS)}. Se comienza 
 \subsubsection{Encendiendo un solo LED}
 Para ubicar cada LED se prepararon \textbf{lookup tables} en memoria de programa. Una tabla indica el \textbf{puerto} asociado a cada fila y columna y otra el \textbf{pin} dentro de ese puerto. El flujo es simple: se cargan en registros la fila y la columna deseadas, se usa el \textbf{puntero Z} para leer puerto y pin desde las tablas y se construye una \textbf{máscara de bits}. Primero se lee el valor actual del puerto y luego se aplica la máscara para encender o apagar el bit. Cuando fila y columna comparten puerto se agrega un cuidado extra para no alterar otros bits. Recordatorio importante: las \textbf{filas} se activan con \texttt{0} y las \textbf{columnas} con \texttt{1}, por lo que se emplean máscaras invertidas según corresponda.
 
-\begin{verbatim}
-ldi ZH, high(ROW_PORTS<<1) 
-ldi ZL, low(ROW_PORTS<<1)
-add ZL, row adc ZH, r1  
-lpm r16, Z ; r16 = row port adress
-        
-ldi ZH, high(ROW_MASKS<<1) 
-ldi ZL, low(ROW_MASKS<<1)
-add ZL, row adc ZH, r1
-lpm r17, Z ; r18 = row pin mask
-
-; Encender fila
-clr ZH mov ZL, r16 
-mov r16, r17
-rcall CLEAR_BIT
-
-ldi ZH, high(COL_PORTS<<1) 
-ldi ZL, low(COL_PORTS<<1)  
-add ZL, col adc ZH, r1  
-lpm r16, Z ; r16 = column port adress
-
-ldi ZH, high(COL_MASKS<<1) 
-ldi ZL, low(COL_MASKS<<1)  
-add ZL, col adc ZH, r1  
-lpm r17, Z ; r17 = column pin mask
-
-; Encender columna
-clr ZH mov ZL, r16 
-mov r16, r17
-rcall SET_BIT
-\end{verbatim}
-
 \subsubsection{Multiplexado y dibujo de cuadros}
-Resuelto el encendido individual, se pasa al \textbf{multiplexado} para refrescar la matriz de forma continua y dar la ilusión de múltiples LEDs encendidos. Al principio se usó un retardo activo y luego se contempló el uso de un temporizador. Los \textbf{frames} se guardan como mapas de bits 8×8 donde 0 es apagado y 1 encendido. Una subrutina recorre las 64 posiciones, compara el bit del cuadro (con desplazamientos como \texttt{LSR}), decide si encender el LED combinando la máscara con los puertos y aplica operaciones lógicas para modificar solo los LEDs necesarios.
-
-\begin{verbatim}
-ldi row, 0 RENDER_FRAME_ROW_LOOP:  
-ldi r16, 0b00000001 ; Frame mask
-lpm r17, Z+
-
-ldi col, 0 RENDER_FRAME_COL_LOOP:
-    rcall CLEAR_MATRIX
-
-    push r16
-    and r16, r17
-
-    cpi r16, 0 
-    breq RENDER_FRAME_SKIP_LED
-
-    rcall TURN_LED
-    rcall TEST_DELAY
-
-    RENDER_FRAME_SKIP_LED:
-    pop r16
-    lsl r16
-inc col cpi col, 8 
-brlo RENDER_FRAME_COL_LOOP 
-
-inc row cpi row, 8 
-brlo RENDER_FRAME_ROW_LOOP
-\end{verbatim}
+Resuelto el encendido individual, se pasa al \textbf{multiplexado} para refrescar la matriz de forma continua y dar la ilusión de múltiples LEDs encendidos. Al principio se usó un retardo activo y luego se contempló el uso de un temporizador e interrupciones. Los \textbf{frames} se guardan como mapas de bits 8×8 donde 0 es apagado y 1 encendido. Una subrutina recorre las 64 posiciones, compara el bit del cuadro (con desplazamientos como \texttt{LSR}), decide si encender el LED combinando la máscara con los puertos y aplica operaciones lógicas para modificar solo los LEDs necesarios.
 
 \subsubsection{De cuadros a animación}
 Con la rutina de dibujo funcionando, basta con llamarla en bucle para mantener la imagen. Así se pueden mostrar figuras estáticas como una cara sonriente. Para animaciones, por ejemplo texto desplazándose, el \textbf{Timer 2} se configura con un desborde cada 100\,ms. Entre desbordes la rutina de dibujo corre a alta velocidad (del orden de microsegundos). En cada desborde se incrementa un \textbf{puntero índice} que desplaza el origen de lectura de los datos del cuadro y produce el efecto de movimiento sobre la matriz. Además se agrega una condición de comparación que retorna la animación al inicio cuando se llega al final. Vease anexo \ref{anexo:Configuracion_Timer_1}

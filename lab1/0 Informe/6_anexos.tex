@@ -500,6 +500,38 @@ USART_RX_ISR:
   reti
 \end{verbatim}
 
+\subsubsection{Enviar mensajes por USART}\label{anexo:Mensajes_USART}
+
+\begin{verbatim}
+SEND_MESSAGE:
+  push r16
+
+  SEND_MESSAGE_LOOP:
+  lpm r16, Z+
+  cpi r16, 0
+
+  breq SEND_MESSAGE_END
+  rcall USART_WRITE_BYTE
+  rjmp SEND_MESSAGE_LOOP
+
+  SEND_MESSAGE_END:
+  pop r16
+  ret
+\end{verbatim}
+
+Ejemplo de mensaje guardado en FLASH:
+
+\begin{verbatim}
+MSG_MENU:
+.db "E. Actual: Standby", 0x0A, 0x0A
+.db "Elija una opcion:", 0x0A
+.db "[1] -> Conf. carga ligera ", 0x0A
+.db "[2] -> Conf. carga mediana", 0x0A
+.db "[3] -> Conf. carga pesada ", 0x0A
+.db "[A] -> Iniciar", 0x0A, 0x0A, 0 ;Fin
+\end{verbatim}
+
+
 
 \subsection{Bit Masks}\label{anexo:Bit_Masks}
 \subsubsection{SET BIT}
