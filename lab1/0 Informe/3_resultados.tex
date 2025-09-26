@@ -1,5 +1,6 @@
 \section{Resultados}
 \subsection{Conversor digital-análogo}
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{./Anexos/Resultados/DAC/Circuito.jpg}
@@ -13,6 +14,8 @@
   \caption{visualización de señal en osciloscopio. Fuente: \cite{LabDrive}.}
   \label{fig:conversor_osciloscopio}
 \end{figure}
+
+
 \subsection{Matriz}
 
 \subsubsection{Mapeado de puertos y pines}
@@ -134,6 +137,97 @@ Circuito final realizado:
 
 \section{Punzonadora}
 
+\subsubsection{Configuración de temporizador variable}
+\begin{verbatim}
+.macro ENABLE_TIMER_1
+; @0 Timer seconds
+push r16
+mov timer1_ovf_counter, @0
+ldi r16, 0b101		 sts TCCR1B, r16
+ldi r16, HIGH(49911) sts TCNT1H, r16
+ldi r16, LOW(49911)	 sts TCNT1L, r16 
+ldi r16, (1<<TOV1)   out TIFR1,  r16 
+ldi r16, (1<<TOIE1)  sts TIMSK1, r16 
+pop r16
+.endmacro
+\end{verbatim}
+
+
+\subsubsection{Manejo de estados}
+
+Control de estados general:
+\begin{verbatim}
+STATE_MACHINE:
+cpi state, 0 breq STATE_MACHINE_STOP
+cpi state, 1 breq STATE_MACHINE_ADVANCE
+cpi state, 2 breq STATE_MACHINE_WAIT_1
+cpi state, 3 breq STATE_MACHINE_PUNCH
+cpi state, 4 breq STATE_MACHINE_WAIT_2
+cpi state, 5 breq STATE_MACHINE_EXTRACT
+rjmp STATE_MACHINE_END
+\end{verbatim}
+
+Control de estados individual, cada caso tiene un manejo de tiempos específico dictado por el diagrama de estados mostrado con anterioridad.
+\begin{verbatim}
+STATE_MACHINE_STOP:
+cpi load, 0 breq STOP_LOAD_0
+cpi load, 1 breq STOP_LOAD_1
+cpi load, 2 breq STOP_LOAD_2
+rjmp STATE_MACHINE_STOP_SKIP
+\end{verbatim}
+
+\subsubsection{Botones, LEDs,  y debouncing}
+Interrupción se descativa sola. Se vuelve a habilitar cuando la máquina de estados llega al final del recorrido:
+
+\begin{verbatim}
+INT0_ISR:
+    push r16
+    in r16, SREG
+    push r16 
+
+    DISABLE_BUTTONS
+    DISABLE_RX
+
+    ldi state, 1
+    ldi r16, 1 
+    sts event_pending, r16
+
+    pop r16
+    out SREG, r16
+    pop r16 
+    reti
+\end{verbatim}
+
+Temporizador de deboucing para botones de cambio de carga. Timer 2 configurado para un overflow de aproximadamente 1 segundo (usando contador de overflow externo):
+
+\begin{verbatim}
+    T2_OVF_ISR:
+	push r16 
+    in r16, SREG 
+	push r16 
+	
+	inc timer2_ovf_counter
+	
+	ldi r16, _TIMER2_OVF_COUNT 
+    cp r16, timer2_ovf_counter 
+    brsh T2_OVF_ISR_END 
+    
+	DISABLE_TIMER_2
+	ENABLE_BUTTONS
+	clr timer2_ovf_counter
+    
+    T2_OVF_ISR_END:
+		pop r16
+		out SREG, r16
+		pop r16	
+		reti
+
+\end{verbatim}
+
+\subsubsection{USART}
+Identico para los otros casos, se configura un menú que es enviado en el RESET del programa para ser mostrado al inicio, y una serie de condicionales determinan el comportamiento del sistema dependiendo del comando que recibe. En este caso: 1, 2, y 3 para seleccionar el tipo de carga. Y A para iniciar la secuencia del programa.
+
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.7\linewidth]{./Anexos/Resultados/Punzonadora/Circuito.jpg}
@@ -143,6 +237,62 @@ Circuito final realizado:
 
 
 \subsection{Plotter}
+
+\subsubsection{Mapeo de comandos}
+\begin{verbatim}
+.equ SOLENOID_DOWN =	0b00000100
+.equ SOLENOID_UP =		0b00001000
+.equ DOWN =				0b00010000
+.equ UP =				0b00100000
+.equ RIGHT =			0b01000000
+.equ LEFT =				0b10000000
+.equ STOP =				0b00000000
+\end{verbatim}
+\subsubsection{Interprete de secuencias}
+\begin{verbatim}
+DRAW:
+    mov ZL, r16 mov ZH, r17
+    DRAW_LOOP:
+    lpm r18, Z+ ; Time
+    lpm r19, Z+ ; Instruction
+
+    out PORTD, r19 ; Send instruction
+
+    cpi r19, STOP
+    breq DRAW_END ; Stop drawing
+
+    DRAW_TIMER_LOOP: ; Timer
+    rcall S1
+    dec r18 brne DRAW_TIMER_LOOP 
+
+    rjmp DRAW_LOOP ; Next instruction
+
+    DRAW_END:
+    ret
+\end{verbatim}
+
+Ejemplo de programa para interprete plotter
+\begin{verbatim}
+TRIANGLE_DATA:
+    .db 5, SOLENOID_DOWN	
+    .db 20, SOLENOID_DOWN + RIGHT			
+    .db 10, SOLENOID_DOWN + UP + LEFT		
+    .db 10, SOLENOID_DOWN + DOWN + LEFT
+    .db 5, SOLENOID_UP		
+    .db 5, STOP
+\end{verbatim}
+
+\subsubsection{USART}
+Ejemplo de caso de interrupción de USART para dibujado de circulo:
+\begin{verbatim}
+; ...
+USART_RX_ISR_CASE_5: ; CIRCLE
+    ldi r16, low(CIRCLE_DATA<<1) 
+    ldi r17, high(CIRCLE_DATA<<1)
+    rcall DRAW
+    rjmp USART_RX_ISR_END
+\end{verbatim}
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{./Anexos/Resultados/Plotter/Dibujos.jpg}

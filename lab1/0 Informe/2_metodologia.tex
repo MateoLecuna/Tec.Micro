@@ -32,8 +32,6 @@ Con la máquina de estados funcionando, se realiza un circuito indicador y de co
 \subsubsection{USART}
 Implementado las funcionalidades de USART del anexo \ref{anexo:USART_Asincrono_con_Ring_Buffer}, se configura USART para mostrar un mensaje de inicio, y además indicar al usuario el estado actual de la máquina.
 
-
-
 \subsection{Matriz}
 
 \subsubsection{Objetivo inicial}
@@ -66,7 +64,10 @@ En la programación del Arduino se implementó una \textit{Look-Up Table} (LUT),
 Para el plotter se tomaron las instrucciones de la tabla mostrada en el anexo \ref{anexo:Comandos_Plotter} y se mapean las máscaras correspondientes a cada instrucción a variables internas para mejorar legibilidad de código.
 
 \subsubsection{Interprete de secuencias}
-Utilizando las variables definidas previamente, se realizan series de instrucciones predefinidas para desplazamientos y figuras, guardando dichas secuencias en FLASH. Produciendo algo que podría ser descrito como un lenguaje de programación interno dentro del mismo programa, donde al plotter se le indicia el tipo de acción, y por cuando tiempo realizarla.
+Utilizando las variables definidas previamente, se realizan series de instrucciones predefinidas para desplazamientos y figuras, guardando dichas secuencias en FLASH. Produciendo algo que podría ser descrito como un lenguaje de programación interno dentro del mismo programa, donde al plotter se le indicia el tipo de acción, y por cuando tiempo realizarla. 
+
+\subsubsection{Creación secuencia para círculo por Python}
+Para evitar realizar operaciones trigonométricas complejas con el microcontrolador debido a las limitaciones claras limitaciones del lenguaje, se implementa un programa en Python para utilizar operaciones trigonométricas e imprimir el ``programa'' equivalente en assembler para el plotter para obtener resultados con mejor resolución.
 
 \subsubsection{USART}
 Una vez implementado el interprete de comandos, se configura la comunicación USART para mostrar un menú de opciones, y comandar al plotter a través de este para realizar diferentes trazados.
