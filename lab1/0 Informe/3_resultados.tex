@@ -50,9 +50,11 @@ MAIN_LOOP:
 \subsection{Matriz}
 
 \subsubsection{Mapeado de puertos y pines}
-Se mapean los puertos y pines individuales del mismo modo al que se puede apreciar en el anexo \ref{anexo:Look_Up_Table}.
+Se mapean los puertos y pines individuales del mismo modo al que se puede apreciar en el anexo \ref{anexo:Look_Up_Table}. 
 
 \subsubsection{Encendido de un solo LED}
+Utilizando la LUT, se recorre añadiendo la posición especificada previamente en los registros \texttt{row} y \texttt{col}, para encender especificamente el LED mapeado a esa fila y columna. La función hace uso de \texttt{CLEAR\_LED} y \texttt{SET\_LED} (Véase anexo \ref{anexo:Bit_Masks}) para encender la fila y columna respectivamente, sin modificar el resto de bits en los puertos. 
+
 \begin{verbatim}
 ldi ZH, high(ROW_PORTS<<1) 
 ldi ZL, low(ROW_PORTS<<1)
@@ -86,6 +88,8 @@ rcall SET_BIT
 \end{verbatim}
 
 \subsubsection{Multiplexado y dibujo de cuadros}
+Al encender un LED solo muy rápido se realizan operaciones condicionales con una máscara guardada en FLASH que representa la imágen del fotograma. Cada LED individual es comparado utilizando \texttt{r16}, el cual guarda la máscara posicional con la cual se realiza una operación \texttt{AND} para identificar si el LED se prendería en ese fotograma o no. 
+
 \begin{verbatim}
 ldi row, 0 RENDER_FRAME_ROW_LOOP:  
 ldi r16, 0b00000001 ; Frame mask
@@ -113,50 +117,8 @@ inc row cpi row, 8
 brlo RENDER_FRAME_ROW_LOOP
 \end{verbatim}
 
-Manejo de cambio de estados utilizando USART para mostrar las diferentes imágenes en la matriz
-
-\begin{verbatim}
-USART_RX_ISR:	
-    lds r16, UDR0
-
-    ; Apagar pantalla
-    cpi r16, '0' 
-    breq USART_RX_ISR_CASE_0 
-
-    ; Texto desplazante
-    cpi r16, '1' 
-    breq USART_RX_ISR_CASE_1 
-
-    ; ...
-
-USART_RX_ISR_CASE_0:
-    rcall SET_ANIMATION_START
-    ; Disable timer interrupts
-    ldi r16, 0b0 sts TIMSK2, r16 
-    ; Change state
-    ldi r16, 0 mov current_state, r16   
-    rjmp USART_RX_ISR_END
-
-USART_RX_ISR_CASE_1:
-    rcall SET_ANIMATION_START
-    ; Change state
-    ldi r16, 1 mov current_state, r16   
-    ; Enable timer interrupts
-    ldi r16, 0b1 sts TIMSK2, r16 
-    rjmp USART_RX_ISR_END
-
-    ; ...
-\end{verbatim}
-
-\newpage
-
-Aparte del manejo del cambio de estado, se implementó una máquina de estados, como la que se puede encontrar en el anexo \ref{anexo:Maquina_de_Estados}.
-
-\begin{verbatim}
-MAIN:
-    rcall STATE_MACHINE
-    rjmp MAIN
-\end{verbatim}
+\subsubsection{USART}
+Utilizando la interrupción de overflow del \texttt{TIMER2} configurada para 100ms, se pueden realizar animaciones de texto desplazante, por ejemplo, al incrementar la posición del puntero del fotograma actual dentro de la misma interrupción. Utilizando lógica de estados Y USART asíncrono con un buffer de anillo (véase anexo \ref{anexo:USART_Asincrono_con_Ring_Buffer}), se programan las diferentes funcionalidades menú de inicio, mostrar un texto desplazante o mostrar difernetes imágenes en la matriz (véase anexo \ref{anexo:Maquina_de_Estados}).
 
 
 \begin{figure}[H]
@@ -166,10 +128,20 @@ MAIN:
   \label{fig:circuito_matriz}
 \end{figure}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./Anexos/Resultados/Matriz/Menu.jpg}
+  \caption{Menu de opciones para Matriz de LEDs. Fuente: \cite{LabDrive}.}
+  \label{fig:menu_matriz}
+\end{figure}
 
-\section{Punzonadora}
+
+
+\subsection{Punzonadora}
 
 \subsubsection{Configuración de temporizador variable}
+Se utilizan macros para realizar el control de temporizadores. En este caso se muestra como se configura al \text{TIMER1} para realizar una determinada cantidad de overflows de 1 segundo cada uno. 
+
 \begin{verbatim}
 .macro ENABLE_TIMER_1
 ; @0 Timer seconds
@@ -186,6 +158,7 @@ pop r16
 
 
 \subsubsection{Manejo de estados}
+El manejo de estados del sistema es una máquina de estados como la que se puede ver en el anexo \ref{anexo:Maquina_de_Estados}. Aquí se muestra un fragmento con los estados internos:
 
 Control de estados general:
 \begin{verbatim}
@@ -199,7 +172,7 @@ cpi state, 5 breq STATE_MACHINE_EXTRACT
 rjmp STATE_MACHINE_END
 \end{verbatim}
 
-Control de estados individual, cada caso tiene un manejo de tiempos específico dictado por el diagrama de estados mostrado con anterioridad.
+Luego en cada estado individual existe una serie de condicionales que determinará el tiempo con el que se confgiura \texttt{TIMER1} para pasar al siguiente estado, dependiendo de la carga configurada.
 \begin{verbatim}
 STATE_MACHINE_STOP:
 cpi load, 0 breq STOP_LOAD_0
@@ -209,7 +182,9 @@ rjmp STATE_MACHINE_STOP_SKIP
 \end{verbatim}
 
 \subsubsection{Botones, LEDs,  y debouncing}
-Interrupción se descativa sola. Se vuelve a habilitar cuando la máquina de estados llega al final del recorrido:
+En Standby se enciende el indicador izquierdo verde, indicando que el sistema está esperando la señal de arranque, ya sea por USART o por los pulsadores físicos. Con el pulsador de la izquierda se maneja el cambio de carga, el cual hace un ciclo de cambio entre liviana, mediana, y pesada, indicadas por LEDs de color verde, amarillo, y rojo, respectivamente.
+
+En este fragmento de código se muestra como se maneja de deobuncing, y pausado de entradas externas durante el funcionamiento de la máquina: cuando esta arranca su funcionamiento se desabilitan las interrupcioens externas, y las interrupciones de recepción de USART. Se vuelven a habilitar una vez la máquina de estados reconoce que llegó al final de la secuencia. Se implementaron macros para la habilitación y deshabilitación de interrupciones.
 
 \begin{verbatim}
 INT0_ISR:
@@ -256,7 +231,6 @@ Temporizador de deboucing para botones de cambio de carga. Timer 2 configurado p
 
 \end{verbatim}
 
-\newpage
 
 \subsubsection{USART}
 Identico para los otros casos, se configura un menú que es enviado en el RESET del programa para ser mostrado al inicio, y una serie de condicionales determinan el comportamiento del sistema dependiendo del comando que recibe. En este caso: 1, 2, y 3 para seleccionar el tipo de carga. Y A para iniciar la secuencia del programa.
@@ -269,20 +243,36 @@ Identico para los otros casos, se configura un menú que es enviado en el RESET 
   \label{fig:punzonadora_circuito}
 \end{figure}
 
-
 \subsection{Plotter}
+
+Utilizando \texttt{.equ} se mapean las instrucciones de la tabla a un nombre fácil de interpretar. La ventaja que se tiene al tratarse de bits individuales, es que luego se podrán realizar operaciones como \texttt{UP + RIGHT} para comandar al plotter el movimeinto arriba a la derecha de manera más legible e intuitiva.
 
 \subsubsection{Mapeo de comandos}
 \begin{verbatim}
-.equ SOLENOID_DOWN =	0b00000100
-.equ SOLENOID_UP =		0b00001000
-.equ DOWN =				0b00010000
-.equ UP =				0b00100000
-.equ RIGHT =			0b01000000
-.equ LEFT =				0b10000000
-.equ STOP =				0b00000000
+.equ SOLENOID_DOWN =  0b00000100
+.equ SOLENOID_UP   =  0b00001000
+.equ DOWN          =  0b00010000
+.equ UP            =  0b00100000
+.equ RIGHT         =  0b01000000
+.equ LEFT          =  0b10000000
+.equ STOP          =  0b00000000
 \end{verbatim}
-\subsubsection{Interprete de secuencias}
+
+El siguiente ejemplo es de un programa hecho para el interprete creado para el plotter:
+\begin{verbatim}
+TRIANGLE_DATA:
+    .db 5,  SOLENOID_DOWN	
+    .db 20, SOLENOID_DOWN + RIGHT			
+    .db 10, SOLENOID_DOWN + UP + LEFT		
+    .db 10, SOLENOID_DOWN + DOWN + LEFT
+    .db 5,  SOLENOID_UP		
+    .db 5,  STOP
+\end{verbatim}
+
+\subsubsection{Interprete de secuencias programadas}
+
+El interprete \texttt{DRAW} se encarga de escribir el valor guardado en la secuencia en \texttt{PORTD}, y esperar la cantidad de tiempo indicada en la misma antes de pasar a la siguiente instrucción.
+
 \begin{verbatim}
 DRAW:
     mov ZL, r16 mov ZH, r17
@@ -295,8 +285,8 @@ DRAW:
     cpi r19, STOP
     breq DRAW_END ; Stop drawing
 
-    DRAW_TIMER_LOOP: ; Timer
-    rcall S1
+    DRAW_TIMER_LOOP: 
+    rcall S1 ; Timer
     dec r18 brne DRAW_TIMER_LOOP 
 
     rjmp DRAW_LOOP ; Next instruction
@@ -304,28 +294,17 @@ DRAW:
     DRAW_END:
     ret
 \end{verbatim}
-Nota: se encontró que para temporizadores con valores menores a 1ms no permitían el movimiento adecuado de los motores, por lo cual se decidió limitar la resolución con un temporizador de 1500 $\mu S$
-El siguiente ejemplo es de un programa hecho para el interprete creado para el plotter:
-\begin{verbatim}
-TRIANGLE_DATA:
-    .db 5, SOLENOID_DOWN	
-    .db 20, SOLENOID_DOWN + RIGHT			
-    .db 10, SOLENOID_DOWN + UP + LEFT		
-    .db 10, SOLENOID_DOWN + DOWN + LEFT
-    .db 5, SOLENOID_UP		
-    .db 5, STOP
-\end{verbatim}
+Se encontró que para temporizadores con valores menores a 1ms no permitían el movimiento adecuado de los motores, por lo cual se decidió limitar la resolución con un temporizador de 1500 $\mu S$
 
 \subsubsection{USART}
-Ejemplo de caso de interrupción de USART para dibujado de circulo:
-\begin{verbatim}
-; ...
-USART_RX_ISR_CASE_5: ; CIRCLE
-    ldi r16, low(CIRCLE_DATA<<1) 
-    ldi r17, high(CIRCLE_DATA<<1)
-    rcall DRAW
-    rjmp USART_RX_ISR_END
-\end{verbatim}
+Luego se utiliza la funcionalidad de USART asíncrono con Ring Buffer mostrada en el anexo \ref{anexo:USART_Asincrono_con_Ring_Buffer}, para mostrar un menú en el inicio del programa y darle la opción al usuario de elegir entre diferentes comandos para el plotter. Se agregaron las funcionalidades \texttt{ARRIBA, ABAJO, IZQUIERDA, DERECHA} para permitir posicionar el solenoide del plotter antes de realizar el trazado de las figuras.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./Anexos/Resultados/Plotter/Menu.jpg}
+  \caption{Menu en USART para el Plotter. Fuente: \cite{LabDrive}.}
+  \label{fig:plotter_menu}
+\end{figure}
 
 \begin{figure}[H]
   \centering
