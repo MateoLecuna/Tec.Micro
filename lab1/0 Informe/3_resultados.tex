@@ -299,8 +299,8 @@ DRAW:
     DRAW_END:
     ret
 \end{verbatim}
-
-Ejemplo de programa para interprete plotter
+Nota: se encontró que para temporizadores con valores menores a 1ms no permitían el movimiento adecuado de los motores, por lo cual se decidió limitar la resolución con un temporizador de 1500 $\mu S$
+El siguiente ejemplo es de un programa hecho para el interprete creado para el plotter:
 \begin{verbatim}
 TRIANGLE_DATA:
     .db 5, SOLENOID_DOWN	
