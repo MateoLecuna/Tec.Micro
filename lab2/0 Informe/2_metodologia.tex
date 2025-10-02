@@ -3,11 +3,30 @@
 \section{Metodología}
 
 \subsection{Materiales a utilizar}
+\begin{itemize}
+    \item Microcontrolador ATmega328P (plataforma Arduino UNO).
+    \item 12 pulsadores para las notas de la escala cromática.
+    \item 2 pulsadores adicionales para el control de octavas.
+    \item Buzzer piezoeléctrico.
+    \item Resistencias pull-up internas configuradas por software.
+    \item Conexiones con jumpers y protoboard.
+\end{itemize}
 
 \subsection{Plotter}
 
 \subsection{Seleccionador de colores}
 
 \subsection{Piano}
+\subsubsection{Diseño del sistema}
+El sistema se estructuró en torno a los siguientes bloques principales:
+\begin{enumerate}
+    \item \textbf{Lectura de pulsadores:} Se configuraron los pines digitales como entradas con resistencias pull-up internas. El estado lógico bajo indica que la tecla fue presionada.
+    \item \textbf{Generación de notas:} Utilizando los temporizadores del ATmega328P en modo PWM, se programaron las frecuencias correspondientes a cada nota musical. Las notas se definieron en una tabla para facilitar su acceso en el programa.
+    \item \textbf{Cambio de octava:} Se reservaron dos pulsadores adicionales para aumentar o disminuir la octava activa. Esto permite variar la frecuencia base de todas las notas según la octava seleccionada.
+    \item \textbf{Reproducción de canciones:} La comunicación UART se estableció para recibir comandos externos y activar la ejecución de melodías predefinidas. Estos comandos permiten conmutar entre modo piano manual y modo automático.
+\end{enumerate}
+
+\subsubsection{Estado de avance}
+Hasta el momento, se han definido los pines correspondientes a las 12 notas musicales y los dos pulsadores de control de octavas. También se determinó la utilización de resistencias pull-up internas para simplificar el diseño del circuito. El siguiente paso consiste en implementar la generación de tonos mediante PWM y la integración de la comunicación serial para las canciones predefinidas.
 
 \subsection{Cerradura electrónica}

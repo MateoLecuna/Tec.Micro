@@ -1,1 +1,10 @@
 \section{Marco Teórico}
+
+\subsection{Piano electrónico con ATmega328P}
+El piano electrónico se basa en el microcontrolador ATmega328P, encargado de leer las entradas digitales provenientes de pulsadores y generar las notas musicales correspondientes a través de un buzzer piezoeléctrico. Para la síntesis de sonido, se hace uso de señales de modulación por ancho de pulso (PWM), configuradas mediante los temporizadores internos del microcontrolador, permitiendo así obtener frecuencias precisas asociadas a cada nota musical.
+
+El sistema implementa un conjunto de 12 pulsadores, cada uno asignado a una nota de la escala cromática (Do, Do\#, Re, Re\#, Mi, Fa, Fa\#, Sol, Sol\#, La, La\#, Si). Además, se integran dos pulsadores adicionales para modificar la octava activa, lo que amplía la capacidad tonal del instrumento sin aumentar significativamente el número de entradas físicas.
+
+El buzzer piezoeléctrico utilizado actúa como transductor electroacústico, recibiendo la señal PWM generada por el ATmega328P y transformándola en vibraciones audibles. El uso de resistencias pull-up internas en los pines de entrada digital simplifica el cableado, evitando la necesidad de resistencias externas para los pulsadores.
+
+Por otra parte, la inclusión de la comunicación serial mediante UART (Universal Asynchronous Receiver-Transmitter) permite la selección de canciones predefinidas almacenadas en memoria. De esta forma, el sistema no solo funciona como piano manual, sino también como reproductor automático de melodías programadas.
