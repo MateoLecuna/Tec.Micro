@@ -138,12 +138,13 @@ S1: ;1 second delay timer
 	push r19
 	push r20
 
-    ldi  r18, 21
-    ldi  r19, 199
+    ldi  r18, 32
+    ldi  r19, 42
 L1: dec  r19
     brne L1
     dec  r18
     brne L1
+    nop
 
 	pop r20
 	pop r19
@@ -401,7 +402,9 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
 		rcall DRAW
 		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
 		rcall DRAW
-		ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
+		ldi r16, low(MOVE_RIGHT<<1) ldi r17, high(MOVE_RIGHT<<1)
+		rcall DRAW
+		 ldi r16, low(CROSS_DATA<<1) ldi r17, high(CROSS_DATA<<1)
 		rcall DRAW
 
 		
@@ -422,12 +425,6 @@ USART_RX_ISR:		; ---------------------------------- USART ISR
 	pop r16	
 	reti
 
-
-INT0_ISR:
-	reti
-
-TIMER0_OVF:
-	reti 
 
 ;-----------------------------------------------------------------
 ; Datos (program memory)

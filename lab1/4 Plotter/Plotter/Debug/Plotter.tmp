@@ -23,6 +23,57 @@
   <FILE>Plotter.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
+<<<<<<< HEAD
+  <tx_buffer><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>37</LINE></tx_buffer>
+  <tx_head><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>38</LINE></tx_head>
+  <tx_tail><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>39</LINE></tx_tail>
+  <RESET><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>60</LINE></RESET>
+  <INT0_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>442</LINE></INT0_ISR>
+  <TIMER0_OVF><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>445</LINE></TIMER0_OVF>
+  <USART_RX_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>335</LINE></USART_RX_ISR>
+  <USART_UDRE_ISR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>286</LINE></USART_UDRE_ISR>
+  <USART_INIT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>164</LINE></USART_INIT>
+  <SEND_MENU><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>242</LINE></SEND_MENU>
+  <MAIN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>90</LINE></MAIN>
+  <DRAW><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>102</LINE></DRAW>
+  <DRAW_LOOP><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>111</LINE></DRAW_LOOP>
+  <DRAW_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>126</LINE></DRAW_END>
+  <DRAW_TIMER_LOOP><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>120</LINE></DRAW_TIMER_LOOP>
+  <S1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>137</LINE></S1>
+  <L1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>145</LINE></L1>
+  <USART_SEND><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>183</LINE></USART_SEND>
+  <usart_send_full><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>231</LINE></usart_send_full>
+  <MENU_TEXT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>564</LINE></MENU_TEXT>
+  <SEND_MENU_LOOP><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>249</LINE></SEND_MENU_LOOP>
+  <SEND_MENU_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>256</LINE></SEND_MENU_END>
+  <SEND_ERROR><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>262</LINE></SEND_ERROR>
+  <ERROR_TEXT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>575</LINE></ERROR_TEXT>
+  <SEND_ERROR_LOOP><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>269</LINE></SEND_ERROR_LOOP>
+  <SEND_ERROR_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>276</LINE></SEND_ERROR_END>
+  <usart_udre_send><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>308</LINE></usart_udre_send>
+  <usart_udre_exit><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>324</LINE></usart_udre_exit>
+  <USART_RX_ISR_CASE_0><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>364</LINE></USART_RX_ISR_CASE_0>
+  <USART_RX_ISR_CASE_1><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>369</LINE></USART_RX_ISR_CASE_1>
+  <USART_RX_ISR_CASE_2><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>374</LINE></USART_RX_ISR_CASE_2>
+  <USART_RX_ISR_CASE_3><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>379</LINE></USART_RX_ISR_CASE_3>
+  <USART_RX_ISR_CASE_4><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>384</LINE></USART_RX_ISR_CASE_4>
+  <USART_RX_ISR_CASE_5><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>389</LINE></USART_RX_ISR_CASE_5>
+  <USART_RX_ISR_CASE_6><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>394</LINE></USART_RX_ISR_CASE_6>
+  <USART_RX_ISR_CASE_T><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>399</LINE></USART_RX_ISR_CASE_T>
+  <USART_RX_ISR_CASE_BERSERK><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>422</LINE></USART_RX_ISR_CASE_BERSERK>
+  <USART_RX_ISR_CASE_DEFAULT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>427</LINE></USART_RX_ISR_CASE_DEFAULT>
+  <MOVE_UP><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>556</LINE></MOVE_UP>
+  <USART_RX_ISR_END><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>433</LINE></USART_RX_ISR_END>
+  <MOVE_DOWN><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>552</LINE></MOVE_DOWN>
+  <MOVE_LEFT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>560</LINE></MOVE_LEFT>
+  <MOVE_RIGHT><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>548</LINE></MOVE_RIGHT>
+  <TRIANGLE_DATA><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>453</LINE></TRIANGLE_DATA>
+  <CIRCLE_DATA><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>479</LINE></CIRCLE_DATA>
+  <CROSS_DATA><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>470</LINE></CROSS_DATA>
+  <BERSERK_DATA><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>528</LINE></BERSERK_DATA>
+  <SQUARE_DATA><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>461</LINE></SQUARE_DATA>
+  <MOVE_START><FILE>C:\Users\hecto\OneDrive\Desktop\Github UTEC\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>543</LINE></MOVE_START>
+=======
   <tx_buffer><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>36</LINE></tx_buffer>
   <tx_head><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>37</LINE></tx_head>
   <tx_tail><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>38</LINE></tx_tail>
@@ -69,5 +120,6 @@
   <CIRCLE_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>586</LINE></CIRCLE_DATA>
   <CROSS_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>520</LINE></CROSS_DATA>
   <SQUARE_DATA><FILE>D:\UTEC\Semestre_4\Micro\github\Tec.Micro\lab1\4 Plotter\Plotter\main.asm</FILE><LINE>478</LINE></SQUARE_DATA>
+>>>>>>> fc0f1cfe120bf6c66b12d144ed536329890c8536
  </LABELS>
 </ASSEMBLER_INFO>

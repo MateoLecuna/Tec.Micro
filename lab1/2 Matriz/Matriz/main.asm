@@ -135,7 +135,7 @@ RENDER_FRAME:			; ------------------- RENDER_FRAME
 	mov ZH, XH
 
 	ldi row, 0 RENDER_FRAME_ROW_LOOP:  
-		ldi r16, 0b10000000 ; Frame mask
+		ldi r16, 0b00000001 ; Frame mask
 		lpm r17, Z+
 
 		ldi col, 0 RENDER_FRAME_COL_LOOP:
@@ -153,7 +153,7 @@ RENDER_FRAME:			; ------------------- RENDER_FRAME
 
 			RENDER_FRAME_SKIP_LED:
 			pop r16
-			lsr r16
+			lsl r16
 		inc col cpi col, 8 brlo RENDER_FRAME_COL_LOOP 
 
 	inc row cpi row, 8 brlo RENDER_FRAME_ROW_LOOP
@@ -276,9 +276,9 @@ usart_send_full:
 
 CLEAR_MATRIX:			; ------------------- CLEAR_MATRIX
 	push r16
-	ldi r16, 0b00001111 out PORTB, r16
-	ldi r16, 0b00000000 out PORTC, r16
-	ldi r16, 0b11111100 out PORTD, r16
+	ldi r16, 0b00111110 out PORTB, r16
+	ldi r16, 0b00111000 out PORTC, r16
+	ldi r16, 0b00000000 out PORTD, r16
 	pop r16	
 	ret
 
@@ -612,13 +612,13 @@ T2_OVF_ISR:			; ---------------------------------- TIMER2_OVF ISR
 ; 0x300 es un lugar seguro para CUALQUIER tamaño de programa
 
 .org 0x310 ROW_PORTS:
-	.db 0x2B, 0x2B, 0x2B, 0x2B, 0x25, 0x25, 0x25, 0x25
+	.db 0x25, 0x25, 0x25, 0x25, 0x28, 0x25, 0x28, 0x28
 .org 0x320 ROW_MASKS:
-	.db 0b00010000, 0b00100000, 0b01000000, 0b10000000, 0b00000001, 0b00000010, 0b00000100, 0b00001000
+	.db 0b00001000, 0b00000010, 0b00010000, 0b00000100, 0b00001000, 0b00100000, 0b00010000, 0b00100000
 .org 0x330 COL_PORTS:
-	.db 0x25, 0x25, 0x28, 0x28, 0x28, 0x28, 0x28, 0x28
+	.db 0x2B, 0x2B, 0x2B, 0x28, 0x25, 0x28, 0x28, 0x2B
 .org 0x340 COL_MASKS:
-	.db 0b00010000, 0b00100000, 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000 
+	.db 0b00010000, 0b00100000, 0b10000000, 0b00000100, 0b00000001, 0b00000001, 0b00000010, 0b01000000 
 
 	
 .org 0x360 MATRIX_PATTERNS: ; JESUS IS GOD

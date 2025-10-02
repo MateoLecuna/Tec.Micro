@@ -1,1 +1,12 @@
 \section{Introducción}
+
+Este laboratorio integra cuatro desarrollos coordinados —matriz de LEDs 8x8, plotter cartesiano, conversor digital–analógico y punzonadora con cinta— para ejercitar diseño, programación y validación de sistemas embebidos sobre el microcontrolador ATmega328P. A partir de una arquitectura modular, cada subsistema aborda un conjunto distinto de competencias: generación y multiplexado de patrones en la matriz, interpretación de comandos y generación de trayectorias en el plotter, síntesis de señales en el conversor y control secuencial por estados en la punzonadora. En conjunto, el trabajo permite recorrer el ciclo completo de desarrollo: especificación, implementación en C/ensamblador, pruebas instrumentadas y análisis de resultados.
+
+\textbf{Objetivos específicos}
+\begin{itemize}
+  \item Implementar manejo eficiente de GPIO, temporizadores, interrupciones y comunicación por USART.
+  \item Multiplexar filas/columnas para presentar patrones en la matriz y evaluar latencia visual.
+  \item Generar trayectorias del plotter a partir de comandos interpretados y scripts en Python.
+  \item Producir formas de onda con el conversor y compararlas con las simulaciones previstas.
+  \item Diseñar y validar una máquina de estados para la punzonadora, incluyendo arranque por pulsadores y por USART.
+\end{itemize}
