@@ -1,0 +1,71 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\usepackage[spanish]{babel}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{hhline}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{listings}
+
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+    
+\begin{document}
+
+\title{Microcontroladores: Laboratorio 1\\
+{\footnotesize \textsuperscript{}
+}
+\thanks{}
+}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Mateo Lecuna}
+\IEEEauthorblockA{\textit{Ingeniería en Mecatrónica} \\
+\textit{Universidad Tecnológica (UTEC)}\\
+Fray Bentos, Uruguay \\
+mateo.lecuna@estudiantes.utec.edu.uy}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Mateo Sanchez }
+\IEEEauthorblockA{\textit{Ingeniería en Mecatrónica} \\
+\textit{Universidad Tecnológica (UTEC)}\\
+Maldonado, Uruguay \\
+mateo.sanchez@estudiantes.utec.edu.uy}
+}
+\maketitle
+
+
+\begin{abstract}
+Se presenta el diseño e implementación de cuatro subsistemas sobre el microcontrolador ATmega328P: (1) un plotter cartesiano programado en C, (2) un selector/detector de color que explora un círculo cromático, (3) un piano electrónico, y (4) una cerradura electrónica.
+Cada módulo ejercita competencias clave de sistemas embebidos: planificación de trayectorias y temporización (plotter), adquisición/filtrado analógico y mapeo a acciones (LDR→servo→LED), generación de señales y lectura confiable de entradas (piano), y control secuencial por máquina de estados con validación de credenciales (cerradura).
+Se verificó el funcionamiento estable de los módulos, con lecturas analógicas consistentes, posicionamiento del servo acorde a la detección, generación de tonos precisa y lógica de acceso confiable. Como líneas de mejora se identifican: perfiles de movimiento (trapezoidal/S-curve) para el plotter, calibración y normalización de la LDR frente a iluminación ambiente, antirrebote/antighosting en el teclado del piano, y mecanismos adicionales de seguridad en la cerradura (bloqueo por intentos, almacenamiento en EEPROM).
+\end{abstract}
+
+\textit{Keywords: ATmega328P, sistemas embebidos, lenguaje C, plotter cartesiano, detección de color, servomotor, piano electrónico, cerradura electrónica.}
+
+\input{0_introduccion}
+
+\input{1_marco_teorico}
+
+\input{2_metodologia}
+
+\input{3_resultados}
+
+\input{4_conclusiones}
+            
+\bibliographystyle{IEEEtran}
+\nocite{*}
+\bibliography{5_referencias}
+
+\input{6_anexos}
+
+\end{document}
