@@ -4,6 +4,8 @@
 
 canciones.c
 
+funciones.c
+
 hw_pins.c
 
 main.c

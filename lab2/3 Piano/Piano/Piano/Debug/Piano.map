@@ -12,9 +12,9 @@ Discarded input sections
  .text          0x00000000        0x0 canciones.o
  .data          0x00000000        0x0 canciones.o
  .bss           0x00000000        0x0 canciones.o
- .debug_line    0x00000000        0x0 canciones.o
- .debug_str     0x00000000      0x105 canciones.o
- .comment       0x00000000       0x31 canciones.o
+ .text          0x00000000        0x0 funciones.o
+ .data          0x00000000        0x0 funciones.o
+ .bss           0x00000000        0x0 funciones.o
  .text          0x00000000        0x0 hw_pins.o
  .data          0x00000000        0x0 hw_pins.o
  .bss           0x00000000        0x0 hw_pins.o
@@ -81,6 +81,7 @@ Linker script and memory map
 Address of section .data set to 0x800100
 LOAD D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
 LOAD canciones.o
+LOAD funciones.o
 LOAD hw_pins.o
 LOAD main.o
 LOAD figuras.o
@@ -279,16 +280,18 @@ END GROUP
                 0x00000092                __vector_20
                 0x00000096                . = ALIGN (0x2)
  *(.text.*)
- .text.hw_init_pins
-                0x00000096       0x32 hw_pins.o
-                0x00000096                hw_init_pins
- .text.delay_ms_var
-                0x000000c8       0x1c main.o
- .text.play_note_ms
-                0x000000e4       0x38 main.o
  .text.c_asecina
-                0x0000011c      0xb4e main.o
-                0x0000011c                c_asecina
+                0x00000096      0xb4e canciones.o
+                0x00000096                c_asecina
+ .text.delay_ms_var
+                0x00000be4       0x1c funciones.o
+                0x00000be4                delay_ms_var
+ .text.play_note_ms
+                0x00000c00       0x38 funciones.o
+                0x00000c00                play_note_ms
+ .text.hw_init_pins
+                0x00000c38       0x32 hw_pins.o
+                0x00000c38                hw_init_pins
  .text.main     0x00000c6a        0xe main.o
                 0x00000c6a                main
  .text.ocr_with_octave
@@ -401,8 +404,10 @@ END GROUP
 
 .comment        0x00000000       0x30
  *(.comment)
- .comment       0x00000000       0x30 hw_pins.o
+ .comment       0x00000000       0x30 canciones.o
                                  0x31 (size before relaxing)
+ .comment       0x00000030       0x31 funciones.o
+ .comment       0x00000030       0x31 hw_pins.o
  .comment       0x00000030       0x31 main.o
  .comment       0x00000030       0x31 figuras.o
  .comment       0x00000030       0x31 sonidos.o
@@ -427,66 +432,83 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0xb8
+.debug_aranges  0x00000000       0xe8
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x30 hw_pins.o
+                0x00000000       0x20 canciones.o
  .debug_aranges
-                0x00000030       0x38 main.o
+                0x00000020       0x28 funciones.o
  .debug_aranges
-                0x00000068       0x18 figuras.o
+                0x00000048       0x30 hw_pins.o
  .debug_aranges
-                0x00000080       0x38 sonidos.o
+                0x00000078       0x20 main.o
+ .debug_aranges
+                0x00000098       0x18 figuras.o
+ .debug_aranges
+                0x000000b0       0x38 sonidos.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x163d
+.debug_info     0x00000000     0x1741
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_info    0x000005f4      0x109 hw_pins.o
- .debug_info    0x000006fd      0xd38 main.o
- .debug_info    0x00001435       0x73 figuras.o
- .debug_info    0x000014a8      0x195 sonidos.o
+ .debug_info    0x000005f4      0xb54 canciones.o
+ .debug_info    0x00001148      0x224 funciones.o
+ .debug_info    0x0000136c      0x109 hw_pins.o
+ .debug_info    0x00001475       0xc4 main.o
+ .debug_info    0x00001539       0x73 figuras.o
+ .debug_info    0x000015ac      0x195 sonidos.o
 
-.debug_abbrev   0x00000000      0x920
+.debug_abbrev   0x00000000      0x9de
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_abbrev  0x000005a2       0xb4 hw_pins.o
- .debug_abbrev  0x00000656      0x1a1 main.o
- .debug_abbrev  0x000007f7       0x44 figuras.o
- .debug_abbrev  0x0000083b       0xe5 sonidos.o
+ .debug_abbrev  0x000005a2       0xbf canciones.o
+ .debug_abbrev  0x00000661      0x138 funciones.o
+ .debug_abbrev  0x00000799       0xb4 hw_pins.o
+ .debug_abbrev  0x0000084d       0x68 main.o
+ .debug_abbrev  0x000008b5       0x44 figuras.o
+ .debug_abbrev  0x000008f9       0xe5 sonidos.o
 
-.debug_line     0x00000000      0xaf4
+.debug_line     0x00000000      0xbc8
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x134 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_line    0x00000134      0x1bc hw_pins.o
- .debug_line    0x000002f0      0x5d1 main.o
- .debug_line    0x000008c1       0x7e figuras.o
- .debug_line    0x0000093f      0x1b5 sonidos.o
+ .debug_line    0x00000134      0x4c0 canciones.o
+ .debug_line    0x000005f4      0x16d funciones.o
+ .debug_line    0x00000761      0x1bc hw_pins.o
+ .debug_line    0x0000091d       0x78 main.o
+ .debug_line    0x00000995       0x7e figuras.o
+ .debug_line    0x00000a13      0x1b5 sonidos.o
 
-.debug_frame    0x00000000      0x100
+.debug_frame    0x00000000      0x128
  *(.debug_frame)
- .debug_frame   0x00000000       0x44 hw_pins.o
- .debug_frame   0x00000044       0x68 main.o
- .debug_frame   0x000000ac       0x54 sonidos.o
+ .debug_frame   0x00000000       0x2c canciones.o
+ .debug_frame   0x0000002c       0x40 funciones.o
+ .debug_frame   0x0000006c       0x44 hw_pins.o
+ .debug_frame   0x000000b0       0x24 main.o
+ .debug_frame   0x000000d4       0x54 sonidos.o
 
-.debug_str      0x00000000      0x47e
+.debug_str      0x00000000      0x4a0
  *(.debug_str)
  .debug_str     0x00000000      0x208 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x17f hw_pins.o
+ .debug_str     0x00000208      0x178 canciones.o
+                                0x1ac (size before relaxing)
+ .debug_str     0x00000380       0x74 funciones.o
+                                0x208 (size before relaxing)
+ .debug_str     0x000003f4       0x47 hw_pins.o
                                 0x1b3 (size before relaxing)
- .debug_str     0x00000387       0xb5 main.o
-                                0x23c (size before relaxing)
- .debug_str     0x0000043c        0xf figuras.o
+ .debug_str     0x0000043b       0x23 main.o
+                                0x195 (size before relaxing)
+ .debug_str     0x0000045e        0xf figuras.o
                                 0x17e (size before relaxing)
- .debug_str     0x0000044b       0x33 sonidos.o
+ .debug_str     0x0000046d       0x33 sonidos.o
                                 0x1dc (size before relaxing)
 
 .debug_loc      0x00000000      0x5a2
  *(.debug_loc)
- .debug_loc     0x00000000      0x127 hw_pins.o
- .debug_loc     0x00000127      0x2ed main.o
+ .debug_loc     0x00000000       0xfb canciones.o
+ .debug_loc     0x000000fb      0x1f2 funciones.o
+ .debug_loc     0x000002ed      0x127 hw_pins.o
  .debug_loc     0x00000414      0x18e sonidos.o
 
 .debug_macinfo
@@ -507,11 +529,13 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x70
+.debug_ranges   0x00000000       0x80
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x20 hw_pins.o
- .debug_ranges  0x00000020       0x28 main.o
- .debug_ranges  0x00000048       0x28 sonidos.o
+ .debug_ranges  0x00000000       0x10 canciones.o
+ .debug_ranges  0x00000010       0x18 funciones.o
+ .debug_ranges  0x00000028       0x20 hw_pins.o
+ .debug_ranges  0x00000048       0x10 main.o
+ .debug_ranges  0x00000058       0x28 sonidos.o
 
 .debug_macro
  *(.debug_macro)
