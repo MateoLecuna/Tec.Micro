@@ -3,60 +3,60 @@ Piano.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  000001e6  2**0
+  0 .data         0000000e  00800100  00000d5c  00000dd0  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000192  00000000  00000000  00000054  2**1
+  1 .text         00000d5c  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  000001e6  2**0
+  2 .comment      00000030  00000000  00000000  00000dde  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000218  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000e10  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000070  00000000  00000000  00000258  2**0
+  4 .debug_aranges 000000b8  00000000  00000000  00000e50  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000091a  00000000  00000000  000002c8  2**0
+  5 .debug_info   0000163d  00000000  00000000  00000f08  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000007a5  00000000  00000000  00000be2  2**0
+  6 .debug_abbrev 00000920  00000000  00000000  00002545  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000004b6  00000000  00000000  00001387  2**0
+  7 .debug_line   00000af4  00000000  00000000  00002e65  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  0000008c  00000000  00000000  00001840  2**2
+  8 .debug_frame  00000100  00000000  00000000  0000395c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000406  00000000  00000000  000018cc  2**0
+  9 .debug_str    0000047e  00000000  00000000  00003a5c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000127  00000000  00000000  00001cd2  2**0
+ 10 .debug_loc    000005a2  00000000  00000000  00003eda  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000040  00000000  00000000  00001df9  2**0
+ 11 .debug_ranges 00000070  00000000  00000000  0000447c  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
 
 00000000 <__vectors>:
    0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
-   4:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-   8:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-   c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  10:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  14:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  18:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  1c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  20:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  24:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  28:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  2c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  30:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  34:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  38:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  3c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  40:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  44:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  48:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  4c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  50:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  54:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  58:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  5c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  60:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
-  64:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+   4:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+   8:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+   c:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  10:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  14:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  18:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  1c:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  20:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  24:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  28:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  2c:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  30:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  34:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  38:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  3c:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  40:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  44:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  48:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  4c:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  50:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  54:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  58:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  5c:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  60:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
+  64:	0c 94 49 00 	jmp	0x92	; 0x92 <__bad_interrupt>
 
 00000068 <__ctors_end>:
   68:	11 24       	eor	r1, r1
@@ -65,237 +65,1634 @@ Disassembly of section .text:
   6e:	d8 e0       	ldi	r29, 0x08	; 8
   70:	de bf       	out	0x3e, r29	; 62
   72:	cd bf       	out	0x3d, r28	; 61
-  74:	0e 94 ae 00 	call	0x15c	; 0x15c <main>
-  78:	0c 94 c7 00 	jmp	0x18e	; 0x18e <_exit>
 
-0000007c <__bad_interrupt>:
-  7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+00000074 <__do_copy_data>:
+  74:	11 e0       	ldi	r17, 0x01	; 1
+  76:	a0 e0       	ldi	r26, 0x00	; 0
+  78:	b1 e0       	ldi	r27, 0x01	; 1
+  7a:	ec e5       	ldi	r30, 0x5C	; 92
+  7c:	fd e0       	ldi	r31, 0x0D	; 13
+  7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
+  80:	05 90       	lpm	r0, Z+
+  82:	0d 92       	st	X+, r0
+  84:	ae 30       	cpi	r26, 0x0E	; 14
+  86:	b1 07       	cpc	r27, r17
+  88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
+  8a:	0e 94 35 06 	call	0xc6a	; 0xc6a <main>
+  8e:	0c 94 ac 06 	jmp	0xd58	; 0xd58 <_exit>
 
-00000080 <hw_init_pins>:
+00000092 <__bad_interrupt>:
+  92:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000096 <hw_init_pins>:
 #include "hw_pins.h"
 
 void hw_init_pins(void) {
-    /* Audio pin como salida, inicialmente en 0 (Timer2 aún NO configurado) */
+    // Audio pin como salida, inicialmente en 0 (Timer2 aún NO configurado) 
     AUDIO_DDR  |=  (1<<AUDIO_PIN);
-  80:	84 b1       	in	r24, 0x04	; 4
-  82:	88 60       	ori	r24, 0x08	; 8
-  84:	84 b9       	out	0x04, r24	; 4
+  96:	84 b1       	in	r24, 0x04	; 4
+  98:	88 60       	ori	r24, 0x08	; 8
+  9a:	84 b9       	out	0x04, r24	; 4
     AUDIO_PORT &= ~(1<<AUDIO_PIN);
-  86:	85 b1       	in	r24, 0x05	; 5
-  88:	87 7f       	andi	r24, 0xF7	; 247
-  8a:	85 b9       	out	0x05, r24	; 5
+  9c:	85 b1       	in	r24, 0x05	; 5
+  9e:	87 7f       	andi	r24, 0xF7	; 247
+  a0:	85 b9       	out	0x05, r24	; 5
 
-    /* Notas: entradas con pull-up */
+    // Notas: entradas con pull-up
     NOTE_PORTC_DDR  &= ~NOTES_MASK_C;
-  8c:	87 b1       	in	r24, 0x07	; 7
-  8e:	80 7c       	andi	r24, 0xC0	; 192
-  90:	87 b9       	out	0x07, r24	; 7
+  a2:	87 b1       	in	r24, 0x07	; 7
+  a4:	80 7c       	andi	r24, 0xC0	; 192
+  a6:	87 b9       	out	0x07, r24	; 7
     NOTE_PORTC_PORT |=  NOTES_MASK_C;
-  92:	88 b1       	in	r24, 0x08	; 8
-  94:	8f 63       	ori	r24, 0x3F	; 63
-  96:	88 b9       	out	0x08, r24	; 8
+  a8:	88 b1       	in	r24, 0x08	; 8
+  aa:	8f 63       	ori	r24, 0x3F	; 63
+  ac:	88 b9       	out	0x08, r24	; 8
 
     NOTE_PORTD_DDR  &= ~NOTES_MASK_D;
-  98:	8a b1       	in	r24, 0x0a	; 10
-  9a:	83 70       	andi	r24, 0x03	; 3
-  9c:	8a b9       	out	0x0a, r24	; 10
+  ae:	8a b1       	in	r24, 0x0a	; 10
+  b0:	83 70       	andi	r24, 0x03	; 3
+  b2:	8a b9       	out	0x0a, r24	; 10
     NOTE_PORTD_PORT |=  NOTES_MASK_D;
-  9e:	8b b1       	in	r24, 0x0b	; 11
-  a0:	8c 6f       	ori	r24, 0xFC	; 252
-  a2:	8b b9       	out	0x0b, r24	; 11
+  b4:	8b b1       	in	r24, 0x0b	; 11
+  b6:	8c 6f       	ori	r24, 0xFC	; 252
+  b8:	8b b9       	out	0x0b, r24	; 11
 
-    /* Octava +/-: entradas con pull-up */
+    // Octava +/-: entradas con pull-up
     OCT_DDR  &= ~OCT_MASK;
-  a4:	84 b1       	in	r24, 0x04	; 4
-  a6:	8c 7f       	andi	r24, 0xFC	; 252
-  a8:	84 b9       	out	0x04, r24	; 4
+  ba:	84 b1       	in	r24, 0x04	; 4
+  bc:	8c 7f       	andi	r24, 0xFC	; 252
+  be:	84 b9       	out	0x04, r24	; 4
     OCT_PORT |=  OCT_MASK;
-  aa:	85 b1       	in	r24, 0x05	; 5
-  ac:	83 60       	ori	r24, 0x03	; 3
-  ae:	85 b9       	out	0x05, r24	; 5
-  b0:	08 95       	ret
+  c0:	85 b1       	in	r24, 0x05	; 5
+  c2:	83 60       	ori	r24, 0x03	; 3
+  c4:	85 b9       	out	0x05, r24	; 5
+  c6:	08 95       	ret
 
-000000b2 <hw_read_notes_raw>:
-   ATENCIÓN: con pull-up, leeremos 1=libre, 0=presionado. */
-uint16_t hw_read_notes_raw(void) {
-    uint16_t bits = 0;
-
-    /* PC0..PC5 -> bits 0..5 */
-    uint8_t c = NOTE_PORTC_PIN & (uint8_t)NOTES_MASK_C;
-  b2:	96 b1       	in	r25, 0x06	; 6
-    bits |= (c & (1<<PC0)) ? (1<<0) : 0;
-    bits |= (c & (1<<PC1)) ? (1<<1) : 0;
-    bits |= (c & (1<<PC2)) ? (1<<2) : 0;
-    bits |= (c & (1<<PC3)) ? (1<<3) : 0;
-    bits |= (c & (1<<PC4)) ? (1<<4) : 0;
-    bits |= (c & (1<<PC5)) ? (1<<5) : 0;
-  b4:	29 2f       	mov	r18, r25
-  b6:	21 70       	andi	r18, 0x01	; 1
-  b8:	89 2f       	mov	r24, r25
-  ba:	82 70       	andi	r24, 0x02	; 2
-  bc:	82 2b       	or	r24, r18
-  be:	29 2f       	mov	r18, r25
-  c0:	24 70       	andi	r18, 0x04	; 4
-  c2:	82 2b       	or	r24, r18
-  c4:	29 2f       	mov	r18, r25
-  c6:	28 70       	andi	r18, 0x08	; 8
-  c8:	82 2b       	or	r24, r18
-  ca:	29 2f       	mov	r18, r25
-  cc:	20 71       	andi	r18, 0x10	; 16
-  ce:	82 2b       	or	r24, r18
-  d0:	90 72       	andi	r25, 0x20	; 32
-  d2:	89 2b       	or	r24, r25
-  d4:	90 e0       	ldi	r25, 0x00	; 0
-
-    /* PD2..PD7 -> bits 6..11 */
-    uint8_t d = NOTE_PORTD_PIN & (uint8_t)NOTES_MASK_D;
-  d6:	29 b1       	in	r18, 0x09	; 9
-  d8:	32 2f       	mov	r19, r18
-  da:	3c 7f       	andi	r19, 0xFC	; 252
-    bits |= (d & (1<<PD2)) ? (1<<6)  : 0;
-  dc:	22 ff       	sbrs	r18, 2
-  de:	03 c0       	rjmp	.+6      	; 0xe6 <hw_read_notes_raw+0x34>
-  e0:	40 e4       	ldi	r20, 0x40	; 64
-  e2:	50 e0       	ldi	r21, 0x00	; 0
-  e4:	02 c0       	rjmp	.+4      	; 0xea <hw_read_notes_raw+0x38>
-  e6:	40 e0       	ldi	r20, 0x00	; 0
-  e8:	50 e0       	ldi	r21, 0x00	; 0
-  ea:	84 2b       	or	r24, r20
-  ec:	95 2b       	or	r25, r21
-    bits |= (d & (1<<PD3)) ? (1<<7)  : 0;
-  ee:	23 ff       	sbrs	r18, 3
-  f0:	03 c0       	rjmp	.+6      	; 0xf8 <hw_read_notes_raw+0x46>
-  f2:	40 e8       	ldi	r20, 0x80	; 128
-  f4:	50 e0       	ldi	r21, 0x00	; 0
-  f6:	02 c0       	rjmp	.+4      	; 0xfc <hw_read_notes_raw+0x4a>
-  f8:	40 e0       	ldi	r20, 0x00	; 0
-  fa:	50 e0       	ldi	r21, 0x00	; 0
-  fc:	84 2b       	or	r24, r20
-  fe:	95 2b       	or	r25, r21
-    bits |= (d & (1<<PD4)) ? (1<<8)  : 0;
- 100:	24 ff       	sbrs	r18, 4
- 102:	03 c0       	rjmp	.+6      	; 0x10a <hw_read_notes_raw+0x58>
- 104:	40 e0       	ldi	r20, 0x00	; 0
- 106:	51 e0       	ldi	r21, 0x01	; 1
- 108:	02 c0       	rjmp	.+4      	; 0x10e <hw_read_notes_raw+0x5c>
- 10a:	40 e0       	ldi	r20, 0x00	; 0
- 10c:	50 e0       	ldi	r21, 0x00	; 0
- 10e:	84 2b       	or	r24, r20
- 110:	95 2b       	or	r25, r21
-    bits |= (d & (1<<PD5)) ? (1<<9)  : 0;
- 112:	25 ff       	sbrs	r18, 5
- 114:	03 c0       	rjmp	.+6      	; 0x11c <hw_read_notes_raw+0x6a>
- 116:	40 e0       	ldi	r20, 0x00	; 0
- 118:	52 e0       	ldi	r21, 0x02	; 2
- 11a:	02 c0       	rjmp	.+4      	; 0x120 <hw_read_notes_raw+0x6e>
- 11c:	40 e0       	ldi	r20, 0x00	; 0
- 11e:	50 e0       	ldi	r21, 0x00	; 0
- 120:	84 2b       	or	r24, r20
- 122:	95 2b       	or	r25, r21
-    bits |= (d & (1<<PD6)) ? (1<<10) : 0;
- 124:	26 ff       	sbrs	r18, 6
- 126:	03 c0       	rjmp	.+6      	; 0x12e <hw_read_notes_raw+0x7c>
- 128:	40 e0       	ldi	r20, 0x00	; 0
- 12a:	54 e0       	ldi	r21, 0x04	; 4
- 12c:	02 c0       	rjmp	.+4      	; 0x132 <hw_read_notes_raw+0x80>
- 12e:	40 e0       	ldi	r20, 0x00	; 0
- 130:	50 e0       	ldi	r21, 0x00	; 0
- 132:	84 2b       	or	r24, r20
- 134:	95 2b       	or	r25, r21
-    bits |= (d & (1<<PD7)) ? (1<<11) : 0;
- 136:	33 23       	and	r19, r19
- 138:	1c f4       	brge	.+6      	; 0x140 <hw_read_notes_raw+0x8e>
- 13a:	20 e0       	ldi	r18, 0x00	; 0
- 13c:	38 e0       	ldi	r19, 0x08	; 8
- 13e:	02 c0       	rjmp	.+4      	; 0x144 <hw_read_notes_raw+0x92>
- 140:	20 e0       	ldi	r18, 0x00	; 0
- 142:	30 e0       	ldi	r19, 0x00	; 0
-
-    return bits; /* 1=libre, 0=presionado (por pull-ups) */
-}
- 144:	82 2b       	or	r24, r18
- 146:	93 2b       	or	r25, r19
- 148:	08 95       	ret
-
-0000014a <hw_read_oct_buttons>:
-
-uint8_t hw_read_oct_buttons(void) {
-    uint8_t p = OCT_PINR;
- 14a:	93 b1       	in	r25, 0x03	; 3
-    uint8_t out = 0;
-    if (p & (1<<OCT_DOWN)) out |= (1<<0); // 1=libre
- 14c:	90 fd       	sbrc	r25, 0
- 14e:	02 c0       	rjmp	.+4      	; 0x154 <hw_read_oct_buttons+0xa>
-    return bits; /* 1=libre, 0=presionado (por pull-ups) */
-}
-
-uint8_t hw_read_oct_buttons(void) {
-    uint8_t p = OCT_PINR;
-    uint8_t out = 0;
- 150:	80 e0       	ldi	r24, 0x00	; 0
- 152:	01 c0       	rjmp	.+2      	; 0x156 <hw_read_oct_buttons+0xc>
-    if (p & (1<<OCT_DOWN)) out |= (1<<0); // 1=libre
- 154:	81 e0       	ldi	r24, 0x01	; 1
-    if (p & (1<<OCT_UP))   out |= (1<<1); // 1=libre
- 156:	91 fd       	sbrc	r25, 1
- 158:	82 60       	ori	r24, 0x02	; 2
-    return out; /* bit0=DOWN, bit1=UP (1=libre, 0=presionado) */
-}
- 15a:	08 95       	ret
-
-0000015c <main>:
-
+000000c8 <delay_ms_var>:
 #include "hw_pins.h"
-#include "sound.h"
+#include "sonidos.h"
+#include "figuras.h" 
 
-int main(void) {
-    hw_init_pins();
- 15c:	0e 94 40 00 	call	0x80	; 0x80 <hw_init_pins>
-    sound_init_idle();
- 160:	0e 94 bd 00 	call	0x17a	; 0x17a <sound_init_idle>
-       - Apretar cualquier tecla debería leer “0” en su bit correspondiente (por pull-up).
-       - Todavía NO suena nada.
-       - Podés poner breakpoints y mirar valores en “bits_capturados”.
-    */
-    while (1) {
-        uint16_t notes = hw_read_notes_raw(); // 1=libre, 0=presionado
- 164:	0e 94 59 00 	call	0xb2	; 0xb2 <hw_read_notes_raw>
-        uint8_t  oct   = hw_read_oct_buttons(); // 1=libre, 0=presionado
- 168:	0e 94 a5 00 	call	0x14a	; 0x14a <hw_read_oct_buttons>
+static void delay_ms_var(uint16_t ms) {
+	while (ms--) _delay_ms(1);
+  c8:	07 c0       	rjmp	.+14     	; 0xd8 <delay_ms_var+0x10>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 16c:	8f e3       	ldi	r24, 0x3F	; 63
- 16e:	9c e9       	ldi	r25, 0x9C	; 156
- 170:	01 97       	sbiw	r24, 0x01	; 1
- 172:	f1 f7       	brne	.-4      	; 0x170 <main+0x14>
- 174:	00 c0       	rjmp	.+0      	; 0x176 <main+0x1a>
- 176:	00 00       	nop
- 178:	f5 cf       	rjmp	.-22     	; 0x164 <main+0x8>
+  ca:	8f e9       	ldi	r24, 0x9F	; 159
+  cc:	9f e0       	ldi	r25, 0x0F	; 15
+  ce:	01 97       	sbiw	r24, 0x01	; 1
+  d0:	f1 f7       	brne	.-4      	; 0xce <delay_ms_var+0x6>
+  d2:	00 c0       	rjmp	.+0      	; 0xd4 <delay_ms_var+0xc>
+  d4:	00 00       	nop
+  d6:	c9 01       	movw	r24, r18
+  d8:	9c 01       	movw	r18, r24
+  da:	21 50       	subi	r18, 0x01	; 1
+  dc:	31 09       	sbc	r19, r1
+  de:	89 2b       	or	r24, r25
+  e0:	a1 f7       	brne	.-24     	; 0xca <delay_ms_var+0x2>
+}
+  e2:	08 95       	ret
 
-0000017a <sound_init_idle>:
-#include "hw_pins.h"
-#include "sound.h"
+000000e4 <play_note_ms>:
 
-void sound_init_idle(void) {
-	/* Aseguramos pin en bajo y Timer2 detenido */
-	TCCR2A = 0x00;
- 17a:	10 92 b0 00 	sts	0x00B0, r1	; 0x8000b0 <__TEXT_REGION_LENGTH__+0x7f80b0>
-	TCCR2B = 0x00;
- 17e:	10 92 b1 00 	sts	0x00B1, r1	; 0x8000b1 <__TEXT_REGION_LENGTH__+0x7f80b1>
-	OCR2A  = 0;
- 182:	10 92 b3 00 	sts	0x00B3, r1	; 0x8000b3 <__TEXT_REGION_LENGTH__+0x7f80b3>
+static void play_note_ms(uint8_t idx, int8_t octave, uint16_t ms) {
+  e4:	cf 93       	push	r28
+  e6:	df 93       	push	r29
+  e8:	ea 01       	movw	r28, r20
+	sound_note_on(idx, octave);
+  ea:	0e 94 8d 06 	call	0xd1a	; 0xd1a <sound_note_on>
+	while (ms--) _delay_ms(1);
+  ee:	07 c0       	rjmp	.+14     	; 0xfe <play_note_ms+0x1a>
+  f0:	ef e9       	ldi	r30, 0x9F	; 159
+  f2:	ff e0       	ldi	r31, 0x0F	; 15
+  f4:	31 97       	sbiw	r30, 0x01	; 1
+  f6:	f1 f7       	brne	.-4      	; 0xf4 <play_note_ms+0x10>
+  f8:	00 c0       	rjmp	.+0      	; 0xfa <play_note_ms+0x16>
+  fa:	00 00       	nop
+  fc:	ec 01       	movw	r28, r24
+  fe:	ce 01       	movw	r24, r28
+ 100:	01 97       	sbiw	r24, 0x01	; 1
+ 102:	cd 2b       	or	r28, r29
+ 104:	a9 f7       	brne	.-22     	; 0xf0 <play_note_ms+0xc>
+	sound_off();
+ 106:	0e 94 84 06 	call	0xd08	; 0xd08 <sound_off>
+ 10a:	8f e3       	ldi	r24, 0x3F	; 63
+ 10c:	9c e9       	ldi	r25, 0x9C	; 156
+ 10e:	01 97       	sbiw	r24, 0x01	; 1
+ 110:	f1 f7       	brne	.-4      	; 0x10e <play_note_ms+0x2a>
+ 112:	00 c0       	rjmp	.+0      	; 0x114 <play_note_ms+0x30>
+ 114:	00 00       	nop
+	_delay_ms(10);
+}
+ 116:	df 91       	pop	r29
+ 118:	cf 91       	pop	r28
+ 11a:	08 95       	ret
+
+0000011c <c_asecina>:
+
+void c_asecina(){
+ 11c:	cf 93       	push	r28
+	
+	// Canción - Asecina - Los Palmeras
+	
+	// 1
+	play_note_ms(4, 1, CORCHEA);
+ 11e:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 122:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 126:	56 95       	lsr	r21
+ 128:	47 95       	ror	r20
+ 12a:	61 e0       	ldi	r22, 0x01	; 1
+ 12c:	84 e0       	ldi	r24, 0x04	; 4
+ 12e:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 132:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 136:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 13a:	56 95       	lsr	r21
+ 13c:	47 95       	ror	r20
+ 13e:	56 95       	lsr	r21
+ 140:	47 95       	ror	r20
+ 142:	60 e0       	ldi	r22, 0x00	; 0
+ 144:	8b e0       	ldi	r24, 0x0B	; 11
+ 146:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 14a:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 14e:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 152:	96 95       	lsr	r25
+ 154:	87 95       	ror	r24
+ 156:	96 95       	lsr	r25
+ 158:	87 95       	ror	r24
+ 15a:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 15e:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 162:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 166:	56 95       	lsr	r21
+ 168:	47 95       	ror	r20
+ 16a:	56 95       	lsr	r21
+ 16c:	47 95       	ror	r20
+ 16e:	60 e0       	ldi	r22, 0x00	; 0
+ 170:	8b e0       	ldi	r24, 0x0B	; 11
+ 172:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(0, 1, SEMICORCHEA);
+ 176:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 17a:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 17e:	56 95       	lsr	r21
+ 180:	47 95       	ror	r20
+ 182:	56 95       	lsr	r21
+ 184:	47 95       	ror	r20
+ 186:	61 e0       	ldi	r22, 0x01	; 1
+ 188:	80 e0       	ldi	r24, 0x00	; 0
+ 18a:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 18e:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 192:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 196:	56 95       	lsr	r21
+ 198:	47 95       	ror	r20
+ 19a:	56 95       	lsr	r21
+ 19c:	47 95       	ror	r20
+ 19e:	60 e0       	ldi	r22, 0x00	; 0
+ 1a0:	8b e0       	ldi	r24, 0x0B	; 11
+ 1a2:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(9, 0, SEMICORCHEA);
+ 1a6:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 1aa:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 1ae:	56 95       	lsr	r21
+ 1b0:	47 95       	ror	r20
+ 1b2:	56 95       	lsr	r21
+ 1b4:	47 95       	ror	r20
+ 1b6:	60 e0       	ldi	r22, 0x00	; 0
+ 1b8:	89 e0       	ldi	r24, 0x09	; 9
+ 1ba:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 1be:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 1c2:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 1c6:	56 95       	lsr	r21
+ 1c8:	47 95       	ror	r20
+ 1ca:	56 95       	lsr	r21
+ 1cc:	47 95       	ror	r20
+ 1ce:	60 e0       	ldi	r22, 0x00	; 0
+ 1d0:	8b e0       	ldi	r24, 0x0B	; 11
+ 1d2:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 1d6:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 1da:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 1de:	96 95       	lsr	r25
+ 1e0:	87 95       	ror	r24
+ 1e2:	96 95       	lsr	r25
+ 1e4:	87 95       	ror	r24
+ 1e6:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	delay_ms_var(CORCHEA);
+ 1ea:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 1ee:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 1f2:	96 95       	lsr	r25
+ 1f4:	87 95       	ror	r24
+ 1f6:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 1fa:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 1fe:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 202:	56 95       	lsr	r21
+ 204:	47 95       	ror	r20
+ 206:	56 95       	lsr	r21
+ 208:	47 95       	ror	r20
+ 20a:	60 e0       	ldi	r22, 0x00	; 0
+ 20c:	8b e0       	ldi	r24, 0x0B	; 11
+ 20e:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(0, 1, SEMICORCHEA);
+ 212:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 216:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 21a:	56 95       	lsr	r21
+ 21c:	47 95       	ror	r20
+ 21e:	56 95       	lsr	r21
+ 220:	47 95       	ror	r20
+ 222:	61 e0       	ldi	r22, 0x01	; 1
+ 224:	80 e0       	ldi	r24, 0x00	; 0
+ 226:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 22a:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 22e:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 232:	56 95       	lsr	r21
+ 234:	47 95       	ror	r20
+ 236:	56 95       	lsr	r21
+ 238:	47 95       	ror	r20
+ 23a:	60 e0       	ldi	r22, 0x00	; 0
+ 23c:	8b e0       	ldi	r24, 0x0B	; 11
+ 23e:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(9, 0, SEMICORCHEA);
+ 242:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 246:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 24a:	56 95       	lsr	r21
+ 24c:	47 95       	ror	r20
+ 24e:	56 95       	lsr	r21
+ 250:	47 95       	ror	r20
+ 252:	60 e0       	ldi	r22, 0x00	; 0
+ 254:	89 e0       	ldi	r24, 0x09	; 9
+ 256:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	
+	// 2
+	play_note_ms(11, 0, SEMICORCHEA);
+ 25a:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 25e:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 262:	56 95       	lsr	r21
+ 264:	47 95       	ror	r20
+ 266:	56 95       	lsr	r21
+ 268:	47 95       	ror	r20
+ 26a:	60 e0       	ldi	r22, 0x00	; 0
+ 26c:	8b e0       	ldi	r24, 0x0B	; 11
+ 26e:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 272:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 276:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 27a:	96 95       	lsr	r25
+ 27c:	87 95       	ror	r24
+ 27e:	96 95       	lsr	r25
+ 280:	87 95       	ror	r24
+ 282:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	delay_ms_var(CORCHEA);
+ 286:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 28a:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 28e:	96 95       	lsr	r25
+ 290:	87 95       	ror	r24
+ 292:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	for (uint8_t i = 0; i < 2; i++){
+ 296:	c0 e0       	ldi	r28, 0x00	; 0
+ 298:	31 c0       	rjmp	.+98     	; 0x2fc <c_asecina+0x1e0>
+		play_note_ms(11, 0, SEMICORCHEA);
+ 29a:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 29e:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 2a2:	56 95       	lsr	r21
+ 2a4:	47 95       	ror	r20
+ 2a6:	56 95       	lsr	r21
+ 2a8:	47 95       	ror	r20
+ 2aa:	60 e0       	ldi	r22, 0x00	; 0
+ 2ac:	8b e0       	ldi	r24, 0x0B	; 11
+ 2ae:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(0, 1, SEMICORCHEA);
+ 2b2:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 2b6:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 2ba:	56 95       	lsr	r21
+ 2bc:	47 95       	ror	r20
+ 2be:	56 95       	lsr	r21
+ 2c0:	47 95       	ror	r20
+ 2c2:	61 e0       	ldi	r22, 0x01	; 1
+ 2c4:	80 e0       	ldi	r24, 0x00	; 0
+ 2c6:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(11, 0, SEMICORCHEA);
+ 2ca:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 2ce:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 2d2:	56 95       	lsr	r21
+ 2d4:	47 95       	ror	r20
+ 2d6:	56 95       	lsr	r21
+ 2d8:	47 95       	ror	r20
+ 2da:	60 e0       	ldi	r22, 0x00	; 0
+ 2dc:	8b e0       	ldi	r24, 0x0B	; 11
+ 2de:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(9, 0, SEMICORCHEA);
+ 2e2:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 2e6:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 2ea:	56 95       	lsr	r21
+ 2ec:	47 95       	ror	r20
+ 2ee:	56 95       	lsr	r21
+ 2f0:	47 95       	ror	r20
+ 2f2:	60 e0       	ldi	r22, 0x00	; 0
+ 2f4:	89 e0       	ldi	r24, 0x09	; 9
+ 2f6:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	
+	// 2
+	play_note_ms(11, 0, SEMICORCHEA);
+	delay_ms_var(SEMICORCHEA);
+	delay_ms_var(CORCHEA);
+	for (uint8_t i = 0; i < 2; i++){
+ 2fa:	cf 5f       	subi	r28, 0xFF	; 255
+ 2fc:	c2 30       	cpi	r28, 0x02	; 2
+ 2fe:	68 f2       	brcs	.-102    	; 0x29a <c_asecina+0x17e>
+		play_note_ms(11, 0, SEMICORCHEA);
+		play_note_ms(0, 1, SEMICORCHEA);
+		play_note_ms(11, 0, SEMICORCHEA);
+		play_note_ms(9, 0, SEMICORCHEA);
+	}
+	play_note_ms(11, 0, SEMICORCHEA);
+ 300:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 304:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 308:	56 95       	lsr	r21
+ 30a:	47 95       	ror	r20
+ 30c:	56 95       	lsr	r21
+ 30e:	47 95       	ror	r20
+ 310:	60 e0       	ldi	r22, 0x00	; 0
+ 312:	8b e0       	ldi	r24, 0x0B	; 11
+ 314:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 318:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 31c:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 320:	96 95       	lsr	r25
+ 322:	87 95       	ror	r24
+ 324:	96 95       	lsr	r25
+ 326:	87 95       	ror	r24
+ 328:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(11, 0, CORCHEA);
+ 32c:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 330:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 334:	56 95       	lsr	r21
+ 336:	47 95       	ror	r20
+ 338:	60 e0       	ldi	r22, 0x00	; 0
+ 33a:	8b e0       	ldi	r24, 0x0B	; 11
+ 33c:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	
+	// 3
+	play_note_ms(4, 1, CORCHEA);
+ 340:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 344:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 348:	56 95       	lsr	r21
+ 34a:	47 95       	ror	r20
+ 34c:	61 e0       	ldi	r22, 0x01	; 1
+ 34e:	84 e0       	ldi	r24, 0x04	; 4
+ 350:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 354:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 358:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 35c:	56 95       	lsr	r21
+ 35e:	47 95       	ror	r20
+ 360:	56 95       	lsr	r21
+ 362:	47 95       	ror	r20
+ 364:	60 e0       	ldi	r22, 0x00	; 0
+ 366:	8b e0       	ldi	r24, 0x0B	; 11
+ 368:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 36c:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 370:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 374:	96 95       	lsr	r25
+ 376:	87 95       	ror	r24
+ 378:	96 95       	lsr	r25
+ 37a:	87 95       	ror	r24
+ 37c:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 380:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 384:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 388:	56 95       	lsr	r21
+ 38a:	47 95       	ror	r20
+ 38c:	56 95       	lsr	r21
+ 38e:	47 95       	ror	r20
+ 390:	60 e0       	ldi	r22, 0x00	; 0
+ 392:	8b e0       	ldi	r24, 0x0B	; 11
+ 394:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	for (uint8_t i = 0; i < 2; i++){
+ 398:	c0 e0       	ldi	r28, 0x00	; 0
+ 39a:	31 c0       	rjmp	.+98     	; 0x3fe <c_asecina+0x2e2>
+		play_note_ms(0, 1, SEMICORCHEA);
+ 39c:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 3a0:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 3a4:	56 95       	lsr	r21
+ 3a6:	47 95       	ror	r20
+ 3a8:	56 95       	lsr	r21
+ 3aa:	47 95       	ror	r20
+ 3ac:	61 e0       	ldi	r22, 0x01	; 1
+ 3ae:	80 e0       	ldi	r24, 0x00	; 0
+ 3b0:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(11, 0, SEMICORCHEA);
+ 3b4:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 3b8:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 3bc:	56 95       	lsr	r21
+ 3be:	47 95       	ror	r20
+ 3c0:	56 95       	lsr	r21
+ 3c2:	47 95       	ror	r20
+ 3c4:	60 e0       	ldi	r22, 0x00	; 0
+ 3c6:	8b e0       	ldi	r24, 0x0B	; 11
+ 3c8:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(9, 0, SEMICORCHEA);
+ 3cc:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 3d0:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 3d4:	56 95       	lsr	r21
+ 3d6:	47 95       	ror	r20
+ 3d8:	56 95       	lsr	r21
+ 3da:	47 95       	ror	r20
+ 3dc:	60 e0       	ldi	r22, 0x00	; 0
+ 3de:	89 e0       	ldi	r24, 0x09	; 9
+ 3e0:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(11, 0, SEMICORCHEA);
+ 3e4:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 3e8:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 3ec:	56 95       	lsr	r21
+ 3ee:	47 95       	ror	r20
+ 3f0:	56 95       	lsr	r21
+ 3f2:	47 95       	ror	r20
+ 3f4:	60 e0       	ldi	r22, 0x00	; 0
+ 3f6:	8b e0       	ldi	r24, 0x0B	; 11
+ 3f8:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	// 3
+	play_note_ms(4, 1, CORCHEA);
+	play_note_ms(11, 0, SEMICORCHEA);
+	delay_ms_var(SEMICORCHEA);
+	play_note_ms(11, 0, SEMICORCHEA);
+	for (uint8_t i = 0; i < 2; i++){
+ 3fc:	cf 5f       	subi	r28, 0xFF	; 255
+ 3fe:	c2 30       	cpi	r28, 0x02	; 2
+ 400:	68 f2       	brcs	.-102    	; 0x39c <c_asecina+0x280>
+		play_note_ms(0, 1, SEMICORCHEA);
+		play_note_ms(11, 0, SEMICORCHEA);
+		play_note_ms(9, 0, SEMICORCHEA);
+		play_note_ms(11, 0, SEMICORCHEA);
+	}
+	delay_ms_var(SEMICORCHEA);
+ 402:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 406:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 40a:	96 95       	lsr	r25
+ 40c:	87 95       	ror	r24
+ 40e:	96 95       	lsr	r25
+ 410:	87 95       	ror	r24
+ 412:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(11, 0, CORCHEA);
+ 416:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 41a:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 41e:	56 95       	lsr	r21
+ 420:	47 95       	ror	r20
+ 422:	60 e0       	ldi	r22, 0x00	; 0
+ 424:	8b e0       	ldi	r24, 0x0B	; 11
+ 426:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	
+	// 4
+	play_note_ms(3, 1, CORCHEA);
+ 42a:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 42e:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 432:	56 95       	lsr	r21
+ 434:	47 95       	ror	r20
+ 436:	61 e0       	ldi	r22, 0x01	; 1
+ 438:	83 e0       	ldi	r24, 0x03	; 3
+ 43a:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 43e:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 442:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 446:	56 95       	lsr	r21
+ 448:	47 95       	ror	r20
+ 44a:	56 95       	lsr	r21
+ 44c:	47 95       	ror	r20
+ 44e:	60 e0       	ldi	r22, 0x00	; 0
+ 450:	8b e0       	ldi	r24, 0x0B	; 11
+ 452:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 456:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 45a:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 45e:	96 95       	lsr	r25
+ 460:	87 95       	ror	r24
+ 462:	96 95       	lsr	r25
+ 464:	87 95       	ror	r24
+ 466:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 46a:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 46e:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 472:	56 95       	lsr	r21
+ 474:	47 95       	ror	r20
+ 476:	56 95       	lsr	r21
+ 478:	47 95       	ror	r20
+ 47a:	60 e0       	ldi	r22, 0x00	; 0
+ 47c:	8b e0       	ldi	r24, 0x0B	; 11
+ 47e:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	for (uint8_t i = 0; i < 2; i++){
+ 482:	c0 e0       	ldi	r28, 0x00	; 0
+ 484:	31 c0       	rjmp	.+98     	; 0x4e8 <__EEPROM_REGION_LENGTH__+0xe8>
+		play_note_ms(0, 1, SEMICORCHEA);
+ 486:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 48a:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 48e:	56 95       	lsr	r21
+ 490:	47 95       	ror	r20
+ 492:	56 95       	lsr	r21
+ 494:	47 95       	ror	r20
+ 496:	61 e0       	ldi	r22, 0x01	; 1
+ 498:	80 e0       	ldi	r24, 0x00	; 0
+ 49a:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(11, 0, SEMICORCHEA);
+ 49e:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 4a2:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 4a6:	56 95       	lsr	r21
+ 4a8:	47 95       	ror	r20
+ 4aa:	56 95       	lsr	r21
+ 4ac:	47 95       	ror	r20
+ 4ae:	60 e0       	ldi	r22, 0x00	; 0
+ 4b0:	8b e0       	ldi	r24, 0x0B	; 11
+ 4b2:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(9, 0, SEMICORCHEA);
+ 4b6:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 4ba:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 4be:	56 95       	lsr	r21
+ 4c0:	47 95       	ror	r20
+ 4c2:	56 95       	lsr	r21
+ 4c4:	47 95       	ror	r20
+ 4c6:	60 e0       	ldi	r22, 0x00	; 0
+ 4c8:	89 e0       	ldi	r24, 0x09	; 9
+ 4ca:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(11, 0, SEMICORCHEA);
+ 4ce:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 4d2:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 4d6:	56 95       	lsr	r21
+ 4d8:	47 95       	ror	r20
+ 4da:	56 95       	lsr	r21
+ 4dc:	47 95       	ror	r20
+ 4de:	60 e0       	ldi	r22, 0x00	; 0
+ 4e0:	8b e0       	ldi	r24, 0x0B	; 11
+ 4e2:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	// 4
+	play_note_ms(3, 1, CORCHEA);
+	play_note_ms(11, 0, SEMICORCHEA);
+	delay_ms_var(SEMICORCHEA);
+	play_note_ms(11, 0, SEMICORCHEA);
+	for (uint8_t i = 0; i < 2; i++){
+ 4e6:	cf 5f       	subi	r28, 0xFF	; 255
+ 4e8:	c2 30       	cpi	r28, 0x02	; 2
+ 4ea:	68 f2       	brcs	.-102    	; 0x486 <__EEPROM_REGION_LENGTH__+0x86>
+		play_note_ms(0, 1, SEMICORCHEA);
+		play_note_ms(11, 0, SEMICORCHEA);
+		play_note_ms(9, 0, SEMICORCHEA);
+		play_note_ms(11, 0, SEMICORCHEA);
+	}
+	delay_ms_var(SEMICORCHEA);
+ 4ec:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 4f0:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 4f4:	96 95       	lsr	r25
+ 4f6:	87 95       	ror	r24
+ 4f8:	96 95       	lsr	r25
+ 4fa:	87 95       	ror	r24
+ 4fc:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(11, 0, CORCHEA);
+ 500:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 504:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 508:	56 95       	lsr	r21
+ 50a:	47 95       	ror	r20
+ 50c:	60 e0       	ldi	r22, 0x00	; 0
+ 50e:	8b e0       	ldi	r24, 0x0B	; 11
+ 510:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	
+	// 5
+	play_note_ms(3, 1, CORCHEA);
+ 514:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 518:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 51c:	56 95       	lsr	r21
+ 51e:	47 95       	ror	r20
+ 520:	61 e0       	ldi	r22, 0x01	; 1
+ 522:	83 e0       	ldi	r24, 0x03	; 3
+ 524:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 528:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 52c:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 530:	56 95       	lsr	r21
+ 532:	47 95       	ror	r20
+ 534:	56 95       	lsr	r21
+ 536:	47 95       	ror	r20
+ 538:	60 e0       	ldi	r22, 0x00	; 0
+ 53a:	8b e0       	ldi	r24, 0x0B	; 11
+ 53c:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 540:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 544:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 548:	96 95       	lsr	r25
+ 54a:	87 95       	ror	r24
+ 54c:	96 95       	lsr	r25
+ 54e:	87 95       	ror	r24
+ 550:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 554:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 558:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 55c:	56 95       	lsr	r21
+ 55e:	47 95       	ror	r20
+ 560:	56 95       	lsr	r21
+ 562:	47 95       	ror	r20
+ 564:	60 e0       	ldi	r22, 0x00	; 0
+ 566:	8b e0       	ldi	r24, 0x0B	; 11
+ 568:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(0, 1, SEMICORCHEA);
+ 56c:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 570:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 574:	56 95       	lsr	r21
+ 576:	47 95       	ror	r20
+ 578:	56 95       	lsr	r21
+ 57a:	47 95       	ror	r20
+ 57c:	61 e0       	ldi	r22, 0x01	; 1
+ 57e:	80 e0       	ldi	r24, 0x00	; 0
+ 580:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 584:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 588:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 58c:	56 95       	lsr	r21
+ 58e:	47 95       	ror	r20
+ 590:	56 95       	lsr	r21
+ 592:	47 95       	ror	r20
+ 594:	60 e0       	ldi	r22, 0x00	; 0
+ 596:	8b e0       	ldi	r24, 0x0B	; 11
+ 598:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(9, 0, SEMICORCHEA);
+ 59c:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 5a0:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 5a4:	56 95       	lsr	r21
+ 5a6:	47 95       	ror	r20
+ 5a8:	56 95       	lsr	r21
+ 5aa:	47 95       	ror	r20
+ 5ac:	60 e0       	ldi	r22, 0x00	; 0
+ 5ae:	89 e0       	ldi	r24, 0x09	; 9
+ 5b0:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, CORCHEA);
+ 5b4:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 5b8:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 5bc:	56 95       	lsr	r21
+ 5be:	47 95       	ror	r20
+ 5c0:	60 e0       	ldi	r22, 0x00	; 0
+ 5c2:	8b e0       	ldi	r24, 0x0B	; 11
+ 5c4:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(9, 0, SEMICORCHEA);
+ 5c8:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 5cc:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 5d0:	56 95       	lsr	r21
+ 5d2:	47 95       	ror	r20
+ 5d4:	56 95       	lsr	r21
+ 5d6:	47 95       	ror	r20
+ 5d8:	60 e0       	ldi	r22, 0x00	; 0
+ 5da:	89 e0       	ldi	r24, 0x09	; 9
+ 5dc:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA),
+ 5e0:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 5e4:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 5e8:	96 95       	lsr	r25
+ 5ea:	87 95       	ror	r24
+ 5ec:	96 95       	lsr	r25
+ 5ee:	87 95       	ror	r24
+ 5f0:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(7, 0, CORCHEA);
+ 5f4:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 5f8:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 5fc:	56 95       	lsr	r21
+ 5fe:	47 95       	ror	r20
+ 600:	60 e0       	ldi	r22, 0x00	; 0
+ 602:	87 e0       	ldi	r24, 0x07	; 7
+ 604:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(6, 0, SEMICORCHEA);
+ 608:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 60c:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 610:	56 95       	lsr	r21
+ 612:	47 95       	ror	r20
+ 614:	56 95       	lsr	r21
+ 616:	47 95       	ror	r20
+ 618:	60 e0       	ldi	r22, 0x00	; 0
+ 61a:	86 e0       	ldi	r24, 0x06	; 6
+ 61c:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 620:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 624:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 628:	96 95       	lsr	r25
+ 62a:	87 95       	ror	r24
+ 62c:	96 95       	lsr	r25
+ 62e:	87 95       	ror	r24
+ 630:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	
+	// 6
+	play_note_ms(11, 1, CORCHEA);
+ 634:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 638:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 63c:	56 95       	lsr	r21
+ 63e:	47 95       	ror	r20
+ 640:	61 e0       	ldi	r22, 0x01	; 1
+ 642:	8b e0       	ldi	r24, 0x0B	; 11
+ 644:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(7, 1, SEMICORCHEA);
+ 648:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 64c:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 650:	56 95       	lsr	r21
+ 652:	47 95       	ror	r20
+ 654:	56 95       	lsr	r21
+ 656:	47 95       	ror	r20
+ 658:	61 e0       	ldi	r22, 0x01	; 1
+ 65a:	87 e0       	ldi	r24, 0x07	; 7
+ 65c:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 660:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 664:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 668:	96 95       	lsr	r25
+ 66a:	87 95       	ror	r24
+ 66c:	96 95       	lsr	r25
+ 66e:	87 95       	ror	r24
+ 670:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	for (uint8_t i = 0; i < 3; i++){
+ 674:	c0 e0       	ldi	r28, 0x00	; 0
+ 676:	31 c0       	rjmp	.+98     	; 0x6da <__EEPROM_REGION_LENGTH__+0x2da>
+		play_note_ms(7, 1, SEMICORCHEA);
+ 678:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 67c:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 680:	56 95       	lsr	r21
+ 682:	47 95       	ror	r20
+ 684:	56 95       	lsr	r21
+ 686:	47 95       	ror	r20
+ 688:	61 e0       	ldi	r22, 0x01	; 1
+ 68a:	87 e0       	ldi	r24, 0x07	; 7
+ 68c:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(9, 1, SEMICORCHEA);
+ 690:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 694:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 698:	56 95       	lsr	r21
+ 69a:	47 95       	ror	r20
+ 69c:	56 95       	lsr	r21
+ 69e:	47 95       	ror	r20
+ 6a0:	61 e0       	ldi	r22, 0x01	; 1
+ 6a2:	89 e0       	ldi	r24, 0x09	; 9
+ 6a4:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(7, 1, SEMICORCHEA);
+ 6a8:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 6ac:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 6b0:	56 95       	lsr	r21
+ 6b2:	47 95       	ror	r20
+ 6b4:	56 95       	lsr	r21
+ 6b6:	47 95       	ror	r20
+ 6b8:	61 e0       	ldi	r22, 0x01	; 1
+ 6ba:	87 e0       	ldi	r24, 0x07	; 7
+ 6bc:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(6, 1, SEMICORCHEA);
+ 6c0:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 6c4:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 6c8:	56 95       	lsr	r21
+ 6ca:	47 95       	ror	r20
+ 6cc:	56 95       	lsr	r21
+ 6ce:	47 95       	ror	r20
+ 6d0:	61 e0       	ldi	r22, 0x01	; 1
+ 6d2:	86 e0       	ldi	r24, 0x06	; 6
+ 6d4:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	
+	// 6
+	play_note_ms(11, 1, CORCHEA);
+	play_note_ms(7, 1, SEMICORCHEA);
+	delay_ms_var(SEMICORCHEA);
+	for (uint8_t i = 0; i < 3; i++){
+ 6d8:	cf 5f       	subi	r28, 0xFF	; 255
+ 6da:	c3 30       	cpi	r28, 0x03	; 3
+ 6dc:	68 f2       	brcs	.-102    	; 0x678 <__EEPROM_REGION_LENGTH__+0x278>
+		play_note_ms(6, 1, SEMICORCHEA);
+	}
+	
+	
+	// 7
+	play_note_ms(11, 1, CORCHEA);
+ 6de:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 6e2:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 6e6:	56 95       	lsr	r21
+ 6e8:	47 95       	ror	r20
+ 6ea:	61 e0       	ldi	r22, 0x01	; 1
+ 6ec:	8b e0       	ldi	r24, 0x0B	; 11
+ 6ee:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(7, 1, SEMICORCHEA);
+ 6f2:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 6f6:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 6fa:	56 95       	lsr	r21
+ 6fc:	47 95       	ror	r20
+ 6fe:	56 95       	lsr	r21
+ 700:	47 95       	ror	r20
+ 702:	61 e0       	ldi	r22, 0x01	; 1
+ 704:	87 e0       	ldi	r24, 0x07	; 7
+ 706:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 70a:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 70e:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 712:	96 95       	lsr	r25
+ 714:	87 95       	ror	r24
+ 716:	96 95       	lsr	r25
+ 718:	87 95       	ror	r24
+ 71a:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(7, 1, SEMICORCHEA);
+ 71e:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 722:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 726:	56 95       	lsr	r21
+ 728:	47 95       	ror	r20
+ 72a:	56 95       	lsr	r21
+ 72c:	47 95       	ror	r20
+ 72e:	61 e0       	ldi	r22, 0x01	; 1
+ 730:	87 e0       	ldi	r24, 0x07	; 7
+ 732:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	for (uint8_t i = 0; i < 2; i++){
+ 736:	c0 e0       	ldi	r28, 0x00	; 0
+ 738:	31 c0       	rjmp	.+98     	; 0x79c <__EEPROM_REGION_LENGTH__+0x39c>
+		play_note_ms(9, 1, SEMICORCHEA);
+ 73a:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 73e:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 742:	56 95       	lsr	r21
+ 744:	47 95       	ror	r20
+ 746:	56 95       	lsr	r21
+ 748:	47 95       	ror	r20
+ 74a:	61 e0       	ldi	r22, 0x01	; 1
+ 74c:	89 e0       	ldi	r24, 0x09	; 9
+ 74e:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(7, 1, SEMICORCHEA);
+ 752:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 756:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 75a:	56 95       	lsr	r21
+ 75c:	47 95       	ror	r20
+ 75e:	56 95       	lsr	r21
+ 760:	47 95       	ror	r20
+ 762:	61 e0       	ldi	r22, 0x01	; 1
+ 764:	87 e0       	ldi	r24, 0x07	; 7
+ 766:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(6, 1, SEMICORCHEA);
+ 76a:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 76e:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 772:	56 95       	lsr	r21
+ 774:	47 95       	ror	r20
+ 776:	56 95       	lsr	r21
+ 778:	47 95       	ror	r20
+ 77a:	61 e0       	ldi	r22, 0x01	; 1
+ 77c:	86 e0       	ldi	r24, 0x06	; 6
+ 77e:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(7, 1, SEMICORCHEA);
+ 782:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 786:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 78a:	56 95       	lsr	r21
+ 78c:	47 95       	ror	r20
+ 78e:	56 95       	lsr	r21
+ 790:	47 95       	ror	r20
+ 792:	61 e0       	ldi	r22, 0x01	; 1
+ 794:	87 e0       	ldi	r24, 0x07	; 7
+ 796:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	// 7
+	play_note_ms(11, 1, CORCHEA);
+	play_note_ms(7, 1, SEMICORCHEA);
+	delay_ms_var(SEMICORCHEA);
+	play_note_ms(7, 1, SEMICORCHEA);
+	for (uint8_t i = 0; i < 2; i++){
+ 79a:	cf 5f       	subi	r28, 0xFF	; 255
+ 79c:	c2 30       	cpi	r28, 0x02	; 2
+ 79e:	68 f2       	brcs	.-102    	; 0x73a <__EEPROM_REGION_LENGTH__+0x33a>
+		play_note_ms(9, 1, SEMICORCHEA);
+		play_note_ms(7, 1, SEMICORCHEA);
+		play_note_ms(6, 1, SEMICORCHEA);
+		play_note_ms(7, 1, SEMICORCHEA);
+	}
+	delay_ms_var(SEMICORCHEA);
+ 7a0:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 7a4:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 7a8:	96 95       	lsr	r25
+ 7aa:	87 95       	ror	r24
+ 7ac:	96 95       	lsr	r25
+ 7ae:	87 95       	ror	r24
+ 7b0:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(7, 1, CORCHEA);
+ 7b4:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 7b8:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 7bc:	56 95       	lsr	r21
+ 7be:	47 95       	ror	r20
+ 7c0:	61 e0       	ldi	r22, 0x01	; 1
+ 7c2:	87 e0       	ldi	r24, 0x07	; 7
+ 7c4:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	
+	// 8
+	play_note_ms(9, 1, CORCHEA);
+ 7c8:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 7cc:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 7d0:	56 95       	lsr	r21
+ 7d2:	47 95       	ror	r20
+ 7d4:	61 e0       	ldi	r22, 0x01	; 1
+ 7d6:	89 e0       	ldi	r24, 0x09	; 9
+ 7d8:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(6, 1, SEMICORCHEA);
+ 7dc:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 7e0:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 7e4:	56 95       	lsr	r21
+ 7e6:	47 95       	ror	r20
+ 7e8:	56 95       	lsr	r21
+ 7ea:	47 95       	ror	r20
+ 7ec:	61 e0       	ldi	r22, 0x01	; 1
+ 7ee:	86 e0       	ldi	r24, 0x06	; 6
+ 7f0:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 7f4:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 7f8:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 7fc:	96 95       	lsr	r25
+ 7fe:	87 95       	ror	r24
+ 800:	96 95       	lsr	r25
+ 802:	87 95       	ror	r24
+ 804:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	for (uint8_t i = 0; i < 2; i++){
+ 808:	c0 e0       	ldi	r28, 0x00	; 0
+ 80a:	31 c0       	rjmp	.+98     	; 0x86e <__DATA_REGION_LENGTH__+0x6e>
+		play_note_ms(6, 1, SEMICORCHEA);
+ 80c:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 810:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 814:	56 95       	lsr	r21
+ 816:	47 95       	ror	r20
+ 818:	56 95       	lsr	r21
+ 81a:	47 95       	ror	r20
+ 81c:	61 e0       	ldi	r22, 0x01	; 1
+ 81e:	86 e0       	ldi	r24, 0x06	; 6
+ 820:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(7, 1, SEMICORCHEA);
+ 824:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 828:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 82c:	56 95       	lsr	r21
+ 82e:	47 95       	ror	r20
+ 830:	56 95       	lsr	r21
+ 832:	47 95       	ror	r20
+ 834:	61 e0       	ldi	r22, 0x01	; 1
+ 836:	87 e0       	ldi	r24, 0x07	; 7
+ 838:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(6, 1, SEMICORCHEA);
+ 83c:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 840:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 844:	56 95       	lsr	r21
+ 846:	47 95       	ror	r20
+ 848:	56 95       	lsr	r21
+ 84a:	47 95       	ror	r20
+ 84c:	61 e0       	ldi	r22, 0x01	; 1
+ 84e:	86 e0       	ldi	r24, 0x06	; 6
+ 850:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(5, 1, SEMICORCHEA);
+ 854:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 858:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 85c:	56 95       	lsr	r21
+ 85e:	47 95       	ror	r20
+ 860:	56 95       	lsr	r21
+ 862:	47 95       	ror	r20
+ 864:	61 e0       	ldi	r22, 0x01	; 1
+ 866:	85 e0       	ldi	r24, 0x05	; 5
+ 868:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	
+	// 8
+	play_note_ms(9, 1, CORCHEA);
+	play_note_ms(6, 1, SEMICORCHEA);
+	delay_ms_var(SEMICORCHEA);
+	for (uint8_t i = 0; i < 2; i++){
+ 86c:	cf 5f       	subi	r28, 0xFF	; 255
+ 86e:	c2 30       	cpi	r28, 0x02	; 2
+ 870:	68 f2       	brcs	.-102    	; 0x80c <__DATA_REGION_LENGTH__+0xc>
+		play_note_ms(6, 1, SEMICORCHEA);
+		play_note_ms(7, 1, SEMICORCHEA);
+		play_note_ms(6, 1, SEMICORCHEA);
+		play_note_ms(5, 1, SEMICORCHEA);
+	}
+	play_note_ms(6, 1, SEMICORCHEA);
+ 872:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 876:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 87a:	56 95       	lsr	r21
+ 87c:	47 95       	ror	r20
+ 87e:	56 95       	lsr	r21
+ 880:	47 95       	ror	r20
+ 882:	61 e0       	ldi	r22, 0x01	; 1
+ 884:	86 e0       	ldi	r24, 0x06	; 6
+ 886:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 88a:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 88e:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 892:	96 95       	lsr	r25
+ 894:	87 95       	ror	r24
+ 896:	96 95       	lsr	r25
+ 898:	87 95       	ror	r24
+ 89a:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(6, 1, SEMICORCHEA);
+ 89e:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 8a2:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 8a6:	56 95       	lsr	r21
+ 8a8:	47 95       	ror	r20
+ 8aa:	56 95       	lsr	r21
+ 8ac:	47 95       	ror	r20
+ 8ae:	61 e0       	ldi	r22, 0x01	; 1
+ 8b0:	86 e0       	ldi	r24, 0x06	; 6
+ 8b2:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 8b6:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 8ba:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 8be:	96 95       	lsr	r25
+ 8c0:	87 95       	ror	r24
+ 8c2:	96 95       	lsr	r25
+ 8c4:	87 95       	ror	r24
+ 8c6:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	
+	// 9
+	play_note_ms(9, 1, CORCHEA);
+ 8ca:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 8ce:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 8d2:	56 95       	lsr	r21
+ 8d4:	47 95       	ror	r20
+ 8d6:	61 e0       	ldi	r22, 0x01	; 1
+ 8d8:	89 e0       	ldi	r24, 0x09	; 9
+ 8da:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(6, 1, SEMICORCHEA);
+ 8de:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 8e2:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 8e6:	56 95       	lsr	r21
+ 8e8:	47 95       	ror	r20
+ 8ea:	56 95       	lsr	r21
+ 8ec:	47 95       	ror	r20
+ 8ee:	61 e0       	ldi	r22, 0x01	; 1
+ 8f0:	86 e0       	ldi	r24, 0x06	; 6
+ 8f2:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ 8f6:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 8fa:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 8fe:	96 95       	lsr	r25
+ 900:	87 95       	ror	r24
+ 902:	96 95       	lsr	r25
+ 904:	87 95       	ror	r24
+ 906:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	for (uint8_t i = 0; i < 3; i++){
+ 90a:	c0 e0       	ldi	r28, 0x00	; 0
+ 90c:	31 c0       	rjmp	.+98     	; 0x970 <__stack+0x71>
+		play_note_ms(6, 1, SEMICORCHEA);
+ 90e:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 912:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 916:	56 95       	lsr	r21
+ 918:	47 95       	ror	r20
+ 91a:	56 95       	lsr	r21
+ 91c:	47 95       	ror	r20
+ 91e:	61 e0       	ldi	r22, 0x01	; 1
+ 920:	86 e0       	ldi	r24, 0x06	; 6
+ 922:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(7, 1, SEMICORCHEA);
+ 926:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 92a:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 92e:	56 95       	lsr	r21
+ 930:	47 95       	ror	r20
+ 932:	56 95       	lsr	r21
+ 934:	47 95       	ror	r20
+ 936:	61 e0       	ldi	r22, 0x01	; 1
+ 938:	87 e0       	ldi	r24, 0x07	; 7
+ 93a:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(6, 1, SEMICORCHEA);
+ 93e:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 942:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 946:	56 95       	lsr	r21
+ 948:	47 95       	ror	r20
+ 94a:	56 95       	lsr	r21
+ 94c:	47 95       	ror	r20
+ 94e:	61 e0       	ldi	r22, 0x01	; 1
+ 950:	86 e0       	ldi	r24, 0x06	; 6
+ 952:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+		play_note_ms(5, 1, SEMICORCHEA);
+ 956:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 95a:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 95e:	56 95       	lsr	r21
+ 960:	47 95       	ror	r20
+ 962:	56 95       	lsr	r21
+ 964:	47 95       	ror	r20
+ 966:	61 e0       	ldi	r22, 0x01	; 1
+ 968:	85 e0       	ldi	r24, 0x05	; 5
+ 96a:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	
+	// 9
+	play_note_ms(9, 1, CORCHEA);
+	play_note_ms(6, 1, SEMICORCHEA);
+	delay_ms_var(SEMICORCHEA);
+	for (uint8_t i = 0; i < 3; i++){
+ 96e:	cf 5f       	subi	r28, 0xFF	; 255
+ 970:	c3 30       	cpi	r28, 0x03	; 3
+ 972:	68 f2       	brcs	.-102    	; 0x90e <__stack+0xf>
+		play_note_ms(6, 1, SEMICORCHEA);
+		play_note_ms(5, 1, SEMICORCHEA);
+	}
+	
+	// 10
+	play_note_ms(0, 1, SEMICORCHEA + CORCHEA);
+ 974:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 978:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 97c:	ac 01       	movw	r20, r24
+ 97e:	56 95       	lsr	r21
+ 980:	47 95       	ror	r20
+ 982:	56 95       	lsr	r21
+ 984:	47 95       	ror	r20
+ 986:	96 95       	lsr	r25
+ 988:	87 95       	ror	r24
+ 98a:	48 0f       	add	r20, r24
+ 98c:	59 1f       	adc	r21, r25
+ 98e:	61 e0       	ldi	r22, 0x01	; 1
+ 990:	80 e0       	ldi	r24, 0x00	; 0
+ 992:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(0, 1, SEMICORCHEA);
+ 996:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 99a:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 99e:	56 95       	lsr	r21
+ 9a0:	47 95       	ror	r20
+ 9a2:	56 95       	lsr	r21
+ 9a4:	47 95       	ror	r20
+ 9a6:	61 e0       	ldi	r22, 0x01	; 1
+ 9a8:	80 e0       	ldi	r24, 0x00	; 0
+ 9aa:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(7, 0, SEMICORCHEA);
+ 9ae:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 9b2:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 9b6:	56 95       	lsr	r21
+ 9b8:	47 95       	ror	r20
+ 9ba:	56 95       	lsr	r21
+ 9bc:	47 95       	ror	r20
+ 9be:	60 e0       	ldi	r22, 0x00	; 0
+ 9c0:	87 e0       	ldi	r24, 0x07	; 7
+ 9c2:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(9, 0, SEMICORCHEA);
+ 9c6:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 9ca:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 9ce:	56 95       	lsr	r21
+ 9d0:	47 95       	ror	r20
+ 9d2:	56 95       	lsr	r21
+ 9d4:	47 95       	ror	r20
+ 9d6:	60 e0       	ldi	r22, 0x00	; 0
+ 9d8:	89 e0       	ldi	r24, 0x09	; 9
+ 9da:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ 9de:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 9e2:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 9e6:	56 95       	lsr	r21
+ 9e8:	47 95       	ror	r20
+ 9ea:	56 95       	lsr	r21
+ 9ec:	47 95       	ror	r20
+ 9ee:	60 e0       	ldi	r22, 0x00	; 0
+ 9f0:	8b e0       	ldi	r24, 0x0B	; 11
+ 9f2:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(2, 1, SEMICORCHEA);
+ 9f6:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 9fa:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 9fe:	56 95       	lsr	r21
+ a00:	47 95       	ror	r20
+ a02:	56 95       	lsr	r21
+ a04:	47 95       	ror	r20
+ a06:	61 e0       	ldi	r22, 0x01	; 1
+ a08:	82 e0       	ldi	r24, 0x02	; 2
+ a0a:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(0, 1, SEMICORCHEA + CORCHEA);
+ a0e:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ a12:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ a16:	ac 01       	movw	r20, r24
+ a18:	56 95       	lsr	r21
+ a1a:	47 95       	ror	r20
+ a1c:	56 95       	lsr	r21
+ a1e:	47 95       	ror	r20
+ a20:	96 95       	lsr	r25
+ a22:	87 95       	ror	r24
+ a24:	48 0f       	add	r20, r24
+ a26:	59 1f       	adc	r21, r25
+ a28:	61 e0       	ldi	r22, 0x01	; 1
+ a2a:	80 e0       	ldi	r24, 0x00	; 0
+ a2c:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(0, 1, SEMICORCHEA);
+ a30:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ a34:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ a38:	56 95       	lsr	r21
+ a3a:	47 95       	ror	r20
+ a3c:	56 95       	lsr	r21
+ a3e:	47 95       	ror	r20
+ a40:	61 e0       	ldi	r22, 0x01	; 1
+ a42:	80 e0       	ldi	r24, 0x00	; 0
+ a44:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(7, 0, SEMISEMICORCHEA);
+ a48:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ a4c:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ a50:	56 95       	lsr	r21
+ a52:	47 95       	ror	r20
+ a54:	56 95       	lsr	r21
+ a56:	47 95       	ror	r20
+ a58:	56 95       	lsr	r21
+ a5a:	47 95       	ror	r20
+ a5c:	60 e0       	ldi	r22, 0x00	; 0
+ a5e:	87 e0       	ldi	r24, 0x07	; 7
+ a60:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(8, 0, SEMISEMICORCHEA);
+ a64:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ a68:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ a6c:	56 95       	lsr	r21
+ a6e:	47 95       	ror	r20
+ a70:	56 95       	lsr	r21
+ a72:	47 95       	ror	r20
+ a74:	56 95       	lsr	r21
+ a76:	47 95       	ror	r20
+ a78:	60 e0       	ldi	r22, 0x00	; 0
+ a7a:	88 e0       	ldi	r24, 0x08	; 8
+ a7c:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(9, 0, SEMISEMICORCHEA);
+ a80:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ a84:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ a88:	56 95       	lsr	r21
+ a8a:	47 95       	ror	r20
+ a8c:	56 95       	lsr	r21
+ a8e:	47 95       	ror	r20
+ a90:	56 95       	lsr	r21
+ a92:	47 95       	ror	r20
+ a94:	60 e0       	ldi	r22, 0x00	; 0
+ a96:	89 e0       	ldi	r24, 0x09	; 9
+ a98:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(10, 0, SEMISEMICORCHEA);
+ a9c:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ aa0:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ aa4:	56 95       	lsr	r21
+ aa6:	47 95       	ror	r20
+ aa8:	56 95       	lsr	r21
+ aaa:	47 95       	ror	r20
+ aac:	56 95       	lsr	r21
+ aae:	47 95       	ror	r20
+ ab0:	60 e0       	ldi	r22, 0x00	; 0
+ ab2:	8a e0       	ldi	r24, 0x0A	; 10
+ ab4:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMISEMICORCHEA);
+ ab8:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ abc:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ ac0:	56 95       	lsr	r21
+ ac2:	47 95       	ror	r20
+ ac4:	56 95       	lsr	r21
+ ac6:	47 95       	ror	r20
+ ac8:	56 95       	lsr	r21
+ aca:	47 95       	ror	r20
+ acc:	60 e0       	ldi	r22, 0x00	; 0
+ ace:	8b e0       	ldi	r24, 0x0B	; 11
+ ad0:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(0, 1, SEMICORCHEA);
+ ad4:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ ad8:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ adc:	56 95       	lsr	r21
+ ade:	47 95       	ror	r20
+ ae0:	56 95       	lsr	r21
+ ae2:	47 95       	ror	r20
+ ae4:	61 e0       	ldi	r22, 0x01	; 1
+ ae6:	80 e0       	ldi	r24, 0x00	; 0
+ ae8:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	
+	// 11
+	play_note_ms(11, 0, SEMICORCHEA);
+ aec:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ af0:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ af4:	56 95       	lsr	r21
+ af6:	47 95       	ror	r20
+ af8:	56 95       	lsr	r21
+ afa:	47 95       	ror	r20
+ afc:	60 e0       	ldi	r22, 0x00	; 0
+ afe:	8b e0       	ldi	r24, 0x0B	; 11
+ b00:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ b04:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ b08:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ b0c:	96 95       	lsr	r25
+ b0e:	87 95       	ror	r24
+ b10:	96 95       	lsr	r25
+ b12:	87 95       	ror	r24
+ b14:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(0, 1, CORCHEA);
+ b18:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ b1c:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ b20:	56 95       	lsr	r21
+ b22:	47 95       	ror	r20
+ b24:	61 e0       	ldi	r22, 0x01	; 1
+ b26:	80 e0       	ldi	r24, 0x00	; 0
+ b28:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ b2c:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ b30:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ b34:	56 95       	lsr	r21
+ b36:	47 95       	ror	r20
+ b38:	56 95       	lsr	r21
+ b3a:	47 95       	ror	r20
+ b3c:	60 e0       	ldi	r22, 0x00	; 0
+ b3e:	8b e0       	ldi	r24, 0x0B	; 11
+ b40:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ b44:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ b48:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ b4c:	96 95       	lsr	r25
+ b4e:	87 95       	ror	r24
+ b50:	96 95       	lsr	r25
+ b52:	87 95       	ror	r24
+ b54:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(0, 1, CORCHEA);
+ b58:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ b5c:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ b60:	56 95       	lsr	r21
+ b62:	47 95       	ror	r20
+ b64:	61 e0       	ldi	r22, 0x01	; 1
+ b66:	80 e0       	ldi	r24, 0x00	; 0
+ b68:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ b6c:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ b70:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ b74:	56 95       	lsr	r21
+ b76:	47 95       	ror	r20
+ b78:	56 95       	lsr	r21
+ b7a:	47 95       	ror	r20
+ b7c:	60 e0       	ldi	r22, 0x00	; 0
+ b7e:	8b e0       	ldi	r24, 0x0B	; 11
+ b80:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(SEMICORCHEA);
+ b84:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ b88:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ b8c:	96 95       	lsr	r25
+ b8e:	87 95       	ror	r24
+ b90:	96 95       	lsr	r25
+ b92:	87 95       	ror	r24
+ b94:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	play_note_ms(0, 1, CORCHEA);
+ b98:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ b9c:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ ba0:	56 95       	lsr	r21
+ ba2:	47 95       	ror	r20
+ ba4:	61 e0       	ldi	r22, 0x01	; 1
+ ba6:	80 e0       	ldi	r24, 0x00	; 0
+ ba8:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(11, 0, SEMICORCHEA);
+ bac:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ bb0:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ bb4:	56 95       	lsr	r21
+ bb6:	47 95       	ror	r20
+ bb8:	56 95       	lsr	r21
+ bba:	47 95       	ror	r20
+ bbc:	60 e0       	ldi	r22, 0x00	; 0
+ bbe:	8b e0       	ldi	r24, 0x0B	; 11
+ bc0:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(CORCHEA);
+ bc4:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ bc8:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ bcc:	96 95       	lsr	r25
+ bce:	87 95       	ror	r24
+ bd0:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+	
+	// 12
+	play_note_ms(11, 0, SEMISEMICORCHEA);
+ bd4:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ bd8:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ bdc:	56 95       	lsr	r21
+ bde:	47 95       	ror	r20
+ be0:	56 95       	lsr	r21
+ be2:	47 95       	ror	r20
+ be4:	56 95       	lsr	r21
+ be6:	47 95       	ror	r20
+ be8:	60 e0       	ldi	r22, 0x00	; 0
+ bea:	8b e0       	ldi	r24, 0x0B	; 11
+ bec:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(0, 1, SEMISEMICORCHEA);
+ bf0:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ bf4:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ bf8:	56 95       	lsr	r21
+ bfa:	47 95       	ror	r20
+ bfc:	56 95       	lsr	r21
+ bfe:	47 95       	ror	r20
+ c00:	56 95       	lsr	r21
+ c02:	47 95       	ror	r20
+ c04:	61 e0       	ldi	r22, 0x01	; 1
+ c06:	80 e0       	ldi	r24, 0x00	; 0
+ c08:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(2, 1, SEMISEMICORCHEA);
+ c0c:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ c10:	50 91 01 01 	lds	r21, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ c14:	56 95       	lsr	r21
+ c16:	47 95       	ror	r20
+ c18:	56 95       	lsr	r21
+ c1a:	47 95       	ror	r20
+ c1c:	56 95       	lsr	r21
+ c1e:	47 95       	ror	r20
+ c20:	61 e0       	ldi	r22, 0x01	; 1
+ c22:	82 e0       	ldi	r24, 0x02	; 2
+ c24:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	play_note_ms(4, 1, SEMISEMICORCHEA + REDONDA);
+ c28:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ c2c:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ c30:	ac 01       	movw	r20, r24
+ c32:	56 95       	lsr	r21
+ c34:	47 95       	ror	r20
+ c36:	56 95       	lsr	r21
+ c38:	47 95       	ror	r20
+ c3a:	56 95       	lsr	r21
+ c3c:	47 95       	ror	r20
+ c3e:	88 0f       	add	r24, r24
+ c40:	99 1f       	adc	r25, r25
+ c42:	88 0f       	add	r24, r24
+ c44:	99 1f       	adc	r25, r25
+ c46:	48 0f       	add	r20, r24
+ c48:	59 1f       	adc	r21, r25
+ c4a:	61 e0       	ldi	r22, 0x01	; 1
+ c4c:	84 e0       	ldi	r24, 0x04	; 4
+ c4e:	0e 94 72 00 	call	0xe4	; 0xe4 <play_note_ms>
+	delay_ms_var(REDONDA);
+ c52:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ c56:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ c5a:	88 0f       	add	r24, r24
+ c5c:	99 1f       	adc	r25, r25
+ c5e:	88 0f       	add	r24, r24
+ c60:	99 1f       	adc	r25, r25
+ c62:	0e 94 64 00 	call	0xc8	; 0xc8 <delay_ms_var>
+}
+ c66:	cf 91       	pop	r28
+ c68:	08 95       	ret
+
+00000c6a <main>:
+
+int main(void) {
+	hw_init_pins();
+ c6a:	0e 94 4b 00 	call	0x96	; 0x96 <hw_init_pins>
+	sound_init_timer2();
+ c6e:	0e 94 6c 06 	call	0xcd8	; 0xcd8 <sound_init_timer2>
+
+	while (1) {
+		c_asecina();
+ c72:	0e 94 8e 00 	call	0x11c	; 0x11c <c_asecina>
+ c76:	fd cf       	rjmp	.-6      	; 0xc72 <main+0x8>
+
+00000c78 <ocr_with_octave>:
+	126  // B4
+};
+
+// Ajuste de octava: subir 1 octava -> frecuencia x2 -> OCR pasa ~ a (OCR+1)/2 - 1
+static uint8_t ocr_with_octave(uint8_t base, int8_t octave) {
+	uint16_t val = (uint16_t)base + 1; // trabajar con (OCR+1)
+ c78:	90 e0       	ldi	r25, 0x00	; 0
+ c7a:	01 96       	adiw	r24, 0x01	; 1
+	if (octave > 0) {
+ c7c:	16 16       	cp	r1, r22
+ c7e:	54 f0       	brlt	.+20     	; 0xc94 <ocr_with_octave+0x1c>
+ c80:	0e c0       	rjmp	.+28     	; 0xc9e <ocr_with_octave+0x26>
+		while (octave--) val = (val > 1) ? (val >> 1) : 1; // divide por 2 con saturación mínima
+ c82:	82 30       	cpi	r24, 0x02	; 2
+ c84:	91 05       	cpc	r25, r1
+ c86:	18 f0       	brcs	.+6      	; 0xc8e <ocr_with_octave+0x16>
+ c88:	96 95       	lsr	r25
+ c8a:	87 95       	ror	r24
+ c8c:	02 c0       	rjmp	.+4      	; 0xc92 <ocr_with_octave+0x1a>
+ c8e:	81 e0       	ldi	r24, 0x01	; 1
+ c90:	90 e0       	ldi	r25, 0x00	; 0
+ c92:	62 2f       	mov	r22, r18
+ c94:	2f ef       	ldi	r18, 0xFF	; 255
+ c96:	26 0f       	add	r18, r22
+ c98:	61 11       	cpse	r22, r1
+ c9a:	f3 cf       	rjmp	.-26     	; 0xc82 <ocr_with_octave+0xa>
+ c9c:	10 c0       	rjmp	.+32     	; 0xcbe <ocr_with_octave+0x46>
+		} else if (octave < 0) {
+ c9e:	66 23       	and	r22, r22
+ ca0:	74 f4       	brge	.+28     	; 0xcbe <ocr_with_octave+0x46>
+ ca2:	03 c0       	rjmp	.+6      	; 0xcaa <ocr_with_octave+0x32>
+		while (octave++) val <<= 1; // multiplica por 2 (baja una octava)
+ ca4:	88 0f       	add	r24, r24
+ ca6:	99 1f       	adc	r25, r25
+ ca8:	62 2f       	mov	r22, r18
+ caa:	21 e0       	ldi	r18, 0x01	; 1
+ cac:	26 0f       	add	r18, r22
+ cae:	61 11       	cpse	r22, r1
+ cb0:	f9 cf       	rjmp	.-14     	; 0xca4 <ocr_with_octave+0x2c>
+		if (val > 256) val = 256;   // saturar a 256 (OCR<=255)
+ cb2:	81 30       	cpi	r24, 0x01	; 1
+ cb4:	21 e0       	ldi	r18, 0x01	; 1
+ cb6:	92 07       	cpc	r25, r18
+ cb8:	10 f0       	brcs	.+4      	; 0xcbe <ocr_with_octave+0x46>
+ cba:	80 e0       	ldi	r24, 0x00	; 0
+ cbc:	91 e0       	ldi	r25, 0x01	; 1
+	}
+	uint16_t ocr = (val > 0) ? (val - 1) : 0;
+ cbe:	00 97       	sbiw	r24, 0x00	; 0
+ cc0:	11 f0       	breq	.+4      	; 0xcc6 <ocr_with_octave+0x4e>
+ cc2:	01 97       	sbiw	r24, 0x01	; 1
+ cc4:	02 c0       	rjmp	.+4      	; 0xcca <ocr_with_octave+0x52>
+ cc6:	80 e0       	ldi	r24, 0x00	; 0
+ cc8:	90 e0       	ldi	r25, 0x00	; 0
+	if (ocr > 255) ocr = 255;
+ cca:	8f 3f       	cpi	r24, 0xFF	; 255
+ ccc:	91 05       	cpc	r25, r1
+ cce:	19 f0       	breq	.+6      	; 0xcd6 <ocr_with_octave+0x5e>
+ cd0:	10 f0       	brcs	.+4      	; 0xcd6 <ocr_with_octave+0x5e>
+ cd2:	8f ef       	ldi	r24, 0xFF	; 255
+ cd4:	90 e0       	ldi	r25, 0x00	; 0
+	return (uint8_t)ocr;
+}
+ cd6:	08 95       	ret
+
+00000cd8 <sound_init_timer2>:
+
+void sound_init_timer2(void) {
+	// Pin OC2A (PB3) como salida ya lo dejaste en hw_init_pins()
+	// Timer2 en CTC (WGM21=1), toggle OC2A (COM2A0=1)
+	TCCR2A = 0;
+ cd8:	e0 eb       	ldi	r30, 0xB0	; 176
+ cda:	f0 e0       	ldi	r31, 0x00	; 0
+ cdc:	10 82       	st	Z, r1
+	TCCR2B = 0;
+ cde:	a1 eb       	ldi	r26, 0xB1	; 177
+ ce0:	b0 e0       	ldi	r27, 0x00	; 0
+ ce2:	1c 92       	st	X, r1
+	TCNT2  = 0;
+ ce4:	10 92 b2 00 	sts	0x00B2, r1	; 0x8000b2 <__TEXT_REGION_LENGTH__+0x7f80b2>
+
+	// CTC: WGM21=1 (WGM22=0 en TCCR2B)
+	TCCR2A |= (1<<WGM21);
+ ce8:	80 81       	ld	r24, Z
+ cea:	82 60       	ori	r24, 0x02	; 2
+ cec:	80 83       	st	Z, r24
+	// Toggle OC2A: COM2A0=1 (no usamos COM2A1)
+	TCCR2A |= (1<<COM2A0);
+ cee:	80 81       	ld	r24, Z
+ cf0:	80 64       	ori	r24, 0x40	; 64
+ cf2:	80 83       	st	Z, r24
+
+	// Prescaler 128
+	TCCR2B |= PRESC_BITS;
+ cf4:	8c 91       	ld	r24, X
+ cf6:	85 60       	ori	r24, 0x05	; 5
+ cf8:	8c 93       	st	X, r24
+
+	// Arrancamos en silencio (OCR2A arbitrario)
+	OCR2A = ocr2a_base[9]; // A4 por defecto, pero OC2A quedará toggling igual
+ cfa:	8d e8       	ldi	r24, 0x8D	; 141
+ cfc:	80 93 b3 00 	sts	0x00B3, r24	; 0x8000b3 <__TEXT_REGION_LENGTH__+0x7f80b3>
+	// Para silencio real, deshabilitamos el toggle hasta que suene algo:
+	TCCR2A &= ~(1<<COM2A0); // OC2A desconectado => sin sonido hasta note_on
+ d00:	80 81       	ld	r24, Z
+ d02:	8f 7b       	andi	r24, 0xBF	; 191
+ d04:	80 83       	st	Z, r24
+ d06:	08 95       	ret
+
+00000d08 <sound_off>:
+}
+
+void sound_off(void) {
+	// Desconecta OC2A (pin en estado normal de PORTB)
+	TCCR2A &= ~(1<<COM2A0);
+ d08:	e0 eb       	ldi	r30, 0xB0	; 176
+ d0a:	f0 e0       	ldi	r31, 0x00	; 0
+ d0c:	80 81       	ld	r24, Z
+ d0e:	8f 7b       	andi	r24, 0xBF	; 191
+ d10:	80 83       	st	Z, r24
+	// Opcional: forzar pin bajo
 	AUDIO_PORT &= ~(1<<AUDIO_PIN);
- 186:	85 b1       	in	r24, 0x05	; 5
- 188:	87 7f       	andi	r24, 0xF7	; 247
- 18a:	85 b9       	out	0x05, r24	; 5
- 18c:	08 95       	ret
+ d12:	85 b1       	in	r24, 0x05	; 5
+ d14:	87 7f       	andi	r24, 0xF7	; 247
+ d16:	85 b9       	out	0x05, r24	; 5
+ d18:	08 95       	ret
 
-0000018e <_exit>:
- 18e:	f8 94       	cli
+00000d1a <sound_note_on>:
+}
 
-00000190 <__stop_program>:
- 190:	ff cf       	rjmp	.-2      	; 0x190 <__stop_program>
+void sound_note_on(uint8_t idx, int8_t octave) {
+	if (idx >= 12) { sound_off(); return; }
+ d1a:	8c 30       	cpi	r24, 0x0C	; 12
+ d1c:	18 f0       	brcs	.+6      	; 0xd24 <sound_note_on+0xa>
+ d1e:	0e 94 84 06 	call	0xd08	; 0xd08 <sound_off>
+ d22:	08 95       	ret
+	uint8_t ocr = ocr_with_octave(ocr2a_base[idx], octave);
+ d24:	e8 2f       	mov	r30, r24
+ d26:	f0 e0       	ldi	r31, 0x00	; 0
+ d28:	ee 5f       	subi	r30, 0xFE	; 254
+ d2a:	fe 4f       	sbci	r31, 0xFE	; 254
+ d2c:	80 81       	ld	r24, Z
+ d2e:	0e 94 3c 06 	call	0xc78	; 0xc78 <ocr_with_octave>
+	OCR2A = ocr;
+ d32:	80 93 b3 00 	sts	0x00B3, r24	; 0x8000b3 <__TEXT_REGION_LENGTH__+0x7f80b3>
+
+	// Asegurar CTC y toggle por si alguien lo tocó
+	TCCR2A &= ~((1<<COM2A1)); // COM2A1=0
+ d36:	e0 eb       	ldi	r30, 0xB0	; 176
+ d38:	f0 e0       	ldi	r31, 0x00	; 0
+ d3a:	80 81       	ld	r24, Z
+ d3c:	8f 77       	andi	r24, 0x7F	; 127
+ d3e:	80 83       	st	Z, r24
+	TCCR2A |=  (1<<WGM21);    // CTC
+ d40:	80 81       	ld	r24, Z
+ d42:	82 60       	ori	r24, 0x02	; 2
+ d44:	80 83       	st	Z, r24
+	TCCR2B &= ~(1<<WGM22);
+ d46:	a1 eb       	ldi	r26, 0xB1	; 177
+ d48:	b0 e0       	ldi	r27, 0x00	; 0
+ d4a:	8c 91       	ld	r24, X
+ d4c:	87 7f       	andi	r24, 0xF7	; 247
+ d4e:	8c 93       	st	X, r24
+
+	// Habilitar toggle en OC2A (suena)
+	TCCR2A |= (1<<COM2A0);
+ d50:	80 81       	ld	r24, Z
+ d52:	80 64       	ori	r24, 0x40	; 64
+ d54:	80 83       	st	Z, r24
+ d56:	08 95       	ret
+
+00000d58 <_exit>:
+ d58:	f8 94       	cli
+
+00000d5a <__stop_program>:
+ d5a:	ff cf       	rjmp	.-2      	; 0xd5a <__stop_program>

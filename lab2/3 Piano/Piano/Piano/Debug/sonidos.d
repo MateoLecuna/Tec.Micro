@@ -1,4 +1,4 @@
-main.d main.o: .././main.c \
+sonidos.d sonidos.o: .././sonidos.c \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -10,10 +10,7 @@ main.d main.o: .././main.c \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\version.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
- d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay.h \
- d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay_basic.h \
- d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h \
- .././hw_pins.h .././sonidos.h .././figuras.h
+ .././hw_pins.h .././sonidos.h
 
 d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -37,14 +34,6 @@ d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.
 
 d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h:
 
-d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay.h:
-
-d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay_basic.h:
-
-d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h:
-
 .././hw_pins.h:
 
 .././sonidos.h:
-
-.././figuras.h:

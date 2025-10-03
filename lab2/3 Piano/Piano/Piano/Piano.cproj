@@ -120,6 +120,15 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="canciones.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="canciones.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="figuras.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="hw_pins.c">
       <SubType>compile</SubType>
     </Compile>
@@ -129,10 +138,13 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="sound.c">
+    <Compile Include="figuras.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="sound.h">
+    <Compile Include="sonidos.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sonidos.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
