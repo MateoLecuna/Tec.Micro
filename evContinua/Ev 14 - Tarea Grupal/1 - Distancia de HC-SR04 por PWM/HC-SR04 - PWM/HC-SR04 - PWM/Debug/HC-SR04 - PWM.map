@@ -185,7 +185,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x20c
+.text           0x00000000      0x20a
  *(.vectors)
  .vectors       0x00000000       0x68 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -275,22 +275,22 @@ END GROUP
  .text.timer1_init
                 0x000000a6       0x10 main.o
  .text.distance_to_duty
-                0x000000b6       0x36 main.o
+                0x000000b6       0x34 main.o
  .text.hcsr04_read_cm
-                0x000000ec       0x88 main.o
- .text.main     0x00000174       0x32 main.o
-                0x00000174                main
+                0x000000ea       0x88 main.o
+ .text.main     0x00000172       0x32 main.o
+                0x00000172                main
  .text.libgcc.div
-                0x000001a6       0x44 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
-                0x000001a6                __udivmodsi4
+                0x000001a4       0x44 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+                0x000001a4                __udivmodsi4
  .text.libgcc.mul
-                0x000001ea       0x1e d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_umulhisi3.o)
-                0x000001ea                __umulhisi3
-                0x00000208                . = ALIGN (0x2)
+                0x000001e8       0x1e d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_umulhisi3.o)
+                0x000001e8                __umulhisi3
+                0x00000206                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000208        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x00000208                _exit
-                0x00000208                exit
+ .fini9         0x00000206        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00000206                _exit
+                0x00000206                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -309,11 +309,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000208        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000206        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x0000020c                _etext = .
+                0x0000020a                _etext = .
 
-.data           0x00800100        0x0 load address 0x0000020c
+.data           0x00800100        0x0 load address 0x0000020a
                 [!provide]                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -331,8 +331,8 @@ END GROUP
  *(.bss*)
  *(COMMON)
                 [!provide]                PROVIDE (__bss_end, .)
-                0x0000020c                __data_load_start = LOADADDR (.data)
-                0x0000020c                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0000020a                __data_load_start = LOADADDR (.data)
+                0x0000020a                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800100        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
@@ -436,9 +436,9 @@ END GROUP
  .debug_str     0x00000208      0x22f main.o
                                 0x26b (size before relaxing)
 
-.debug_loc      0x00000000      0x17b
+.debug_loc      0x00000000      0x179
  *(.debug_loc)
- .debug_loc     0x00000000      0x17b main.o
+ .debug_loc     0x00000000      0x179 main.o
 
 .debug_macinfo
  *(.debug_macinfo)

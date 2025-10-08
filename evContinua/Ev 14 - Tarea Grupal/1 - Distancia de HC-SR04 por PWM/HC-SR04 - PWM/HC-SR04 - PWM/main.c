@@ -13,7 +13,7 @@
    Más cerca -> más brillo  */
 
 #define DMIN_CM  5     // <= DMIN -> brillo máx
-#define DMAX_CM 400    // >= DMAX -> brillo mín
+#define DMAX_CM 50     // >= DMAX -> brillo mín
 #define INVERT_BRIGHTNESS 0 // 0: cerca = brillo alto, 1: lejos = brillo alto
 
 // PWM en Timer0, OC0A (D6)
