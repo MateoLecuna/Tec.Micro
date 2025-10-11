@@ -14,6 +14,13 @@ int main(void) {
 	sound_init_timer2();
 
 	while (1) {
-		c_asecina();
+		
+		c_asesina();
+		
+		_delay_ms(1000);
+		
+		c_SuperMario();
+		
+		_delay_ms(1000);
 	}
 }
