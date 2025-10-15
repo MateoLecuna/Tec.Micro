@@ -1,9 +1,17 @@
 Archive member included to satisfy reference by file (symbol)
 
+d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+                              uart.o (__udivmodsi4)
 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
                               D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o (exit)
+d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+                              piano.o (__tablejump2__)
 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
-                              figuras.o (__do_copy_data)
+                              main.o (__do_copy_data)
+d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+                              uart.o (__do_clear_bss)
+d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strcmp.o)
+                              main.o (strcmp)
 
 Discarded input sections
 
@@ -21,17 +29,37 @@ Discarded input sections
  .bss           0x00000000        0x0 hw_pins.o
  .text.hw_read_notes_raw
                 0x00000000       0x98 hw_pins.o
- .text.hw_read_oct_buttons
-                0x00000000       0x12 hw_pins.o
  .text          0x00000000        0x0 main.o
  .data          0x00000000        0x0 main.o
  .bss           0x00000000        0x0 main.o
  .text          0x00000000        0x0 figuras.o
  .data          0x00000000        0x0 figuras.o
  .bss           0x00000000        0x0 figuras.o
+ .text          0x00000000        0x0 piano.o
+ .data          0x00000000        0x0 piano.o
+ .bss           0x00000000        0x0 piano.o
  .text          0x00000000        0x0 sonidos.o
  .data          0x00000000        0x0 sonidos.o
  .bss           0x00000000        0x0 sonidos.o
+ .text          0x00000000        0x0 uart.o
+ .data          0x00000000        0x0 uart.o
+ .bss           0x00000000        0x0 uart.o
+ .text.uart_available
+                0x00000000       0x24 uart.o
+ .text          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+ .data          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+ .bss           0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+ .text.libgcc.mul
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+ .text.libgcc   0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+ .text.libgcc.fixed
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
  .text          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
@@ -48,6 +76,21 @@ Discarded input sections
                 0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.fixed
                 0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .text          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+ .data          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+ .bss           0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+ .text.libgcc.mul
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+ .text.libgcc.div
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+ .text.libgcc.fixed
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
  .text          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
  .data          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
  .bss           0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
@@ -64,6 +107,25 @@ Discarded input sections
                 0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
  .text.libgcc.fixed
                 0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .text          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .data          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .bss           0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.mul
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.div
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc   0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.fixed
+                0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strcmp.o)
+ .data          0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strcmp.o)
+ .bss           0x00000000        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strcmp.o)
 
 Memory Configuration
 
@@ -86,7 +148,9 @@ LOAD funciones.o
 LOAD hw_pins.o
 LOAD main.o
 LOAD figuras.o
+LOAD piano.o
 LOAD sonidos.o
+LOAD uart.o
 START GROUP
 LOAD d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a
 END GROUP
@@ -196,49 +260,53 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x2934
+.text           0x00000000     0x2e84
  *(.vectors)
  .vectors       0x00000000       0x68 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
                 0x00000000                __vectors
  *(.vectors)
  *(.progmem.gcc*)
-                0x00000068                . = ALIGN (0x2)
-                0x00000068                __trampolines_start = .
+ .progmem.gcc_sw_table.piano_mode_tick
+                0x00000068       0x30 piano.o
+                0x00000098                . = ALIGN (0x2)
+                0x00000098                __trampolines_start = .
  *(.trampolines)
- .trampolines   0x00000068        0x0 linker stubs
+ .trampolines   0x00000098        0x0 linker stubs
  *(.trampolines*)
-                0x00000068                __trampolines_end = .
+                0x00000098                __trampolines_end = .
  *libprintf_flt.a:*(.progmem.data)
  *libc.a:*(.progmem.data)
  *(.progmem*)
-                0x00000068                . = ALIGN (0x2)
+                0x00000098                . = ALIGN (0x2)
  *(.jumptables)
  *(.jumptables*)
  *(.lowtext)
  *(.lowtext*)
-                0x00000068                __ctors_start = .
+                0x00000098                __ctors_start = .
  *(.ctors)
-                0x00000068                __ctors_end = .
-                0x00000068                __dtors_start = .
+                0x00000098                __ctors_end = .
+                0x00000098                __dtors_start = .
  *(.dtors)
-                0x00000068                __dtors_end = .
+                0x00000098                __dtors_end = .
  SORT(*)(.ctors)
  SORT(*)(.dtors)
  *(.init0)
- .init0         0x00000068        0x0 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
-                0x00000068                __init
+ .init0         0x00000098        0x0 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
+                0x00000098                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x00000068        0xc D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .init2         0x00000098        0xc D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
  *(.init2)
  *(.init3)
  *(.init3)
  *(.init4)
- .init4         0x00000074       0x16 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
-                0x00000074                __do_copy_data
+ .init4         0x000000a4       0x16 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+                0x000000a4                __do_copy_data
+ .init4         0x000000ba       0x10 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+                0x000000ba                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
@@ -249,71 +317,102 @@ END GROUP
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x0000008a        0x8 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .init9         0x000000ca        0x8 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
  *(.init9)
  *(.text)
- .text          0x00000092        0x4 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
-                0x00000092                __vector_22
-                0x00000092                __vector_1
-                0x00000092                __vector_24
-                0x00000092                __vector_12
-                0x00000092                __bad_interrupt
-                0x00000092                __vector_6
-                0x00000092                __vector_3
-                0x00000092                __vector_23
-                0x00000092                __vector_25
-                0x00000092                __vector_11
-                0x00000092                __vector_13
-                0x00000092                __vector_17
-                0x00000092                __vector_19
-                0x00000092                __vector_7
-                0x00000092                __vector_5
-                0x00000092                __vector_4
-                0x00000092                __vector_9
-                0x00000092                __vector_2
-                0x00000092                __vector_21
-                0x00000092                __vector_15
-                0x00000092                __vector_8
-                0x00000092                __vector_14
-                0x00000092                __vector_10
-                0x00000092                __vector_16
-                0x00000092                __vector_18
-                0x00000092                __vector_20
-                0x00000096                . = ALIGN (0x2)
+ .text          0x000000d2        0x4 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
+                0x000000d2                __vector_22
+                0x000000d2                __vector_1
+                0x000000d2                __vector_24
+                0x000000d2                __vector_12
+                0x000000d2                __bad_interrupt
+                0x000000d2                __vector_6
+                0x000000d2                __vector_3
+                0x000000d2                __vector_23
+                0x000000d2                __vector_25
+                0x000000d2                __vector_11
+                0x000000d2                __vector_13
+                0x000000d2                __vector_17
+                0x000000d2                __vector_19
+                0x000000d2                __vector_7
+                0x000000d2                __vector_5
+                0x000000d2                __vector_4
+                0x000000d2                __vector_9
+                0x000000d2                __vector_2
+                0x000000d2                __vector_21
+                0x000000d2                __vector_15
+                0x000000d2                __vector_8
+                0x000000d2                __vector_14
+                0x000000d2                __vector_10
+                0x000000d2                __vector_16
+                0x000000d2                __vector_20
+                0x000000d6                . = ALIGN (0x2)
  *(.text.*)
  .text.c_asesina
-                0x00000096      0xb4e canciones.o
-                0x00000096                c_asesina
+                0x000000d6      0xb4e canciones.o
+                0x000000d6                c_asesina
  .text.c_SuperMario
-                0x00000be4     0x1bb0 canciones.o
-                0x00000be4                c_SuperMario
+                0x00000c24     0x1bb0 canciones.o
+                0x00000c24                c_SuperMario
  .text.delay_ms_var
-                0x00002794       0x1c funciones.o
-                0x00002794                delay_ms_var
+                0x000027d4       0x1c funciones.o
+                0x000027d4                delay_ms_var
  .text.play_note_ms
-                0x000027b0       0x38 funciones.o
-                0x000027b0                play_note_ms
+                0x000027f0       0x38 funciones.o
+                0x000027f0                play_note_ms
  .text.hw_init_pins
-                0x000027e8       0x32 hw_pins.o
-                0x000027e8                hw_init_pins
- .text.main     0x0000281a       0x36 main.o
-                0x0000281a                main
+                0x00002828       0x26 hw_pins.o
+                0x00002828                hw_init_pins
+ .text.main     0x0000284e      0x14e main.o
+                0x0000284e                main
+ .text.piano_init
+                0x0000299c       0x92 piano.o
+                0x0000299c                piano_init
+ .text.piano_mode_tick
+                0x00002a2e      0x13c piano.o
+                0x00002a2e                piano_mode_tick
  .text.ocr_with_octave
-                0x00002850       0x60 sonidos.o
+                0x00002b6a       0x60 sonidos.o
  .text.sound_init_timer2
-                0x000028b0       0x30 sonidos.o
-                0x000028b0                sound_init_timer2
+                0x00002bca       0x30 sonidos.o
+                0x00002bca                sound_init_timer2
  .text.sound_off
-                0x000028e0       0x12 sonidos.o
-                0x000028e0                sound_off
+                0x00002bfa       0x12 sonidos.o
+                0x00002bfa                sound_off
  .text.sound_note_on
-                0x000028f2       0x3e sonidos.o
-                0x000028f2                sound_note_on
-                0x00002930                . = ALIGN (0x2)
+                0x00002c0c       0x3e sonidos.o
+                0x00002c0c                sound_note_on
+ .text.uart_init
+                0x00002c4a       0x54 uart.o
+                0x00002c4a                uart_init
+ .text.uart_putchar
+                0x00002c9e       0x1e uart.o
+                0x00002c9e                uart_putchar
+ .text.uart_write
+                0x00002cbc       0x1a uart.o
+                0x00002cbc                uart_write
+ .text.uart_getchar
+                0x00002cd6       0x44 uart.o
+                0x00002cd6                uart_getchar
+ .text.uart_readline
+                0x00002d1a       0xa4 uart.o
+                0x00002d1a                uart_readline
+ .text.__vector_18
+                0x00002dbe       0x60 uart.o
+                0x00002dbe                __vector_18
+ .text.libgcc.div
+                0x00002e1e       0x44 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+                0x00002e1e                __udivmodsi4
+ .text.libgcc   0x00002e62        0xc d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+                0x00002e62                __tablejump2__
+ .text.avr-libc
+                0x00002e6e       0x12 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strcmp.o)
+                0x00002e6e                strcmp
+                0x00002e80                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00002930        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x00002930                _exit
-                0x00002930                exit
+ .fini9         0x00002e80        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00002e80                _exit
+                0x00002e80                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -332,11 +431,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00002930        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00002e80        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00002934                _etext = .
+                0x00002e84                _etext = .
 
-.data           0x00800100        0xe load address 0x00002934
+.data           0x00800100      0x142 load address 0x00002e84
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -346,27 +445,32 @@ END GROUP
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
+ .rodata.str1.1
+                0x00800102      0x134 main.o
  .rodata.ocr2a_base
-                0x00800102        0xc sonidos.o
+                0x00800236        0xc sonidos.o
  *(.gnu.linkonce.r*)
-                0x0080010e                . = ALIGN (0x2)
-                0x0080010e                _edata = .
-                0x0080010e                PROVIDE (__data_end, .)
+                0x00800242                . = ALIGN (0x2)
+                0x00800242                _edata = .
+                0x00800242                PROVIDE (__data_end, .)
 
-.bss            0x0080010e        0x0
-                [!provide]                PROVIDE (__bss_start, .)
+.bss            0x00800242       0x42
+                0x00800242                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
+ .bss.rx_tail   0x00800242        0x1 uart.o
+ .bss.rx_head   0x00800243        0x1 uart.o
+ .bss.rx_buf    0x00800244       0x40 uart.o
  *(COMMON)
-                [!provide]                PROVIDE (__bss_end, .)
-                0x00002934                __data_load_start = LOADADDR (.data)
-                0x00002942                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800284                PROVIDE (__bss_end, .)
+                0x00002e84                __data_load_start = LOADADDR (.data)
+                0x00002fc6                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0080010e        0x0
+.noinit         0x00800284        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x0080010e                _end = .
+                0x00800284                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -414,7 +518,9 @@ END GROUP
  .comment       0x00000030       0x31 hw_pins.o
  .comment       0x00000030       0x31 main.o
  .comment       0x00000030       0x31 figuras.o
+ .comment       0x00000030       0x31 piano.o
  .comment       0x00000030       0x31 sonidos.o
+ .comment       0x00000030       0x31 uart.o
 
 .note.gnu.avr.deviceinfo
                 0x00000000       0x40
@@ -436,85 +542,103 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0xf8
+.debug_aranges  0x00000000      0x168
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x30 canciones.o
  .debug_aranges
                 0x00000030       0x28 funciones.o
  .debug_aranges
-                0x00000058       0x30 hw_pins.o
+                0x00000058       0x28 hw_pins.o
  .debug_aranges
-                0x00000088       0x20 main.o
+                0x00000080       0x20 main.o
  .debug_aranges
-                0x000000a8       0x18 figuras.o
+                0x000000a0       0x18 figuras.o
  .debug_aranges
-                0x000000c0       0x38 sonidos.o
+                0x000000b8       0x28 piano.o
+ .debug_aranges
+                0x000000e0       0x38 sonidos.o
+ .debug_aranges
+                0x00000118       0x50 uart.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x3182
+.debug_info     0x00000000     0x38ef
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_info    0x000005f4     0x24c0 canciones.o
  .debug_info    0x00002ab4      0x224 funciones.o
- .debug_info    0x00002cd8      0x109 hw_pins.o
- .debug_info    0x00002de1      0x199 main.o
- .debug_info    0x00002f7a       0x73 figuras.o
- .debug_info    0x00002fed      0x195 sonidos.o
+ .debug_info    0x00002cd8       0xd0 hw_pins.o
+ .debug_info    0x00002da8      0x46b main.o
+ .debug_info    0x00003213       0x73 figuras.o
+ .debug_info    0x00003286      0x1ef piano.o
+ .debug_info    0x00003475      0x195 sonidos.o
+ .debug_info    0x0000360a      0x2e5 uart.o
 
-.debug_abbrev   0x00000000      0xa95
+.debug_abbrev   0x00000000      0xe14
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2       0xe6 canciones.o
  .debug_abbrev  0x00000688      0x138 funciones.o
- .debug_abbrev  0x000007c0       0xb4 hw_pins.o
- .debug_abbrev  0x00000874       0xf8 main.o
- .debug_abbrev  0x0000096c       0x44 figuras.o
- .debug_abbrev  0x000009b0       0xe5 sonidos.o
+ .debug_abbrev  0x000007c0       0x98 hw_pins.o
+ .debug_abbrev  0x00000858      0x199 main.o
+ .debug_abbrev  0x000009f1       0x44 figuras.o
+ .debug_abbrev  0x00000a35      0x177 piano.o
+ .debug_abbrev  0x00000bac       0xe5 sonidos.o
+ .debug_abbrev  0x00000c91      0x183 uart.o
 
-.debug_line     0x00000000     0x17d2
+.debug_line     0x00000000     0x1cf8
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x134 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_line    0x00000134      0xffb canciones.o
  .debug_line    0x0000112f      0x16d funciones.o
- .debug_line    0x0000129c      0x1bc hw_pins.o
- .debug_line    0x00001458      0x147 main.o
- .debug_line    0x0000159f       0x7e figuras.o
- .debug_line    0x0000161d      0x1b5 sonidos.o
+ .debug_line    0x0000129c      0x170 hw_pins.o
+ .debug_line    0x0000140c      0x234 main.o
+ .debug_line    0x00001640       0x7e figuras.o
+ .debug_line    0x000016be      0x23d piano.o
+ .debug_line    0x000018fb      0x1b5 sonidos.o
+ .debug_line    0x00001ab0      0x248 uart.o
 
-.debug_frame    0x00000000      0x150
+.debug_frame    0x00000000      0x258
  *(.debug_frame)
  .debug_frame   0x00000000       0x54 canciones.o
  .debug_frame   0x00000054       0x40 funciones.o
- .debug_frame   0x00000094       0x44 hw_pins.o
- .debug_frame   0x000000d8       0x24 main.o
- .debug_frame   0x000000fc       0x54 sonidos.o
+ .debug_frame   0x00000094       0x34 hw_pins.o
+ .debug_frame   0x000000c8       0x34 main.o
+ .debug_frame   0x000000fc       0x34 piano.o
+ .debug_frame   0x00000130       0x54 sonidos.o
+ .debug_frame   0x00000184       0xd4 uart.o
 
-.debug_str      0x00000000      0x4b4
+.debug_str      0x00000000      0x5ae
  *(.debug_str)
  .debug_str     0x00000000      0x208 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_str     0x00000208      0x18c canciones.o
                                 0x1c0 (size before relaxing)
  .debug_str     0x00000394       0x74 funciones.o
                                 0x208 (size before relaxing)
- .debug_str     0x00000408       0x47 hw_pins.o
-                                0x1b3 (size before relaxing)
- .debug_str     0x0000044f       0x23 main.o
-                                0x1ed (size before relaxing)
- .debug_str     0x00000472        0xf figuras.o
+ .debug_str     0x00000408       0x33 hw_pins.o
+                                0x19f (size before relaxing)
+ .debug_str     0x0000043b       0x98 main.o
+                                0x27b (size before relaxing)
+ .debug_str     0x000004d3        0xf figuras.o
                                 0x17e (size before relaxing)
- .debug_str     0x00000481       0x33 sonidos.o
+ .debug_str     0x000004e2       0x26 piano.o
+                                0x20e (size before relaxing)
+ .debug_str     0x00000508       0x2a sonidos.o
                                 0x1dc (size before relaxing)
+ .debug_str     0x00000532       0x7c uart.o
+                                0x231 (size before relaxing)
 
-.debug_loc      0x00000000      0x68f
+.debug_loc      0x00000000      0xc01
  *(.debug_loc)
  .debug_loc     0x00000000      0x1a0 canciones.o
  .debug_loc     0x000001a0      0x1f2 funciones.o
- .debug_loc     0x00000392      0x127 hw_pins.o
- .debug_loc     0x000004b9       0x48 main.o
- .debug_loc     0x00000501      0x18e sonidos.o
+ .debug_loc     0x00000392      0x108 hw_pins.o
+ .debug_loc     0x0000049a      0x1b4 main.o
+ .debug_loc     0x0000064e       0xee piano.o
+ .debug_loc     0x0000073c      0x18e sonidos.o
+ .debug_loc     0x000008ca      0x337 uart.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -534,13 +658,15 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x90
+.debug_ranges   0x00000000      0x110
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x20 canciones.o
  .debug_ranges  0x00000020       0x18 funciones.o
- .debug_ranges  0x00000038       0x20 hw_pins.o
- .debug_ranges  0x00000058       0x10 main.o
- .debug_ranges  0x00000068       0x28 sonidos.o
+ .debug_ranges  0x00000038       0x18 hw_pins.o
+ .debug_ranges  0x00000050       0x28 main.o
+ .debug_ranges  0x00000078       0x18 piano.o
+ .debug_ranges  0x00000090       0x28 sonidos.o
+ .debug_ranges  0x000000b8       0x58 uart.o
 
 .debug_macro
  *(.debug_macro)

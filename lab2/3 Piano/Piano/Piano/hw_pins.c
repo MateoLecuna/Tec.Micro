@@ -1,7 +1,7 @@
 #include "hw_pins.h"
 
 void hw_init_pins(void) {
-    // Audio pin como salida, inicialmente en 0 (Timer2 aún NO configurado) 
+    // Audio pin como salida, inicialmente en 0 
     AUDIO_DDR  |=  (1<<AUDIO_PIN);
     AUDIO_PORT &= ~(1<<AUDIO_PIN);
 
@@ -11,18 +11,12 @@ void hw_init_pins(void) {
 
     NOTE_PORTD_DDR  &= ~NOTES_MASK_D;
     NOTE_PORTD_PORT |=  NOTES_MASK_D;
-
-    // Octava +/-: entradas con pull-up
-    OCT_DDR  &= ~OCT_MASK;
-    OCT_PORT |=  OCT_MASK;
 }
-
-// Devuelve 12 bits: [PC0..PC5]=bits 0..5, [PD2..PD7]=bits 6..11
 
 uint16_t hw_read_notes_raw(void) {
     uint16_t bits = 0;
 
-    // PC0..PC5 -> bits 0..5
+    // PC0..PC5 --> bits 0..5
     uint8_t c = NOTE_PORTC_PIN & (uint8_t)NOTES_MASK_C;
 	
     // Compactar PC0..PC5 a bits 0..5 directamente
@@ -43,12 +37,4 @@ uint16_t hw_read_notes_raw(void) {
     bits |= (d & (1<<PD7)) ? (1<<11) : 0;
 
     return bits; // 1=libre, 0=presionado (por pull-ups)
-}
-
-uint8_t hw_read_oct_buttons(void) {
-    uint8_t p = OCT_PINR;
-    uint8_t out = 0;
-    if (p & (1<<OCT_DOWN)) out |= (1<<0); // 1=libre
-    if (p & (1<<OCT_UP))   out |= (1<<1); // 1=libre
-    return out; // bit0=DOWN, bit1=UP (1=libre, 0=presionado)
 }

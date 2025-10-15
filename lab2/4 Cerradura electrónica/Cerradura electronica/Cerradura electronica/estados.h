@@ -1,0 +1,14 @@
+#ifndef ESTADOS_H
+#define ESTADOS_H
+
+typedef enum {
+	BLOQUEADO,
+	INGRESANDO,
+	DESBLOQUEADO,
+	CAMBIO_ANTIGUA,
+	CAMBIO_NUEVA,
+	CAMBIO_CONFIRMAR,
+	BLOQUEO
+} Estado;
+
+#endif

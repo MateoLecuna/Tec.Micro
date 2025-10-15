@@ -6,7 +6,7 @@
 
 void c_asesina(void){
 	
-	// Canción - Asecina - Los Palmeras
+	// Canción 1 - Asecina - Los Palmeras
 	
 	// 1
 	play_note_ms(4, 1, CORCHEA);
@@ -171,6 +171,8 @@ void c_asesina(void){
 }
 
 void c_SuperMario(void){
+	
+	// Canción 2 - Super Mario Bros
 	
 	// 1
 	play_note_ms(4, 1, SEMICORCHEA);

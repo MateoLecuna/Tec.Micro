@@ -42,7 +42,9 @@ C_SRCS +=  \
 ../hw_pins.c \
 ../main.c \
 ../figuras.c \
-../sonidos.c
+../piano.c \
+../sonidos.c \
+../uart.c
 
 
 PREPROCESSING_SRCS += 
@@ -57,7 +59,9 @@ funciones.o \
 hw_pins.o \
 main.o \
 figuras.o \
-sonidos.o
+piano.o \
+sonidos.o \
+uart.o
 
 OBJS_AS_ARGS +=  \
 canciones.o \
@@ -65,7 +69,9 @@ funciones.o \
 hw_pins.o \
 main.o \
 figuras.o \
-sonidos.o
+piano.o \
+sonidos.o \
+uart.o
 
 C_DEPS +=  \
 canciones.d \
@@ -73,7 +79,9 @@ funciones.d \
 hw_pins.d \
 main.d \
 figuras.d \
-sonidos.d
+piano.d \
+sonidos.d \
+uart.d
 
 C_DEPS_AS_ARGS +=  \
 canciones.d \
@@ -81,7 +89,9 @@ funciones.d \
 hw_pins.d \
 main.d \
 figuras.d \
-sonidos.d
+piano.d \
+sonidos.d \
+uart.d
 
 OUTPUT_FILE_PATH +=Piano.elf
 
@@ -132,7 +142,21 @@ LINKER_SCRIPT_DEP+=
 	@echo Finished building: $<
 	
 
+./piano.o: .././piano.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)D:\Microchip Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "D:\Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 ./sonidos.o: .././sonidos.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)D:\Microchip Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "D:\Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./uart.o: .././uart.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)D:\Microchip Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "D:\Microchip Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

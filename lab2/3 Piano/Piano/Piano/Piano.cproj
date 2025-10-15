@@ -147,10 +147,22 @@
     <Compile Include="figuras.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="piano.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="piano.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="sonidos.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="sonidos.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="uart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="uart.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

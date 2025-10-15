@@ -12,5 +12,9 @@ main.c
 
 figuras.c
 
+piano.c
+
 sonidos.c
+
+uart.c
 
