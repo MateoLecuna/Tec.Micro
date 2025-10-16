@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define F_CPU 16000000UL
 
 // LEDs en PORTD
 #define PIN_LED_VERDE_PD   PD2
@@ -15,10 +14,10 @@
 #define TECLADO_FILA1_PB   PB1
 #define TECLADO_FILA2_PB   PB2
 #define TECLADO_FILA3_PB   PB3
-#define TECLADO_COL0_PB    PB4
-#define TECLADO_COL1_PB    PB5
-#define TECLADO_COL2_PB    PB6
-#define TECLADO_COL3_PB    PB7
+#define TECLADO_COL0_PB    PD4
+#define TECLADO_COL1_PB    PD5
+#define TECLADO_COL2_PB    PD6
+#define TECLADO_COL3_PB    PD7
 
 // LCD I2C
 #define LCD_I2C_ADDR       0x27  // 0x27 o 0x3F según tu backpack

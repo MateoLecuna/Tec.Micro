@@ -33,7 +33,7 @@ char teclado_leer(void) {
 		PORTB |= (1<<TECLADO_FILA0_PB)|(1<<TECLADO_FILA1_PB)|(1<<TECLADO_FILA2_PB)|(1<<TECLADO_FILA3_PB);
 		// Bajar fila f
 		PORTB &= ~(1<<(TECLADO_FILA0_PB + f));
-		_delay_us(5);
+		_delay_us(15);
 
 		uint8_t cols = leer_columnas(); // 1=libre, 0=presionada
 		for (uint8_t c=0; c<4; c++) {

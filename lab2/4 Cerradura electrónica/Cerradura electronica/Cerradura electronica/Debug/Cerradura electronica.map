@@ -270,7 +270,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0xa34
+.text           0x00000000      0xa32
  *(.vectors)
  .vectors       0x00000000       0x68 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -415,79 +415,79 @@ END GROUP
  .text.iniciar_cambio_clave
                 0x000003a8       0x18 logica_candado.o
  .text.mostrar_entrada_enmascarada
-                0x000003c0       0x26 logica_candado.o
+                0x000003c0       0x24 logica_candado.o
  .text.confirmar_y_guardar_nueva_clave
-                0x000003e6       0x42 logica_candado.o
+                0x000003e4       0x42 logica_candado.o
  .text.procesar_envio
-                0x00000428       0x6c logica_candado.o
+                0x00000426       0x6c logica_candado.o
  .text.aceptar_clave_antigua
-                0x00000494       0x44 logica_candado.o
+                0x00000492       0x44 logica_candado.o
  .text.aceptar_nueva_clave_primera
-                0x000004d8       0x68 logica_candado.o
+                0x000004d6       0x68 logica_candado.o
  .text.candado_iniciar
-                0x00000540        0xa logica_candado.o
-                0x00000540                candado_iniciar
+                0x0000053e        0xa logica_candado.o
+                0x0000053e                candado_iniciar
  .text.candado_loop
-                0x0000054a      0x19c logica_candado.o
-                0x0000054a                candado_loop
- .text.main     0x000006e6       0x12 main.o
-                0x000006e6                main
+                0x00000548      0x19c logica_candado.o
+                0x00000548                candado_loop
+ .text.main     0x000006e4       0x12 main.o
+                0x000006e4                main
  .text.eeprom_read_u8
-                0x000006f8        0x6 memoria.o
+                0x000006f6        0x6 memoria.o
  .text.eeprom_tiene_clave
-                0x000006fe       0x14 memoria.o
+                0x000006fc       0x14 memoria.o
  .text.eeprom_cargar_clave
-                0x00000712       0x4e memoria.o
+                0x00000710       0x4e memoria.o
  .text.eeprom_write_u8
-                0x00000760        0x6 memoria.o
+                0x0000075e        0x6 memoria.o
  .text.memoria_iniciar
-                0x00000766       0x42 memoria.o
-                0x00000766                memoria_iniciar
+                0x00000764       0x42 memoria.o
+                0x00000764                memoria_iniciar
  .text.memoria_guardar_clave
-                0x000007a8       0x68 memoria.o
-                0x000007a8                memoria_guardar_clave
+                0x000007a6       0x68 memoria.o
+                0x000007a6                memoria_guardar_clave
  .text.leer_columnas
-                0x00000810        0x8 teclado.o
+                0x0000080e        0x8 teclado.o
  .text.teclado_iniciar
-                0x00000818       0x1a teclado.o
-                0x00000818                teclado_iniciar
+                0x00000816       0x1a teclado.o
+                0x00000816                teclado_iniciar
  .text.teclado_leer
-                0x00000832       0xaa teclado.o
-                0x00000832                teclado_leer
+                0x00000830       0xaa teclado.o
+                0x00000830                teclado_leer
  .text.twi_status
-                0x000008dc        0x8 twi.o
+                0x000008da        0x8 twi.o
  .text.twi_init
-                0x000008e4       0x46 twi.o
-                0x000008e4                twi_init
+                0x000008e2       0x46 twi.o
+                0x000008e2                twi_init
  .text.twi_start
-                0x0000092a       0x4e twi.o
-                0x0000092a                twi_start
+                0x00000928       0x4e twi.o
+                0x00000928                twi_start
  .text.twi_stop
-                0x00000978        0x8 twi.o
-                0x00000978                twi_stop
+                0x00000976        0x8 twi.o
+                0x00000976                twi_stop
  .text.twi_write
-                0x00000980       0x22 twi.o
-                0x00000980                twi_write
+                0x0000097e       0x22 twi.o
+                0x0000097e                twi_write
  .text.libgcc.div
-                0x000009a2       0x44 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
-                0x000009a2                __udivmodsi4
- .text.libgcc   0x000009e6        0xc d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
-                0x000009e6                __tablejump2__
+                0x000009a0       0x44 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+                0x000009a0                __udivmodsi4
+ .text.libgcc   0x000009e4        0xc d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+                0x000009e4                __tablejump2__
  .text.avr-libc
-                0x000009f2       0x12 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(memcpy.o)
-                0x000009f2                memcpy
+                0x000009f0       0x12 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(memcpy.o)
+                0x000009f0                memcpy
  .text.avr-libc
-                0x00000a04       0x10 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eerd_byte.o)
-                0x00000a04                eeprom_read_byte
+                0x00000a02       0x10 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eerd_byte.o)
+                0x00000a02                eeprom_read_byte
  .text.avr-libc
-                0x00000a14       0x1c D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eewr_byte.o)
-                0x00000a14                eeprom_write_byte
-                0x00000a16                eeprom_write_r18
-                0x00000a30                . = ALIGN (0x2)
+                0x00000a12       0x1c D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eewr_byte.o)
+                0x00000a12                eeprom_write_byte
+                0x00000a14                eeprom_write_r18
+                0x00000a2e                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000a30        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x00000a30                _exit
-                0x00000a30                exit
+ .fini9         0x00000a2e        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00000a2e                _exit
+                0x00000a2e                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -506,11 +506,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000a30        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000a2e        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000a34                _etext = .
+                0x00000a32                _etext = .
 
-.data           0x00800100      0x17c load address 0x00000a34
+.data           0x00800100      0x17c load address 0x00000a32
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -554,8 +554,8 @@ END GROUP
  COMMON         0x008002a4       0x11 memoria.o
                 0x008002a4                claveActiva
                 0x008002b5                PROVIDE (__bss_end, .)
-                0x00000a34                __data_load_start = LOADADDR (.data)
-                0x00000bb0                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000a32                __data_load_start = LOADADDR (.data)
+                0x00000bae                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x008002b5        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
@@ -656,44 +656,44 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x23ad
+.debug_info     0x00000000     0x238b
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_info    0x000005f4      0x2af hardware.o
  .debug_info    0x000008a3      0x6fb lcd_i2c.o
- .debug_info    0x00000f9e      0xa57 logica_candado.o
- .debug_info    0x000019f5       0xda main.o
- .debug_info    0x00001acf      0x383 memoria.o
- .debug_info    0x00001e52      0x264 teclado.o
- .debug_info    0x000020b6      0x1c3 twi.o
- .debug_info    0x00002279       0x9a D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eerd_byte.o)
- .debug_info    0x00002313       0x9a D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eewr_byte.o)
+ .debug_info    0x00000f9e      0xa35 logica_candado.o
+ .debug_info    0x000019d3       0xda main.o
+ .debug_info    0x00001aad      0x383 memoria.o
+ .debug_info    0x00001e30      0x264 teclado.o
+ .debug_info    0x00002094      0x1c3 twi.o
+ .debug_info    0x00002257       0x9a D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eerd_byte.o)
+ .debug_info    0x000022f1       0x9a D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eewr_byte.o)
 
-.debug_abbrev   0x00000000      0xf2e
+.debug_abbrev   0x00000000      0xf0b
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2      0x101 hardware.o
  .debug_abbrev  0x000006a3      0x1cb lcd_i2c.o
- .debug_abbrev  0x0000086e      0x24d logica_candado.o
- .debug_abbrev  0x00000abb       0x68 main.o
- .debug_abbrev  0x00000b23      0x164 memoria.o
- .debug_abbrev  0x00000c87      0x169 teclado.o
- .debug_abbrev  0x00000df0      0x116 twi.o
- .debug_abbrev  0x00000f06       0x14 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eerd_byte.o)
- .debug_abbrev  0x00000f1a       0x14 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eewr_byte.o)
+ .debug_abbrev  0x0000086e      0x22a logica_candado.o
+ .debug_abbrev  0x00000a98       0x68 main.o
+ .debug_abbrev  0x00000b00      0x164 memoria.o
+ .debug_abbrev  0x00000c64      0x169 teclado.o
+ .debug_abbrev  0x00000dcd      0x116 twi.o
+ .debug_abbrev  0x00000ee3       0x14 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eerd_byte.o)
+ .debug_abbrev  0x00000ef7       0x14 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eewr_byte.o)
 
-.debug_line     0x00000000     0x129b
+.debug_line     0x00000000     0x12a9
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x134 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_line    0x00000134      0x190 hardware.o
  .debug_line    0x000002c4      0x2cd lcd_i2c.o
- .debug_line    0x00000591      0x5c0 logica_candado.o
- .debug_line    0x00000b51       0x82 main.o
- .debug_line    0x00000bd3      0x21e memoria.o
- .debug_line    0x00000df1      0x1ac teclado.o
- .debug_line    0x00000f9d      0x1e6 twi.o
- .debug_line    0x00001183       0x7a D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eerd_byte.o)
- .debug_line    0x000011fd       0x9e D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eewr_byte.o)
+ .debug_line    0x00000591      0x5ce logica_candado.o
+ .debug_line    0x00000b5f       0x82 main.o
+ .debug_line    0x00000be1      0x21e memoria.o
+ .debug_line    0x00000dff      0x1ac teclado.o
+ .debug_line    0x00000fab      0x1e6 twi.o
+ .debug_line    0x00001191       0x7a D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eerd_byte.o)
+ .debug_line    0x0000120b       0x9e D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5\libatmega328p.a(eewr_byte.o)
 
 .debug_frame    0x00000000      0x44c
  *(.debug_frame)

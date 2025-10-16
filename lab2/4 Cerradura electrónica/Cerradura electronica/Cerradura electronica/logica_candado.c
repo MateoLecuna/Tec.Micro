@@ -3,6 +3,10 @@
 #include "hardware.h"
 #include "teclado.h"
 #include "memoria.h"
+#include "lcd_i2c.h"
+
+#define F_CPU 16000000UL
+
 #include <string.h>
 #include <util/delay.h>
 
