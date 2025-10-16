@@ -1,18 +1,72 @@
-/*
- * IDLE.c
- *
- * Created: 16/10/2025 10:21:33 a. m.
- * Author : mateo
- */ 
-
+#define F_CPU 16000000UL
 #include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#include <avr/sleep.h>
+#include <avr/wdt.h>
 
+// Configuración de tiempos
+#define ACTIVE_MS   1000   // 1 s despierto
+#define SLEEP_TICKS 1      // 1 tick de WDT
 
-int main(void)
-{
-    /* Replace with your application code */
-    while (1) 
-    {
-    }
+// LEDs en PD2..PD6
+#define LED_DDR   DDRD
+#define LED_PORT  PORTD
+#define LED_MASK  ((1<<PD2)|(1<<PD3)|(1<<PD4)|(1<<PD5)|(1<<PD6))
+
+volatile uint8_t wdt_ticks = 0;
+
+// ISR WDT: cuenta “ticks” (aprox. 1 s por tick si WDP2|WDP1)
+ISR(WDT_vect) {
+	if (wdt_ticks < 255) wdt_ticks++;
 }
 
+// LEDs siempre encendidos
+static inline void leds_setup_on(void){
+	LED_DDR  |= LED_MASK;
+	LED_PORT |= LED_MASK;
+}
+
+// WDT: interrupción aprox. 1 s (WDP2|WDP1)
+static void wdt_enable_interrupt_1s(void){
+	cli();
+	MCUSR &= ~(1<<WDRF);                 // limpia flag WDT reset
+	WDTCSR |= (1<<WDCE) | (1<<WDE);      // ventana de cambio
+	// WDIE=1 (solo interrupción), WDE=0; prescaler aprox. 1 s => WDP2|WDP1
+	WDTCSR = (1<<WDIE) | (1<<WDP2) | (1<<WDP1);
+	sei();
+}
+
+static void wdt_disable_all(void){
+	cli();
+	WDTCSR |= (1<<WDCE) | (1<<WDE);
+	WDTCSR = 0x00;
+	sei();
+}
+
+static void sleep_idle_ticks(uint8_t ticks){
+	wdt_ticks = 0;
+	wdt_enable_interrupt_1s();
+
+	set_sleep_mode(SLEEP_MODE_IDLE);
+	while (wdt_ticks < ticks) {
+		sleep_enable();
+		sei();
+		sleep_cpu();   // despierta por WDT
+		sleep_disable();
+	}
+
+	wdt_disable_all();
+}
+
+int main(void){
+	leds_setup_on();
+
+	while (1) {
+		// 1) CPU despierta, LEDs ON
+		_delay_ms(ACTIVE_MS);
+
+		// 2) CPU en sleep (IDLE), LEDs siguen ON
+		sleep_idle_ticks(SLEEP_TICKS);
+	}
+}
