@@ -171,7 +171,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x15a
+.text           0x00000000      0x146
  *(.vectors)
  .vectors       0x00000000       0x68 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -259,18 +259,18 @@ END GROUP
                 0x00000090       0x1a main.o
  .text.wdt_disable_all
                 0x000000aa       0x12 main.o
- .text.sleep_adc_nr_ticks
-                0x000000bc       0x4a main.o
+ .text.sleep_powerdown_ticks
+                0x000000bc       0x36 main.o
  .text.__vector_6
-                0x00000106       0x2a main.o
-                0x00000106                __vector_6
- .text.main     0x00000130       0x26 main.o
-                0x00000130                main
-                0x00000156                . = ALIGN (0x2)
+                0x000000f2       0x2a main.o
+                0x000000f2                __vector_6
+ .text.main     0x0000011c       0x26 main.o
+                0x0000011c                main
+                0x00000142                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000156        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x00000156                _exit
-                0x00000156                exit
+ .fini9         0x00000142        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00000142                _exit
+                0x00000142                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -289,11 +289,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000156        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000142        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x0000015a                _etext = .
+                0x00000146                _etext = .
 
-.data           0x00800100        0x0 load address 0x0000015a
+.data           0x00800100        0x0 load address 0x00000146
                 [!provide]                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -314,8 +314,8 @@ END GROUP
                 0x00800100                wdt_ticks
  *(COMMON)
                 0x00800101                PROVIDE (__bss_end, .)
-                0x0000015a                __data_load_start = LOADADDR (.data)
-                0x0000015a                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000146                __data_load_start = LOADADDR (.data)
+                0x00000146                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800101        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
@@ -394,30 +394,30 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x7ee
+.debug_info     0x00000000      0x7be
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_info    0x000005f4      0x1fa main.o
+ .debug_info    0x000005f4      0x1ca main.o
 
 .debug_abbrev   0x00000000      0x70f
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2      0x16d main.o
 
-.debug_line     0x00000000      0x318
+.debug_line     0x00000000      0x30b
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x134 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_line    0x00000134      0x1e4 main.o
+ .debug_line    0x00000134      0x1d7 main.o
 
 .debug_frame    0x00000000       0x7c
  *(.debug_frame)
  .debug_frame   0x00000000       0x7c main.o
 
-.debug_str      0x00000000      0x448
+.debug_str      0x00000000      0x422
  *(.debug_str)
  .debug_str     0x00000000      0x208 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x240 main.o
-                                0x27a (size before relaxing)
+ .debug_str     0x00000208      0x21a main.o
+                                0x254 (size before relaxing)
 
 .debug_loc      0x00000000       0xd2
  *(.debug_loc)
@@ -447,5 +447,5 @@ END GROUP
 
 .debug_macro
  *(.debug_macro)
-OUTPUT(ADC Noise Reduction.elf elf32-avr)
+OUTPUT(POWER-DOWN.elf elf32-avr)
 LOAD linker stubs

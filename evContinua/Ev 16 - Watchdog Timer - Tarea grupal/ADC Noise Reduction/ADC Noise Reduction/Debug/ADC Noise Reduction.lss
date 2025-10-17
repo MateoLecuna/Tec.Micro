@@ -19,15 +19,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_abbrev 0000070f  00000000  00000000  00000a6e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000317  00000000  00000000  0000117d  2**0
+  8 .debug_line   00000318  00000000  00000000  0000117d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  0000007c  00000000  00000000  00001494  2**2
+  9 .debug_frame  0000007c  00000000  00000000  00001498  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000448  00000000  00000000  00001510  2**0
+ 10 .debug_str    00000448  00000000  00000000  00001514  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000000d2  00000000  00000000  00001958  2**0
+ 11 .debug_loc    000000d2  00000000  00000000  0000195c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000030  00000000  00000000  00001a2a  2**0
+ 12 .debug_ranges 00000030  00000000  00000000  00001a2e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -88,24 +88,25 @@ Disassembly of section .text:
   8c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 00000090 <wdt_enable_interrupt_1s>:
-	LED_DDR  |= LED_MASK;
 	LED_PORT |= LED_MASK;
 }
 
+// WDT: interrupción aprox. 1 s (WDP2|WDP1)
 static void wdt_enable_interrupt_1s(void){
 	cli();
   90:	f8 94       	cli
-	MCUSR &= ~(1<<WDRF);
+	MCUSR &= ~(1<<WDRF);                 // limpia flag WDT reset
   92:	84 b7       	in	r24, 0x34	; 52
   94:	87 7f       	andi	r24, 0xF7	; 247
   96:	84 bf       	out	0x34, r24	; 52
-	WDTCSR |= (1<<WDCE) | (1<<WDE);
+	WDTCSR |= (1<<WDCE) | (1<<WDE);      // ventana de cambio
   98:	e0 e6       	ldi	r30, 0x60	; 96
   9a:	f0 e0       	ldi	r31, 0x00	; 0
   9c:	80 81       	ld	r24, Z
   9e:	88 61       	ori	r24, 0x18	; 24
   a0:	80 83       	st	Z, r24
-	WDTCSR = (1<<WDIE) | (1<<WDP2) | (1<<WDP1); // ~1 s
+		// WDIE=1 (solo interrupción), WDE=0; prescaler aprox. 1 s => WDP2|WDP1
+	WDTCSR = (1<<WDIE) | (1<<WDP2) | (1<<WDP1); // aporx. 1 s
   a2:	86 e4       	ldi	r24, 0x46	; 70
   a4:	80 83       	st	Z, r24
 	sei();
@@ -132,7 +133,7 @@ static void wdt_disable_all(void){
 
 000000bc <sleep_adc_nr_ticks>:
 
-/* (Opcional) ADC ON para este modo */
+// ADC ON para este modo
 static inline void adc_enable(void){  ADCSRA |=  (1<<ADEN); }
 static inline void adc_disable(void){ ADCSRA &= ~(1<<ADEN); }
 
@@ -147,7 +148,7 @@ static void sleep_adc_nr_ticks(uint8_t ticks){
 	sei();
 }
 
-/* (Opcional) ADC ON para este modo */
+// ADC ON para este modo
 static inline void adc_enable(void){  ADCSRA |=  (1<<ADEN); }
   c8:	ea e7       	ldi	r30, 0x7A	; 122
   ca:	f0 e0       	ldi	r31, 0x00	; 0
@@ -158,7 +159,7 @@ static void sleep_adc_nr_ticks(uint8_t ticks){
 	wdt_ticks = 0;
 	wdt_enable_interrupt_1s();
 
-	adc_enable(); // opcional si vas a usar ADC de verdad
+	adc_enable();
 	set_sleep_mode(SLEEP_MODE_ADC);
   d2:	83 b7       	in	r24, 0x33	; 51
   d4:	81 7f       	andi	r24, 0xF1	; 241
@@ -172,7 +173,7 @@ static void sleep_adc_nr_ticks(uint8_t ticks){
   e0:	83 bf       	out	0x33, r24	; 51
 		sei();
   e2:	78 94       	sei
-		sleep_cpu();   // ?? despierta por WDT
+		sleep_cpu();   // despierta por WDT
   e4:	88 95       	sleep
 		sleep_disable();
   e6:	83 b7       	in	r24, 0x33	; 51
@@ -181,7 +182,7 @@ static void sleep_adc_nr_ticks(uint8_t ticks){
 	wdt_ticks = 0;
 	wdt_enable_interrupt_1s();
 
-	adc_enable(); // opcional si vas a usar ADC de verdad
+	adc_enable();
 	set_sleep_mode(SLEEP_MODE_ADC);
 	while (wdt_ticks < ticks) {
   ec:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
@@ -190,7 +191,7 @@ static void sleep_adc_nr_ticks(uint8_t ticks){
 	sei();
 }
 
-/* (Opcional) ADC ON para este modo */
+// ADC ON para este modo
 static inline void adc_enable(void){  ADCSRA |=  (1<<ADEN); }
 static inline void adc_disable(void){ ADCSRA &= ~(1<<ADEN); }
   f4:	ea e7       	ldi	r30, 0x7A	; 122
@@ -198,7 +199,7 @@ static inline void adc_disable(void){ ADCSRA &= ~(1<<ADEN); }
   f8:	80 81       	ld	r24, Z
   fa:	8f 77       	andi	r24, 0x7F	; 127
   fc:	80 83       	st	Z, r24
-		sleep_cpu();   // ?? despierta por WDT
+		sleep_cpu();   // despierta por WDT
 		sleep_disable();
 	}
 	adc_disable();
@@ -210,11 +211,11 @@ static inline void adc_disable(void){ ADCSRA &= ~(1<<ADEN); }
  104:	08 95       	ret
 
 00000106 <__vector_6>:
-#define LED_PORT  PORTD
 #define LED_MASK  ((1<<PD2)|(1<<PD3)|(1<<PD4)|(1<<PD5)|(1<<PD6))
 
 volatile uint8_t wdt_ticks = 0;
 
+// ISR WDT: cuenta “ticks” (aprox. 1 s por tick si WDP2|WDP1)
 ISR(WDT_vect) {
  106:	1f 92       	push	r1
  108:	0f 92       	push	r0
@@ -239,6 +240,7 @@ ISR(WDT_vect) {
 
 00000130 <main>:
 
+// LEDs siempre encendidos
 static inline void leds_setup_on(void){
 	LED_DDR  |= LED_MASK;
  130:	8a b1       	in	r24, 0x0a	; 10
@@ -255,8 +257,8 @@ static inline void leds_setup_on(void){
 
 	__builtin_avr_delay_cycles(__ticks_dc);
  13c:	2f ef       	ldi	r18, 0xFF	; 255
- 13e:	83 ed       	ldi	r24, 0xD3	; 211
- 140:	90 e3       	ldi	r25, 0x30	; 48
+ 13e:	8b e7       	ldi	r24, 0x7B	; 123
+ 140:	92 e9       	ldi	r25, 0x92	; 146
  142:	21 50       	subi	r18, 0x01	; 1
  144:	80 40       	sbci	r24, 0x00	; 0
  146:	90 40       	sbci	r25, 0x00	; 0
@@ -267,7 +269,7 @@ int main(void){
 	leds_setup_on();
 
 	while (1) {
-		_delay_ms(ACTIVE_MS);         // CPU despierta, LEDs ON
+		_delay_ms(ACTIVE_MS);            // CPU despierta, LEDs ON
 		sleep_adc_nr_ticks(SLEEP_TICKS); // CPU sleep ADC-NR, LEDs ON
  14e:	81 e0       	ldi	r24, 0x01	; 1
  150:	0e 94 5e 00 	call	0xbc	; 0xbc <sleep_adc_nr_ticks>

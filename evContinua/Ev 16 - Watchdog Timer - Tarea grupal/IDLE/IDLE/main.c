@@ -6,7 +6,7 @@
 #include <avr/wdt.h>
 
 // Configuración de tiempos
-#define ACTIVE_MS   1000   // 1 s despierto
+#define ACTIVE_MS   3000   // 1 s despierto
 #define SLEEP_TICKS 1      // 1 tick de WDT
 
 // LEDs en PD2..PD6
@@ -63,10 +63,7 @@ int main(void){
 	leds_setup_on();
 
 	while (1) {
-		// 1) CPU despierta, LEDs ON
-		_delay_ms(ACTIVE_MS);
-
-		// 2) CPU en sleep (IDLE), LEDs siguen ON
-		sleep_idle_ticks(SLEEP_TICKS);
+		_delay_ms(ACTIVE_MS);			// CPU despierta, LEDs ON
+		sleep_idle_ticks(SLEEP_TICKS);	// CPU en sleep (IDLE), LEDs siguen ON
 	}
 }
