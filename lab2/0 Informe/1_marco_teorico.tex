@@ -1,17 +1,31 @@
 \section{Marco Teórico}
 
 \subsection{Piano}
-El piano electrónico se basa en el microcontrolador ATmega328P, encargado de leer las entradas digitales provenientes de pulsadores y generar las notas musicales correspondientes a través de un buzzer piezoeléctrico. Para la síntesis de sonido, se hace uso de señales de modulación por ancho de pulso (PWM), configuradas mediante los temporizadores internos del microcontrolador, permitiendo así obtener frecuencias precisas asociadas a cada nota musical.
 
-El sistema implementa un conjunto de 12 pulsadores, cada uno asignado a una nota de la escala cromática (Do, Do\#, Re, Re\#, Mi, Fa, Fa\#, Sol, Sol\#, La, La\#, Si). Además, se integran dos pulsadores adicionales para modificar la octava activa, lo que amplía la capacidad tonal del instrumento sin aumentar significativamente el número de entradas físicas.
+El piano electrónico se basa en el microcontrolador ATmega328P, encargado de leer las entradas digitales provenientes de pulsadores y generar las notas musicales correspondientes a través de un buzzer piezoeléctrico. 
+Para la síntesis de sonido, se hace uso de señales de modulación por ancho de pulso (PWM), configuradas mediante los temporizadores internos del microcontrolador, permitiendo así obtener frecuencias precisas asociadas a cada nota musical.
 
-El buzzer piezoeléctrico utilizado actúa como transductor electroacústico, recibiendo la señal PWM generada por el ATmega328P y transformándola en vibraciones audibles. El uso de resistencias pull-up internas en los pines de entrada digital simplifica el cableado, evitando la necesidad de resistencias externas para los pulsadores.
+En términos acústicos, cada nota musical se corresponde con una frecuencia específica medida en hertzios (Hz), donde un incremento de una octava implica duplicar la frecuencia base. 
+Por ejemplo, la nota La de la cuarta octava tiene una frecuencia de 440~Hz, mientras que en la quinta octava alcanza los 880~Hz. 
+Esta relación logarítmica entre nota y frecuencia permite reproducir escalas musicales de manera controlada mediante la variación del período de la señal PWM.
 
-Por otra parte, la inclusión de la comunicación serial mediante UART (Universal Asynchronous Receiver-Transmitter) permite la selección de canciones predefinidas almacenadas en memoria. De esta forma, el sistema no solo funciona como piano manual, sino también como reproductor automático de melodías programadas.
+El sistema implementa un conjunto de 12 pulsadores, cada uno asignado a una nota de la escala cromática (Do, Do\#, Re, Re\#, Mi, Fa, Fa\#, Sol, Sol\#, La, La\#, Si). 
+Además, se integran dos pulsadores adicionales para modificar la octava activa, lo que amplía la capacidad tonal del instrumento sin aumentar significativamente el número de entradas físicas.
 
-Se implemento de la octava 4 a la 7, por que si se implementaba una ocatava menos, el buzzer ya no podía emitir un sonido distinguible, y emitía siempre el mismo sonido, osea, estaba en su limite, y si se implementaba una octava más por arriba de la 7, el buzzer no podía emitir el sonido, por que también estaba fuera de su rango.
+El buzzer piezoeléctrico utilizado actúa como transductor electroacústico, recibiendo la señal PWM generada por el ATmega328P y transformándola en vibraciones audibles. 
+El uso de resistencias pull-up internas en los pines de entrada digital simplifica el cableado, evitando la necesidad de resistencias externas para los pulsadores.
 
-En la sección de anexos, dentro de tablas complementarias~\ref{tab:notas_piano}, se detalla la correspondencia entre las notas musicales y sus frecuencias asociadas, así como el índice utilizado en el arreglo de notas dentro del código fuente del proyecto.
+Por otra parte, la inclusión de la comunicación serial mediante UART (Universal Asynchronous Receiver-Transmitter) permite la selección de canciones predefinidas almacenadas en memoria, 
+además de ofrecer la posibilidad de enviar mensajes informativos hacia un terminal externo. 
+De esta forma, el sistema no solo funciona como piano manual, sino también como reproductor automático de melodías programadas.
+
+En cuanto al rango tonal, se implementaron las octavas 4 a 7, dado que en la práctica el buzzer presentaba limitaciones físicas en su rango de respuesta. 
+Al reproducir frecuencias inferiores a la cuarta octava, el sonido resultaba monótono e indistinguible, mientras que por encima de la séptima octava el transductor no lograba generar vibración audible. 
+De esta manera, el sistema cubre el rango más perceptible y estable para este tipo de actuadores.
+
+En la sección de anexos, dentro de tablas complementarias~\ref{tab:notas_piano}, 
+se detalla la correspondencia entre las notas musicales y sus frecuencias asociadas, 
+así como el índice utilizado en el arreglo de notas dentro del código fuente del proyecto.
 
 \subsection{Cerradura elctrónica}
 
