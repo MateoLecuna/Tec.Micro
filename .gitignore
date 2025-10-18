@@ -21,3 +21,4 @@
 _minted*
 # compilaciones locales
 build/
+*.mov
