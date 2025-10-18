@@ -100,3 +100,73 @@ donde \( f_{n} \) representa la frecuencia de una nota en la octava \( n \),
 y \( f_{0} \) es la frecuencia de la misma nota en la octava base. 
 De esta forma, el sistema puede reproducir diferentes rangos tonales de manera programática.
 
+\subsubsection{Mapa de pines del piano electrónico}
+
+En la Tabla~\ref{tab:pines_piano} se detalla la asignación de pines del microcontrolador ATmega328P utilizados en el proyecto del piano electrónico, incluyendo las funciones específicas de cada pin.
+
+\begin{table}[H]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Señal} & \textbf{Pin Arduino} & \textbf{Descripción} \\
+\hline
+BUZZER (PWM) & D3 (OC2B) & Salida PWM para tono (Timer2). \\
+UART\_TX     & D1 (TX)    & Transmisión serie a 9600 baud. \\
+UART\_RX     & D0 (RX)    & Recepción serie (comandos). \\
+TECLA 1..12  & D2, D4..D9, A0..A3 & Entradas con resistencias pull-up internas. \\
+\hline
+\end{tabular}
+}
+\caption{Asignación de pines utilizada en el piano electrónico.}
+\label{tab:pines_piano}
+\end{table}
+
+\subsubsection{Comandos UART implementados}
+
+Los comandos UART disponibles para el control del piano electrónico se presentan en la Tabla~\ref{tab:uart_piano}. 
+
+\begin{table}[H]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Comando} & \textbf{Acción} & \textbf{Observación} \\
+\hline
+\texttt{C1}    & Reproduce canción 1. & Melodía predefinida en \texttt{canciones.c}. \\
+\texttt{C2}    & Reproduce canción 2. & Melodía predefinida en \texttt{canciones.c}. \\
+\texttt{PIANO} & Modo manual. & Habilita lectura de teclas 1..12. \\
+\hline
+\end{tabular}
+}
+\caption{Comandos UART disponibles para el control del piano electrónico.}
+\label{tab:uart_piano}
+\end{table}
+
+Estos comandos permiten al usuario seleccionar entre la reproducción automática de melodías predefinidas o el modo manual para tocar notas individuales mediante los pulsadores conectados al microcontrolador.
+
+\vspace{0.5cm}
+
+\subsubsection{Figuras musicales y duración}
+
+En la Tabla~\ref{tab:figuras_piano} se muestra la relación de duraciones empleada para programar las melodías en el piano electrónico.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Figura} & \textbf{Relación vs negra} & \textbf{Ejemplo (ms) si negra = 500 ms} \\
+\hline
+Redonda  & $\times 4$   & 2000 \\
+Blanca   & $\times 2$   & 1000 \\
+Negra    & $\times 1$   & 500 \\
+Corchea  & $\times 1/2$ & 250 \\
+Semicor. & $\times 1/4$ & 125 \\
+Semisemi. & $\times 1/8$ & 62.5 \\
+\hline
+\end{tabular}
+\caption{Relación de duraciones empleada para programar las melodías.}
+\label{tab:figuras_piano}
+\end{table}
+
+Estas duraciones permiten definir el ritmo de las melodías reproducidas por el piano electrónico, facilitando la programación de diferentes estilos musicales.
