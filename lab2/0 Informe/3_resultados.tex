@@ -6,5 +6,13 @@
 \subsection{Seleccionador de colores}
 
 \subsection{Piano}
+El sistema desarrollado logró cumplir satisfactoriamente los objetivos propuestos. Se implementó un piano electrónico basado en el microcontrolador ATmega328P, capaz de reproducir las 12 notas de la escala cromática mediante pulsadores individuales. Cada tecla activa la generación de una frecuencia específica a través del buzzer pasivo, logrando un sonido claro y fácilmente distinguible entre notas.
+
+La comunicación UART fue implementada correctamente, permitiendo el control remoto del sistema desde una interfaz serial. Se configuraron tres comandos principales: \texttt{C1} y \texttt{C2}, utilizados para la reproducción de dos canciones predefinidas almacenadas en memoria, y el comando \texttt{PIANO}, que devuelve al modo manual de ejecución por teclas. El comando \texttt{STOP} no fue implementado debido a limitaciones de tiempo, aunque el sistema mantiene estabilidad y correcta respuesta durante la ejecución de las melodías.
+
+Durante las pruebas se observó un comportamiento estable en la reproducción de las notas y una respuesta inmediata ante la pulsación de teclas. El buzzer pasivo entregó una calidad sonora adecuada, permitiendo distinguir correctamente las canciones y las frecuencias individuales. No se presentaron problemas de latencia ni de resonancia indebida, confirmando la correcta configuración del temporizador para la generación de las señales PWM.
+
+De forma general, el desempeño del sistema fue considerado satisfactorio, tanto en el modo de ejecución manual como en el automático. Las canciones predefinidas se reprodujeron de forma fluida y reconocible, evidenciando un correcto manejo de tiempos y frecuencias en la modulación del sonido.
+
 
 \subsection{Cerradura electrónica}

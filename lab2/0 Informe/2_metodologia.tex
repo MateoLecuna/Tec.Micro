@@ -26,7 +26,14 @@ El sistema se estructuró en torno a los siguientes bloques principales:
     \item \textbf{Reproducción de canciones:} La comunicación UART se estableció para recibir comandos externos y activar la ejecución de melodías predefinidas. Estos comandos permiten conmutar entre modo piano manual y modo automático.
 \end{enumerate}
 
-\subsubsection{Estado de avance}
-Hasta el momento, se han definido los pines correspondientes a las 12 notas musicales y los dos pulsadores de control de octavas. También se determinó la utilización de resistencias pull-up internas para simplificar el diseño del circuito. El siguiente paso consiste en implementar la generación de tonos mediante PWM y la integración de la comunicación serial para las canciones predefinidas.
+\subsubsection{Obtención y transcripción de melodías}
+
+Para la programación de las canciones predefinidas, fue necesario obtener previamente las secuencias de notas, duraciones y octavas de cada una. 
+
+La primera melodía, denominada \textit{“Asesina”}, fue extraída a partir del video de YouTube \cite{youtube_asesina}. Para identificar las notas y sus duraciones se utilizó una aplicación de piano roll disponible en App Store, con la cual se reprodujo la melodía y se registraron manualmente las notas en una hoja de referencia, indicando la octava correspondiente y el tiempo de ejecución de cada una. Posteriormente, estos valores fueron transferidos al código fuente en forma de arreglos.
+
+La segunda melodía, correspondiente al tema principal de \textit{Super Mario Bros}, se obtuvo a partir de la partitura disponible en el portal MuseScore \cite{musescore_mario}. Dicha fuente incluía además una simulación visual en piano roll, lo que facilitó la identificación de las notas y su duración sin necesidad de realizar el reconocimiento auditivo de las notas, como se hizo con la primera canción. 
+
+En el documento de evidencias anexo se incluyen las hojas manuscritas utilizadas en la transcripción de ambas canciones, junto con una tabla que relaciona las notas musicales con su índice numérico dentro del arreglo de notas del programa. No fue posible incluir el archivo PDF con la partitura de la canción de \textit{Super Mario Bros} debido a que requiere una suscripción paga para su descarga, pero, sin embargo, accediendo al enlace indicado en la bibliografía es posible visualizar la partitura y la simulación en piano roll mencionada anteriormente.
 
 \subsection{Cerradura electrónica}
