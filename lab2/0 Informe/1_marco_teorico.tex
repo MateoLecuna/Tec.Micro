@@ -9,5 +9,9 @@ El buzzer piezoeléctrico utilizado actúa como transductor electroacústico, re
 
 Por otra parte, la inclusión de la comunicación serial mediante UART (Universal Asynchronous Receiver-Transmitter) permite la selección de canciones predefinidas almacenadas en memoria. De esta forma, el sistema no solo funciona como piano manual, sino también como reproductor automático de melodías programadas.
 
+Se implemento de la octava 4 a la 7, por que si se implementaba una ocatava menos, el buzzer ya no podía emitir un sonido distinguible, y emitía siempre el mismo sonido, osea, estaba en su limite, y si se implementaba una octava más por arriba de la 7, el buzzer no podía emitir el sonido, por que también estaba fuera de su rango.
+
+En la sección de anexos, dentro de tablas complementarias~\ref{tab:notas_piano}, se detalla la correspondencia entre las notas musicales y sus frecuencias asociadas, así como el índice utilizado en el arreglo de notas dentro del código fuente del proyecto.
+
 \subsection{Cerradura elctrónica}
 

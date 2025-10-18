@@ -56,5 +56,47 @@ A continuación se detalla la estructura de archivos del proyecto del piano elec
 El código fuente completo del proyecto se encuentra disponible en el repositorio de GitHub \cite{utec_tecmicro}.
 
 \subsection{Evidencias}
+Las evidencias de la realización de los ejercicios del laboratorio dos, se encuentran adjuntas en la carpeta \textit{“Evidencias”} \cite{github_evidencias_lab2}. Dentro de ella, se encuentran las fotos, videos, documentos, que demuestran la correcta implementación y funcionamiento de los sistemas desarrollados en este laboratorio.
 
 \subsection{Tablas complementarias}
+\subsubsection{Correspondencia entre notas y frecuencias del piano electrónico}
+
+En la Tabla~\ref{tab:notas_piano} se presenta la correspondencia entre las notas musicales, 
+sus frecuencias y el índice utilizado dentro del arreglo \texttt{notas[]} en el programa del piano electrónico. 
+Los valores corresponden a la octava número 4, considerada la octava base del sistema. 
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Nota} & \textbf{Frecuencia (Hz)} & \textbf{Índice en arreglo} & \textbf{Octava} \\
+\hline
+DO  & 262 & 0  & 4 \\
+DO\# & 277 & 1  & 4 \\
+RE  & 294 & 2  & 4 \\
+RE\# & 311 & 3  & 4 \\
+MI  & 330 & 4  & 4 \\
+FA  & 349 & 5  & 4 \\
+FA\# & 370 & 6  & 4 \\
+SOL & 392 & 7  & 4 \\
+SOL\# & 415 & 8  & 4 \\
+LA  & 440 & 9  & 4 \\
+LA\# & 466 & 10 & 4 \\
+SI  & 494 & 11 & 4 \\
+\hline
+\end{tabular}
+\caption{Correspondencia entre notas, frecuencias e índices de la octava 4 utilizada en el piano electrónico.}
+\label{tab:notas_piano}
+\end{table}
+
+Las frecuencias de las octavas superiores (5, 6 y 7) se obtuvieron a partir de las frecuencias de referencia de la octava 4, 
+utilizando la relación:
+
+\[
+f_{n} = f_{0} \times 2^{n}
+\]
+
+donde \( f_{n} \) representa la frecuencia de una nota en la octava \( n \), 
+y \( f_{0} \) es la frecuencia de la misma nota en la octava base. 
+De esta forma, el sistema puede reproducir diferentes rangos tonales de manera programática.
+
