@@ -120,46 +120,7 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="estados.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="hardware.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="hardware.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="lcd_i2c.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="lcd_i2c.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="logica_candado.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="logica_candado.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="main.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="memoria.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="memoria.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="teclado.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="teclado.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="twi.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="twi.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
