@@ -2,7 +2,19 @@
 
 \section{Metodología}
 
-\subsection{Materiales a utilizar}
+\subsection{Limitaciones del entorno de simulación}
+
+Durante el desarrollo del Laboratorio~2 no fue posible realizar las simulaciones correspondientes en el software Proteus, debido a que no se dispone de una licencia institucional ni de acceso a la versión recomendada. Por este motivo, todas las pruebas y verificaciones se llevaron a cabo directamente sobre el hardware físico empleando la placa con microcontrolador ATmega328P, junto con los periféricos y componentes definidos para cada práctica.
+
+A pesar de esta limitación, se logró validar el funcionamiento de cada sistema mediante la ejecución en hardware real, registrando evidencias fotográficas y audiovisuales de los resultados obtenidos, disponibles en el repositorio de GitHub \cite{github_evidencias_lab2}.
+
+\subsection{Plotter}
+
+\subsection{Seleccionador de colores}
+
+\subsection{Piano electrónico}
+
+\subsubsection{Materiales a utilizar}
 \begin{itemize}
     \item Microcontrolador ATmega328P (plataforma Arduino UNO).
     \item 12 pulsadores para las notas de la escala cromática.
@@ -12,11 +24,6 @@
     \item Conexiones con jumpers y protoboard.
 \end{itemize}
 
-\subsection{Plotter}
-
-\subsection{Seleccionador de colores}
-
-\subsection{Piano}
 \subsubsection{Diseño del sistema}
 El sistema se estructuró en torno a los siguientes bloques principales:
 \begin{enumerate}
@@ -35,5 +42,7 @@ La primera melodía, denominada \textit{“Asesina”}, fue extraída a partir d
 La segunda melodía, correspondiente al tema principal de \textit{Super Mario Bros}, se obtuvo a partir de la partitura disponible en el portal MuseScore \cite{musescore_mario}. Dicha fuente incluía además una simulación visual en piano roll, lo que facilitó la identificación de las notas y su duración sin necesidad de realizar el reconocimiento auditivo de las notas, como se hizo con la primera canción. 
 
 En el documento de evidencias anexo se incluyen las hojas manuscritas utilizadas en la transcripción de ambas canciones, junto con una tabla que relaciona las notas musicales con su índice numérico dentro del arreglo de notas del programa. No fue posible incluir el archivo PDF con la partitura de la canción de \textit{Super Mario Bros} debido a que requiere una suscripción paga para su descarga, pero, sin embargo, accediendo al enlace indicado en la bibliografía es posible visualizar la partitura y la simulación en piano roll mencionada anteriormente.
+
+Para la validación del funcionamiento, se realizaron pruebas individuales de cada bloque funcional (lectura de teclas, generación de notas y comunicación UART). Se verificó la respuesta temporal del sistema y la precisión de las frecuencias generadas mediante observación en la salida del buzzer y comparación con valores teóricos de frecuencia.
 
 \subsection{Cerradura electrónica}
