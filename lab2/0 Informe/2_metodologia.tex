@@ -49,17 +49,32 @@ Para la validación del funcionamiento, se realizaron pruebas individuales de ca
 
 \subsection{Cerradura electrónica}
 
-El desarrollo de la cerradura digital se llevó a cabo en lenguaje C utilizando el entorno de programación Microchip Studio, con el microcontrolador ATmega328P como núcleo principal. 
+El desarrollo de la cerradura digital se llevó a cabo en lenguaje C utilizando el entorno de programación Microchip Studio, 
+con el microcontrolador ATmega328P como núcleo principal. 
 
-El sistema se implementó y verificó directamente sobre hardware físico, debido a la falta de licencia para el entorno de simulación Proteus, tal como se detalla en la sección de limitaciones. 
+El sistema se implementó y verificó directamente sobre hardware físico, 
+debido a la falta de licencia para el entorno de simulación Proteus, tal como se detalla en la sección de limitaciones. 
 
 \subsubsection{Estructura general del sistema}
 
-El circuito se compone de un teclado matricial 4×4, una pantalla LCD 16×2 con interfaz I\textsuperscript{2}C, dos indicadores luminosos (LED verde y rojo) y un buzzer piezoeléctrico pasivo. 
+El circuito se compone de un teclado matricial 4×4, una pantalla LCD 16×2 con interfaz I\textsuperscript{2}C, 
+dos indicadores luminosos (LED verde y rojo) y un buzzer piezoeléctrico pasivo. 
 
-El microcontrolador administra las señales de entrada provenientes del teclado, procesa la información según el estado actual del sistema y genera salidas visuales y acústicas para retroalimentar al usuario sobre el resultado de las operaciones.
+El microcontrolador administra las señales de entrada provenientes del teclado, 
+procesa la información según el estado actual del sistema y genera salidas visuales y acústicas 
+para retroalimentar al usuario sobre el resultado de las operaciones.
 
-El diagrama de conexión se presenta en la sección de anexos correspondiente (Figura~\ref{fig:Cerradura_electronica}).
+La Figura~\ref{fig:cerradura_inicio} presenta el montaje general del sistema, 
+con la pantalla LCD mostrando el mensaje inicial “Pin:”, los LEDs indicadores y el buzzer conectados al ATmega328P.  
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\columnwidth]{Anexos/Cerradura_Inicializada.png}
+    \caption{Montaje general de la cerradura electrónica con LCD iniciado mostrando el mensaje \texttt{Pin:}, teclado 4×4, LEDs y buzzer. Fuente: elaboración propia.}
+    \label{fig:cerradura_inicio}
+\end{figure}
+
+El diagrama de conexión completo se presenta en la sección de anexos correspondiente (Figura~\ref{fig:Cerradura_electronica}).
 
 \subsubsection{Procedimiento de programación}
 
