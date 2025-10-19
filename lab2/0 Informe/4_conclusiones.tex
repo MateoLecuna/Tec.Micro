@@ -17,3 +17,17 @@ En términos generales, este ejercicio evidenció una correcta integración entr
 Este módulo representa un ejemplo claro de la integración entre teoría de control, electrónica digital y fundamentos acústicos aplicados al desarrollo de sistemas embebidos musicales.
 
 \subsection{Cerradura electrónica}
+
+El desarrollo de la cerradura electrónica permitió aplicar de forma integrada los conocimientos sobre manejo de periféricos digitales, comunicación I\textsuperscript{2}C, almacenamiento no volátil y control secuencial mediante software embebido. 
+
+El sistema demostró un funcionamiento estable, con correcta interacción entre el teclado matricial, la pantalla LCD, los indicadores luminosos y el buzzer piezoeléctrico, validando la lógica de estados implementada.
+
+El uso de la memoria EEPROM del ATmega328P permitió conservar el PIN de acceso incluso ante la pérdida de alimentación, lo que refleja un diseño robusto y funcional para aplicaciones de control de acceso o autenticación básica. 
+
+Asimismo, la implementación modular del código facilitó la comprensión, depuración y posterior ampliación del sistema, ya que cada bloque (LCD, teclado, EEPROM y retroalimentación) se gestionó de manera independiente.
+
+Desde el punto de vista funcional, el sistema cumplió con todos los objetivos planteados: limitó correctamente los intentos de acceso, gestionó el bloqueo mediante una alarma visual y sonora, permitió la actualización segura del PIN y ofreció una retroalimentación clara al usuario en cada etapa del proceso. 
+
+Como líneas de mejora, se propone incorporar un sistema de control de volumen o modulación del buzzer, implementar la gestión de temporización mediante interrupciones para optimizar la eficiencia energética, y considerar la integración de un sensor adicional (por ejemplo, magnético o de proximidad) para detectar la apertura física del mecanismo. Otra posible extensión sería implementar comunicación serial con un sistema externo para el registro de eventos o intentos fallidos de acceso.
+
+En síntesis, la cerradura electrónica desarrollada evidencia la capacidad del microcontrolador ATmega328P para integrar entrada, procesamiento y salida de datos en tiempo real, constituyendo una aplicación representativa de sistemas embebidos orientados a la seguridad.
