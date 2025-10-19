@@ -45,4 +45,61 @@ En el documento de evidencias anexo se incluyen las hojas manuscritas utilizadas
 
 Para la validación del funcionamiento, se realizaron pruebas individuales de cada bloque funcional (lectura de teclas, generación de notas y comunicación UART). Se verificó la respuesta temporal del sistema y la precisión de las frecuencias generadas mediante observación en la salida del buzzer y comparación con valores teóricos de frecuencia.
 
+\vspace{0.4cm}
+
 \subsection{Cerradura electrónica}
+
+El desarrollo de la cerradura digital se llevó a cabo en lenguaje C utilizando el entorno de programación Microchip Studio, con el microcontrolador ATmega328P como núcleo principal. 
+
+El sistema se implementó y verificó directamente sobre hardware físico, debido a la falta de licencia para el entorno de simulación Proteus, tal como se detalla en la sección de limitaciones. 
+
+\subsubsection{Estructura general del sistema}
+
+El circuito se compone de un teclado matricial 4×4, una pantalla LCD 16×2 con interfaz I\textsuperscript{2}C, dos indicadores luminosos (LED verde y rojo) y un buzzer piezoeléctrico pasivo. 
+
+El microcontrolador administra las señales de entrada provenientes del teclado, procesa la información según el estado actual del sistema y genera salidas visuales y acústicas para retroalimentar al usuario sobre el resultado de las operaciones.
+
+El diagrama de conexión se presenta en la sección de anexos correspondiente (Figura~\ref{fig:Cerradura_electronica}).
+
+\subsubsection{Procedimiento de programación}
+
+El programa se estructuró de forma modular, agrupando las funciones según su propósito:
+\begin{itemize}
+    \item \textbf{Módulo de LCD e interfaz I\textsuperscript{2}C:} funciones de inicialización, escritura de comandos, envío de datos y posicionamiento del cursor, 
+    implementadas mediante rutinas básicas de TWI.
+    \item \textbf{Módulo del teclado matricial:} lectura por escaneo de filas, detección de pulsaciones y conversión a caracteres mediante un mapa interno. 
+    Se emplearon retardos cortos de estabilización para eliminar rebotes mecánicos.
+    \item \textbf{Módulo de EEPROM:} almacenamiento del PIN en memoria no volátil, con verificación de validez al inicio 
+    e inicialización con valor por defecto (“1234”) en caso de no existir un PIN previo.
+    \item \textbf{Módulo de retroalimentación:} control del LED verde, LED rojo y buzzer para representar estados del sistema 
+    (acceso concedido, error, bloqueo, confirmación de cambio de clave, etc.).
+\end{itemize}
+
+\subsubsection{Flujo de operación}
+
+El sistema inicia verificando la existencia de un PIN válido en la memoria EEPROM. 
+Si no se detecta, se crea uno por defecto y se muestra el mensaje “Pin: ” en el LCD.  
+A partir de allí, el usuario puede:
+\begin{enumerate}
+    \item Ingresar el PIN y confirmar con la tecla \texttt{A}.  
+    \item Iniciar el cambio de contraseña con la tecla \texttt{C}.  
+    \item Borrar el ingreso actual con la tecla \texttt{B}.  
+    \item Utilizar la tecla \texttt{D} como llave maestra para desbloquear el sistema.
+\end{enumerate}
+
+Si el PIN ingresado tiene menos de 4 dígitos, el sistema muestra “Min 4 dígitos” y emite un pitido corto.  
+Si el PIN es incorrecto, se incrementa un contador de intentos y se activa una señal acústica junto al LED rojo durante 500~ms.  
+Tras tres intentos erróneos consecutivos, el sistema entra en modo de bloqueo, 
+activando una alarma visual y sonora que permanece encendida hasta que se ingrese la tecla maestra \texttt{D}.  
+Cuando el PIN es correcto, se activa el LED verde y el buzzer emite tres pulsos cortos de confirmación.
+
+El modo de cambio de PIN consta de tres fases secuenciales: verificación del PIN actual, ingreso del nuevo PIN (4–6 dígitos) y confirmación.  
+El nuevo valor se almacena en la EEPROM mediante escritura byte a byte.
+
+\subsubsection{Validación funcional}
+
+Las pruebas de verificación se realizaron en hardware real, 
+evaluando la respuesta del sistema ante diferentes secuencias de entrada: 
+PIN correcto, PIN incorrecto, longitud insuficiente, cambio de clave y condición de bloqueo.  
+En cada caso, se registraron los mensajes mostrados en el LCD y los patrones de activación del buzzer y LEDs, 
+confirmando el cumplimiento del comportamiento esperado definido en el diseño lógico.

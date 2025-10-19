@@ -28,5 +28,35 @@ se detalla la correspondencia entre las notas musicales y sus frecuencias asocia
 así como el índice utilizado en el arreglo de notas dentro del código fuente del proyecto.
 
 En resumen, el piano electrónico implementado combina técnicas de generación de señales mediante modulación por ancho de pulso (PWM) con el control secuencial de entradas digitales, demostrando la capacidad del microcontrolador ATmega328P para integrar procesos de adquisición, procesamiento y salida de información en tiempo real, propios de un sistema embebido interactivo.
+
 \subsection{Cerradura electrónica}
+
+La cerradura digital implementada se basa en el microcontrolador ATmega328P y combina adquisición de entradas, procesamiento secuencial y señalización al usuario para validar un PIN de acceso. El sistema integra un teclado matricial 4×4 como interfaz de ingreso, una pantalla LCD 16×2 con interfaz I\textsuperscript{2}C para retroalimentación, y elementos de salida (LEDs y buzzer) para confirmar eventos y estados del sistema. El PIN se almacena de manera no volátil en la memoria EEPROM interna del microcontrolador, lo que permite conservar la configuración aun sin alimentación \cite{atmega328p_datasheet}.
+
+\subsubsection{Ingreso por teclado matricial 4×4}
+El teclado se organiza en una matriz de cuatro filas y cuatro columnas. La lectura se realiza mediante \textit{escaneo por filas}: el firmware activa secuencialmente cada fila (lógica baja) y, en cada paso, muestrea las columnas configuradas como entradas con \textit{pull-up} interno. Cuando una tecla se presiona, se establece un camino de conducción que fuerza a nivel bajo la columna correspondiente, permitiendo identificar la pareja (fila, columna) y mapearla al carácter asociado (\texttt{0 a 9}, \texttt{A a D}, \texttt{*}, \texttt{\#}). Este procedimiento se complementa con retardos breves para atenuar el efecto de rebote mecánico (\textit{debouncing}). La disposición eléctrica y el mapeo de pines siguen el módulo de teclado 4×4 utilizado \cite{keypad_4x4_okystar}.
+
+\subsubsection{Visualización: LCD 16×2 con interfaz I\textsuperscript{2}C}
+La pantalla LCD se controla en modo de 4 bits a través de un \textit{backpack} basado en el expansor de E/S PCF8574, que traslada la comunicación I\textsuperscript{2}C (líneas SDA/SCL) a señales paralelas (\texttt{RS}, \texttt{E}, \texttt{D4 a D7} y control de backlight). A nivel de bus, el ATmega328P opera como maestro TWI e inicia/termina transacciones mediante condiciones \textit{START}/\textit{STOP}, escribiendo bytes en la dirección del expansor. Sobre esa base, el software implementa las primitivas de inicialización del LCD (función, \textit{display on/off}, \textit{clear}, \textit{entry mode}) y las rutinas de posicionamiento y envío de datos/caracteres. La interfaz seleccionada reduce el número de pines GPIO necesarios y simplifica el cableado \cite{lcd_16x2_i2c_datasheet}.
+
+\subsubsection{Almacenamiento no volátil del PIN (EEPROM)}
+El PIN de usuario (longitud configurable entre 4 y 6 dígitos) se guarda en la EEPROM interna, junto con su longitud. En el arranque, si no hay un PIN válido, el firmware inicializa un valor por defecto y normaliza la estructura de almacenamiento. La EEPROM permite escritura/lectura byte a byte, con funciones de actualización que evitan ciclos de borrado innecesarios, prolongando la vida útil de la memoria \cite{atmega328p_datasheet}.
+
+\subsubsection{Gestión de estados y seguridad}
+El flujo lógico se organiza como una máquina de estados finitos:
+\begin{itemize}
+    \item \textbf{Modo normal}: ingreso del PIN y validación.
+    \item \textbf{Cambio de PIN}: secuencia guiada en tres pasos: verificación del PIN actual, ingreso del nuevo PIN y confirmación (comando \texttt{C} para iniciar; \texttt{A} para confirmar; \texttt{B} para limpiar).
+    \item \textbf{Bloqueo}: tras tres intentos fallidos consecutivos, el sistema ingresa en estado de alarma/bloqueo. La salida requiere la \textit{llave maestra} (\texttt{D}), lo que restablece el contador de intentos y retorna a modo normal.
+\end{itemize}
+Adicionalmente, se implementan validaciones de formato (por ejemplo, longitud mínima de 4 dígitos). Las decisiones de diseño (límite de intentos, clave maestra, confirmación doble del nuevo PIN) elevan la robustez frente a errores de ingreso y mitigaciones de prueba y error.
+
+\subsubsection{Señalización: LEDs y Buzzer}
+La interacción con el usuario se refuerza mediante señales visuales y acústicas. El \textbf{LED verde} y un patrón de tres pulsos cortos del \textbf{buzzer} indican validación correcta; el \textbf{LED rojo} junto con un pulso sostenido del buzzer señalan error de PIN o formatos inválidos. En estado de bloqueo, se alternan periodos de activación/desactivación de LED rojo y buzzer hasta la intervención con la tecla maestra. El buzzer piezoeléctrico empleado funciona como transductor binario (encendido/apagado) para retroalimentación breve, diferenciándose del uso tonal continuo aplicado en el ejercicio del piano \cite{buzzer_emx7t05sp_datasheet}.
+
+\subsubsection{Consideraciones temporales y \textit{debouncing}}
+La temporización se apoya en retardos de corta duración para estabilizar lecturas del teclado y construir patrones de señalización perceptibles (confirmaciones, alarmas). En sistemas embebidos, el \textit{debouncing} por software con retardos y verificación consecutiva de estado es una estrategia suficiente para teclados de baja tasa de eventos; no obstante, para escalabilidad se podrían considerar interrupciones por cambio de pin, filtros digitales o máquinas de tiempo dedicadas.
+
+\subsubsection{Síntesis}
+En conjunto, la cerradura digital ilustra la integración de periféricos síncronos (I\textsuperscript{2}C/TWI) y asíncronos (GPIO escaneados), memoria no volátil (EEPROM) y una máquina de estados que implementa políticas de seguridad (longitud mínima, límite de intentos, clave maestra). El diseño resultante evidencia la capacidad del ATmega328P para articular adquisición, procesamiento y respuesta en tiempo real en un entorno embebido con interfaz hombre–máquina clara y consistente.
 
