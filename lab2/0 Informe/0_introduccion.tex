@@ -1,4 +1,46 @@
 \section{Introducción}
 
+El presente laboratorio tuvo como propósito afianzar los conocimientos adquiridos en el manejo de periféricos del microcontrolador ATmega328P, 
+aplicando conceptos de comunicación digital, control de señales PWM, almacenamiento en memoria no volátil y desarrollo modular en lenguaje C. 
+A través de distintos montajes experimentales, se buscó integrar la interacción entre hardware y software mediante el diseño de sistemas embebidos funcionales, 
+optimizando tanto la organización del código como la eficiencia en el uso de recursos del microcontrolador.
 
-\textbf{Objetivos específicos}
+Las actividades se dividieron en cuatro proyectos independientes pero complementarios entre sí: 
+un \textbf{piano electrónico} con control por UART y reproducción de melodías programadas; 
+una \textbf{cerradura electrónica} basada en teclado matricial, pantalla LCD y almacenamiento de PIN en EEPROM; 
+un \textbf{plotter XY} controlado por motores paso a paso; 
+y un \textbf{selector de color} implementado mediante un sensor LDR y un servomotor para posicionamiento angular.  
+Cada uno de estos sistemas permitió poner en práctica diferentes aspectos del control digital, 
+como el manejo de temporizadores, interrupciones, protocolos de comunicación y procesamiento secuencial de señales digitales.
+
+\section{Objetivos}
+
+\subsection{Objetivo general}
+
+Diseñar, programar e implementar diversos sistemas embebidos utilizando el microcontrolador ATmega328P, 
+integrando periféricos de entrada y salida, almacenamiento y comunicación serial, 
+para afianzar los conocimientos de programación estructurada en lenguaje C y la comprensión del funcionamiento interno del hardware.
+
+\subsection{Objetivos específicos}
+
+\begin{itemize}
+    \item Implementar un \textbf{piano electrónico} capaz de reproducir notas musicales y melodías predefinidas, 
+    utilizando modulación por ancho de pulso (PWM) y comunicación UART para la selección remota de canciones.
+    
+    \item Desarrollar una \textbf{cerradura electrónica} con control de acceso mediante teclado matricial, 
+    visualización en LCD e implementación de almacenamiento no volátil del PIN mediante la memoria EEPROM interna del microcontrolador.
+    
+    \item Construir un \textbf{plotter XY} controlado por motores paso a paso, 
+    capaz de representar gráficamente figuras en un plano, 
+    aplicando técnicas de control secuencial y temporización precisa.
+    
+    \item Diseñar un \textbf{selector de color} basado en un sensor fotoresistivo (LDR) 
+    y un servomotor, de modo que el sistema oriente el eje de detección hacia la fuente de luz predominante.
+    
+    \item Analizar el comportamiento eléctrico de cada montaje, 
+    evaluando la respuesta temporal, el consumo energético y la estabilidad del sistema durante su operación continua.
+    
+    \item Documentar el desarrollo, la metodología de diseño y los resultados experimentales de cada sistema, 
+    siguiendo el formato técnico IEEE propuesto para los informes de laboratorio.
+\end{itemize}
+
