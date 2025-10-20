@@ -1,0 +1,57 @@
+from PIL import Image
+import serial, time
+
+# --- CONFIG ---
+image_path = r"C:\Users\heenr\Desktop\CNC Plotter\imagen2.png"
+max_width = 162       # CNC X-axis limit
+max_height = 270      # CNC Y-axis limit
+serial_port = "COM7"
+baud_rate = 9600
+# ---------------
+
+# Open and analyze image
+img = Image.open(image_path).convert("L")
+orig_width, orig_height = img.size
+print(f"🖼️ Original image size: {orig_width}x{orig_height}")
+
+# --- SCALE ONLY IF TOO LARGE ---
+if orig_width > max_width or orig_height > max_height:
+    scale_factor = min(max_width / orig_width, max_height / orig_height)
+    new_width = int(orig_width * scale_factor)
+    new_height = int(orig_height * scale_factor)
+    img = img.resize((new_width, new_height))
+    print(f"📏 Resized to fit CNC area: {new_width}x{new_height}")
+else:
+    new_width, new_height = orig_width, orig_height
+    print("✅ Image is within limits, no resizing performed.")
+
+# Open serial
+ser = serial.Serial(serial_port, baud_rate, timeout=1)
+time.sleep(2)
+
+input("Press ENTER to start sending the image to the CNC...")
+
+def shade_from_gray(value):
+    return int(value / 32)  # invert grayscale: dark=7, bright=0
+
+# Build the data stream
+pixels = list(img.getdata())
+width, height = img.size
+data_stream = ""
+
+for y in range(height):
+    row = [str(shade_from_gray(pixels[y * width + x])) for x in range(width)]
+    data_stream += ''.join(row) + '8'  # end of line
+data_stream += '9'  # end of print
+
+# --- SEND TO ARDUINO WITH HANDSHAKE ---
+for ch in data_stream:
+    while True:
+        line = ser.readline().decode().strip()
+        if line == "1":
+            break
+    ser.write(ch.encode())
+    print(f"Sent: {ch}")
+
+print("✅ Image transmission complete!")
+ser.close()
