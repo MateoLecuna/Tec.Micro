@@ -1,7 +1,48 @@
+\newpage
+
 \section{Marco Teórico}
 
 \subsection{Componentes y fundamentos del sistema}
 
+\subsubsection{Microcontrolador ATmega328P / Arduino UNO}
+
+El ATmega328P es un microcontrolador de 8 bits con arquitectura AVR, reloj típico de 16~MHz, memoria \textit{Flash} (programa), SRAM (datos) y EEPROM (no volátil). Dispone de temporizadores de 8 y 16~bits, puertos GPIO digitales, conversores A/D y periféricos de comunicación (UART, TWI/I\textsuperscript{2}C, SPI). En este laboratorio se utilizó montado sobre la plataforma Arduino~UNO, aprovechando su circuito de alimentación, cristal de 16~MHz y acceso conveniente a pines de E/S \cite{atmega328p_datasheet}.
+
+\subsubsection{Señales PWM y temporización}
+
+La modulación por ancho de pulso (PWM) se empleó para dos fines: (i) generación de señales acústicas en el piano (variación de frecuencia/periodo mediante temporizadores), y (ii) control de posición de servomotores (variación de ciclo útil dentro de un periodo fijo). La obtención de frecuencias precisas se realizó configurando los temporizadores del ATmega328P en modos compatibles con la resolución requerida \cite{atmega328p_datasheet}.
+
+\subsubsection{Indicadores: LEDs y buzzer piezoeléctrico}
+
+Se utilizaron LEDs como señalización visual de estados (éxito, error, bloqueo) y un buzzer piezoeléctrico pasivo para retroalimentación acústica. El buzzer pasivo requiere una señal conmutada (proporcionada por el microcontrolador), a diferencia del activo que integra su propio oscilador. En el piano se aprovechó PWM para tonos audibles; en la cerradura se usaron patrones de \textit{beeps} cortos/largos para codificar eventos \cite{buzzer_emx7t05sp_datasheet}.
+
+\subsubsection{Pantalla LCD 16×2 con interfaz I\textsuperscript{2}C (PCF8574)}
+
+Para visualización se integró un LCD 16×2 comandado en modo 4 bits mediante un \textit{backpack} basado en el expansor de E/S PCF8574. El microcontrolador opera como maestro TWI/I\textsuperscript{2}C y escribe comandos/datos en el expansor, reduciendo el número de pines necesarios y simplificando el cableado \cite{lcd_16x2_i2c_datasheet}.
+
+\subsubsection{Teclado matricial 4×4}
+
+El ingreso de datos en la cerradura se realizó con un teclado 4×4 escaneado por filas/columnas: se activa cada fila y se leen las columnas con \textit{pull-up} interno. Se aplicó \textit{debouncing} por software con retardos cortos y verificación del estado estable, mapeando (fila,columna) a caracteres (\texttt{0–9}, \texttt{A–D}, \texttt{*}, \texttt{\#}) \cite{keypad_4x4_okystar}.
+
+\subsubsection{Memoria EEPROM interna}
+
+El PIN de la cerradura se almacenó en EEPROM para persistencia sin energía. Se validó longitud y contenido al arranque, inicializando un valor por defecto cuando fuera necesario. Las rutinas de escritura/actualización minimizan el desgaste por ciclos de borrado/escritura \cite{atmega328p_datasheet}.
+
+\subsubsection{Servomotor (modelo SG90)}
+
+Se empleó un servomotor de rotación limitada (aprox. \(0^{\circ}\)–\(180^{\circ}\)) controlado por impulsos de \(1\text{–}2\,\mathrm{ms}\) dentro de un período de \(20\,\mathrm{ms}\) (\(50\,\mathrm{Hz}\)). El ángulo se define por el ancho del pulso: valores cercanos a \(1\,\mathrm{ms}\), \(1.5\,\mathrm{ms}\) y \(2\,\mathrm{ms}\) corresponden típicamente a los extremos e intermedio del recorrido, respectivamente. En el laboratorio se utilizó el modelo SG90, cuyas especificaciones eléctricas y mecánicas se tomaron de su hoja de datos \cite{servo_sg90_datasheet}.
+
+\subsubsection{Motores paso a paso (Plotter)}
+
+Para el \textit{plotter XY} se consideró el control de motores paso a paso, caracterizados por su avance angular discreto. El movimiento se obtiene excitando las bobinas según secuencias (\textit{full-/half-step}, microstepping), coordinadas temporalmente por el microcontrolador. La temporización precisa es clave para mantener torque y evitar pérdida de pasos.
+
+\subsubsection{Sensor LDR (fotoresistencia)}
+
+El LDR presenta una resistencia inversamente proporcional a la iluminación incidente, lo que permite sensar luminosidad con un divisor resistivo y lectura A/D. En el selector de color se empleó como señal de realimentación para posicionar el servomotor hacia la fuente de luz predominante \cite{ldr_datasheet}.
+
+\subsubsection{Comunicación UART y \textit{debouncing}}
+
+La UART se utilizó para emitir mensajes de diagnóstico y recibir comandos (por ejemplo, selección de melodías en el piano). Para entradas digitales provenientes de pulsadores y teclado se aplicó \textit{debouncing} por software mediante retardos y verificación consecutiva del estado estable, técnica suficiente dada la baja tasa de eventos del sistema \cite{atmega328p_datasheet}.
 
 
 \subsection{Piano}
