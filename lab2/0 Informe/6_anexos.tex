@@ -63,10 +63,11 @@ Las evidencias de la realización de los ejercicios del laboratorio dos, se encu
 
 \subsection{Tablas complementarias}
 
-\subsubsection{Piano}
-A continuación se presentan las tablas complementarias las cuales resumen la información técnica relevante utilizada durante el desarrollo y programación del sistema.
+A continuación se presentan las tablas complementarias las cuales resumen la información técnica relevante utilizada durante el desarrollo y programación de los sistemas.
 
 \vspace{0.5cm}
+
+\subsubsection{Piano}
 
 \paragraph{Correspondencia entre notas y frecuencias del piano}
 
@@ -181,3 +182,106 @@ Semisemi. & $\times 1/8$ & 62.5 \\
 \end{table}
 
 Estas duraciones permiten definir el ritmo de las melodías reproducidas por el piano electrónico, facilitando la programación de diferentes estilos musicales.
+
+\newpage
+
+\subsubsection{Cerradura electrónica}
+
+\paragraph{Mapa del teclado matricial 4×4}
+
+En la Tabla~\ref{tab:teclado_cerradura} se detalla la disposición de las teclas del teclado matricial 4×4 utilizado en la cerradura electrónica, 
+así como las funciones asociadas a cada una dentro del sistema.  
+Esta asignación permitió simplificar la interacción del usuario con el microcontrolador y establecer un conjunto claro de comandos de control.
+
+\begin{table}[H]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Fila/Columna} & \textbf{C0} & \textbf{C1} & \textbf{C2} & \textbf{C3} \\
+\hline
+\textbf{F0} & 1 & 2 & 3 & A (Confirmar) \\
+\hline
+\textbf{F1} & 4 & 5 & 6 & B (Borrar) \\
+\hline
+\textbf{F2} & 7 & 8 & 9 & C (Cambiar PIN) \\
+\hline
+\textbf{F3} & * & 0 & \# & D (Llave maestra) \\
+\hline
+\end{tabular}
+}
+\caption{Distribución y funciones asignadas a cada tecla del teclado matricial 4×4. Fuente: elaboración propia.}
+\label{tab:teclado_cerradura}
+\end{table}
+
+El mapeo se mantuvo constante durante todas las pruebas, garantizando la coherencia entre el hardware y la lógica del programa, 
+y permitiendo una detección precisa de cada pulsación sin interferencias entre filas y columnas.
+
+\vspace{0.3cm}
+
+\paragraph{Mensajes mostrados en pantalla LCD}
+
+La Tabla~\ref{tab:lcd_cerradura} resume los mensajes principales que el sistema muestra en el LCD 16×2 durante las distintas etapas de operación.  
+Cada texto cumple una función específica de retroalimentación para el usuario, 
+indicando tanto los estados normales de funcionamiento como las condiciones de error o advertencia.
+
+\begin{table}[H]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Estado del sistema} & \textbf{Mensaje en pantalla LCD} \\
+\hline
+Inicio del sistema & \texttt{Pin:} \\
+PIN correcto & \texttt{OK} \\
+PIN incorrecto & \texttt{Error} \\
+Longitud insuficiente & \texttt{Min 4 digitos} \\
+Bloqueo por intentos fallidos & \texttt{Bloqueado} \\
+Modo cambio de PIN (actual) & \texttt{Ingrese actual} \\
+Modo cambio de PIN (nuevo) & \texttt{Nuevo PIN (4-6)} \\
+Modo confirmación de PIN & \texttt{Confirmar nuevo} \\
+PIN actualizado & \texttt{PIN actualizado} \\
+Reinicio por llave maestra & \texttt{MASTER OK} \\
+\hline
+\end{tabular}
+}
+\caption{Mensajes visualizados en la pantalla LCD durante la operación del sistema. Fuente: elaboración propia.}
+\label{tab:lcd_cerradura}
+\end{table}
+
+Estos mensajes facilitaron la interacción usuario–sistema, 
+brindando indicaciones claras sobre cada fase del proceso de validación o configuración 
+y reduciendo la posibilidad de errores en la manipulación del dispositivo.
+
+\vspace{0.3cm}
+
+\paragraph{Comportamiento de LEDs y buzzer}
+
+La Tabla~\ref{tab:leds_buzzer_cerradura} describe la correspondencia entre los eventos del sistema 
+y las señales de salida emitidas por los indicadores luminosos (LEDs) y el buzzer piezoeléctrico.  
+Estas salidas fueron fundamentales para proporcionar una retroalimentación inmediata, tanto visual como sonora, 
+sobre el estado actual de la cerradura.
+
+\begin{table}[H]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|l|c|c|l|}
+\hline
+\textbf{Evento} & \textbf{LED Verde} & \textbf{LED Rojo} & \textbf{Buzzer} \\
+\hline
+PIN correcto & Encendido breve & Apagado & 3 pulsos cortos \\
+PIN incorrecto & Apagado & Encendido 0.5 s & 1 tono continuo 0.5 s \\
+PIN demasiado corto & Apagado & Encendido breve & 1 pitido corto \\
+Bloqueo & Apagado & Intermitente & Alarma intermitente \\
+Cambio de PIN exitoso & Encendido breve & Apagado & 3 pulsos cortos \\
+Cambio de PIN erróneo & Apagado & Encendido breve & 1 pitido corto \\
+Reinicio (tecla D) & Encendido breve & Apagado & 3 pulsos cortos \\
+\hline
+\end{tabular}
+}
+\caption{Relación entre eventos del sistema y las salidas de retroalimentación (LEDs y buzzer). Fuente: elaboración propia.}
+\label{tab:leds_buzzer_cerradura}
+\end{table}
+
+El esquema de respuesta permitió distinguir fácilmente entre acciones exitosas, errores y condiciones de alarma, 
+mejorando la usabilidad del sistema y confirmando la correcta sincronización entre hardware y software.
