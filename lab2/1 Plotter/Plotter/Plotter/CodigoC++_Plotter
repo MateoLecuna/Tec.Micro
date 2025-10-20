@@ -1,0 +1,138 @@
+#include <Servo.h>
+Servo penServo;
+
+// --- PIN DEFINITIONS ---
+const int StepX = 2;
+const int DirX  = 5;
+const int StepY = 3;
+const int DirY  = 6;
+const int StepZ = 4;
+const int DirZ  = 7;
+const int finX  = 9;
+const int finY  = 10;
+const int servo = 11; // PWM pin, connected to Z+ header
+const int width = 46; // one scanline width (steps per row)
+const int t = 1200;   // microseconds between step edges
+
+// --- STATE ---
+bool ready = true;
+bool printing = false;
+
+// --- SAFETY LIMITS ---
+const long MAX_X_STEPS = (long)width * 50L; // prevent runaway (adjust as needed)
+
+////////////////////// HOMING //////////////////////
+bool homeAxis(int stepPin, int dirPin, int limitPin, const char* axisName) {
+  digitalWrite(dirPin, LOW);  // move toward switch
+  unsigned long safety = millis();
+  while (digitalRead(limitPin) == LOW) {
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(t);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(t);
+    if (millis() - safety > 10000) { // 10s safety cutoff
+      Serial.print("⚠️ Homing timeout on ");
+      Serial.println(axisName);
+      return false;
+    }
+  }
+  return true;
+}
+
+void homeAll() {
+  Serial.println("Homing all axes...");
+  homeAxis(StepX, DirX, finX, "X");
+  homeAxis(StepY, DirY, finY, "Y");
+  Serial.println("Homing done.");
+  digitalWrite(DirX, HIGH); // start moving forward
+  digitalWrite(DirY, HIGH);
+}
+
+////////////////////// SERVO //////////////////////
+void penDwn() { penServo.write(54); delay(100); }
+void penUp()  { penServo.write(35); delay(100); }
+
+////////////////////// DRAW //////////////////////
+void cycle(int shade) {
+  if (shade < 0 || shade > 7) return;
+  long steps = shade * 28;
+  if (shade == 0) { penUp(); steps = 7 * 28; }
+  else if (shade < 7) {
+    penDwn();
+    for (int i = 0; i <= steps; i++) {
+      digitalWrite(StepX, HIGH); delayMicroseconds(t);
+      digitalWrite(StepX, LOW);  delayMicroseconds(t);
+    }
+    penUp();
+    for (int i = 0; i <= (7 - shade) * 28; i++) {
+      digitalWrite(StepX, HIGH); delayMicroseconds(t);
+      digitalWrite(StepX, LOW);  delayMicroseconds(t);
+    }
+    return;
+  }
+  // shade == 7
+  penDwn();
+  for (int i = 0; i <= steps; i++) {
+    digitalWrite(StepX, HIGH); delayMicroseconds(t);
+    digitalWrite(StepX, LOW);  delayMicroseconds(t);
+  }
+  penUp();
+}
+
+////////////////////// SETUP //////////////////////
+void setup() {
+  penServo.attach(servo);
+  pinMode(StepX, OUTPUT); pinMode(DirX, OUTPUT);
+  pinMode(StepY, OUTPUT); pinMode(DirY, OUTPUT);
+  pinMode(StepZ, OUTPUT); pinMode(DirZ, OUTPUT);
+  pinMode(finX, INPUT_PULLUP); pinMode(finY, INPUT_PULLUP);
+  pinMode(servo, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("CNC ON");
+
+  penUp();
+  homeAll();
+
+  Serial.println("CNC ready");
+  Serial.println("1"); // ready for Python
+}
+
+////////////////////// LOOP //////////////////////
+void loop() {
+  static int dir = 1;
+
+  if (Serial.available() && ready) {
+    int data = Serial.read();
+    if (data == '\n' || data == '\r') return;
+    ready = false;
+
+    switch (data) {
+      case '8': // new line
+        digitalWrite(DirY, HIGH);
+        for (int i = 0; i <= width; i++) {
+          digitalWrite(StepY, HIGH);
+          delayMicroseconds(t);
+          digitalWrite(StepY, LOW);
+          delayMicroseconds(t);
+        }
+        dir = !dir;
+        digitalWrite(DirX, dir);
+        break;
+
+      case '9': // end of print
+        Serial.println("Print finished!");
+        penUp();
+        homeAll();
+        break;
+
+      default: { // grayscale 0–7
+        int shade = data - '0';
+        if (shade >= 0 && shade <= 7) cycle(shade);
+        break;
+      }
+    }
+
+    ready = true;
+    Serial.println("1");
+  }
+}
