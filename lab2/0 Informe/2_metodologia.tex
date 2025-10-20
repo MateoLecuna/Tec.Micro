@@ -33,6 +33,14 @@ El sistema se estructuró en torno a los siguientes bloques principales:
     \item \textbf{Reproducción de canciones:} La comunicación UART se estableció para recibir comandos externos y activar la ejecución de melodías predefinidas. Estos comandos permiten conmutar entre modo piano manual y modo automático.
 \end{enumerate}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\columnwidth]{Anexos/Conexionado_Piano.png}
+    \caption{Montaje general del piano electrónico con pulsadores, buzzer y microcontrolador ATmega328P. Fuente: elaboración propia.}
+    \label{fig:piano_conexion}
+\end{figure}
+
+
 \subsubsection{Obtención y transcripción de melodías}
 
 Para la programación de las canciones predefinidas, fue necesario obtener previamente las secuencias de notas, duraciones y octavas de cada una. 
