@@ -1,0 +1,187 @@
+#define F_CPU 16000000UL
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#include <stdlib.h>
+
+// ----------- PIN DEFINITIONS -----------
+#define StepX PB2
+#define DirX  PB3
+#define StepY PB4
+#define DirY  PB5
+#define StepZ PB6
+#define DirZ  PB7
+#define finX  PD2
+#define finY  PD3
+#define servo PB1 // PWM pin
+#define width 46
+#define t 1200 // microseconds between step edges
+
+// ----------- STATE -----------
+volatile uint8_t ready = 1;
+
+// ----------- SERIAL -----------
+// 9600 baud at 16 MHz
+void uart_init(void) {
+    UBRR0H = (unsigned char)(103 >> 8);
+    UBRR0L = (unsigned char)103;
+    UCSR0B = (1 << TXEN0) | (1 << RXEN0);
+    UCSR0C = (1 << UCSZ01) | (1 << UCSZ00); // 8-bit
+}
+
+void uart_send_char(char data) {
+    while (!(UCSR0A & (1 << UDRE0)));
+    UDR0 = data;
+}
+
+void uart_send_string(const char* str) {
+    while (*str) uart_send_char(*str++);
+}
+
+char uart_read_char(void) {
+    while (!(UCSR0A & (1 << RXC0)));
+    return UDR0;
+}
+
+// ----------- SERVO (Timer1, 50Hz) -----------
+void servo_init(void) {
+    DDRB |= (1 << servo);
+    // Fast PWM, TOP = ICR1, non-inverting
+    TCCR1A = (1 << COM1A1) | (1 << WGM11);
+    TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS11); // clk/8
+    ICR1 = 39999; // 50Hz period
+}
+
+void servo_write(uint8_t angle) {
+    uint16_t pulse = 2000 + ((uint32_t)angle * 1000) / 180;
+    OCR1A = pulse * 2; // timer ticks
+}
+
+// ----------- HELPER FUNCTIONS -----------
+void pin_high(volatile uint8_t* port, uint8_t pin) {
+    *port |= (1 << pin);
+}
+
+void pin_low(volatile uint8_t* port, uint8_t pin) {
+    *port &= ~(1 << pin);
+}
+
+uint8_t pin_read(volatile uint8_t* pinReg, uint8_t pin) {
+    return ((*pinReg & (1 << pin)) != 0);
+}
+
+// ----------- HOMING -----------
+uint8_t homeAxis(volatile uint8_t* stepPort, uint8_t stepPin, volatile uint8_t* dirPort, uint8_t dirPin,
+                 volatile uint8_t* limitPinReg, uint8_t limitPin) {
+
+    pin_low(dirPort, dirPin); // move toward switch
+    uint32_t safety = 0;
+    while (!pin_read(limitPinReg, limitPin)) {
+        pin_high(stepPort, stepPin);
+        _delay_us(t);
+        pin_low(stepPort, stepPin);
+        _delay_us(t);
+        safety++;
+        if (safety > 8000UL) { // ~10s at 300us per loop
+            uart_send_string("⚠️ Homing timeout\r\n");
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void homeAll(void) {
+    uart_send_string("Homing all axes...\r\n");
+    homeAxis(&PORTB, StepX, &PORTB, DirX, &PIND, finX);
+    homeAxis(&PORTB, StepY, &PORTB, DirY, &PIND, finY);
+    uart_send_string("Homing done.\r\n");
+    pin_high(&PORTB, DirX);
+    pin_high(&PORTB, DirY);
+}
+
+// ----------- PEN -----------
+void penUp(void) { servo_write(35); _delay_ms(100); }
+void penDwn(void) { servo_write(54); _delay_ms(100); }
+
+// ----------- DRAW -----------
+void cycle(int shade) {
+    if (shade < 0 || shade > 7) return;
+    long steps = shade * 28;
+
+    if (shade == 0) {
+        penUp();
+        steps = 7 * 28;
+    } else if (shade < 7) {
+        penDwn();
+        for (long i = 0; i <= steps; i++) {
+            pin_high(&PORTB, StepX); _delay_us(t);
+            pin_low(&PORTB, StepX);  _delay_us(t);
+        }
+        penUp();
+        for (long i = 0; i <= (7 - shade) * 28; i++) {
+            pin_high(&PORTB, StepX); _delay_us(t);
+            pin_low(&PORTB, StepX);  _delay_us(t);
+        }
+        return;
+    }
+    // shade == 7
+    penDwn();
+    for (long i = 0; i <= steps; i++) {
+        pin_high(&PORTB, StepX); _delay_us(t);
+        pin_low(&PORTB, StepX);  _delay_us(t);
+    }
+    penUp();
+}
+
+// ----------- MAIN -----------
+int main(void) {
+    // Pin directions
+    DDRB |= (1 << StepX) | (1 << DirX) | (1 << StepY) | (1 << DirY) |
+            (1 << StepZ) | (1 << DirZ) | (1 << servo);
+    DDRD &= ~((1 << finX) | (1 << finY)); // inputs
+    PORTD |= (1 << finX) | (1 << finY);   // pull-ups
+
+    uart_init();
+    servo_init();
+
+    uart_send_string("CNC ON\r\n");
+    penUp();
+    homeAll();
+    uart_send_string("CNC ready\r\n1\r\n"); // ready for Python
+
+    int dir = 1;
+
+    while (1) {
+        if ((UCSR0A & (1 << RXC0)) && ready) {
+            char data = uart_read_char();
+            if (data == '\n' || data == '\r') continue;
+            ready = 0;
+
+            switch (data) {
+                case '8': // new line
+                    pin_high(&PORTB, DirY);
+                    for (int i = 0; i <= width; i++) {
+                        pin_high(&PORTB, StepY); _delay_us(t);
+                        pin_low(&PORTB, StepY);  _delay_us(t);
+                    }
+                    dir = !dir;
+                    if (dir) pin_high(&PORTB, DirX); else pin_low(&PORTB, DirX);
+                    break;
+
+                case '9': // end of print
+                    uart_send_string("Print finished!\r\n");
+                    penUp();
+                    homeAll();
+                    break;
+
+                default: { // grayscale 0–7
+                    int shade = data - '0';
+                    if (shade >= 0 && shade <= 7) cycle(shade);
+                    break;
+                }
+            }
+            ready = 1;
+            uart_send_string("1\r\n");
+        }
+    }
+}
