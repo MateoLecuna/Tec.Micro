@@ -10,6 +10,21 @@ El sistema desarrollado logró cumplir satisfactoriamente los objetivos propuest
 
 La comunicación UART fue implementada correctamente, permitiendo el control remoto del sistema desde una interfaz serial. Se configuraron tres comandos principales: \texttt{C1} y \texttt{C2}, utilizados para la reproducción de dos canciones predefinidas almacenadas en memoria, y el comando \texttt{PIANO}, que devuelve al modo manual de ejecución por teclas. El comando \texttt{STOP} no fue implementado debido a limitaciones de tiempo, aunque el sistema mantiene estabilidad y correcta respuesta durante la ejecución de las melodías.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\columnwidth]{Anexos/Piano_UART.png}
+    \caption{Interacción del piano electrónico mediante comunicación UART, mostrando la recepción de comandos desde el terminal serial. Fuente: elaboración propia.}
+    \label{fig:piano_uart}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\columnwidth]{Anexos/Piano_Cancion.png}
+    \caption{Ejecución automática de una melodía predefinida en el piano electrónico. Fuente: elaboración propia.}
+    \label{fig:piano_cancion}
+\end{figure}
+
+
 Durante las pruebas se observó un comportamiento estable en la reproducción de las notas y una respuesta inmediata ante la pulsación de teclas. El buzzer pasivo entregó una calidad sonora adecuada, permitiendo distinguir correctamente las canciones y las frecuencias individuales. No se presentaron problemas de latencia ni de resonancia indebida, confirmando la correcta configuración del temporizador para la generación de las señales PWM.
 
 De forma general, el desempeño del sistema fue considerado satisfactorio, tanto en el modo de ejecución manual como en el automático. Las canciones predefinidas se reprodujeron de forma fluida y reconocible, evidenciando un correcto manejo de tiempos y frecuencias en la modulación del sonido.
