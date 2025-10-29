@@ -1,57 +1,50 @@
+import serial
+import time
 from PIL import Image
-import serial, time
 
 # --- CONFIG ---
-image_path = r"C:\Users\heenr\Desktop\CNC Plotter\imagen2.png"
-max_width = 162       # CNC X-axis limit
-max_height = 270      # CNC Y-axis limit
-serial_port = "COM7"
-baud_rate = 9600
+image_path = 'C:/Users/UTEC-5695/Desktop/CNC/Manzana.png'
+resize_to = None           # None = keep original size
+serial_port = "COM11"       # your Arduino port
+baud_rate = 9600           # SLOW AND SAFE
 # ---------------
 
-# Open and analyze image
-img = Image.open(image_path).convert("L")
-orig_width, orig_height = img.size
-print(f"🖼️ Original image size: {orig_width}x{orig_height}")
-
-# --- SCALE ONLY IF TOO LARGE ---
-if orig_width > max_width or orig_height > max_height:
-    scale_factor = min(max_width / orig_width, max_height / orig_height)
-    new_width = int(orig_width * scale_factor)
-    new_height = int(orig_height * scale_factor)
-    img = img.resize((new_width, new_height))
-    print(f"📏 Resized to fit CNC area: {new_width}x{new_height}")
-else:
-    new_width, new_height = orig_width, orig_height
-    print("✅ Image is within limits, no resizing performed.")
-
-# Open serial
+# Open serial connection
 ser = serial.Serial(serial_port, baud_rate, timeout=1)
-time.sleep(2)
+time.sleep(5)# give Arduino time to reset
 
-input("Press ENTER to start sending the image to the CNC...")
+input("Press Enter to start sending image...")  # simple start control
 
-def shade_from_gray(value):
-    return int(value / 32)  # invert grayscale: dark=7, bright=0
+print("Sending image to CNC...")
 
-# Build the data stream
-pixels = list(img.getdata())
+# Open and process image
+img = Image.open(image_path).convert("L")
+if resize_to:
+    img = img.resize(resize_to)
 width, height = img.size
-data_stream = ""
+pixels = list(img.getdata())
 
+# Convert grayscale (0–255) → shade levels (0–7)
+def shade_from_gray(value):
+    return 7 - int(value / 32)  # invert if needed
+
+
+
+data_stream = ""
 for y in range(height):
     row = [str(shade_from_gray(pixels[y * width + x])) for x in range(width)]
-    data_stream += ''.join(row) + '8'  # end of line
-data_stream += '9'  # end of print
+    data_stream += ''.join(row) + '8'  # 8 = newline
+data_stream += '9'  # 9 = print end
 
 # --- SEND TO ARDUINO WITH HANDSHAKE ---
 for ch in data_stream:
     while True:
         line = ser.readline().decode().strip()
-        if line == "1":
+        if line == "1":  # Arduino ready
             break
-    ser.write(ch.encode())
-    print(f"Sent: {ch}")
+    time.sleep(0.01)
+    ser.write(ch.encode())  # send next command
+    print(f"Sent: {ch}")  # optional: see what’s sent
 
-print("✅ Image transmission complete!")
+print("Image transmission complete!")
 ser.close()
