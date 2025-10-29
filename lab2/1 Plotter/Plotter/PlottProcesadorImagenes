@@ -4,47 +4,55 @@ from PIL import Image
 
 # --- CONFIG ---
 image_path = 'C:/Users/UTEC-5695/Desktop/CNC/Manzana.png'
-resize_to = None           # None = keep original size
-serial_port = "COM11"       # your Arduino port
-baud_rate = 9600           # SLOW AND SAFE
-# ---------------
+resize_to = None  # None = keep original size
+serial_port = "COM11"  # your Arduino port
+baud_rate = 9600  # SLOW AND SAFE
+delay_between_chars = 0.01  # seconds, tweak if needed
+# ----------------
 
-# Open serial connection
+# --- SETUP SERIAL ---
 ser = serial.Serial(serial_port, baud_rate, timeout=1)
-time.sleep(5)# give Arduino time to reset
+time.sleep(5)  # give Arduino time to reset
+input("Press Enter to start sending image...")
 
-input("Press Enter to start sending image...")  # simple start control
+print("🖨️ Sending image to CNC (snake pattern)...")
 
-print("Sending image to CNC...")
-
-# Open and process image
+# --- LOAD IMAGE ---
 img = Image.open(image_path).convert("L")
 if resize_to:
     img = img.resize(resize_to)
 width, height = img.size
 pixels = list(img.getdata())
 
-# Convert grayscale (0–255) → shade levels (0–7)
+
+# --- GRAYSCALE → SHADE (0–7) ---
 def shade_from_gray(value):
-    return 7 - int(value / 32)  # invert if needed
+    return 7 - int(value / 32)  # invert mapping (dark=7, bright=0)
 
 
-
+# --- BUILD SNAKE DATA STREAM ---
 data_stream = ""
 for y in range(height):
-    row = [str(shade_from_gray(pixels[y * width + x])) for x in range(width)]
+    if y % 2 == 0:
+        # even rows → left to right
+        row = [str(shade_from_gray(pixels[y * width + x])) for x in range(width)]
+    else:
+        # odd rows → right to left (snake pattern)
+        row = [str(shade_from_gray(pixels[y * width + (width - 1 - x)])) for x in range(width)]
+
     data_stream += ''.join(row) + '8'  # 8 = newline
-data_stream += '9'  # 9 = print end
+data_stream += '9'  # 9 = end of image
 
-# --- SEND TO ARDUINO WITH HANDSHAKE ---
+# --- SEND WITH HANDSHAKE ---
 for ch in data_stream:
+    # Wait for Arduino ready signal
     while True:
-        line = ser.readline().decode().strip()
-        if line == "1":  # Arduino ready
+        line = ser.readline().decode(errors="ignore").strip()
+        if line == "1":
             break
-    time.sleep(0.01)
-    ser.write(ch.encode())  # send next command
-    print(f"Sent: {ch}")  # optional: see what’s sent
+    time.sleep(delay_between_chars)
+    ser.write(ch.encode())
+    print(f"Sent: {ch}")
 
-print("Image transmission complete!")
+print("✅ Image transmission complete!")
 ser.close()
