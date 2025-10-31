@@ -2,6 +2,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <math.h>
 
 
 
@@ -48,7 +49,7 @@ void UP (int dist){
 	}
 }
 
-void DWN (int dist){
+void DOWN (int dist){
 	for(int i = 0 ; i <= dist ; i++){	// Da la cantidad de pasos definida por el usuario
 		if (PIND & 0x04){				// Chequea que el carro Y no supere el limite YA
 			PORTC |= PASO1DWN;
@@ -82,6 +83,27 @@ void R (int dist){
 	}
 }
 
+//		Misc
+/////////////////////
+
+void solD(void){
+	PORTC |= 0x01:
+	_delay_ms(50);
+}
+
+void solU(void){
+	PORTC &= ~0x01:
+	_delay_ms(50);
+}
+
+void ledON(void){
+	PORTD |= 0x20:
+}
+
+void ledOFF(void){
+	PORTD &= ~0x20:
+}
+
 
 //					Autohome
 //////////////////////////////////////////////////////
@@ -98,6 +120,7 @@ void home(void){
 	PORTD &= ~LED;
 	_delay_ms(1000);
 
+	solU();
 	
 	while((PIND & 0x04)){		// Paso 1: Baja hasta encontrar el limite inferior (YA)
 		if ((PIND & 0x04)){
@@ -121,11 +144,11 @@ void home(void){
 	_delay_ms(300);
 	
 	for (int i = 0 ; i <= (d/2) ; i++){		// Paso 3: Baja hasta la mitad del trayecto para ubicarse en el centro
-		DOWN(1);
+		DOWN(1);							// (Tambien se puede escribir DOWN(d/2);
 	}
 	
 
-		PORTD |= LED;			// Prende y apaga el LED
+	PORTD |= LED;			// Prende y apaga el LED
 	_delay_ms(300);
 	PORTD &= ~LED;
 	_delay_ms(150);
@@ -141,7 +164,56 @@ void home(void){
 
 
 
+//			Probador de frecuencias
+//////////////////////////////////////////////////////
 
+void pruebaFrecuencias(void){
+	for (uint16_t time = 2 ; tiempo <= 10 ; tiempo++){		// De 500 Hz a 100 Hz
+		for (uint8_t rep = 0; rep < 20 ; rep++){			// Da 20 pasos con la frecuencia estimada
+			PORTC |= PASO1UP;			// Pone en 1 todos los bits que mueven el motor
+			_delay_ms(time);
+			PORTC &= 0xF7				// ~0b0000 1000 (CLK Y) Apaga la señal de reloj
+			_delay_ms(time);
+		}
+	}
+
+}
+
+
+
+//					Figuras
+//////////////////////////////////////////////////////
+//		Circulo
+/////////////////////
+void circle (uint8_t radius){
+	solU();
+	L(radius);
+	solD();
+
+	for (uint8_t x ; x < radius ; x++){			// Cuadrante 1
+		R(1);
+		for (uint8_t j ; j <= sqrt((pow(radius,2))-(pow((x-radius),2))) ; j++){
+			UP(1);
+		}
+	}
+
+	for (uint8_t x ; x < radius ; x++){			// Cuadrante 2
+		R(1);
+		DOWN(sqrt((pow(radius,2))-(pow((x-radius),2))));
+	}
+
+	for (uint8_t x ; x < radius ; x++){			// Cuadrante 3
+		L(1);
+		DOWN(sqrt((pow(radius,2))-(pow((x-radius),2))));
+	}
+
+	for (uint8_t x ; x < radius ; x++){			// Cuadrante 4
+		L(1);
+		UP(sqrt((pow(radius,2))-(pow((x-radius),2))));
+	}
+
+	
+}
 
 
 
