@@ -41,9 +41,9 @@ void UP (int dist){
 		if (PIND & 0x08){				// Chequea que el carro Y no supere el limite YD
 			PORTC |= PASO1UP;			// Pone en 1 todos los bits que mueven el motor
 			_delay_ms(motDelay);
-			PORTC &= 0xF7				// ~0b0000 1000 (CLK Y) Apaga la señal de reloj
+			PORTC &= 0xF7;				// ~0b0000 1000 (CLK Y) Apaga la señal de reloj
 			_delay_ms(motDelay);
-		} else {
+			} else {
 			break;
 		}
 	}
@@ -54,9 +54,9 @@ void DOWN (int dist){
 		if (PIND & 0x04){				// Chequea que el carro Y no supere el limite YA
 			PORTC |= PASO1DWN;
 			_delay_ms(motDelay);
-			PORTC &= 0xF7				// ~0b0000 1000 (CLK Y)
+			PORTC &= 0xF7;				// ~0b0000 1000 (CLK Y)
 			_delay_ms(motDelay);
-		} else {
+			} else {
 			break;
 		}
 	}
@@ -67,19 +67,19 @@ void DOWN (int dist){
 
 void L (int dist){
 	for(int i = 0 ; i <= dist ; i++){
-			PORTB |= PASO1L;			// Pone en 1 todos los bits que mueven el motor
-			_delay_ms(motDelay);
-			PORTB &= 0xF7				// ~0b0000 1000 (CLK Y) Apaga la señal de reloj
-			_delay_ms(motDelay);
+		PORTB |= PASO1L;			// Pone en 1 todos los bits que mueven el motor
+		_delay_ms(motDelay);
+		PORTB &= 0xF7;				// ~0b0000 1000 (CLK Y) Apaga la señal de reloj
+		_delay_ms(motDelay);
 	}
 }
 
 void R (int dist){
 	for(int i = 0 ; i <= dist ; i++){
-			PORTB |= PASO1R;			// Pone en 1 todos los bits que mueven el motor
-			_delay_ms(motDelay);
-			PORTB &= 0xF7				// ~0b0000 1000 (CLK Y) Apaga la señal de reloj
-			_delay_ms(motDelay);
+		PORTB |= PASO1R;			// Pone en 1 todos los bits que mueven el motor
+		_delay_ms(motDelay);
+		PORTB &= 0xF7;				// ~0b0000 1000 (CLK Y) Apaga la señal de reloj
+		_delay_ms(motDelay);
 	}
 }
 
@@ -87,21 +87,21 @@ void R (int dist){
 /////////////////////
 
 void solD(void){
-	PORTC |= 0x01:
+	PORTC |= 0x01;
 	_delay_ms(50);
 }
 
 void solU(void){
-	PORTC &= ~0x01:
+	PORTC &= ~0x01;
 	_delay_ms(50);
 }
 
 void ledON(void){
-	PORTD |= 0x20:
+	PORTD |= 0x20;
 }
 
 void ledOFF(void){
-	PORTD &= ~0x20:
+	PORTD &= ~0x20;
 }
 
 
@@ -115,7 +115,7 @@ void home(void){
 	_delay_ms(300);
 	PORTD &= ~LED;
 	_delay_ms(150);
-	PORTD |= LED;	
+	PORTD |= LED;
 	_delay_ms(300);
 	PORTD &= ~LED;
 	_delay_ms(1000);
@@ -125,7 +125,7 @@ void home(void){
 	while((PIND & 0x04)){		// Paso 1: Baja hasta encontrar el limite inferior (YA)
 		if ((PIND & 0x04)){
 			DOWN(1);
-		} else {
+			} else {
 			break;
 		}
 	}
@@ -135,8 +135,8 @@ void home(void){
 	while((PIND & 0x08)){		// Paso 2: Sube hasta encontrar el limite superior (YD)
 		if ((PIND & 0x08)){
 			UP(1);
-			d++					// Recopila la distancia recorrida
-		} else {
+			d++;					// Recopila la distancia recorrida
+			} else {
 			break;
 		}
 	}
@@ -152,7 +152,7 @@ void home(void){
 	_delay_ms(300);
 	PORTD &= ~LED;
 	_delay_ms(150);
-	PORTD |= LED;	
+	PORTD |= LED;
 	_delay_ms(300);
 	PORTD &= ~LED;
 	_delay_ms(1000);
@@ -168,12 +168,16 @@ void home(void){
 //////////////////////////////////////////////////////
 
 void pruebaFrecuencias(void){
-	for (uint16_t time = 2 ; tiempo <= 10 ; tiempo++){		// De 500 Hz a 100 Hz
+	for (uint16_t time = 2 ; time <= 10 ; time++){		// De 500 Hz a 100 Hz
 		for (uint8_t rep = 0; rep < 20 ; rep++){			// Da 20 pasos con la frecuencia estimada
 			PORTC |= PASO1UP;			// Pone en 1 todos los bits que mueven el motor
-			_delay_ms(time);
-			PORTC &= 0xF7				// ~0b0000 1000 (CLK Y) Apaga la señal de reloj
-			_delay_ms(time);
+			for (uint8_t n = 0 ; n < time ; n++){
+				_delay_ms(1);
+			}
+			PORTC &= 0xF7;				// ~0b0000 1000 (CLK Y) Apaga la señal de reloj
+			for (uint8_t n = 0 ; n < time ; n++){
+				_delay_ms(1);
+			}
 		}
 	}
 
@@ -190,24 +194,24 @@ void circle (uint8_t radius){
 	L(radius);
 	solD();
 
-	for (uint8_t x ; x < radius ; x++){			// Cuadrante 1
+	for (uint8_t x = 0 ; x < radius ; x++){			// Cuadrante 1
 		R(1);
-		for (uint8_t j ; j <= sqrt((pow(radius,2))-(pow((x-radius),2))) ; j++){
+		for (uint8_t j = 0; j <= sqrt((pow(radius,2))-(pow((x-radius),2))) ; j++){
 			UP(1);
 		}
 	}
 
-	for (uint8_t x ; x < radius ; x++){			// Cuadrante 2
+	for (uint8_t x = 0 ; x < radius ; x++){			// Cuadrante 2
 		R(1);
 		DOWN(sqrt((pow(radius,2))-(pow((x-radius),2))));
 	}
 
-	for (uint8_t x ; x < radius ; x++){			// Cuadrante 3
+	for (uint8_t x = 0 ; x < radius ; x++){			// Cuadrante 3
 		L(1);
 		DOWN(sqrt((pow(radius,2))-(pow((x-radius),2))));
 	}
 
-	for (uint8_t x ; x < radius ; x++){			// Cuadrante 4
+	for (uint8_t x = 0 ; x < radius ; x++){			// Cuadrante 4
 		L(1);
 		UP(sqrt((pow(radius,2))-(pow((x-radius),2))));
 	}
