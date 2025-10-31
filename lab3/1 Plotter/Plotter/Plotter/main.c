@@ -24,36 +24,6 @@
 #define motDelay	10
 
 
-////////////////////////////////////////////////////////////////////////////////////////////
-
-
-void home(void);
-
-
-
-
-
-
-//										MAIN
-////////////////////////////////////////////////////////////////////////////////////////////
-
-int main (void){
-	DDRD = 0x20;
-	PORTD = 0;
-	
-	while(1){
-		if (!(PIND & 0x04)){
-			PORTD = 0x20;
-			} else {
-			PORTD = 0;
-		}
-	}
-}
-
-
-
-
-
 
 
 
@@ -137,6 +107,7 @@ void home(void){
 		}
 	}
 
+	_delay_ms(300);
 	
 	while((PIND & 0x08)){		// Paso 2: Sube hasta encontrar el limite superior (YD)
 		if ((PIND & 0x08)){
@@ -146,9 +117,62 @@ void home(void){
 			break;
 		}
 	}
-
+	
+	_delay_ms(300);
+	
 	for (int i = 0 ; i <= (d/2) ; i++){		// Paso 3: Baja hasta la mitad del trayecto para ubicarse en el centro
 		DOWN(1);
 	}
 	
+
+		PORTD |= LED;			// Prende y apaga el LED
+	_delay_ms(300);
+	PORTD &= ~LED;
+	_delay_ms(150);
+	PORTD |= LED;	
+	_delay_ms(300);
+	PORTD &= ~LED;
+	_delay_ms(1000);
+
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//										MAIN
+////////////////////////////////////////////////////////////////////////////////////////////
+
+int main (void){
+	DDRB = 0xFF;
+	DDRC = 0xFF;
+	DDRD = 0xF3;
+
+	PORTB = 0;
+	PORTC = 0;
+	PORTD = 0;
+
+	home();
+
+	
+
+	
+}
+
+
+
+
+
+
