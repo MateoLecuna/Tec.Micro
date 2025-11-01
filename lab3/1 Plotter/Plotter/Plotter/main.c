@@ -1,4 +1,4 @@
-#define F_CPU 16000000L
+#define F_CPU 1000000L
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -10,19 +10,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 #define PASO1DWN	0x28
-#define PASO2DWN	0x28
+#define PASO2DWN	0x20
 #define PASO1UP		0x38
 #define PASO2UP		0x30
 
 #define PASO1L		0x28
-#define PASO2L		0x28
+#define PASO2L		0x20
 #define PASO1R		0x38
 #define PASO2R		0x30
 
 #define LED 		0x20
 
 
-#define motDelay	10
+#define motDelay	1
 
 
 
@@ -38,27 +38,19 @@
 ///////////////////
 void UP (int dist){
 	for(int i = 0 ; i <= dist ; i++){
-		if (PIND & 0x08){				// Chequea que el carro Y no supere el limite YD
-			PORTC |= PASO1UP;			// Pone en 1 todos los bits que mueven el motor
-			_delay_ms(motDelay);
-			PORTC &= 0xF7;				// ~0b0000 1000 (CLK Y) Apaga la señal de reloj
-			_delay_ms(motDelay);
-			} else {
-			break;
-		}
+		PORTC = 0x28;
+		_delay_ms(1);
+		PORTC = 0x20;
+		_delay_ms(1);
 	}
 }
 
 void DOWN (int dist){
 	for(int i = 0 ; i <= dist ; i++){	// Da la cantidad de pasos definida por el usuario
-		if (PIND & 0x04){				// Chequea que el carro Y no supere el limite YA
-			PORTC |= PASO1DWN;
-			_delay_ms(motDelay);
-			PORTC &= 0xF7;				// ~0b0000 1000 (CLK Y)
-			_delay_ms(motDelay);
-			} else {
-			break;
-		}
+		PORTC = 0x38;
+		_delay_ms(motDelay);
+		PORTC = 0x30;
+		_delay_ms(motDelay);
 	}
 }
 
@@ -118,19 +110,19 @@ void home(void){
 	PORTD |= LED;
 	_delay_ms(300);
 	PORTD &= ~LED;
-	_delay_ms(1000);
+	_delay_ms(200);
 
 	solU();
 	
-	while((PIND & 0x04)){		// Paso 1: Baja hasta encontrar el limite inferior (YA)
-		if ((PIND & 0x04)){
+	while(!(PIND & 0x08 || PIND & 0x04)){		// Paso 1: Baja hasta encontrar el limite inferior (YA)
+		if ((PIND & 0x08 || PIND & 0x04)){
 			DOWN(1);
 			} else {
 			break;
 		}
 	}
 
-	_delay_ms(300);
+	/*_delay_ms(300);
 	
 	while((PIND & 0x08)){		// Paso 2: Sube hasta encontrar el limite superior (YD)
 		if ((PIND & 0x08)){
@@ -145,7 +137,7 @@ void home(void){
 	
 	for (int i = 0 ; i <= (d/2) ; i++){		// Paso 3: Baja hasta la mitad del trayecto para ubicarse en el centro
 		DOWN(1);							// (Tambien se puede escribir DOWN(d/2);
-	}
+	}*/
 	
 
 	PORTD |= LED;			// Prende y apaga el LED
@@ -239,16 +231,57 @@ int main (void){
 	PORTB = 0;
 	PORTC = 0;
 	PORTD = 0;
+	
+	ledON();
+	_delay_ms(50);
+	ledOFF();
+	_delay_ms(50);
+	ledON();
+	_delay_ms(50);
+	ledOFF();
+	_delay_ms(50);
+	ledON();
+	_delay_ms(50);
+	ledOFF();
+	_delay_ms(50);
+	ledON();
+	_delay_ms(50);
+	ledOFF();
+	_delay_ms(50);
+	
+	//UP(200);
+	//_delay_ms(200);
+	//DOWN(200);
+	//L(200);
+	//R(200);
 
+	if ((PIND & 0x08 || PIND & 0x04)){
+		DOWN(1);
+		} else {
+		break;
+	}
+	
+	while(1){
+			while(PIND & 0x08){
+				PORTD = 0x02;
+				_delay_ms(10);
+				PORTD = 0x02;
+				_delay_ms(10);
+			}
+			
+			while(PIND & 0x04){
+				PORTD = 0x02;
+				_delay_ms(50);
+				PORTD = 0x02;
+				_delay_ms(50);
+			}
+	}
+
+	
+	
 	home();
 
 	
 
 	
 }
-
-
-
-
-
-
