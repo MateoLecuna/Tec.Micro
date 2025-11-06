@@ -17,7 +17,7 @@ UI_UPDATE_MS = 50
 WINDOW_S = 20          # Ventana fija de 5 segundos
 MAX_FPS = 30
 
-# ===================== Utilidades =====================
+# ================== Utilidades ====================
 def listar_puertos():
     return [p.device for p in list_ports.comports()]
 
@@ -115,8 +115,6 @@ class App(tk.Tk):
         ttk.Button(top, text="Start", command=self.start).pack(side=tk.LEFT, padx=4)
         self.btn_stop = ttk.Button(top, text="Stop", command=self.stop, state="disabled")
         self.btn_stop.pack(side=tk.LEFT, padx=4)
-
-        # (Se retiraron la barra de stats y el botón Guardar CSV)
 
         self.refresh_ports()
 
