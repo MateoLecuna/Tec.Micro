@@ -4,20 +4,20 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-/* ==== Pines ==== */
+// Pines
 #define PIN_PWM_OC1A   PB1   // D9 (OC1A)
-#define LED_DIR_FWD    PD4   // LED sentido "FWD" (ref > act)
-#define LED_DIR_REV    PD5   // LED sentido "REV" (ref < act)
+#define LED_DIR_DER    PD4   // "DER"
+#define LED_DIR_IZQ    PD5   // "IZQ"
 
-/* ==== Configurables ==== */
-#define TS_MS          5       // periodo de control (ms)
-#define DEAD_ADC       10      // zona muerta en cuentas ADC (?1%)
-#define MIN_PWM        120     // umbral mínimo efectivo (0..255)
+// Configurables
+#define TS_MS          1       // periodo de control (ms)
+#define DEAD_ADC       10      // zona muerta en cuentas ADC
+#define MIN_PWM        180     // umbral mínimo efectivo del PWM (MIN_PWM - 255)
 #define KP_NUM         1       // ganancia proporcional
-#define KP_DEN         4       // ajustar (1/4 => suave; bajar DEN para más “fuerza”)
-#define ADC_AVG_N      4       // promedio móvil (n muestras)
+#define KP_DEN         4
+#define ADC_AVG_N      4       // promedio (n muestras)
 
-/* ==== UART (115200-8N1) para telemetría ==== */
+// UART (115200-8N1)
 static void uart_init(uint16_t ubrr) {
 	UBRR0H = (uint8_t)(ubrr >> 8);
 	UBRR0L = (uint8_t)(ubrr & 0xFF);
@@ -33,7 +33,7 @@ static void uart_print_int(int v) {
 	char buf[12]; itoa(v, buf, 10); uart_print(buf);
 }
 
-/* ==== ADC ==== */
+// ADC
 static void adc_init(void) {
 	ADMUX  = (1 << REFS0);                 // AVcc como referencia
 	ADCSRA = (1 << ADEN)                  // habilitar ADC
@@ -51,7 +51,7 @@ static uint16_t adc_read_avg(uint8_t ch, uint8_t n) {
 	return (uint16_t)(acc / n);
 }
 
-/* ==== PWM Timer1 en D9 (OC1A) ==== */
+// PWM Timer1 en D9 (OC1A)
 static void pwm_init_oc1a_fast8_presc1(void) {
 	DDRB  |= (1 << PIN_PWM_OC1A);                // D9 salida
 	// Fast PWM 8-bit: WGM10=1, WGM12=1; salida no invertida en OC1A
@@ -60,30 +60,30 @@ static void pwm_init_oc1a_fast8_presc1(void) {
 	OCR1A = 0;
 }
 
-/* ==== LEDs dirección ==== */
+// LEDs dirección
 static inline void dir_leds_stop(void){
-	PORTD &= ~(1 << LED_DIR_FWD);
-	PORTD &= ~(1 << LED_DIR_REV);
+	PORTD &= ~(1 << LED_DIR_DER);
+	PORTD &= ~(1 << LED_DIR_IZQ);
 }
-static inline void dir_leds_fwd(void){
-	PORTD |=  (1 << LED_DIR_FWD);
-	PORTD &= ~(1 << LED_DIR_REV);
+static inline void dir_leds_DER(void){
+	PORTD |=  (1 << LED_DIR_DER);
+	PORTD &= ~(1 << LED_DIR_IZQ);
 }
-static inline void dir_leds_rev(void){
-	PORTD &= ~(1 << LED_DIR_FWD);
-	PORTD |=  (1 << LED_DIR_REV);
+static inline void dir_leds_IZQ(void){
+	PORTD &= ~(1 << LED_DIR_DER);
+	PORTD |=  (1 << LED_DIR_IZQ);
 }
 
-/* ==== Main ==== */
+// Main
 int main(void) {
 	// LEDs como salida
-	DDRD |= (1 << LED_DIR_FWD) | (1 << LED_DIR_REV);
+	DDRD |= (1 << LED_DIR_DER) | (1 << LED_DIR_IZQ);
 	dir_leds_stop();
 
 	adc_init();
 	pwm_init_oc1a_fast8_presc1();
 
-	// UART 115200 bps (UBRR = F_CPU/(16*BAUD) - 1 => 16e6/(16*115200)-1 - 8)
+	// UART 115200 bps
 	uart_init(8);
 	uart_print("P3C,ref,act,pwm,dir\r\n");
 
@@ -110,12 +110,12 @@ int main(void) {
 			if (raw > 255) raw = 255;
 			pwm = (uint8_t)raw;
 
-			if (e > 0) {         // ref > act ? “FWD”
-				dir_leds_fwd();
-				dir_str = "FWD";
-				} else {              // ref < act ? “REV”
-				dir_leds_rev();
-				dir_str = "REV";
+			if (e > 0) {         // ref > act “DER”
+				dir_leds_DER();
+				dir_str = "DER";
+				} else {              // ref < act “IZQ”
+				dir_leds_IZQ();
+				dir_str = "IZQ";
 			}
 			OCR1A = pwm;          // velocidad
 		}

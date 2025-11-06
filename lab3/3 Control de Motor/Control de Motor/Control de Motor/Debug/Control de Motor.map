@@ -446,10 +446,10 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xbc0
+.debug_info     0x00000000      0xbbe
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_info    0x000005f4      0x5cc main.o
+ .debug_info    0x000005f4      0x5ca main.o
 
 .debug_abbrev   0x00000000      0x843
  *(.debug_abbrev)

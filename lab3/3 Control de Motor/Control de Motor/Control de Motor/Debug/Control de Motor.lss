@@ -13,19 +13,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   4 .debug_aranges 00000060  00000000  00000000  0000048c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000bc0  00000000  00000000  000004ec  2**0
+  5 .debug_info   00000bbe  00000000  00000000  000004ec  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000843  00000000  00000000  000010ac  2**0
+  6 .debug_abbrev 00000843  00000000  00000000  000010aa  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000044b  00000000  00000000  000018ef  2**0
+  7 .debug_line   0000044b  00000000  00000000  000018ed  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  000000e4  00000000  00000000  00001d3c  2**2
+  8 .debug_frame  000000e4  00000000  00000000  00001d38  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000486  00000000  00000000  00001e20  2**0
+  9 .debug_str    00000486  00000000  00000000  00001e1c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000393  00000000  00000000  000022a6  2**0
+ 10 .debug_loc    00000393  00000000  00000000  000022a2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000068  00000000  00000000  00002639  2**0
+ 11 .debug_ranges 00000068  00000000  00000000  00002635  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -85,10 +85,10 @@ Disassembly of section .text:
   92:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 00000096 <uart_init>:
-#define KP_DEN         4       // ajustar (1/4 => suave; bajar DEN para más “fuerza”)
-#define ADC_AVG_N      4       // promedio móvil (n muestras)
+#define KP_DEN         4
+#define ADC_AVG_N      4       // promedio (n muestras)
 
-/* ==== UART (115200-8N1) para telemetría ==== */
+// UART (115200-8N1)
 static void uart_init(uint16_t ubrr) {
 	UBRR0H = (uint8_t)(ubrr >> 8);
   96:	90 93 c5 00 	sts	0x00C5, r25	; 0x8000c5 <__TEXT_REGION_LENGTH__+0x7f80c5>
@@ -133,7 +133,7 @@ static void uart_print(const char *s) { while (*s) uart_putc(*s++); }
 	char buf[12]; itoa(v, buf, 10); uart_print(buf);
 }
 
-/* ==== ADC ==== */
+// ADC
 static void adc_init(void) {
 	ADMUX  = (1 << REFS0);                 // AVcc como referencia
   d4:	80 e4       	ldi	r24, 0x40	; 64
@@ -226,7 +226,7 @@ static uint16_t adc_read_avg(uint8_t ch, uint8_t n) {
 
 0000015e <pwm_init_oc1a_fast8_presc1>:
 
-/* ==== PWM Timer1 en D9 (OC1A) ==== */
+// PWM Timer1 en D9 (OC1A)
 static void pwm_init_oc1a_fast8_presc1(void) {
 	DDRB  |= (1 << PIN_PWM_OC1A);                // D9 salida
  15e:	84 b1       	in	r24, 0x04	; 4
@@ -290,29 +290,29 @@ static void uart_print_int(int v) {
 000001b4 <main>:
 }
 
-/* ==== Main ==== */
+// Main
 int main(void) {
 	// LEDs como salida
-	DDRD |= (1 << LED_DIR_FWD) | (1 << LED_DIR_REV);
+	DDRD |= (1 << LED_DIR_DER) | (1 << LED_DIR_IZQ);
  1b4:	8a b1       	in	r24, 0x0a	; 10
  1b6:	80 63       	ori	r24, 0x30	; 48
  1b8:	8a b9       	out	0x0a, r24	; 10
 	OCR1A = 0;
 }
 
-/* ==== LEDs dirección ==== */
+// LEDs dirección
 static inline void dir_leds_stop(void){
-	PORTD &= ~(1 << LED_DIR_FWD);
+	PORTD &= ~(1 << LED_DIR_DER);
  1ba:	8b b1       	in	r24, 0x0b	; 11
  1bc:	8f 7e       	andi	r24, 0xEF	; 239
  1be:	8b b9       	out	0x0b, r24	; 11
-	PORTD &= ~(1 << LED_DIR_REV);
+	PORTD &= ~(1 << LED_DIR_IZQ);
  1c0:	8b b1       	in	r24, 0x0b	; 11
  1c2:	8f 7d       	andi	r24, 0xDF	; 223
  1c4:	8b b9       	out	0x0b, r24	; 11
 int main(void) {
 	// LEDs como salida
-	DDRD |= (1 << LED_DIR_FWD) | (1 << LED_DIR_REV);
+	DDRD |= (1 << LED_DIR_DER) | (1 << LED_DIR_IZQ);
 	dir_leds_stop();
 
 	adc_init();
@@ -320,7 +320,7 @@ int main(void) {
 	pwm_init_oc1a_fast8_presc1();
  1ca:	0e 94 af 00 	call	0x15e	; 0x15e <pwm_init_oc1a_fast8_presc1>
 
-	// UART 115200 bps (UBRR = F_CPU/(16*BAUD) - 1 => 16e6/(16*115200)-1 - 8)
+	// UART 115200 bps
 	uart_init(8);
  1ce:	88 e0       	ldi	r24, 0x08	; 8
  1d0:	90 e0       	ldi	r25, 0x00	; 0
@@ -370,13 +370,13 @@ int main(void) {
 	OCR1A = 0;
 }
 
-/* ==== LEDs dirección ==== */
+// LEDs dirección
 static inline void dir_leds_stop(void){
-	PORTD &= ~(1 << LED_DIR_FWD);
+	PORTD &= ~(1 << LED_DIR_DER);
  212:	8b b1       	in	r24, 0x0b	; 11
  214:	8f 7e       	andi	r24, 0xEF	; 239
  216:	8b b9       	out	0x0b, r24	; 11
-	PORTD &= ~(1 << LED_DIR_REV);
+	PORTD &= ~(1 << LED_DIR_IZQ);
  218:	8b b1       	in	r24, 0x0b	; 11
  21a:	8f 7d       	andi	r24, 0xDF	; 223
  21c:	8b b9       	out	0x0b, r24	; 11
@@ -411,7 +411,7 @@ static inline void dir_leds_stop(void){
  232:	36 95       	lsr	r19
  234:	27 95       	ror	r18
 			uint16_t raw = MIN_PWM + inc;
- 236:	28 58       	subi	r18, 0x88	; 136
+ 236:	2c 54       	subi	r18, 0x4C	; 76
  238:	3f 4f       	sbci	r19, 0xFF	; 255
 			if (raw > 255) raw = 255;
  23a:	2f 3f       	cpi	r18, 0xFF	; 255
@@ -423,29 +423,29 @@ static inline void dir_leds_stop(void){
 			pwm = (uint8_t)raw;
  246:	d2 2e       	mov	r13, r18
 
-			if (e > 0) {         // ref > act ? “FWD”
+			if (e > 0) {         // ref > act “DER”
  248:	18 16       	cp	r1, r24
  24a:	19 06       	cpc	r1, r25
  24c:	6c f4       	brge	.+26     	; 0x268 <main+0xb4>
 static inline void dir_leds_stop(void){
-	PORTD &= ~(1 << LED_DIR_FWD);
-	PORTD &= ~(1 << LED_DIR_REV);
+	PORTD &= ~(1 << LED_DIR_DER);
+	PORTD &= ~(1 << LED_DIR_IZQ);
 }
-static inline void dir_leds_fwd(void){
-	PORTD |=  (1 << LED_DIR_FWD);
+static inline void dir_leds_DER(void){
+	PORTD |=  (1 << LED_DIR_DER);
  24e:	8b b1       	in	r24, 0x0b	; 11
  250:	80 61       	ori	r24, 0x10	; 16
  252:	8b b9       	out	0x0b, r24	; 11
-	PORTD &= ~(1 << LED_DIR_REV);
+	PORTD &= ~(1 << LED_DIR_IZQ);
  254:	8b b1       	in	r24, 0x0b	; 11
  256:	8f 7d       	andi	r24, 0xDF	; 223
  258:	8b b9       	out	0x0b, r24	; 11
 			if (raw > 255) raw = 255;
 			pwm = (uint8_t)raw;
 
-			if (e > 0) {         // ref > act ? “FWD”
-				dir_leds_fwd();
-				dir_str = "FWD";
+			if (e > 0) {         // ref > act “DER”
+				dir_leds_DER();
+				dir_str = "DER";
  25a:	0f 2e       	mov	r0, r31
  25c:	f0 e0       	ldi	r31, 0x00	; 0
  25e:	ef 2e       	mov	r14, r31
@@ -453,25 +453,25 @@ static inline void dir_leds_fwd(void){
  262:	ff 2e       	mov	r15, r31
  264:	f0 2d       	mov	r31, r0
  266:	0c c0       	rjmp	.+24     	; 0x280 <main+0xcc>
-static inline void dir_leds_fwd(void){
-	PORTD |=  (1 << LED_DIR_FWD);
-	PORTD &= ~(1 << LED_DIR_REV);
+static inline void dir_leds_DER(void){
+	PORTD |=  (1 << LED_DIR_DER);
+	PORTD &= ~(1 << LED_DIR_IZQ);
 }
-static inline void dir_leds_rev(void){
-	PORTD &= ~(1 << LED_DIR_FWD);
+static inline void dir_leds_IZQ(void){
+	PORTD &= ~(1 << LED_DIR_DER);
  268:	8b b1       	in	r24, 0x0b	; 11
  26a:	8f 7e       	andi	r24, 0xEF	; 239
  26c:	8b b9       	out	0x0b, r24	; 11
-	PORTD |=  (1 << LED_DIR_REV);
+	PORTD |=  (1 << LED_DIR_IZQ);
  26e:	8b b1       	in	r24, 0x0b	; 11
  270:	80 62       	ori	r24, 0x20	; 32
  272:	8b b9       	out	0x0b, r24	; 11
-			if (e > 0) {         // ref > act ? “FWD”
-				dir_leds_fwd();
-				dir_str = "FWD";
-				} else {              // ref < act ? “REV”
-				dir_leds_rev();
-				dir_str = "REV";
+			if (e > 0) {         // ref > act “DER”
+				dir_leds_DER();
+				dir_str = "DER";
+				} else {              // ref < act “IZQ”
+				dir_leds_IZQ();
+				dir_str = "IZQ";
  274:	0f 2e       	mov	r0, r31
  276:	f4 e0       	ldi	r31, 0x04	; 4
  278:	ef 2e       	mov	r14, r31
@@ -516,8 +516,8 @@ static inline void dir_leds_rev(void){
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 2c2:	8f e1       	ldi	r24, 0x1F	; 31
- 2c4:	9e e4       	ldi	r25, 0x4E	; 78
+ 2c2:	8f e9       	ldi	r24, 0x9F	; 159
+ 2c4:	9f e0       	ldi	r25, 0x0F	; 15
  2c6:	01 97       	sbiw	r24, 0x01	; 1
  2c8:	f1 f7       	brne	.-4      	; 0x2c6 <main+0x112>
  2ca:	00 c0       	rjmp	.+0      	; 0x2cc <main+0x118>

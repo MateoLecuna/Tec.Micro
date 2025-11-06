@@ -12,7 +12,7 @@
 /* ==== Configurables ==== */
 #define TS_MS          5       // periodo de control (ms)
 #define DEAD_ADC       10      // zona muerta en cuentas ADC (?1%)
-#define MIN_PWM        120     // umbral mínimo efectivo (0..255)
+#define MIN_PWM        140     // umbral mínimo efectivo (0..255)
 #define KP_NUM         1       // ganancia proporcional
 #define KP_DEN         4       // ajustar (1/4 => suave; bajar DEN para más “fuerza”)
 #define ADC_AVG_N      4       // promedio móvil (n muestras)
