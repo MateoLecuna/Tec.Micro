@@ -934,11 +934,11 @@ static int8_t find_free_slot(void){
 	for(uint8_t i=0;i<MAX_CARDS;i++){
      510:	c0 e0       	ldi	r28, 0x00	; 0
      512:	0f c0       	rjmp	.+30     	; 0x532 <find_free_slot+0x24>
+static bool uid_equal(const uint8_t *a, const uint8_t *b, uint8_t n){
 	for(uint8_t i=0;i<n;i++) if(a[i]!=b[i]) return false; return true;
 }
 
 /* ===================== EEPROM: tabla de tarjetas ===================== */
-/* Layout: entrada i en addr = i*SLOT_SIZE; byte0=len (0=libre); bytes1..len = UID */
 static inline uint16_t slot_addr(uint8_t idx){ return (uint16_t)idx * (uint16_t)SLOT_SIZE; }
      514:	8c 2f       	mov	r24, r28
      516:	90 e0       	ldi	r25, 0x00	; 0
@@ -979,9 +979,9 @@ static int8_t find_free_slot(void){
      53a:	08 95       	ret
 
 0000053c <eeprom_read_slot>:
+}
 
 /* ===================== EEPROM: tabla de tarjetas ===================== */
-/* Layout: entrada i en addr = i*SLOT_SIZE; byte0=len (0=libre); bytes1..len = UID */
 static inline uint16_t slot_addr(uint8_t idx){ return (uint16_t)idx * (uint16_t)SLOT_SIZE; }
 
 static void eeprom_read_slot(uint8_t idx, uint8_t *uid, uint8_t *len){
@@ -995,11 +995,11 @@ static void eeprom_read_slot(uint8_t idx, uint8_t *uid, uint8_t *len){
      54a:	df 93       	push	r29
      54c:	6b 01       	movw	r12, r22
      54e:	8a 01       	movw	r16, r20
+static bool uid_equal(const uint8_t *a, const uint8_t *b, uint8_t n){
 	for(uint8_t i=0;i<n;i++) if(a[i]!=b[i]) return false; return true;
 }
 
 /* ===================== EEPROM: tabla de tarjetas ===================== */
-/* Layout: entrada i en addr = i*SLOT_SIZE; byte0=len (0=libre); bytes1..len = UID */
 static inline uint16_t slot_addr(uint8_t idx){ return (uint16_t)idx * (uint16_t)SLOT_SIZE; }
      550:	e8 2e       	mov	r14, r24
      552:	f1 2c       	mov	r15, r1
@@ -1183,11 +1183,11 @@ static void uart_list(void){
 	for(uint8_t i=0;i<MAX_CARDS;i++){
      65c:	d1 2c       	mov	r13, r1
      65e:	54 c0       	rjmp	.+168    	; 0x708 <uart_list+0xd2>
+static bool uid_equal(const uint8_t *a, const uint8_t *b, uint8_t n){
 	for(uint8_t i=0;i<n;i++) if(a[i]!=b[i]) return false; return true;
 }
 
 /* ===================== EEPROM: tabla de tarjetas ===================== */
-/* Layout: entrada i en addr = i*SLOT_SIZE; byte0=len (0=libre); bytes1..len = UID */
 static inline uint16_t slot_addr(uint8_t idx){ return (uint16_t)idx * (uint16_t)SLOT_SIZE; }
      660:	ed 2c       	mov	r14, r13
      662:	f1 2c       	mov	r15, r1
@@ -1326,11 +1326,11 @@ static void eeprom_write_slot(uint8_t idx, const uint8_t *uid, uint8_t len){
      742:	f0 f4       	brcc	.+60     	; 0x780 <eeprom_write_slot+0x50>
      744:	d4 2f       	mov	r29, r20
      746:	7b 01       	movw	r14, r22
+static bool uid_equal(const uint8_t *a, const uint8_t *b, uint8_t n){
 	for(uint8_t i=0;i<n;i++) if(a[i]!=b[i]) return false; return true;
 }
 
 /* ===================== EEPROM: tabla de tarjetas ===================== */
-/* Layout: entrada i en addr = i*SLOT_SIZE; byte0=len (0=libre); bytes1..len = UID */
 static inline uint16_t slot_addr(uint8_t idx){ return (uint16_t)idx * (uint16_t)SLOT_SIZE; }
      748:	08 2f       	mov	r16, r24
      74a:	10 e0       	ldi	r17, 0x00	; 0
@@ -1375,11 +1375,11 @@ static void eeprom_write_slot(uint8_t idx, const uint8_t *uid, uint8_t len){
      78c:	08 95       	ret
 
 0000078e <eeprom_clear_slot>:
+static bool uid_equal(const uint8_t *a, const uint8_t *b, uint8_t n){
 	for(uint8_t i=0;i<n;i++) if(a[i]!=b[i]) return false; return true;
 }
 
 /* ===================== EEPROM: tabla de tarjetas ===================== */
-/* Layout: entrada i en addr = i*SLOT_SIZE; byte0=len (0=libre); bytes1..len = UID */
 static inline uint16_t slot_addr(uint8_t idx){ return (uint16_t)idx * (uint16_t)SLOT_SIZE; }
      78e:	90 e0       	ldi	r25, 0x00	; 0
 	eeprom_update_byte((uint8_t*)a, len);
@@ -1555,7 +1555,7 @@ int main(void){
      8ac:	87 e6       	ldi	r24, 0x67	; 103
      8ae:	90 e0       	ldi	r25, 0x00	; 0
      8b0:	0e 94 68 07 	call	0xed0	; 0xed0 <uart_init>
-	spi_init();              // si el RC522 es quisquilloso, dejá SPI lento en tu SPI.c
+	spi_init();
      8b4:	0e 94 57 07 	call	0xeae	; 0xeae <spi_init>
 	twi_init();
      8b8:	0e 94 51 00 	call	0xa2	; 0xa2 <twi_init>
@@ -1583,12 +1583,12 @@ static inline void pin_init(void){
      8d2:	8b b1       	in	r24, 0x0b	; 11
      8d4:	8f 7c       	andi	r24, 0xCF	; 207
      8d6:	8b b9       	out	0x0b, r24	; 11
-	spi_init();              // si el RC522 es quisquilloso, dejá SPI lento en tu SPI.c
+	spi_init();
 	twi_init();
 	lcd_init();
 	pin_init();
 
-	PORTB |= (1<<PB2);       // SS alto
+	PORTB |= (1<<PB2);       // SDA alto
      8d8:	85 b1       	in	r24, 0x05	; 5
      8da:	84 60       	ori	r24, 0x04	; 4
      8dc:	85 b9       	out	0x05, r24	; 5

@@ -118,7 +118,6 @@ static bool uid_equal(const uint8_t *a, const uint8_t *b, uint8_t n){
 }
 
 /* ===================== EEPROM: tabla de tarjetas ===================== */
-/* Layout: entrada i en addr = i*SLOT_SIZE; byte0=len (0=libre); bytes1..len = UID */
 static inline uint16_t slot_addr(uint8_t idx){ return (uint16_t)idx * (uint16_t)SLOT_SIZE; }
 
 static void eeprom_read_slot(uint8_t idx, uint8_t *uid, uint8_t *len){
@@ -222,12 +221,12 @@ static void ui_msg(const char *l1, const char *l2, uint16_t ms){
 /* ===================== MAIN ===================== */
 int main(void){
 	uart_init(UBRR_VAL);
-	spi_init();              // si el RC522 es quisquilloso, dejá SPI lento en tu SPI.c
+	spi_init();
 	twi_init();
 	lcd_init();
 	pin_init();
 
-	PORTB |= (1<<PB2);       // SS alto
+	PORTB |= (1<<PB2);       // SDA alto
 
 	// RC522
 	mfrc522_resetPinInit();
