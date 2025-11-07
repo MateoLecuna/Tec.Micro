@@ -1,1 +1,0 @@
-Agregar evidencias de la "Matriz RGB con Joystick" en esta carpeta
