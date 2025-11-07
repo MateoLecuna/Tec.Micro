@@ -13,7 +13,7 @@
 /////////////////////////////////////////////////////
 //	CNC Mateo
 ///////////////////
-#define machine 0
+/*#define machine 0
 
 #define clkX   (1<<PD2)
 #define dirX   (1<<PD5)
@@ -24,9 +24,12 @@
 #define enY    (1<<PB0)
 #define limYA  (1<<PB2)
 #define limYD  (1<<PB1)
-#define LED    (1<<PB5)
+#define LED    (1<<PB5)*/
 
-/* Plotter lab config (kept for reference)
+//Plotter lab
+
+#define machine 1
+
 #define clkX   (1<<PB3)
 #define dirX   (1<<PB4)
 #define enX    (1<<PB5)
@@ -37,7 +40,7 @@
 #define limYA  (1<<PD2)
 #define limYD  (1<<PD3)
 #define LED    (1<<PD5)
-*/
+
 
 //										FUNCIONES
 ////////////////////////////////////////////////////////////////////////////////////////////
