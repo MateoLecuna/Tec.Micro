@@ -1,3 +1,122 @@
-\section{Anexos}
+\section*{Anexos}
+\addcontentsline{toc}{section}{Anexos}
 
-https://github.com/MateoLecuna/Tec.Micro/tree/main/lab3
+\subsection*{A. Evidencias experimentales}
+
+A continuación se presentan imágenes complementarias de los montajes y pruebas realizadas durante el Laboratorio~3, correspondientes a los módulos de control de motor, matriz RGB con joystick y cerradura RFID.  
+Estas evidencias respaldan los resultados expuestos en la Sección~\ref{fig:control_motor} a la Sección~\ref{fig:rfid_del}.
+
+\subsubsection*{A.1 Control de Motor DC}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Anexos/conexion_l298n.jpg}
+    \caption{Conexión del puente H L298N con el motor DC y los potenciómetros de referencia y realimentación.}
+    \label{fig:anexo_l298n}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Anexos/motor_detalle.jpg}
+    \caption{Detalle del acoplamiento mecánico entre el motor DC y el potenciómetro utilizado para obtener la señal de realimentación.}
+    \label{fig:anexo_motor_detalle}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Anexos/graficos_uart.jpg}
+    \caption{Captura del gráfico en Python mostrando la evolución temporal de las señales de referencia, realimentación y PWM.}
+    \label{fig:anexo_graficos_uart}
+\end{figure}
+
+\subsubsection*{A.2 Matriz RGB con Joystick}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Anexos/matriz_joystick.jpg}
+    \caption{Montaje de la matriz WS2812B conectada al joystick analógico y al microcontrolador ATmega328P.}
+    \label{fig:anexo_matriz_joystick}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Anexos/matriz_color.jpg}
+    \caption{Cambio de color del LED activo al presionar el botón del joystick.}
+    \label{fig:anexo_matriz_color}
+\end{figure}
+
+\subsubsection*{A.3 Cerradura RFID}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Anexos/rfid_circuito.jpg}
+    \caption{Montaje del sistema de cerradura RFID con lector RC522, pantalla LCD I2C y LEDs indicadores.}
+    \label{fig:anexo_rfid_circuito}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Anexos/rfid_add.jpg}
+    \caption{Pantalla LCD mostrando la opción de agregar (\texttt{ADD}) una nueva tarjeta al sistema.}
+    \label{fig:anexo_rfid_add}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Anexos/rfid_del.jpg}
+    \caption{Pantalla LCD mostrando la opción de eliminar (\texttt{DEL}) una tarjeta registrada.}
+    \label{fig:anexo_rfid_del}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Anexos/rfid_ok.jpg}
+    \caption{Estado de validación correcta: “Acceso concedido” con encendido del LED verde.}
+    \label{fig:anexo_rfid_ok}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Anexos/rfid_fail.jpg}
+    \caption{Estado de validación incorrecta: “Acceso denegado” con encendido del LED rojo.}
+    \label{fig:anexo_rfid_fail}
+\end{figure}
+
+\subsection*{B. Fragmentos de código relevantes}
+
+A continuación se incluyen fragmentos representativos del código implementado en lenguaje C, correspondientes a las rutinas principales de lectura, control y comunicación.
+
+\begin{lstlisting}[language=C, caption={Inicialización del ADC y lectura promedio}, label={lst:adc}]
+static void adc_init(void) {
+    ADMUX  = (1 << REFS0); // AVcc como referencia
+    ADCSRA = (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1); // prescaler 64
+}
+
+static uint16_t adc_read_avg(uint8_t ch, uint8_t n) {
+    uint32_t acc = 0;
+    for (uint8_t i = 0; i < n; i++) acc += adc_read(ch);
+    return (uint16_t)(acc / n);
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Control de dirección y PWM del motor DC}, label={lst:motor}]
+if (mag <= DEAD_ADC) {
+    OCR1A = 0;
+    dir_leds_stop();
+} else {
+    uint16_t inc = (mag * KP_NUM) / KP_DEN;
+    uint16_t raw = MIN_PWM + inc;
+    if (raw > 255) raw = 255;
+    pwm = (uint8_t)raw;
+
+    if (e > 0) dir_leds_DER();
+    else       dir_leds_IZQ();
+
+    OCR1A = pwm;
+}
+\end{lstlisting}
+
+\subsection*{C. Recursos complementarios}
+
+\begin{itemize}
+    \item \textbf{Repositorio GitHub del proyecto:} \url{https://github.com/MateoLecuna/Tec.Micro/tree/main/lab3}
+    \item \textbf{Datasheets y documentación técnica:} disponibles en la bibliografía.
+    \item \textbf{Videos de evidencia experimental:} carpeta \texttt{lab3/Evidencias}.
+\end{itemize}

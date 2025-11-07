@@ -2,9 +2,9 @@
 
 \subsection{Plotter}
 
-\subsection{Sistema de Control de Temperatura}
+\subsection{Sistema de control de temperatura}
 
-\subsection{Control de Motor}
+\subsection{Control de motor}
 
 El desarrollo de este módulo se centró en la implementación de un sistema de control analógico–digital para un motor de corriente continua, utilizando el microcontrolador \textbf{ATmega328P} y un driver \textbf{L298N}. El objetivo fue lograr que la velocidad y dirección del motor se ajustaran de forma proporcional a la diferencia entre dos señales analógicas: una de referencia y otra de realimentación.
 
@@ -21,27 +21,31 @@ El puente H L298N se conectó de la siguiente forma:
     \item \texttt{5V} y \texttt{GND} conectados al Arduino
 \end{itemize}
 
-Se incorporaron dos LEDs indicadores (en paralelo a las líneas \texttt{IN1} e \texttt{IN2}) para representar visualmente la dirección de giro (\textbf{DER} o \textbf{IZQ}).
+Se incorporaron dos LEDs indicadores (en paralelo a las líneas \texttt{IN1} e \texttt{IN2}) para representar visualmente la dirección de giro (\textbf{DER} o \textbf{IZQ}).  
+El motor se alimentó desde una fuente externa de 12~V aislada del suministro lógico de 5~V, compartiendo masa común con el Arduino.
 
 \textbf{Configuración del software:}  
-El programa fue desarrollado en lenguaje C utilizando el entorno \textit{Microchip Studio}. Se configuró el temporizador \texttt{Timer1} en modo \textit{Fast PWM} de 8~bits, con prescaler igual a 1, alcanzando una frecuencia de conmutación de aproximadamente 62.5~kHz.  
-Las señales analógicas de los potenciómetros fueron digitalizadas mediante el ADC interno de 10~bits, utilizando AVcc como referencia y prescaler 64 (frecuencia de conversión $\approx$ 250~kHz). Para reducir el ruido, cada lectura se promedió a partir de cuatro muestras consecutivas.
+El programa fue desarrollado en lenguaje C utilizando el entorno \textit{Microchip Studio}. Se configuró el temporizador \texttt{Timer1} en modo \textit{Fast PWM} de 8~bits, con prescaler igual a 1, alcanzando una frecuencia de conmutación de aproximadamente \SI{62.5}{\kilo\hertz}.  
+Las señales analógicas de los potenciómetros fueron digitalizadas mediante el ADC interno de 10~bits, utilizando AVcc como referencia y prescaler 64 (frecuencia de conversión \SI{250}{\kilo\hertz}). Para reducir el ruido, cada lectura se promedió a partir de cuatro muestras consecutivas.
 
-El control se implementó mediante un esquema proporcional simple, con una zona muerta de $\pm10$ unidades ADC. Si la diferencia entre la referencia y la realimentación estaba dentro de esa banda, el sistema detenía el motor. En caso contrario, se ajustaba el ciclo útil del PWM según la ganancia $K_p = 1/4$, con un valor mínimo de 180 (de un total de 255) para garantizar el arranque bajo carga.
+El control se implementó mediante un esquema proporcional simple, con una zona muerta de $\pm10$ unidades ADC. Si la diferencia entre la referencia y la realimentación estaba dentro de esa banda, el sistema detenía el motor. En caso contrario, se ajustaba el ciclo útil del PWM según la ganancia \textit{K\textsubscript{p}} = 1/4, con un valor mínimo de 180 (de un total de 255) para garantizar el arranque bajo carga.
 
 \textbf{Comunicación y monitoreo:}  
-Se habilitó la UART a 115200~bps para enviar por puerto serie los valores de referencia, realimentación, ciclo PWM y dirección del motor. Los datos se imprimieron en formato CSV con el encabezado \texttt{P3C,ref,act,pwm,dir}, lo que permitió registrar la evolución temporal y graficarla en Python o MATLAB para analizar la respuesta del sistema.
+Se habilitó la UART a \SI{115200}{\bit\per\second} para enviar por puerto serie los valores de referencia, realimentación, ciclo PWM y dirección del motor. Los datos se imprimieron en formato CSV con el encabezado \texttt{P3C,ref,act,pwm,dir}, lo que permitió registrar la evolución temporal y graficarla en Python o MATLAB para analizar la respuesta del sistema.
 
 \textbf{Procedimiento experimental:}  
-El procedimiento constó de tres etapas:  
-(1) calibración del umbral mínimo de PWM necesario para vencer el par de arranque del motor acoplado al potenciómetro,  
-(2) validación del control proporcional variando manualmente el potenciómetro de referencia, y  
-(3) registro de las variables por UART para evaluar la linealidad y estabilidad del sistema.  
-Durante las pruebas se comprobó que el control respondía de manera fluida, con inversión inmediata del sentido de giro al cruzar el punto medio, y sin oscilaciones perceptibles en la zona de equilibrio.
+El procedimiento constó de tres etapas:
+\begin{enumerate}
+    \item Calibración del umbral mínimo de PWM necesario para vencer el par de arranque del motor acoplado al potenciómetro.
+    \item Validación del control proporcional variando manualmente el potenciómetro de referencia.
+    \item Registro de las variables por UART para evaluar la linealidad y estabilidad del sistema.
+\end{enumerate}
+
+Durante las pruebas se comprobó que el control respondía de manera fluida, con inversión inmediata del sentido de giro al cruzar el punto medio y sin oscilaciones perceptibles en la zona de equilibrio.
 
 En conjunto, la metodología aplicada permitió obtener un control de posición analógica estable y reproducible, integrando adquisición de datos, procesamiento digital y modulación PWM en un circuito de bajo costo y fácil replicación.
 
-\subsection{Matriz RGB con Joystick}
+\subsection{Matriz RGB con joystick}
 
 En este módulo se desarrolló una interfaz interactiva que permite controlar el desplazamiento de un LED encendido dentro de una matriz 8$\times$8 de LEDs RGB direccionables (\textbf{WS2812B}) mediante un \textit{joystick} analógico. El objetivo principal fue integrar la lectura de señales analógicas, el manejo digital de una cadena de LEDs y la generación de colores pseudoaleatorios, explorando el control de movimiento dentro de un entorno bidimensional.
 
@@ -57,26 +61,29 @@ Las conexiones físicas principales fueron las siguientes:
     \item Alimentación: 5 V y GND comunes a matriz y joystick
 \end{itemize}
 
-La matriz RGB se alimentó directamente desde 5 V, asegurando que la corriente total no superara los 800 mA al limitar el brillo global a un 30 \%. La comunicación con la cadena WS2812B se realizó a través de una única línea de datos a 800 kHz.
+La matriz RGB se alimentó directamente desde 5~V, asegurando que la corriente total no superara los 800~mA al limitar el brillo global a un 30~\%. La comunicación con la cadena WS2812B se realizó a través de una única línea de datos a \SI{800}{\kilo\hertz}.
 
 \textbf{Configuración del software:}  
 El código se programó en C y utiliza una rutina de temporización precisa (\textit{bit-banging}) para generar el protocolo de comunicación requerido por los WS2812B. Durante la transmisión se deshabilitan las interrupciones (\texttt{cli()/sei()}) para garantizar la integridad del tren de bits GRB (24 bits por LED).  
-Se implementó una escala global de brillo ($\mathrm{BR}=80/255$) para evitar saturación visual.
+Se implementó una escala global de brillo de 80/255 para evitar saturación visual.
 
-El joystick se lee mediante el ADC de 10 bits, utilizando AVcc como referencia y prescaler 64 (frecuencia de conversión $\approx$ 250 kHz). Se definieron umbrales de decisión con una \textit{zona muerta} de ±90 cuentas alrededor del punto medio (512), lo que evita movimientos no deseados por ruido.  
+El joystick se lee mediante el ADC de 10 bits, utilizando AVcc como referencia y prescaler 64 (frecuencia de conversión \SI{250}{\kilo\hertz}). Se definieron umbrales de decisión con una \textit{zona muerta} de $\pm90$ cuentas alrededor del punto medio (512), lo que evita movimientos no deseados por ruido.  
 Cada eje se evalúa independientemente para determinar desplazamientos discretos en X o Y, desplazando el LED activo una celda por evento. Se aplicó un \textit{cooldown} de algunos milisegundos para limitar la frecuencia de actualización y dar una sensación de movimiento fluido.
 
 \textbf{Intento de mapeo matricial:}  
-Inicialmente se intentó implementar un control basado en un \textit{mapeo matricial}, que asociaba directamente cada par (X, Y) de coordenadas analógicas con un índice de LED. Sin embargo, la complejidad del cálculo y la respuesta no lineal del joystick dificultaron su calibración. Finalmente se optó por un control condicional con límites discretos y desplazamientos unitarios, logrando un funcionamiento más predecible y sencillo de depurar.
+Inicialmente se intentó implementar un control basado en un \textit{mapeo matricial}, que asociaba directamente cada par (X, Y) de coordenadas analógicas con un índice de LED. Sin embargo, la complejidad del cálculo y la respuesta no lineal del joystick dificultaron su calibración. Finalmente se optó por un control condicional con límites discretos y desplazamientos unitarios, logrando un funcionamiento más predecible y sencillo de depurar. Esta decisión simplificó la depuración y mejoró la respuesta visual del sistema.
 
 \textbf{Gestión del color y del botón SW:}  
-Al detectar la pulsación del botón del joystick (\texttt{SW}), el sistema genera un nuevo color RGB pseudoaleatorio mediante un LFSR de 8 bits. El nuevo color se aplica únicamente al LED actual, permaneciendo activo hasta la siguiente pulsación. Los eventos se envían por UART a 9600 bps para registro y diagnóstico.
+Al detectar la pulsación del botón del joystick (\texttt{SW}), el sistema genera un nuevo color RGB pseudoaleatorio mediante un LFSR de 8 bits. El nuevo color se aplica únicamente al LED actual, permaneciendo activo hasta la siguiente pulsación. Los eventos se envían por UART a \SI{9600}{\bit\per\second} para registro y diagnóstico.
 
 \textbf{Procedimiento experimental:}  
-El proceso de validación se realizó en tres etapas:  
-(1) verificación de la lectura estable del ADC y calibración de los umbrales de zona muerta,  
-(2) ensayo del movimiento del LED dentro de la matriz verificando los límites horizontales y verticales, y  
-(3) prueba del cambio de color con pulsaciones consecutivas del botón SW.  
+El proceso de validación se realizó en tres etapas:
+\begin{enumerate}
+    \item Verificación de la lectura estable del ADC y calibración de los umbrales de zona muerta.
+    \item Ensayo del movimiento del LED dentro de la matriz verificando los límites horizontales y verticales.
+    \item Prueba del cambio de color con pulsaciones consecutivas del botón SW.
+\end{enumerate}
+
 El sistema presentó una respuesta fluida y estable, con detección confiable de los ejes y transición de color sin errores de sincronización.
 
 En conjunto, la metodología implementada permitió integrar la adquisición analógica, la comunicación digital temporizada y la generación de color en un mismo entorno embebido, demostrando la versatilidad del ATmega328P en tareas de control interactivo.
@@ -98,11 +105,11 @@ El montaje se realizó sobre una placa Arduino Uno, conectando los módulos exte
     \item Alimentación: 5 V y GND comunes.
 \end{itemize}
 
-El módulo RC522 se alimentó a 3.3 V y se cuidó la compatibilidad lógica entre niveles (5 V del ATmega328P y 3.3 V del lector). Se incluyeron resistencias de protección y un capacitor de desacoplo cercano a la alimentación del módulo para mejorar la estabilidad eléctrica.
+El módulo RC522 se alimentó a 3.3~V y se cuidó la compatibilidad lógica entre niveles (5~V del ATmega328P y 3.3~V del lector). Se incluyeron resistencias de protección y un capacitor de desacoplo cercano a la alimentación del módulo para mejorar la estabilidad eléctrica \cite{electronics_tutorials_spi_basics}.
 
 \textbf{Configuración del software:}  
 El programa se estructuró en lenguaje C, utilizando los periféricos SPI, UART e I2C del ATmega328P.  
-La comunicación con el RC522 se realiza mediante una biblioteca propia (\texttt{RC522.c/h}) que implementa las funciones básicas de inicialización, detección de tarjeta y lectura del UID (\textit{Unique Identifier}). La interfaz SPI opera en modo maestro con frecuencia de 2 MHz (prescaler = Fosc/8).
+La comunicación con el RC522 se realiza mediante una biblioteca propia (\texttt{RC522.c/h}) que implementa las funciones básicas de inicialización, detección de tarjeta y lectura del UID (\textit{Unique Identifier}). La interfaz SPI opera en modo maestro con frecuencia de 2~MHz (prescaler = Fosc/8).
 
 El flujo del programa se organizó como un \textbf{autómata de estados finitos (FSM)} con los siguientes estados principales:
 \begin{enumerate}
@@ -121,7 +128,7 @@ Mediante la UART se implementaron comandos para listar, borrar o limpiar registr
 
 \textbf{Interfaz LCD I2C y comunicación serial:}  
 El módulo LCD de 16$\times$2 caracteres, controlado por el expansor PCF8574, muestra mensajes informativos del sistema: detección de tarjeta, acceso concedido/denegado, modo programación y número de tarjetas registradas.  
-La UART a 9600 bps se utilizó para depuración y monitoreo en consola, mostrando el UID leído y el estado de las operaciones, además de permitir la recepción de comandos textuales.
+La UART a \SI{9600}{\bit\per\second} se utilizó para depuración y monitoreo en consola, mostrando el UID leído y el estado de las operaciones, además de permitir la recepción de comandos textuales.
 
 \textbf{Procedimiento experimental:}  
 El proceso de validación incluyó las siguientes etapas:
@@ -135,6 +142,6 @@ El proceso de validación incluyó las siguientes etapas:
 \textbf{Observaciones:}  
 Durante la puesta a punto, se observó que la lectura del RC522 era más sensible en el modo de inicio que en programación, debido a pequeñas variaciones de temporización en el lazo de consulta.  
 Se solucionó aumentando los tiempos de espera entre intentos de lectura y reforzando la condición de detección del UID.  
-El sistema final demostró una operación confiable, con una lectura estable, almacenamiento persistente y una interfaz de usuario clara e intuitiva.
+El sistema final demostró una operación confiable, con una lectura estable y almacenamiento persistente.
 
 En síntesis, esta metodología combinó la comunicación SPI, I2C y UART en un mismo sistema embebido, aplicando control secuencial y almacenamiento no volátil para lograr una cerradura RFID funcional y extensible.
