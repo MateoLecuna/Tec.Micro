@@ -4,79 +4,56 @@
 
 \subsection{Sistema de Control de Temperatura}
 
-\subsection{Control de Motor}
+\subsection{Control de motor}
 
-El sistema de control de motor implementado tiene como propósito igualar el valor leído por un potenciómetro de referencia con el valor obtenido de otro potenciómetro acoplado mecánicamente al eje de un motor de corriente continua (DC). Para lograrlo, el microcontrolador \textbf{ATmega328P} compara ambas señales analógicas, determina la dirección de giro correspondiente y ajusta la velocidad del motor mediante modulación por ancho de pulso (\textit{PWM}), utilizando un puente H \textbf{L298N} como etapa de potencia.
+El presente experimento tiene como objetivo implementar un control proporcional de velocidad y dirección en un motor de corriente continua (\textit{DC}).  
+Este tipo de control se basa en ajustar el ciclo de trabajo (\textit{duty cycle}) de una señal PWM (\textit{Pulse Width Modulation}) en función de la diferencia entre un valor de referencia y la retroalimentación medida, generando así un comportamiento lineal y estable en la respuesta del motor \cite{sparkfun_pwm_tutorial}.
 
-\textbf{Motor de corriente continua (DC):}  
-El motor DC convierte energía eléctrica en mecánica mediante la interacción entre el campo magnético del estator y la corriente en el rotor. La velocidad de giro es proporcional al voltaje aplicado, mientras que el sentido de rotación depende de la polaridad. En este sistema, el motor opera dentro de un rango de alimentación de 6–12~V, con un comportamiento estable a partir de un ciclo útil mínimo equivalente a una señal PWM de aproximadamente 180/255. Este valor fue determinado experimentalmente, ya que con ciclos menores (120/255) el par resultaba insuficiente para vencer la carga impuesta por el acoplamiento con el potenciómetro del eje.
+Para lograrlo, se utilizó un \textbf{puente H L298N}, que permite invertir la polaridad del motor mediante dos entradas digitales de control, posibilitando el giro en ambos sentidos \cite{st_l298n_datasheet}.  
+El puente H se alimentó con \SI{5}{\volt}, mientras que las señales de control provinieron directamente del microcontrolador \textbf{ATmega328P} \cite{microchip_atmega328p_datasheet}.  
+El pin \texttt{ENA} del L298N se controló con una señal PWM generada por el temporizador interno \texttt{Timer1}.
 
-\textbf{Puente H L298N:}  
-El circuito integrado L298N permite invertir la polaridad aplicada al motor mediante el control de cuatro transistores dispuestos en configuración de puente H. El microcontrolador gobierna las entradas \texttt{IN1} e \texttt{IN2} para establecer el sentido de giro, y la entrada \texttt{ENA} se conecta a un pin PWM para modular la velocidad. Esta arquitectura posibilita un control bidireccional eficiente, evitando el uso de relevadores o conmutadores mecánicos. El módulo integra además diodos de rueda libre para protección ante corrientes inversas generadas por la inductancia del motor.
+El \texttt{Timer1} fue configurado en modo \textit{Fast PWM} de 8~bits, con salida no invertida sobre el pin \texttt{OC1A} (D9) y prescaler igual a 1, alcanzando una frecuencia de conmutación de aproximadamente \SI{62.5}{\kilo\hertz}.  
+Este modo permite generar un ciclo de trabajo variable entre 0 y 255, directamente proporcional al valor calculado por el control proporcional en el código.
 
-\textbf{Potenciómetros de referencia y realimentación:}  
-Se emplearon dos potenciómetros lineales de 10~k$\Omega$. El primero, conectado al pin analógico \texttt{A0}, define la posición o velocidad de referencia (\textit{setpoint}), mientras que el segundo, vinculado físicamente al eje del motor y conectado al pin \texttt{A1}, mide la posición actual. Ambos valores son convertidos por el conversor analógico–digital (ADC) de 10~bits del ATmega328P, proporcionando una resolución suficiente para el control analógico proporcional. Para mejorar la estabilidad de lectura, cada medición promedia cuatro muestras consecutivas, lo que reduce el efecto del ruido eléctrico.
+El sistema empleó dos potenciómetros conectados a las entradas analógicas \texttt{A0} (referencia) y \texttt{A1} (realimentación), cuya lectura se realizó mediante el conversor analógico–digital (ADC) de 10~bits del microcontrolador \cite{microchip_atmega328p_datasheet}.  
+La diferencia entre ambas señales (\( e = V_{\text{ref}} - V_{\text{act}} \)) determina la dirección de giro y la magnitud del PWM aplicado.  
+Para evitar oscilaciones cercanas al punto de equilibrio, se definió una zona muerta de ±10 unidades ADC.  
+De este modo, cuando la diferencia entre potenciómetros se mantiene dentro de ese rango, el motor permanece detenido y ambos LEDs indicadores se apagan.
 
-\textbf{Control por modulación PWM:}  
-El ATmega328P genera la señal PWM en el pin \texttt{OC1A} (D9) mediante el temporizador interno \texttt{Timer1} configurado en modo Fast PWM de 8 bits, con prescaler $N=1$, alcanzando una frecuencia de conmutación de aproximadamente 62.5~kHz. Este valor resulta inaudible para el oído humano y proporciona una respuesta suave en el motor. En el código se implementó un control proporcional simple que ajusta el ciclo útil del PWM en función de la diferencia entre los valores de referencia y realimentación. Cuando la diferencia es menor a una zona muerta de 10 unidades ADC, el sistema detiene el motor y apaga los indicadores de dirección.
+El valor mínimo de PWM efectivo fue calibrado en 180 (\(\approx 70\%\) del ciclo de trabajo), ya que valores inferiores no lograban vencer la inercia del motor bajo carga.
+El sistema se comportó de forma estable, respondiendo proporcionalmente a los cambios de referencia y deteniéndose al alcanzar la coincidencia entre ambas señales.
 
-\textbf{Comunicación serial y visualización:}  
-Durante la ejecución, el sistema transmite por UART los valores de ambos potenciómetros, el sentido de giro y el valor del PWM aplicado, en formato CSV (\texttt{ref, act, pwm, dir}). Esto permite representar las variables en tiempo real mediante Python o MATLAB, facilitando el análisis de la evolución temporal y la respuesta del control.
+\subsection{Matriz RGB con joystick}
 
-\paragraph*{Observación experimental del umbral de arranque}
-Durante las pruebas se determinó empíricamente un umbral mínimo de ciclo útil para garantizar el arranque bajo carga. Sin acoplamiento mecánico, el motor iniciaba la rotación con PWM $\approx 120/255$; sin embargo, al acoplar el potenciómetro al eje, el incremento de par resistente elevó el umbral. Tras incrementos sucesivos, se fijó un mínimo operativo de \textbf{180/255}, que aseguró arranque fiable y evitó bloqueos intermitentes en transitorios de baja referencia. Este valor se adoptó como límite inferior del control para preservar la robustez del sistema.
+Este experimento tuvo como objetivo implementar el control de una matriz de LEDs RGB tipo \textbf{WS2812B} de 8×8, utilizando un \textbf{joystick analógico} para desplazar un píxel activo en la pantalla.  
+El microcontrolador \textbf{ATmega328P} genera la señal digital codificada a una frecuencia de \SI{800}{\kilo\hertz}, respetando el protocolo de transmisión GRB (Green–Red–Blue) característico del WS2812B \cite{worldsemi_ws2812b_datasheet}.  
+Este protocolo requiere una temporización precisa en el orden de cientos de nanosegundos, lo que se logró mediante retardos calibrados y la generación manual de pulsos de nivel lógico en el código.
 
-\paragraph*{Detalles de implementación y consideraciones prácticas}
-El PWM se generó en el pin D9 (OC1A) mediante Timer1 en modo Fast PWM de 8 bits, con prescaler $N=1$ (frecuencia $\approx 62.5$~kHz), evitando ruido audible en el motor. Dado que el L298N es un puente H con transistores Darlington, frecuencias tan elevadas pueden incrementar pérdidas de conmutación; en caso de calentamiento, es razonable reducir la frecuencia (por ejemplo, prescaler $N=8$, $\approx 7.8$~kHz) sin afectar perceptiblemente el control. Para la adquisición analógica se utilizó el ADC interno a 10~bits con prescaler 64 ($\approx 250$~kHz) y promediado de cuatro muestras por canal, logrando lecturas estables a 1~kHz de lazo. Si se prioriza la precisión de 10~bits, el prescaler 128 ($\approx 125$~kHz) es una alternativa acorde a la recomendación del fabricante.
+El joystick utilizado es del tipo analógico–digital, compuesto por dos potenciómetros ortogonales (ejes X e Y) y un pulsador central (SW), permitiendo leer desplazamientos horizontales, verticales y acciones de selección \cite{sparkfun_joystick_tutorial}.  
+Los ejes se conectaron a las entradas analógicas \texttt{A0} y \texttt{A1}, mientras que el pulsador se conectó a un pin digital configurado como entrada con resistencia de \textit{pull-up} interna.
 
-En síntesis, este módulo combina los principios de control analógico con el manejo digital de periféricos del microcontrolador, integrando adquisición de señales (ADC), procesamiento de control proporcional y generación de salida PWM, bajo una estructura de hardware sencilla y de bajo costo.
+Durante el desarrollo se consideró inicialmente implementar un mapeo matricial continuo, donde las coordenadas del LED activo dependieran de un cálculo analógico proporcional.  
+Sin embargo, este enfoque resultó complejo de calibrar y sensible al ruido, por lo que se optó finalmente por un control basado en condiciones discretas, que permitió un funcionamiento más estable y predecible.  
+Además, se incorporó una zona muerta en el eje central para evitar desplazamientos involuntarios del LED, y un retardo (\textit{cooldown}) entre movimientos para suavizar la respuesta visual.
 
-\subsection{Matriz RGB con Joystick}
-
-Este módulo implementa una interfaz interactiva en la que un \emph{cursor} luminoso (un único LED encendido) se desplaza sobre una matriz 8$\times$8 de LEDs RGB direccionables \textbf{WS2812B}. La posición se controla con un \textit{joystick analógico} (dos potenciómetros ortogonales) y un pulsador que, al activarse, asigna un color RGB pseudoaleatorio al LED activo. El sistema integra: (i) adquisición analógica por ADC, (ii) lectura digital del pulsador con resistencia de \emph{pull-up} interna, y (iii) generación del protocolo de temporización de los WS2812B directamente por software (\emph{bit-banging}), respetando el orden de bytes \textbf{GRB} y la ventana de \emph{reset} (\(\sim\)80~\(\mu\)s) para el \emph{latch} del tren de datos. :contentReference[oaicite:0]{index=0}
-
-\textbf{Joystick analógico y umbrales de decisión:} 
-Cada eje del joystick se lee mediante el conversor A/D de 10 bits del \textbf{ATmega328P}, empleando AVcc como referencia y prescaler 64 (frecuencia de reloj del ADC \(\approx\) 250~kHz), lo que otorga una resolución de 1024 niveles por canal. Se define un punto medio en \(\text{MID} = 512\) y una \emph{zona muerta} de amplitud \(\text{DZ} = 90\) cuentas, generando umbrales \(\text{TH\_LO} = 512 - 90\) y \(\text{TH\_HI} = 512 + 90\). Valores por debajo/encima de esos umbrales se interpretan como movimientos discretos en \(\{\uparrow,\downarrow,\leftarrow,\rightarrow\}\) (una celda por evento). Para evitar repeticiones espurias por ruido y velocidad de muestreo, se usa un \emph{cooldown} entre pasos. En la implementación, el eje \textbf{X} está invertido (\emph{mapping} físico), de modo que desplazamientos a un lado producen el índice decreciente y al contrario para el otro. :contentReference[oaicite:1]{index=1}
-
-\textbf{Pulsador con entrada digital y cambio de color:}
-El pulsador del joystick (\texttt{SW}) se conecta a \texttt{PD2} como entrada con \emph{pull-up} interno (\emph{activo en bajo}). Al detectar un flanco de pulsación, el sistema genera un nuevo color mediante un generador pseudoaleatorio \textit{LFSR} de 8 bits, actualizando los tres canales (R, G, B) del LED activo y registrando por UART el nuevo triplete RGB. 
-
-\textbf{Matriz WS2812B y protocolo GRB a 800~kHz:}
-Los WS2812B integran controlador por LED, por lo que \emph{no requieren multiplexado externo}. La cadena de 64 LEDs se modela como un arreglo lineal de longitud \(N=64\) (\(8\times 8\)), direccionado por el índice \(i\in[0,63]\). Para transmitir color, se envían 24 bits por LED en orden \textbf{G-R-B}, con tiempos de \(\mathrm{T_{0H}}\), \(\mathrm{T_{0L}}\), \(\mathrm{T_{1H}}\), \(\mathrm{T_{1L}}\) compatibles con 800~kHz. Durante el envío se \textbf{deshabilitan interrupciones} (\texttt{cli()/sei()}) para garantizar la precisión de ciclo, y se deja un \(\sim\)80~\(\mu\)s de \emph{reset} al final para \emph{latch}. Además, se aplica una atenuación global (\(\text{BR}=80/255\)) mediante una escala lineal por canal antes de transmitir el frame completo. :contentReference[oaicite:3]{index=3}
-
-\textbf{Comunicación UART para telemetría:}
-El sistema inicializa la UART (9600~bps, 8N1) y reporta eventos (p.\,ej., cambio de color) con mensajes formateados, lo que facilita la verificación y documentación experimental desde consola y/o captura en PC. 
-
-\textbf{Lógica de movimiento en retícula 8$\times$8:}
-El índice \(i\) se actualiza con reglas de borde para impedir \emph{wrap-around} horizontal (columnas 0 y 7) y vertical (filas 0 y 7). Se emplea un \emph{cooldown} de pasos para dar una cadencia estable al desplazamiento con el \emph{stick} sostenido y un retardo de refresco de \(\sim\)10~ms por iteración, asegurando una respuesta perceptualmente fluida del cursor. Una vez actualizado \(i\), se limpia el \emph{framebuffer} y se enciende únicamente el LED de índice \(i\) con el color actual antes de transmitir el arreglo completo por PB0. :contentReference[oaicite:5]{index=5}
-
-En síntesis, este ejercicio demuestra la integración entre adquisición analógica (ADC con umbrales y zona muerta), manejo de entradas digitales (botón con \emph{pull-up} y detección de flanco), generación de color pseudoaleatorio, y transmisión temporalmente crítica del protocolo WS2812B por \emph{bit-banging}, todo sobre el \textbf{ATmega328P}.
+El resultado fue un sistema fluido, capaz de representar el movimiento del joystick con buena estabilidad y cambio de color del LED activo mediante el pulsador.  
+La comprensión del protocolo WS2812B y la sincronización precisa de la señal permitieron reforzar los conocimientos sobre control digital de periféricos de alta velocidad.
 
 \subsection{Cerradura RFID}
 
-El sistema de cerradura electrónica implementado permite la identificación y validación de tarjetas mediante la tecnología \textbf{RFID} (\textit{Radio Frequency Identification}), utilizando el módulo \textbf{MFRC522} como lector principal. El objetivo del experimento es diseñar un sistema de acceso seguro que reconozca credenciales válidas, gestione nuevas altas o bajas y brinde retroalimentación visual mediante una pantalla LCD I2C, LEDs indicadores y comunicación UART. 
+El objetivo de esta práctica fue desarrollar una cerradura electrónica que gestionara el acceso mediante tarjetas \textbf{RFID} del tipo \textbf{MIFARE 1K 13.56 MHz}, utilizando el lector \textbf{RC522} en conjunto con el microcontrolador \textbf{ATmega328P}.  
+El sistema permite registrar y eliminar tarjetas, validar accesos y visualizar los estados mediante una pantalla LCD I2C y LEDs indicadores.
 
-\textbf{Módulo RC522 y principio de funcionamiento:}  
-El módulo MFRC522 opera en la banda de 13.56~MHz y permite la lectura y escritura de etiquetas o tarjetas compatibles con el estándar \textbf{ISO/IEC 14443A} (MIFARE). Su funcionamiento se basa en la inducción electromagnética: el lector genera un campo alterno que alimenta la antena de la tarjeta pasiva, permitiendo el intercambio de información. El microcontrolador se comunica con el RC522 a través del bus \textbf{SPI} (pines MOSI, MISO, SCK y SS), enviando comandos y recibiendo respuestas estructuradas en registros internos del chip. 
+El lector RC522 se comunica con el microcontrolador a través del bus SPI (\textit{Serial Peripheral Interface}), empleando una velocidad de reloj de \SI{2}{\mega\hertz} y operando en modo maestro \cite{nxp_mfrc522_datasheet}.  
+Las señales \texttt{SDA}, \texttt{SCK}, \texttt{MOSI}, \texttt{MISO} y \texttt{RST} fueron conectadas a los pines digitales \texttt{D10}, \texttt{D13}, \texttt{D11}, \texttt{D12} y \texttt{D9}, respectivamente.  
+La pantalla LCD de 16×2 caracteres se controló mediante un expansor \textbf{PCF8574} conectado al bus I2C, utilizando las líneas \texttt{SDA → A4} y \texttt{SCL → A5} \cite{nexperia_pcf8574_datasheet}.  
+El LED verde y el LED rojo indicaron los estados de validación de acceso, mientras que un pulsador externo activó el modo de programación.
 
-El código implementa una rutina de inicialización (\texttt{RC522\_Init()}) que configura los registros de temporización y tasa de bits, y una función de detección (\texttt{RC522\_Request()}) seguida de la lectura del UID con \texttt{RC522\_AntiColl()}. El UID capturado se compara con los almacenados en memoria EEPROM para determinar si la tarjeta es válida. En caso positivo, se activa la secuencia de apertura, y en caso negativo, el sistema emite una señal de error visual y sonora. 
+La lógica del sistema se implementó mediante un autómata de estados finitos (FSM), compuesto por las siguientes etapas:  
+inicio (espera de tarjeta), lectura del UID, verificación, acceso permitido, acceso denegado y modo programación.  
+En este último estado, el sistema permite dar de alta o baja tarjetas mediante la detección del pulsador.  
+Los UID autorizados se almacenaron en la memoria EEPROM interna del microcontrolador, con un tamaño máximo de 64 registros de 4 bytes cada uno \cite{microchip_atmega328p_datasheet}.
 
-\textbf{Comunicación SPI:}  
-El bus \textbf{SPI} (Serial Peripheral Interface) fue configurado en modo maestro (\texttt{MSTR=1}) y frecuencia de reloj Fosc/8, lo que proporciona una velocidad de transferencia de 2~MHz para una operación confiable con el módulo RC522. La comunicación es síncrona y de tipo \textit{full duplex}, utilizando los pines \texttt{PB3 (MOSI)}, \texttt{PB4 (MISO)}, \texttt{PB5 (SCK)} y \texttt{PB2 (SS)} del ATmega328P. 
-
-\textbf{Almacenamiento en EEPROM:}  
-Para conservar las tarjetas autorizadas incluso tras el apagado, se emplea la memoria EEPROM interna del microcontrolador. Cada UID leído se guarda en posiciones consecutivas, permitiendo almacenar múltiples usuarios. El código utiliza las funciones de lectura y escritura de EEPROM estándar de AVR (\texttt{eeprom\_read\_byte}, \texttt{eeprom\_write\_byte}) y gestiona el espacio mediante un índice de direcciones. Se implementan comandos UART para listar, eliminar o limpiar las tarjetas registradas, lo que facilita la administración del sistema sin reprogramar el microcontrolador. 
-
-\textbf{Interfaz LCD I2C:}  
-El sistema incorpora una pantalla LCD de 16$\times$2 caracteres con interfaz \textbf{I2C} basada en el expansor \textbf{PCF8574}, la cual permite reducir el número de pines utilizados. Esta interfaz se encarga de mostrar los estados del sistema: detección de tarjeta, modo de programación, mensajes de autorización o error, y menús de administración. Los datos se envían en formato de 4 bits con temporización controlada, y la dirección esclava del módulo corresponde a \texttt{0x27}. 
-
-\textbf{Retroalimentación visual y sonora:}  
-El estado de la cerradura se indica mediante dos LEDs y un buzzer piezoeléctrico. El LED verde confirma una tarjeta válida y activa brevemente el buzzer, mientras que el LED rojo se enciende ante un intento no autorizado. Esta respuesta multimodal brinda una interfaz intuitiva al usuario y permite verificar el funcionamiento sin necesidad de monitorear el puerto serie.
-
-\textbf{Comunicación UART y monitoreo externo:}  
-El microcontrolador establece una comunicación serial a 9600~bps (8N1) para registro de eventos, depuración y control remoto del sistema. Mediante esta interfaz se envían mensajes informativos como la detección de tarjetas, UID leído, estado del sistema y comandos de usuario. Las funciones \texttt{uart\_send()}, \texttt{uart\_receive()} y \texttt{uart\_print()} facilitan la interacción con una terminal o aplicación de monitoreo externa, lo que resulta útil durante la programación y verificación del funcionamiento. 
-
-\textbf{Arquitectura general del sistema:}  
-El flujo principal se estructura en un \emph{autómata de estados finitos (FSM)}, donde cada estado corresponde a una etapa del proceso: \texttt{INICIO}, \texttt{ESPERA}, \texttt{PROGRAMACIÓN} y \texttt{VERIFICACIÓN}. Los eventos de entrada (detección de tarjeta, pulsación de botones o comandos UART) disparan las transiciones correspondientes. Este enfoque modular permite una gestión ordenada del control lógico y facilita la expansión futura del sistema, por ejemplo, agregando autenticación por contraseña o múltiples niveles de acceso.
-
-En conjunto, el sistema de cerradura RFID combina varios subsistemas de hardware y software: la identificación inalámbrica mediante el RC522, la comunicación serial SPI y UART, la visualización por I2C, y el almacenamiento persistente en EEPROM, integrados todos bajo el control del microcontrolador ATmega328P.
+Durante las pruebas se observó que la lectura del RC522 era más sensible al tiempo de respuesta en modo de programación, lo cual se mitigó ajustando los retardos entre lecturas y el control de la bandera de detección.  
+El sistema final demostró una lectura estable, almacenamiento persistente y una interfaz de usuario clara, validando el correcto funcionamiento conjunto de los periféricos SPI, I2C y UART en una misma arquitectura embebida.

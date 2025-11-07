@@ -4,41 +4,41 @@
 
 \subsection{Sistema de Control de Temperatura}
 
-\subsection{Control de Motor}
+\subsection{Control de motor}
 
-Durante las pruebas del sistema de control proporcional, se registraron los valores de referencia, realimentación, ciclo de trabajo del PWM y dirección de giro, transmitidos mediante UART en formato CSV.  
-Los datos se visualizaron en tiempo real mediante una aplicación en \textit{Python}, lo que permitió verificar la respuesta dinámica del sistema.
+Durante las pruebas del sistema de control proporcional se registraron los valores de referencia, realimentación, ciclo de trabajo del PWM y dirección de giro, transmitidos mediante UART en formato CSV.  
+Los datos fueron visualizados en tiempo real mediante una aplicación desarrollada en \textit{Python}, permitiendo verificar la respuesta dinámica del sistema.
 
-Se observó una relación proporcional estable entre la diferencia de tensiones de los potenciómetros y la velocidad del motor. En la zona muerta (±10 cuentas ADC) el motor permaneció detenido, y al aumentar la diferencia de referencia la velocidad respondió suavemente en ambos sentidos.  
-El valor mínimo de PWM efectivo (180) permitió superar el par de arranque bajo carga, evitando bloqueos.
+Se observó una relación proporcional estable entre la diferencia de tensiones de los potenciómetros y la velocidad del motor. En la zona muerta (±10 unidades ADC) el motor permaneció detenido, y al aumentar la diferencia de referencia la velocidad respondió suavemente en ambos sentidos.  
+El valor mínimo de PWM efectivo (\(180 \approx 70\%\)) permitió superar el par de arranque bajo carga, evitando bloqueos y mejorando la estabilidad del control.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{Anexos/C1.jpg}
-    \caption{Gráfico obtenido en tiempo real mediante Python, mostrando la relación entre la posición de los potenciómetros y el valor del PWM aplicado al motor.}
+    \caption{Gráfico obtenido en tiempo real mediante Python, mostrando la relación entre la posición de los potenciómetros y el valor del PWM aplicado al motor}
     \label{fig:control_motor}
 \end{figure}
 
-\subsection{Matriz RGB con Joystick}
+\subsection{Matriz RGB con joystick}
 
-El sistema respondió correctamente a los desplazamientos del joystick en ambos ejes, mostrando el movimiento del LED activo dentro de la matriz 8×8.  
+El sistema respondió correctamente a los desplazamientos del joystick en ambos ejes, mostrando el movimiento del LED activo dentro de la matriz RGB de 8×8.  
 La zona muerta definida permitió eliminar falsas detecciones y estabilizar la posición cuando el joystick se encontraba en reposo.  
-El retardo (\textit{cooldown}) aplicado entre lecturas contribuyó a una sensación de desplazamiento controlada y sin parpadeos.
+El retardo de actualización (\textit{cooldown}) aplicado entre lecturas contribuyó a un desplazamiento controlado y sin parpadeos.
 
 Al presionar el botón del joystick, el color del LED activo cambiaba de forma pseudoaleatoria, generando distintos tonos visibles en pantalla.  
-Aunque se intentó implementar un mapeo matricial continuo, la solución final basada en condiciones discretas resultó más sencilla y confiable.
+Aunque inicialmente se intentó implementar un mapeo matricial continuo, la solución final basada en condiciones discretas resultó más sencilla, robusta y predecible.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Anexos/D1.jpg}
-    \caption{Desplazamiento del LED activo dentro de la matriz RGB controlado mediante el joystick.}
+    \caption{Desplazamiento del LED activo dentro de la matriz RGB controlado mediante el joystick}
     \label{fig:matriz_movimiento}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Anexos/D2.jpg}
-    \caption{Cambio de color del LED activo al presionar el botón del joystick.}
+    \caption{Cambio de color del LED activo al presionar el botón del joystick}
     \label{fig:matriz_color}
 \end{figure}
 
@@ -46,50 +46,50 @@ Aunque se intentó implementar un mapeo matricial continuo, la solución final b
 
 El sistema RFID demostró un funcionamiento estable en la lectura y verificación de tarjetas MIFARE.  
 Durante las pruebas, el LCD mostró correctamente los mensajes de estado (“Acerque tarjeta”, “Acceso concedido”, “Acceso denegado”), y los LEDs indicaron visualmente la validez o rechazo del acceso.  
-Las tarjetas registradas permanecieron almacenadas en la memoria EEPROM incluso tras reiniciar el sistema, comprobando la persistencia de datos.  
+Las tarjetas registradas permanecieron almacenadas en la memoria EEPROM incluso tras reiniciar el sistema, confirmando la persistencia de datos.
 
-Aunque los comandos UART de administración no se interpretaron correctamente, el sistema respondió con mensajes informativos (“Comandos: ADD, DEL, LIST”) ante cualquier entrada, lo que permitió verificar la comunicación serial básica.  
-La detección en el modo de programación resultó más sensible a los tiempos de lectura, pero se estabilizó ajustando los \textit{delays} entre consultas.
+Aunque los comandos UART de administración no se interpretaron correctamente, el sistema respondió con mensajes informativos (“Comandos: ADD, DEL, LIST”) ante cualquier entrada, verificando la comunicación serial básica.  
+La detección en el modo de programación resultó más sensible a los tiempos de lectura, pero se estabilizó tras ajustar los retardos entre consultas.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Anexos/E1.jpg}
-    \caption{Pantalla inicial del sistema RFID con mensaje de espera para detección de tarjeta.}
+    \caption{Pantalla inicial del sistema RFID con mensaje de espera para detección de tarjeta}
     \label{fig:rfid_inicio}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Anexos/E2.jpg}
-    \caption{Validación correcta: acceso concedido y encendido del LED verde.}
+    \caption{Validación correcta: acceso concedido y encendido del LED verde}
     \label{fig:rfid_ok}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Anexos/E3.jpg}
-    \caption{Lectura de tarjeta no registrada: acceso denegado y encendido del LED rojo.}
+    \caption{Lectura de tarjeta no registrada: acceso denegado y encendido del LED rojo}
     \label{fig:rfid_denegado}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Anexos/E4.jpg}
-    \caption{Modo programación: interfaz para alta y baja de tarjetas.}
+    \caption{Modo programación del sistema, con opción de alta y baja de tarjetas}
     \label{fig:rfid_prog}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Anexos/E6.jpg}
-    \caption{Pantalla correspondiente a la opción de agregar (\texttt{ADD}) una nueva tarjeta al sistema.}
+    \caption{Pantalla correspondiente a la opción de agregar (\texttt{ADD}) una nueva tarjeta al sistema}
     \label{fig:rfid_add}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Anexos/E7.jpg}
-    \caption{Pantalla correspondiente a la opción de eliminar (\texttt{DEL}) una tarjeta previamente registrada.}
+    \caption{Pantalla correspondiente a la opción de eliminar (\texttt{DEL}) una tarjeta previamente registrada}
     \label{fig:rfid_del}
 \end{figure}
 
