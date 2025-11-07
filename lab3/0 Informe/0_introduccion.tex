@@ -1,11 +1,21 @@
 \section{Introducción}
 
-\subsection{Plotter}
+El presente laboratorio tuvo como objetivo aplicar los conocimientos adquiridos en la unidad curricular \textit{Tecnologías de Microprocesamiento}, a través del diseño, programación e implementación de distintos sistemas embebidos basados en el microcontrolador \textbf{ATmega328P}. A partir de este dispositivo se desarrollaron cinco ejercicios experimentales que integran control digital, manejo de periféricos, adquisición de señales analógicas, y comunicación serial.
 
-\subsection{Sistema de Control de Temperatura}
+Los ejercicios planteados corresponden a los siguientes problemas: 
 
-\subsection{Control de Motor }
+\begin{itemize}
+    \item \textbf{Problema A – Control de Plotter:} Implementación de un sistema de control para un plóter cartesiano de dos ejes, empleando motores paso a paso y una válvula solenoide para el trazado de figuras. El objetivo principal consiste en coordinar los movimientos de los ejes X e Y respetando los límites definidos por sensores, logrando la representación precisa de figuras geométricas.
+    
+    \item \textbf{Problema B – Sistema de Control de Temperatura:} Desarrollo de un sistema de regulación térmica mediante el sensor LM35. El microcontrolador mide la temperatura en intervalos regulares y controla un calefactor y un ventilador por modulación PWM, con posibilidad de ajustar el punto medio de temperatura a través de un menú UART.
+    
+    \item \textbf{Problema C – Control de Motor:} Implementación de un sistema de control de posición analógico en el que dos potenciómetros determinan la referencia y la posición actual de un motor de corriente continua. El microcontrolador regula el giro y la velocidad del motor mediante una señal PWM, buscando igualar ambos valores. El comportamiento se monitorea por puerto serial y se analiza mediante gráficas de evolución temporal.
+    
+    \item \textbf{Problema D – Matriz RGB con Joystick:} Diseño de una interfaz interactiva en la que el movimiento del joystick desplaza un LED encendido dentro de una matriz RGB. El sistema detecta las direcciones de movimiento mediante entradas analógicas (ADC) y genera un cambio de color aleatorio al presionar el pulsador integrado en el joystick.
+    
+    \item \textbf{Problema E – Cerradura RFID:} Construcción de una cerradura electrónica inteligente basada en un lector \textit{RC522 RFID}, con almacenamiento del identificador autorizado en la memoria EEPROM, interfaz de visualización LCD I2C y señalización por LEDs y buzzer. El sistema gestiona el registro, validación y actualización de tarjetas, así como la comunicación UART para monitoreo externo.
+\end{itemize}
 
-\subsection{Matriz RGB con Joystick}
+Cada uno de estos ejercicios aborda distintos aspectos del control digital, incluyendo la comunicación UART, la modulación por ancho de pulso (PWM), la lectura de señales analógicas mediante el ADC interno y el manejo de periféricos de entrada/salida (I/O). En conjunto, el laboratorio permitió consolidar la comprensión del funcionamiento del microcontrolador ATmega328P y su aplicación en proyectos de automatización y control embebido.
 
-\subsection{Cerradura RFID}
+En las siguientes secciones se presenta el desarrollo teórico, metodológico y experimental de los sistemas implementados, junto con los resultados obtenidos y las conclusiones correspondientes.
