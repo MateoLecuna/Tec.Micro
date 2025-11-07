@@ -4,8 +4,135 @@
 
 \subsection{Sistema de Control de Temperatura}
 
-\subsection{Control de Motor }
+\subsection{Control de Motor}
+
+El desarrollo de este módulo se centró en la implementación de un sistema de control analógico–digital para un motor de corriente continua, utilizando el microcontrolador \textbf{ATmega328P} y un driver \textbf{L298N}. El objetivo fue lograr que la velocidad y dirección del motor se ajustaran de forma proporcional a la diferencia entre dos señales analógicas: una de referencia y otra de realimentación.
+
+\textbf{Configuración del hardware:}  
+El montaje se realizó sobre una placa Arduino Uno. Se emplearon dos potenciómetros lineales de 10~k$\Omega$, conectados a las entradas analógicas \texttt{A0} (referencia) y \texttt{A1} (posición actual del eje). El motor DC fue acoplado mecánicamente a uno de los potenciómetros para obtener la señal de realimentación.  
+El puente H L298N se conectó de la siguiente forma:
+
+\begin{itemize}
+    \item \texttt{ENA} $\rightarrow$ pin digital \texttt{D9} (salida PWM, OC1A)
+    \item \texttt{IN1} $\rightarrow$ pin digital \texttt{D4}
+    \item \texttt{IN2} $\rightarrow$ pin digital \texttt{D5}
+    \item \texttt{OUT1}/\texttt{OUT2} $\rightarrow$ terminales del motor
+    \item \texttt{+12V} $\rightarrow$ fuente de alimentación del motor (batería o fuente externa)
+    \item \texttt{5V} y \texttt{GND} conectados al Arduino
+\end{itemize}
+
+Se incorporaron dos LEDs indicadores (en paralelo a las líneas \texttt{IN1} e \texttt{IN2}) para representar visualmente la dirección de giro (\textbf{DER} o \textbf{IZQ}).
+
+\textbf{Configuración del software:}  
+El programa fue desarrollado en lenguaje C utilizando el entorno \textit{Microchip Studio}. Se configuró el temporizador \texttt{Timer1} en modo \textit{Fast PWM} de 8~bits, con prescaler igual a 1, alcanzando una frecuencia de conmutación de aproximadamente 62.5~kHz.  
+Las señales analógicas de los potenciómetros fueron digitalizadas mediante el ADC interno de 10~bits, utilizando AVcc como referencia y prescaler 64 (frecuencia de conversión $\approx$ 250~kHz). Para reducir el ruido, cada lectura se promedió a partir de cuatro muestras consecutivas.
+
+El control se implementó mediante un esquema proporcional simple, con una zona muerta de $\pm10$ unidades ADC. Si la diferencia entre la referencia y la realimentación estaba dentro de esa banda, el sistema detenía el motor. En caso contrario, se ajustaba el ciclo útil del PWM según la ganancia $K_p = 1/4$, con un valor mínimo de 180 (de un total de 255) para garantizar el arranque bajo carga.
+
+\textbf{Comunicación y monitoreo:}  
+Se habilitó la UART a 115200~bps para enviar por puerto serie los valores de referencia, realimentación, ciclo PWM y dirección del motor. Los datos se imprimieron en formato CSV con el encabezado \texttt{P3C,ref,act,pwm,dir}, lo que permitió registrar la evolución temporal y graficarla en Python o MATLAB para analizar la respuesta del sistema.
+
+\textbf{Procedimiento experimental:}  
+El procedimiento constó de tres etapas:  
+(1) calibración del umbral mínimo de PWM necesario para vencer el par de arranque del motor acoplado al potenciómetro,  
+(2) validación del control proporcional variando manualmente el potenciómetro de referencia, y  
+(3) registro de las variables por UART para evaluar la linealidad y estabilidad del sistema.  
+Durante las pruebas se comprobó que el control respondía de manera fluida, con inversión inmediata del sentido de giro al cruzar el punto medio, y sin oscilaciones perceptibles en la zona de equilibrio.
+
+En conjunto, la metodología aplicada permitió obtener un control de posición analógica estable y reproducible, integrando adquisición de datos, procesamiento digital y modulación PWM en un circuito de bajo costo y fácil replicación.
 
 \subsection{Matriz RGB con Joystick}
 
+En este módulo se desarrolló una interfaz interactiva que permite controlar el desplazamiento de un LED encendido dentro de una matriz 8$\times$8 de LEDs RGB direccionables (\textbf{WS2812B}) mediante un \textit{joystick} analógico. El objetivo principal fue integrar la lectura de señales analógicas, el manejo digital de una cadena de LEDs y la generación de colores pseudoaleatorios, explorando el control de movimiento dentro de un entorno bidimensional.
+
+\textbf{Configuración del hardware:}  
+El sistema se montó sobre una placa Arduino Uno (ATmega328P).  
+Las conexiones físicas principales fueron las siguientes:
+
+\begin{itemize}
+    \item \texttt{PB0} $\rightarrow$ pin DIN de la matriz WS2812B (línea de datos)
+    \item \texttt{A0} $\rightarrow$ eje X del joystick (lectura ADC)
+    \item \texttt{A1} $\rightarrow$ eje Y del joystick (lectura ADC)
+    \item \texttt{PD2} $\rightarrow$ botón SW del joystick (entrada digital con \textit{pull-up} interno)
+    \item Alimentación: 5 V y GND comunes a matriz y joystick
+\end{itemize}
+
+La matriz RGB se alimentó directamente desde 5 V, asegurando que la corriente total no superara los 800 mA al limitar el brillo global a un 30 \%. La comunicación con la cadena WS2812B se realizó a través de una única línea de datos a 800 kHz.
+
+\textbf{Configuración del software:}  
+El código se programó en C y utiliza una rutina de temporización precisa (\textit{bit-banging}) para generar el protocolo de comunicación requerido por los WS2812B. Durante la transmisión se deshabilitan las interrupciones (\texttt{cli()/sei()}) para garantizar la integridad del tren de bits GRB (24 bits por LED).  
+Se implementó una escala global de brillo ($\mathrm{BR}=80/255$) para evitar saturación visual.
+
+El joystick se lee mediante el ADC de 10 bits, utilizando AVcc como referencia y prescaler 64 (frecuencia de conversión $\approx$ 250 kHz). Se definieron umbrales de decisión con una \textit{zona muerta} de ±90 cuentas alrededor del punto medio (512), lo que evita movimientos no deseados por ruido.  
+Cada eje se evalúa independientemente para determinar desplazamientos discretos en X o Y, desplazando el LED activo una celda por evento. Se aplicó un \textit{cooldown} de algunos milisegundos para limitar la frecuencia de actualización y dar una sensación de movimiento fluido.
+
+\textbf{Intento de mapeo matricial:}  
+Inicialmente se intentó implementar un control basado en un \textit{mapeo matricial}, que asociaba directamente cada par (X, Y) de coordenadas analógicas con un índice de LED. Sin embargo, la complejidad del cálculo y la respuesta no lineal del joystick dificultaron su calibración. Finalmente se optó por un control condicional con límites discretos y desplazamientos unitarios, logrando un funcionamiento más predecible y sencillo de depurar.
+
+\textbf{Gestión del color y del botón SW:}  
+Al detectar la pulsación del botón del joystick (\texttt{SW}), el sistema genera un nuevo color RGB pseudoaleatorio mediante un LFSR de 8 bits. El nuevo color se aplica únicamente al LED actual, permaneciendo activo hasta la siguiente pulsación. Los eventos se envían por UART a 9600 bps para registro y diagnóstico.
+
+\textbf{Procedimiento experimental:}  
+El proceso de validación se realizó en tres etapas:  
+(1) verificación de la lectura estable del ADC y calibración de los umbrales de zona muerta,  
+(2) ensayo del movimiento del LED dentro de la matriz verificando los límites horizontales y verticales, y  
+(3) prueba del cambio de color con pulsaciones consecutivas del botón SW.  
+El sistema presentó una respuesta fluida y estable, con detección confiable de los ejes y transición de color sin errores de sincronización.
+
+En conjunto, la metodología implementada permitió integrar la adquisición analógica, la comunicación digital temporizada y la generación de color en un mismo entorno embebido, demostrando la versatilidad del ATmega328P en tareas de control interactivo.
+
 \subsection{Cerradura RFID}
+
+El objetivo de este módulo fue desarrollar una cerradura electrónica que gestionara el acceso mediante tarjetas \textbf{RFID} del tipo \textbf{MIFARE 1K 13.56 MHz}, utilizando el lector \textbf{RC522} en conjunto con el microcontrolador \textbf{ATmega328P}. El sistema permite registrar y eliminar tarjetas, validar accesos y visualizar los estados mediante una pantalla LCD I2C y LEDs indicadores.
+
+\textbf{Configuración del hardware:}  
+El montaje se realizó sobre una placa Arduino Uno, conectando los módulos externos del siguiente modo:
+
+\begin{itemize}
+    \item \textbf{RC522 → SPI:}
+          \texttt{SDA → D10}, \texttt{SCK → D13}, \texttt{MOSI → D11}, \texttt{MISO → D12}, \texttt{RST → D9}.
+    \item \textbf{LCD I2C (PCF8574):}
+          dirección \texttt{0x27}, líneas \texttt{SDA → A4}, \texttt{SCL → A5}.
+    \item \textbf{LED Verde → D6}, \textbf{LED Rojo → D7}.
+    \item Pulsador de modo programación → \texttt{D2}.
+    \item Alimentación: 5 V y GND comunes.
+\end{itemize}
+
+El módulo RC522 se alimentó a 3.3 V y se cuidó la compatibilidad lógica entre niveles (5 V del ATmega328P y 3.3 V del lector). Se incluyeron resistencias de protección y un capacitor de desacoplo cercano a la alimentación del módulo para mejorar la estabilidad.
+
+\textbf{Configuración del software:}  
+El programa se estructuró en lenguaje C, utilizando los periféricos SPI, UART e I2C del ATmega328P.  
+La comunicación con el RC522 se realiza mediante una biblioteca propia (\texttt{RC522.c/h}) que implementa las funciones básicas de inicialización, detección de tarjeta y lectura del UID (\textit{Unique Identifier}). La interfaz SPI opera en modo maestro con frecuencia de 2 MHz (prescaler = Fosc/8).
+
+El flujo del programa se organizó como un \textbf{autómata de estados finitos (FSM)} con los siguientes estados principales:
+\begin{enumerate}
+    \item \textbf{Inicio:} Muestra en el LCD “Listo para leer”.
+    \item \textbf{Lectura:} Detecta tarjeta y lee su UID.
+    \item \textbf{Verificación:} Compara el UID con los almacenados en EEPROM.
+    \item \textbf{Acceso:} Si coincide, enciende el LED verde y muestra “Acceso concedido”.
+    \item \textbf{Error:} Si no coincide, enciende el LED rojo y muestra “Acceso denegado”.
+    \item \textbf{Programación:} Permite agregar o eliminar UID mediante la pulsación del botón.
+\end{enumerate}
+
+\textbf{Gestión de la memoria EEPROM:}  
+Se utilizó la memoria EEPROM interna del ATmega328P para almacenar los UID autorizados. Cada tarjeta ocupa una posición de cuatro bytes, y el sistema puede almacenar hasta 64 identificadores. Las operaciones de lectura y escritura se realizaron con las funciones estándar de AVR LibC (\texttt{eeprom\_read\_byte()} y \texttt{eeprom\_write\_byte()}), evitando accesos repetitivos para prolongar la vida útil de la memoria.  
+Mediante la UART se implementaron comandos para listar, borrar o limpiar registros, facilitando la administración sin reprogramar el dispositivo.
+
+\textbf{Interfaz LCD I2C y comunicación serial:}  
+El módulo LCD de 16$\times$2 caracteres, controlado por el expansor PCF8574, muestra mensajes informativos del sistema: detección de tarjeta, acceso concedido/denegado, modo programación y número de tarjetas registradas.  
+La UART a 9600 bps se utilizó para depuración y monitoreo en consola, mostrando el UID leído y el estado de las operaciones, además de permitir la recepción de comandos textuales.
+
+\textbf{Procedimiento experimental:}  
+El proceso de validación incluyó las siguientes etapas:
+\begin{enumerate}
+    \item \textbf{Prueba de lectura RFID:} se verificó la detección estable de tarjetas y la correcta lectura del UID.
+    \item \textbf{Prueba de almacenamiento:} se registraron varias tarjetas y se comprobó la persistencia de datos tras reiniciar el sistema.
+    \item \textbf{Prueba de acceso:} se ensayó la validación de tarjetas autorizadas y el rechazo de no registradas.
+    \item \textbf{Prueba de interfaz:} se observó la coherencia de mensajes en LCD y UART, así como la correcta respuesta de los LEDs.
+\end{enumerate}
+
+\textbf{Observaciones:}  
+Durante la puesta a punto, se observó que la lectura del RC522 era más sensible en el modo de inicio que en programación, debido a pequeñas variaciones de temporización en el lazo de consulta. Se solucionó aumentando los tiempos de espera entre intentos de lectura y reforzando la condición de detección del UID.  
+El sistema final demostró una operación confiable, con una lectura estable, almacenamiento persistente y una interfaz de usuario clara e intuitiva.
+
+En síntesis, esta metodología combinó la comunicación SPI, I2C y UART en un mismo sistema embebido, aplicando control secuencial y almacenamiento no volátil para lograr una cerradura RFID funcional y extensible.
