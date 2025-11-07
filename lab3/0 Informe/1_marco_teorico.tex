@@ -2,6 +2,16 @@
 
 \subsection{Plotter}
 
+Este dispositivo permite el trazado y graficación de figuras e ilustraciones bidimensionales en un espacio definido por su chasis. Posee un carro deslizante que se traslada horizontalmente sobre el eje Y, y un cabezal que varía su posición en X pero se encuentra enlazado al carro mediante rieles, permitiendo el movimiento en los ejes X e Y del solenoide (utilizado como actuador del eje Z).
+Estas piezas están unidas mediante una correa dentada a cada motor PAP, siendo el motor Y el que controla el carro y el motor X el que controla el cabezal.\\
+Para el control y la alimentación de los motores, se cuenta con un controlador de motores PAP, cuya labor es servir como nexo entre el microcontrolador y los motores, tomando la señal de control del uC y transformándola a señal de potencia para los motores conectados.\\
+El controlador se encuentra conectado al uC mediante los pines GPIO del IC.
+Acorde al conexionado interno, el pin PB3 corresponde al reloj del motor X, el PB4 controla la dirección de dicho motor, junto con PB5, que controla la activación o desactivación del motor X.
+De igual manera que con los componentes en X, los controles del eje Y son PC3, PC4 y PC5 para Reloj Y, Dirección Y y Enable Y respectivamente, con la inclusión del Solenoide como parte del registro C en el pin PC0.\\
+Los límites están dados por dos sensores inductivos en los pines PD2 y PD3, siendo éstos YA y YD, y contando con el pin PD5 conectado a un LED indicador integrado para señalización. 
+
+Para mover un motor, se debe tener el pin Enable encendido, y posteriormente elegir el sentido de giro mediante el estado del pin Dir. Por último, se debe encender y apagar el pin Clk con un intervalo de tiempo entre conmutaciones definido por el usuario (se recomienda 1 ms, que equivale a 500 Hz).
+
 \subsection{Sistema de Control de Temperatura}
 
 \subsection{Control de motor}
