@@ -3,32 +3,33 @@
 #include <util/delay.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 #include <avr/eeprom.h>
 
-// Parámetros I2C/LCD
-#define F_SCL      100000UL
+#include "SPI.h"
+#include "UART.h"
+#include "RC522.h"
+
+/* ===================== UART ===================== */
+#define UART_BAUD 9600UL
+#define UBRR_VAL  ((F_CPU/16/UART_BAUD)-1)
+
+/* ===================== LCD I2C (PCF8574) ===================== */
 #define LCD_ADDR   0x27
 #define LCD_SLAW   (LCD_ADDR<<1)
-
-// Backpack PCF8574: P0=RS, P1=RW, P2=E, P3=BL, P4..P7=D4..D7
+// PCF8574 bits: P0=RS, P1=RW, P2=E, P3=BL, P4..P7=D4..D7
 #define RS_BM (1<<0)
 #define RW_BM (1<<1)
 #define E_BM  (1<<2)
 #define BL_BM (1<<3)
 
-// Pines de feedback
-#define GREEN_LED_PIN  PB5   // D13
-#define RED_LED_PIN    PB4   // D12
-#define BUZZER_PIN     PD3   // D3
-
-// I2C (TWI)
 static void twi_init(void){ TWSR=0x00; TWBR=72; TWCR=(1<<TWEN); }
 static void twi_start(void){ TWCR=(1<<TWINT)|(1<<TWSTA)|(1<<TWEN); while(!(TWCR&(1<<TWINT))); }
 static void twi_stop(void){  TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWSTO); }
 static void twi_write(uint8_t d){ TWDR=d; TWCR=(1<<TWINT)|(1<<TWEN); while(!(TWCR&(1<<TWINT))); }
 static void pcf_write(uint8_t v){ twi_start(); twi_write(LCD_SLAW); twi_write(v); twi_stop(); }
 
-// LCD
 static void lcd_send_nibble(uint8_t nib, uint8_t rs){
 	uint8_t out=((nib&0x0F)<<4)|rs|BL_BM;
 	pcf_write(out); _delay_us(1);
@@ -50,317 +51,313 @@ static void lcd_init(void){
 	lcd_cmd(0x28); lcd_cmd(0x08); lcd_cmd(0x01); lcd_cmd(0x06); lcd_cmd(0x0C);
 }
 static void lcd_print_at(uint8_t r,uint8_t c,const char* s){ lcd_set_cursor(r,c); lcd_print(s); }
-static void lcd_print_num2(uint8_t r,uint8_t c,uint8_t v){
-	char b[3]; b[0]='0'+(v/10)%10; b[1]='0'+(v%10); b[2]='\0'; lcd_print_at(r,c,b);
+
+/* ===================== Delays variables (fix _delay_ms) ===================== */
+static void delay_ms_var(uint16_t ms){
+	while(ms--) _delay_ms(1);
 }
 
-// Teclado 4x4
-// Filas -> PD7,PD6,PD5,PD4 (salidas activas en 0)
-// Columnas -> PB3,PB2,PB1,PB0 (entradas con pull-up)
+/* ===================== Parámetros ===================== */
+#define MAX_UID_LEN      7
+#define MAX_CARDS        64
+#define SLOT_SIZE        (1 + MAX_UID_LEN)   // 1=len + uid
+#define DISPLAY_UID_MS   2000                // ms que se mantiene el mensaje tras leer tarjeta
+#define OPEN_TIMEOUT_MS  5000                // ms “abierto” (LED verde)
+#define BTN_DEBOUNCE_MS  30
+#define BTN_LONG_MS      1500
 
-static void kpd_init(void){
-	DDRD|=0xF0; PORTD|=0xF0;      // filas
-	DDRB&=~0x0F; PORTB|=0x0F;     // columnas
+/* ===================== Pines ===================== */
+// Botones (activos en 0 con pull-up)
+#define BTN_PROG_PIN   PD2   // D2
+#define BTN_ADD_PIN    PD3   // D3
+#define BTN_DEL_PIN    PD6   // D6
+// LEDs
+#define LED_ROJO_PIN   PD4   // D4
+#define LED_VERDE_PIN  PD5   // D5
+
+static inline void pin_init(void){
+	// Botones: entrada con pull-up
+	DDRD &= ~((1<<BTN_PROG_PIN)|(1<<BTN_ADD_PIN)|(1<<BTN_DEL_PIN));
+	PORTD |=  (1<<BTN_PROG_PIN)|(1<<BTN_ADD_PIN)|(1<<BTN_DEL_PIN);
+	// LEDs: salida
+	DDRD |= (1<<LED_ROJO_PIN)|(1<<LED_VERDE_PIN);
+	PORTD &= ~((1<<LED_ROJO_PIN)|(1<<LED_VERDE_PIN));
 }
-static char keymap(uint8_t r,uint8_t c){
-	static const char tbl[4][4]={
-		{'1','2','3','A'},
-		{'4','5','6','B'},
-		{'7','8','9','C'},
-		{'*','0','#','D'}};
-		return (r<4&&c<4)?tbl[r][c]:'\0';
+static inline uint8_t btn_read(uint8_t bit){ return (PIND & (1<<bit))?1:0; } // 1=libre, 0=apretado
+static uint8_t btn_was_pressed(uint8_t bit){
+	if(!btn_read(bit)){
+		_delay_ms(BTN_DEBOUNCE_MS);
+		if(!btn_read(bit)){
+			while(!btn_read(bit)){}
+			_delay_ms(BTN_DEBOUNCE_MS);
+			return 1;
+		}
 	}
-	static char kpd_getkey_blocking(void){
-		const uint8_t rowBit[4]={7,6,5,4};   // r -> PD7..PD4
-		const uint8_t colBit[4]={0,1,2,3};   // c -> PB0..PB3
-		while(1){
-			for(uint8_t r=0;r<4;r++){
-				PORTD|=0xF0; PORTD&=~(1<<rowBit[r]); _delay_us(5);
-				uint8_t pinb=PINB&0x0F;
-				if(pinb!=0x0F){
-					_delay_ms(20);
-					pinb=PINB&0x0F;
-					if(pinb!=0x0F){
-						for(uint8_t c=0;c<4;c++){
-							if((pinb&(1<<colBit[c]))==0){
-								char ch=keymap(r,c);
-								while((PINB&(1<<colBit[c]))==0) {;}
-								_delay_ms(10);
-								return ch;
-							}
-						}
+	return 0;
+}
+static uint8_t btn_long_press(uint8_t bit){
+	if(!btn_read(bit)){
+		_delay_ms(BTN_DEBOUNCE_MS);
+		if(!btn_read(bit)){
+			uint16_t t=0;
+			while(!btn_read(bit) && t < BTN_LONG_MS){ _delay_ms(10); t+=10; }
+			while(!btn_read(bit)){}
+			_delay_ms(BTN_DEBOUNCE_MS);
+			return (t >= BTN_LONG_MS);
+		}
+	}
+	return 0;
+}
+static inline void led_rojo(uint8_t on){ if(on) PORTD |= (1<<LED_ROJO_PIN); else PORTD &= ~(1<<LED_ROJO_PIN); }
+static inline void led_verde(uint8_t on){ if(on) PORTD |= (1<<LED_VERDE_PIN); else PORTD &= ~(1<<LED_VERDE_PIN); }
+
+/* ===================== Helpers UID ===================== */
+static uint8_t uid_len(const uint8_t *u, uint8_t max){ uint8_t n=0; while(n<max && u[n]!=0) n++; return n; }
+static bool uid_equal(const uint8_t *a, const uint8_t *b, uint8_t n){
+	for(uint8_t i=0;i<n;i++) if(a[i]!=b[i]) return false; return true;
+}
+
+/* ===================== EEPROM: tabla de tarjetas ===================== */
+/* Layout: entrada i en addr = i*SLOT_SIZE; byte0=len (0=libre); bytes1..len = UID */
+static inline uint16_t slot_addr(uint8_t idx){ return (uint16_t)idx * (uint16_t)SLOT_SIZE; }
+
+static void eeprom_read_slot(uint8_t idx, uint8_t *uid, uint8_t *len){
+	uint16_t a = slot_addr(idx);
+	uint8_t l = eeprom_read_byte((uint8_t*)a);
+	if(l==0 || l>MAX_UID_LEN){ *len=0; return; }
+	*len = l;
+	for(uint8_t i=0;i<l;i++) uid[i] = eeprom_read_byte((uint8_t*)(a+1+i));
+}
+static void eeprom_write_slot(uint8_t idx, const uint8_t *uid, uint8_t len){
+	if(len==0 || len>MAX_UID_LEN) return;
+	uint16_t a = slot_addr(idx);
+	eeprom_update_byte((uint8_t*)a, len);
+	for(uint8_t i=0;i<len;i++) eeprom_update_byte((uint8_t*)(a+1+i), uid[i]);
+}
+static void eeprom_clear_slot(uint8_t idx){
+	uint16_t a = slot_addr(idx);
+	eeprom_update_byte((uint8_t*)a, 0); // len=0 => libre
+}
+static int8_t find_free_slot(void){
+	for(uint8_t i=0;i<MAX_CARDS;i++){
+		uint8_t l = eeprom_read_byte((uint8_t*)slot_addr(i));
+		if(l==0) return i;
+	}
+	return -1;
+}
+static int8_t find_card_in_eeprom(const uint8_t *uid, uint8_t len){
+	if(len==0 || len>MAX_UID_LEN) return -1;
+	for(uint8_t i=0;i<MAX_CARDS;i++){
+		uint8_t l; uint8_t tmp[MAX_UID_LEN]={0};
+		eeprom_read_slot(i,tmp,&l);
+		if(l==len && uid_equal(tmp,uid,len)) return i;
+	}
+	return -1;
+}
+
+/* ===================== UART comandos ===================== */
+static void uart_list(void){
+	uart_print("Listado de tarjetas:\r\n");
+	for(uint8_t i=0;i<MAX_CARDS;i++){
+		uint16_t a = slot_addr(i);
+		uint8_t l = eeprom_read_byte((uint8_t*)a);
+		if(l==0) continue;
+		uart_print("#"); char buf[4]; sprintf(buf,"%u",i); uart_print(buf);
+		uart_print("  len="); sprintf(buf,"%u",l); uart_print(buf);
+		uart_print("  UID: ");
+		for(uint8_t k=0;k<l;k++){ uint8_t b=eeprom_read_byte((uint8_t*)(a+1+k)); uart_print_hex(b); uart_send(' '); }
+		uart_print("\r\n");
+	}
+}
+static bool uart_expect_yes(void){
+	uart_print("Confirme con YES\r\n");
+	char r[4]={0};
+	for(uint8_t i=0;i<3;i++){
+		r[i]=uart_receive();
+		if(r[i]=='\r' || r[i]=='\n'){ r[i]=0; break; }
+	}
+	return (r[0]=='Y' && r[1]=='E' && r[2]=='S');
+}
+static void uart_handle_line(char *line){
+	if(strncmp(line,"LIST",4)==0){
+		uart_list();
+		}else if(strncmp(line,"CLEAR",5)==0){
+		if(uart_expect_yes()){
+			for(uint8_t i=0;i<MAX_CARDS;i++) eeprom_clear_slot(i);
+			uart_print("EEPROM limpia\r\n");
+			}else{
+			uart_print("Cancelado\r\n");
+		}
+		}else if(strncmp(line,"DEL ",4)==0){
+		int n = -1; sscanf(line+4,"%d",&n);
+		if(n>=0 && n<MAX_CARDS){
+			if(uart_expect_yes()){ eeprom_clear_slot((uint8_t)n); uart_print("Borrado\r\n"); }
+			else uart_print("Cancelado\r\n");
+			}else{
+			uart_print("Indice invalido\r\n");
+		}
+		}else{
+		uart_print("Comandos: LIST | CLEAR | DEL n\r\n");
+	}
+}
+
+/* ===================== UI helpers ===================== */
+static void ui_idle(void){
+	lcd_clear();
+	lcd_print_at(0,0,"Acerque tarjeta ");
+	lcd_print_at(1,0,"Prog: mant D2   ");
+	led_rojo(1); led_verde(0);
+}
+static void ui_prog_menu(void){
+	lcd_clear();
+	lcd_print_at(0,0,"MODO PROG");
+	lcd_print_at(1,0,"ADD=D3  DEL=D6  ");
+	led_rojo(0); led_verde(0);
+}
+static void ui_msg(const char *l1, const char *l2, uint16_t ms){
+	lcd_clear(); lcd_print_at(0,0,l1); lcd_print_at(1,0,l2);
+	if(ms){ delay_ms_var(ms); }
+}
+
+/* ===================== MAIN ===================== */
+int main(void){
+	uart_init(UBRR_VAL);
+	spi_init();              // si el RC522 es quisquilloso, dejá SPI lento en tu SPI.c
+	twi_init();
+	lcd_init();
+	pin_init();
+
+	PORTB |= (1<<PB2);       // SS alto
+
+	// RC522
+	mfrc522_resetPinInit();
+	mfrc522_debug_init();
+
+	// UI inicial
+	ui_idle();
+	uart_print("\r\nCandado RFID listo. Comandos UART: LIST, CLEAR, DEL n\r\n");
+
+	enum { ST_IDLE=0, ST_OPEN, ST_PROG, ST_WAIT_ADD, ST_WAIT_DEL } state = ST_IDLE;
+
+	// Buffer UART simple
+	char line[32]; uint8_t li=0;
+
+	uint8_t last_uid[10]={0}; uint8_t last_n=0;
+
+	while(1){
+		/* ---------- UART (línea por línea) ---------- */
+		if(UCSR0A & (1<<RXC0)){
+			char c = uart_receive();
+			if(c=='\r' || c=='\n'){
+				line[li]=0; if(li>0){ uart_handle_line(line); li=0; }
+				}else if(li < sizeof(line)-1){
+				line[li++]=c;
+			}
+		}
+
+		/* ---------- Botones ---------- */
+		// Pulsación larga en PROG ? entrar/salir modo programación
+		if(state==ST_IDLE || state==ST_OPEN){
+			if(btn_long_press(BTN_PROG_PIN)){
+				state = ST_PROG;
+				ui_prog_menu();
+				continue;
+			}
+			}else if(state==ST_PROG || state==ST_WAIT_ADD || state==ST_WAIT_DEL){
+			if(btn_long_press(BTN_PROG_PIN)){
+				state = ST_IDLE;
+				ui_idle();
+				last_n=0; memset(last_uid,0,sizeof(last_uid));
+				continue;
+			}
+		}
+
+		if(state==ST_PROG){
+			if(btn_was_pressed(BTN_ADD_PIN)){
+				state = ST_WAIT_ADD;
+				ui_msg("Pase tarjeta", "para ALTA", 0);
+				continue;
+			}
+			if(btn_was_pressed(BTN_DEL_PIN)){
+				state = ST_WAIT_DEL;
+				ui_msg("Pase tarjeta", "para BAJA", 0);
+				continue;
+			}
+		}
+
+		/* ---------- Lectura de tarjeta ---------- */
+		uint8_t uid[10]={0};
+		mfrc522_standard(uid);
+		uint8_t n = uid_len(uid,10);
+
+		if(n==0){
+			_delay_ms(100);
+			continue;
+		}
+
+		// Evitar spam con la misma tarjeta pegada
+		bool same = (n==last_n) && uid_equal(uid,last_uid,n);
+
+		/* ---------- Lógica por estado ---------- */
+		if(state==ST_IDLE){
+			if(!same){
+				int8_t idx = find_card_in_eeprom(uid,n);
+				if(idx>=0){
+					ui_msg("Acceso permitido","",0);
+					led_rojo(0); led_verde(1);
+					// Aquí podrías activar un relé real si lo agregás
+					delay_ms_var(OPEN_TIMEOUT_MS);
+					led_verde(0); led_rojo(1);
+					ui_idle();
+					state = ST_IDLE;
+					}else{
+					ui_msg("Acceso denegado","",1000);
+					ui_idle();
+				}
+				memcpy(last_uid,uid,n); last_n=n;
+				delay_ms_var(DISPLAY_UID_MS);
+			}
+		}
+		else if(state==ST_PROG){
+			_delay_ms(100); // esperando elección ADD/DEL
+		}
+		else if(state==ST_WAIT_ADD){
+			if(!same){
+				int8_t idx = find_card_in_eeprom(uid,n);
+				if(idx>=0){
+					ui_msg("Ya existe", "No se duplica", 1200);
+					}else{
+					int8_t free = find_free_slot();
+					if(free<0){
+						ui_msg("Memoria llena","",1200);
+						}else{
+						eeprom_write_slot((uint8_t)free, uid, n);
+						ui_msg("Guardada OK","",900);
 					}
 				}
+				memcpy(last_uid,uid,n); last_n=n;
+				state = ST_PROG;
+				ui_prog_menu();
 			}
 		}
-	}
-	// Versión no bloqueante para la alarma
-	static char kpd_getkey_nonblocking(void){
-		const uint8_t rowBit[4]={7,6,5,4};
-		const uint8_t colBit[4]={0,1,2,3};
-		for(uint8_t r=0;r<4;r++){
-			PORTD|=0xF0; PORTD&=~(1<<rowBit[r]); _delay_us(5);
-			uint8_t pinb=PINB&0x0F;
-			if(pinb!=0x0F){
-				_delay_ms(10);
-				pinb=PINB&0x0F;
-				if(pinb!=0x0F){
-					for(uint8_t c=0;c<4;c++){
-						if((pinb&(1<<colBit[c]))==0){
-							char ch=keymap(r,c);
-							while((PINB&(1<<colBit[c]))==0) {;}
-							_delay_ms(5);
-							return ch;
-						}
-					}
+		else if(state==ST_WAIT_DEL){
+			if(!same){
+				int8_t idx = find_card_in_eeprom(uid,n);
+				if(idx<0){
+					ui_msg("No encontrada","",1200);
+					}else{
+					eeprom_clear_slot((uint8_t)idx);
+					ui_msg("Borrada OK","",900);
 				}
+				memcpy(last_uid,uid,n); last_n=n;
+				state = ST_PROG;
+				ui_prog_menu();
 			}
 		}
-		return '\0';
-	}
-
-	// EEPROM PIN
-	#define EEPROM_LEN_ADDR  ((uint8_t*)0)
-	#define EEPROM_DIG_ADDR  ((uint8_t*)1)
-	#define MAX_PIN_LEN      6
-	static void eeprom_load_pin(char* buf, uint8_t* len){
-		uint8_t l=eeprom_read_byte(EEPROM_LEN_ADDR);
-		if(l<4 || l>MAX_PIN_LEN){
-			const char def[]="1234";
-			eeprom_update_byte(EEPROM_LEN_ADDR,4);
-			for(uint8_t i=0;i<4;i++) eeprom_update_byte(EEPROM_DIG_ADDR+i,(uint8_t)def[i]);
-			for(uint8_t i=4;i<MAX_PIN_LEN;i++) eeprom_update_byte(EEPROM_DIG_ADDR+i,0);
-			l=4;
+		else if(state==ST_OPEN){
+			// No usamos estado separado, se maneja en línea arriba
 		}
-		for(uint8_t i=0;i<l;i++) buf[i]=(char)eeprom_read_byte(EEPROM_DIG_ADDR+i);
-		buf[l]='\0'; *len=l;
+
+		_delay_ms(50);
 	}
-	static void eeprom_save_pin(const char* buf, uint8_t len){
-		if(len<4 || len>MAX_PIN_LEN) return;
-		eeprom_update_byte(EEPROM_LEN_ADDR,len);
-		for(uint8_t i=0;i<len;i++) eeprom_update_byte(EEPROM_DIG_ADDR+i,(uint8_t)buf[i]);
-		for(uint8_t i=len;i<MAX_PIN_LEN;i++) eeprom_update_byte(EEPROM_DIG_ADDR+i,0);
-	}
-
-	// UI helpers
-	static void ui_reset_pin_line(void){ lcd_set_cursor(0,5); for(uint8_t i=0;i<11;i++) lcd_data(' '); lcd_set_cursor(0,5); }
-	static void ui_show_attempts(uint8_t at){
-		lcd_set_cursor(1,0); lcd_print("Intentos: ");
-		lcd_print_num2(1,10,at); lcd_set_cursor(1,12); lcd_data('/'); lcd_set_cursor(1,13); lcd_data('3');
-	}
-
-	// Estados de cambio
-	typedef enum { MODE_NORMAL=0, MODE_CHK_CURPIN, MODE_CHG_NEW1, MODE_CHG_NEW2 } change_mode_t;
-
-	// Feedback: LEDs y Buzzer
-	static inline void green_on(void){ PORTB |= (1<<GREEN_LED_PIN); }
-	static inline void green_off(void){ PORTB &= ~(1<<GREEN_LED_PIN); }
-	static inline void red_on(void){   PORTB |= (1<<RED_LED_PIN); }
-	static inline void red_off(void){  PORTB &= ~(1<<RED_LED_PIN); }
-	static inline void buz_on(void){   PORTD |= (1<<BUZZER_PIN); }
-	static inline void buz_off(void){  PORTD &= ~(1<<BUZZER_PIN); }
-
-	// Delays variables seguros (evitar _delay_ms(var))
-	static void delay_ms_var(uint16_t ms){ while(ms--) _delay_ms(1); }
-
-	// Beeps
-	static void beep_ms(uint16_t on_ms){ buz_on(); delay_ms_var(on_ms); buz_off(); }
-	static void beep_ok_triple(void){
-		for(uint8_t i=0;i<3;i++){ buz_on(); _delay_ms(90); buz_off(); _delay_ms(90); }
-	}
-
-	// Alarma hasta 'D'
-	static void alarm_until_master(void){
-		lcd_print_at(1,0,"Bloqueado     ");
-		while(1){
-			// ON
-			red_on(); buz_on();
-			for(uint16_t t=0;t<200;t+=20){ _delay_ms(20); char k=kpd_getkey_nonblocking(); if(k=='D'){ buz_off(); red_off(); return; } }
-			// OFF
-			buz_off(); red_off();
-			for(uint16_t t=0;t<200;t+=20){ _delay_ms(20); char k=kpd_getkey_nonblocking(); if(k=='D'){ return; } }
-		}
-	}
-
-	// --- MAIN ---
-	#define MAX_ATTEMPTS 3
-
-	int main(void){
-		twi_init(); lcd_init(); kpd_init();
-
-		// Configurar pines de feedback
-		DDRB |= (1<<GREEN_LED_PIN) | (1<<RED_LED_PIN);
-		PORTB &= ~((1<<GREEN_LED_PIN) | (1<<RED_LED_PIN));
-		DDRD |= (1<<BUZZER_PIN);
-		buz_off();
-
-		char pin_stored[MAX_PIN_LEN+1]; uint8_t pin_len_stored=0;
-		eeprom_load_pin(pin_stored,&pin_len_stored);
-
-		lcd_clear(); lcd_print_at(0,0,"Pin: "); ui_reset_pin_line(); ui_show_attempts(0);
-
-		char entry[7]={0};     uint8_t entry_len=0;
-		char curpin[7]={0};    uint8_t curpin_len=0;
-		char newpin_first[7]={0}; uint8_t newpin_first_len=0;
-		char newpin_conf[7]={0};  uint8_t newpin_conf_len=0;
-
-		uint8_t attempts=0; bool locked=false; change_mode_t mode=MODE_NORMAL;
-
-		while(1){
-			char k=kpd_getkey_blocking();
-
-			// Llave maestra 'D'
-			if(k=='D'){
-				attempts=0; locked=false; mode=MODE_NORMAL;
-				buz_off(); red_off();
-				green_on(); beep_ok_triple(); green_off();
-				lcd_print_at(1,0,"MASTER OK    "); ui_show_attempts(attempts);
-				_delay_ms(700);
-				lcd_print_at(1,0,"             "); ui_show_attempts(attempts);
-				ui_reset_pin_line(); entry_len=0; entry[0]=0;
-				continue;
-			}
-
-			if(locked){
-				// Si está bloqueado, sonar alarma hasta D
-				alarm_until_master();
-				// al volver, reseteamos
-				attempts=0; locked=false;
-				lcd_print_at(1,0,"Listo         "); ui_show_attempts(attempts);
-				_delay_ms(600);
-				lcd_print_at(1,0,"              "); ui_show_attempts(attempts);
-				ui_reset_pin_line(); entry_len=0; entry[0]=0;
-				continue;
-			}
-
-			// Iniciar cambio con 'C'
-			if(mode==MODE_NORMAL && k=='C'){
-				mode=MODE_CHK_CURPIN; curpin_len=0; curpin[0]=0;
-				lcd_print_at(1,0,"Ingrese actual");
-				ui_reset_pin_line();
-				continue;
-			}
-
-			// 'B' borra el buffer del modo actual
-			if(k=='B'){
-				if(mode==MODE_NORMAL){ entry_len=0; entry[0]=0; }
-				else if(mode==MODE_CHK_CURPIN){ curpin_len=0; curpin[0]=0; }
-				else if(mode==MODE_CHG_NEW1){ newpin_first_len=0; newpin_first[0]=0; }
-				else if(mode==MODE_CHG_NEW2){ newpin_conf_len=0; newpin_conf[0]=0; }
-				ui_reset_pin_line(); continue;
-			}
-
-			// '*' backspace
-			if(k=='*'){
-				if(mode==MODE_NORMAL && entry_len){ entry_len--; entry[entry_len]=0; lcd_set_cursor(0,5+entry_len); lcd_data(' '); lcd_set_cursor(0,5+entry_len); }
-				else if(mode==MODE_CHK_CURPIN && curpin_len){ curpin_len--; curpin[curpin_len]=0; lcd_set_cursor(0,5+curpin_len); lcd_data(' '); lcd_set_cursor(0,5+curpin_len); }
-				else if(mode==MODE_CHG_NEW1 && newpin_first_len){ newpin_first_len--; newpin_first[newpin_first_len]=0; lcd_set_cursor(0,5+newpin_first_len); lcd_data(' '); lcd_set_cursor(0,5+newpin_first_len); }
-				else if(mode==MODE_CHG_NEW2 && newpin_conf_len){ newpin_conf_len--; newpin_conf[newpin_conf_len]=0; lcd_set_cursor(0,5+newpin_conf_len); lcd_data(' '); lcd_set_cursor(0,5+newpin_conf_len); }
-				continue;
-			}
-
-			// Dígitos
-			if(k>='0' && k<='9'){
-				if(mode==MODE_NORMAL){
-					if(entry_len<MAX_PIN_LEN){ entry[entry_len++]=k; entry[entry_len]=0; lcd_set_cursor(0,5+entry_len-1); lcd_data(k); }
-					}else if(mode==MODE_CHK_CURPIN){
-					if(curpin_len<MAX_PIN_LEN){ curpin[curpin_len++]=k; curpin[curpin_len]=0; lcd_set_cursor(0,5+curpin_len-1); lcd_data(k); }
-					}else if(mode==MODE_CHG_NEW1){
-					if(newpin_first_len<MAX_PIN_LEN){ newpin_first[newpin_first_len++]=k; newpin_first[newpin_first_len]=0; lcd_set_cursor(0,5+newpin_first_len-1); lcd_data(k); }
-					}else if(mode==MODE_CHG_NEW2){
-					if(newpin_conf_len<MAX_PIN_LEN){ newpin_conf[newpin_conf_len++]=k; newpin_conf[newpin_conf_len]=0; lcd_set_cursor(0,5+newpin_conf_len-1); lcd_data(k); }
-				}
-				continue;
-			}
-
-			// 'A' enviar según modo
-			if(k=='A'){
-				if(mode==MODE_NORMAL){
-					if(entry_len<4){
-						// Feedback para "falta longitud"
-						red_on(); beep_ms(150); red_off();
-
-						lcd_print_at(1,0,"Min 4 digitos "); _delay_ms(600);
-						lcd_print_at(1,0,"              "); ui_show_attempts(attempts);
-						ui_reset_pin_line(); entry_len=0; entry[0]=0;
-						}else{
-						char pin_stored[MAX_PIN_LEN+1]; uint8_t pin_len_stored=0;
-						eeprom_load_pin(pin_stored,&pin_len_stored);
-						bool ok=(entry_len==pin_len_stored);
-						for(uint8_t i=0; ok && i<entry_len; i++) if(entry[i]!=pin_stored[i]) ok=false;
-
-						if(ok){
-							attempts=0; ui_show_attempts(attempts);
-							// Feedback OK: LED verde + 3 beeps
-							green_on(); beep_ok_triple(); green_off();
-							lcd_print_at(1,0,"OK            "); _delay_ms(800);
-							lcd_print_at(1,0,"              "); ui_show_attempts(attempts);
-							ui_reset_pin_line(); entry_len=0; entry[0]=0;
-							}else{
-							attempts++; ui_show_attempts(attempts);
-							// Feedback ERROR: LED rojo + beep 500ms
-							red_on(); beep_ms(500); red_off();
-							lcd_print_at(1,0,"Error         "); _delay_ms(700);
-							lcd_print_at(1,0,"              "); ui_show_attempts(attempts);
-							ui_reset_pin_line(); entry_len=0; entry[0]=0;
-
-							// Alarmar INMEDIATAMENTE al llegar al máximo
-							if (attempts >= MAX_ATTEMPTS) {
-								locked = true;
-								alarm_until_master();   // entra en sirena hasta 'D'
-
-								// al salir con 'D', restaurar UI/estado
-								attempts = 0;
-								locked = false;
-								ui_show_attempts(attempts);
-								lcd_print_at(1,0,"Listo         ");
-								_delay_ms(600);
-								lcd_print_at(1,0,"              ");
-								ui_reset_pin_line();
-								entry_len = 0; entry[0] = 0;
-								continue;
-							}
-						}
-					}
-					}else if(mode==MODE_CHK_CURPIN){
-					char pin_stored[MAX_PIN_LEN+1]; uint8_t pin_len_stored=0;
-					eeprom_load_pin(pin_stored,&pin_len_stored);
-					bool ok=(curpin_len==pin_len_stored);
-					for(uint8_t i=0; ok && i<curpin_len; i++) if(curpin[i]!=pin_stored[i]) ok=false;
-					if(!ok){
-						red_on(); beep_ms(500); red_off();
-						lcd_print_at(1,0,"Actual incorrecto"); _delay_ms(900);
-						lcd_print_at(1,0,"                 "); mode=MODE_NORMAL; ui_reset_pin_line();
-						curpin_len=0; curpin[0]=0;
-						}else{
-						mode=MODE_CHG_NEW1; newpin_first_len=0; newpin_first[0]=0;
-						lcd_print_at(1,0,"Nuevo PIN (4-6) "); ui_reset_pin_line();
-					}
-					}else if(mode==MODE_CHG_NEW1){
-					if(newpin_first_len<4 || newpin_first_len>MAX_PIN_LEN){
-						red_on(); beep_ms(300); red_off();
-						lcd_print_at(1,0,"Long 4-6 digitos"); _delay_ms(800);
-						lcd_print_at(1,0,"                "); mode=MODE_NORMAL; ui_reset_pin_line();
-						}else{
-						mode=MODE_CHG_NEW2; newpin_conf_len=0; newpin_conf[0]=0;
-						lcd_print_at(1,0,"Confirmar nuevo "); ui_reset_pin_line();
-					}
-					}else if(mode==MODE_CHG_NEW2){
-					bool match=(newpin_conf_len==newpin_first_len);
-					for(uint8_t i=0; match && i<newpin_first_len; i++) if(newpin_conf[i]!=newpin_first[i]) match=false;
-					if(!match){
-						red_on(); beep_ms(300); red_off();
-						lcd_print_at(1,0,"No coincide     "); _delay_ms(900);
-						lcd_print_at(1,0,"                ");
-						}else{
-						eeprom_save_pin(newpin_first,newpin_first_len);
-						green_on(); beep_ok_triple(); green_off();
-						lcd_print_at(1,0,"PIN actualizado "); _delay_ms(900);
-						lcd_print_at(1,0,"                ");
-					}
-					mode=MODE_NORMAL; ui_reset_pin_line(); entry_len=0; entry[0]=0;
-				}
-				continue;
-			}
-		}
-	}
+}

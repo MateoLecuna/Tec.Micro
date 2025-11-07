@@ -1,4 +1,4 @@
-main.d main.o: .././main.c \
+UART.d UART.o: .././UART.c \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -13,13 +13,10 @@ main.d main.o: .././main.c \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay_basic.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h \
- d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h \
  d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
- d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
- d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\eeprom.h \
- .././SPI.h .././UART.h .././RC522.h
+ .././UART.h
 
 d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -49,20 +46,10 @@ d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\dela
 
 d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h:
 
-d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h:
-
 d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h:
 
 d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h:
 
 d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h:
 
-d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:
-
-d:\microchip\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\eeprom.h:
-
-.././SPI.h:
-
 .././UART.h:
-
-.././RC522.h:

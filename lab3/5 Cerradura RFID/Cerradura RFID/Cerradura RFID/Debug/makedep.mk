@@ -4,3 +4,9 @@
 
 main.c
 
+RC522.c
+
+SPI.c
+
+UART.c
+
