@@ -182,6 +182,10 @@ void ledOFF(void){
 	}
 }
 
+
+
+
+
 //					Autohome
 //////////////////////////////////////////////////////
 void home(void){
@@ -250,9 +254,15 @@ void home(void){
 	}
 }
 
+/* Old frequency tester removed (referenced undefined symbols).
+   Commented out to keep the file clean. */
+
+/* Circle function uses floating math and was requested to be ignored for now.
+   Implement Bresenham-based circle later. */
+
 /*
 void circle(uint8_t radius){
-
+    // implement Bresenham later
 }
 */
 
@@ -280,6 +290,21 @@ void cruz(uint16_t tam){
 	UP(tam*2/3);
 	solU();
 }
+
+
+void triangulo(uint16_t tam){
+  solD();
+  for(int i = 0 ; i < (tam/2) ; i++){
+    L(1);
+    UP(2);
+  }
+    for(int i = 0 ; i < (tam/2) ; i++){
+    L(1);
+    DOWN(2);
+  }
+  R(tam);
+}
+
 
 //										MAIN
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -328,7 +353,18 @@ int main (void){
 	//L(200);
 	//R(200);
 
-	home();
+	//home();
+
+	/*L(2500);
+  _delay_ms(500);
+  cuadrado(600);
+
+  _delay_ms(500);
+  DOWN(4000);
+
+  cruz(600);*/
+
+  triangulo(5000);
 
 	while (1){
 		_delay_ms(1000);
