@@ -98,7 +98,7 @@ El montaje se realizó sobre una placa Arduino Uno, conectando los módulos exte
     \item Alimentación: 5 V y GND comunes.
 \end{itemize}
 
-El módulo RC522 se alimentó a 3.3 V y se cuidó la compatibilidad lógica entre niveles (5 V del ATmega328P y 3.3 V del lector). Se incluyeron resistencias de protección y un capacitor de desacoplo cercano a la alimentación del módulo para mejorar la estabilidad.
+El módulo RC522 se alimentó a 3.3 V y se cuidó la compatibilidad lógica entre niveles (5 V del ATmega328P y 3.3 V del lector). Se incluyeron resistencias de protección y un capacitor de desacoplo cercano a la alimentación del módulo para mejorar la estabilidad eléctrica.
 
 \textbf{Configuración del software:}  
 El programa se estructuró en lenguaje C, utilizando los periféricos SPI, UART e I2C del ATmega328P.  
@@ -115,8 +115,9 @@ El flujo del programa se organizó como un \textbf{autómata de estados finitos 
 \end{enumerate}
 
 \textbf{Gestión de la memoria EEPROM:}  
-Se utilizó la memoria EEPROM interna del ATmega328P para almacenar los UID autorizados. Cada tarjeta ocupa una posición de cuatro bytes, y el sistema puede almacenar hasta 64 identificadores. Las operaciones de lectura y escritura se realizaron con las funciones estándar de AVR LibC (\texttt{eeprom\_read\_byte()} y \texttt{eeprom\_write\_byte()}), evitando accesos repetitivos para prolongar la vida útil de la memoria.  
-Mediante la UART se implementaron comandos para listar, borrar o limpiar registros, facilitando la administración sin reprogramar el dispositivo.
+Se utilizó la memoria EEPROM interna del ATmega328P para almacenar los UID autorizados. Cada tarjeta ocupa una posición de cuatro bytes, y el sistema puede almacenar hasta 64 identificadores.  
+Las operaciones de lectura y escritura se realizaron con las funciones estándar de AVR LibC (\texttt{eeprom\_read\_byte()} y \texttt{eeprom\_write\_byte()}), evitando accesos repetitivos para prolongar la vida útil de la memoria.  
+Mediante la UART se implementaron comandos para listar, borrar o limpiar registros, facilitando la administración sin necesidad de reprogramar el dispositivo.
 
 \textbf{Interfaz LCD I2C y comunicación serial:}  
 El módulo LCD de 16$\times$2 caracteres, controlado por el expansor PCF8574, muestra mensajes informativos del sistema: detección de tarjeta, acceso concedido/denegado, modo programación y número de tarjetas registradas.  
@@ -132,7 +133,8 @@ El proceso de validación incluyó las siguientes etapas:
 \end{enumerate}
 
 \textbf{Observaciones:}  
-Durante la puesta a punto, se observó que la lectura del RC522 era más sensible en el modo de inicio que en programación, debido a pequeñas variaciones de temporización en el lazo de consulta. Se solucionó aumentando los tiempos de espera entre intentos de lectura y reforzando la condición de detección del UID.  
+Durante la puesta a punto, se observó que la lectura del RC522 era más sensible en el modo de inicio que en programación, debido a pequeñas variaciones de temporización en el lazo de consulta.  
+Se solucionó aumentando los tiempos de espera entre intentos de lectura y reforzando la condición de detección del UID.  
 El sistema final demostró una operación confiable, con una lectura estable, almacenamiento persistente y una interfaz de usuario clara e intuitiva.
 
 En síntesis, esta metodología combinó la comunicación SPI, I2C y UART en un mismo sistema embebido, aplicando control secuencial y almacenamiento no volátil para lograr una cerradura RFID funcional y extensible.
