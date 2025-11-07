@@ -2,6 +2,13 @@
 
 \subsection{Plotter}
 
+Este plotter CNC cuenta con dos motores paso a paso  controlados por el ATmega328P mediante drivers de control. Esto permite que todo el sistema pueda ser controlado con 10 pines, tratándose estos del control directo de los motores (Enable, Step/Clock y Dir), el procesamiento de señales de entrada (Sensores inductivos YA e YD), y control de periféricos (LED, Solenoide).
+    Para mover los motores, se debe activar el pin Enable, establecer la dirección de giro con Dir, y finalmente alternar el estado del reloj correspondiente, para que éste le envíe pulsos de señal al motor.\\
+
+    Para crear las figuras más adelante, es conveniente definir los movimientos básicos de control como funciones para posteriormente manejar la posición a un más alto nivel.\\
+    Por ejemplo, se define la función U (up) como la activación de los pines PC5 (Enable Y) y PC4 (Dir Y), con la intermitencia del pin PC3 (ClkY/StepY) para enviarle la señal al driver de activar en secuencia las bobinas del motor PAP.\\
+    Con estas funciones básicas (U,D,L,R), es posible crear todas las otras figuras que se deseen, haciendo uso de la posibilidad de ingresar la cantidad de pasos en cierto sentido para simplificar las funciones. Podemos, por ejemplo, crear un cuadrado con tamaño ajustable si definimos su función con una entrada de enteros, y luego establecemos 4 movimientos en sus correspondientes sentidos, y que tomarán como entrada de datos la propia entrada de datos de la función \textit{cuadrado()}.
+
 \subsection{Sistema de control de temperatura}
 
 \subsection{Control de motor}
