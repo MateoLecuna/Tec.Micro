@@ -52,7 +52,7 @@ static inline void step_delay(void){
 
 //		Eje Y
 ///////////////////
-void UP (int dist){
+void U (int dist){
 	if (machine == 0){		// CNC
 		PORTD |= dirY;
 		PORTB |= enY;
@@ -74,7 +74,7 @@ void UP (int dist){
 	}
 }
 
-void DOWN (int dist){
+void D (int dist){
 	if (machine == 0){		// CNC
 		PORTD &= ~dirY;
 		PORTB |= enY;
@@ -101,7 +101,7 @@ void DOWN (int dist){
 
 void L (int dist){
 	if (machine == 0){		// CNC
-		PORTD &= ~dirX;      // direction = LEFT (0)
+		PORTD &= ~dirX;      // direction = L (0)
 		PORTB |= enX;
 		for(int i = 0; i < dist; i++){
 			PORTD |= clkX;
@@ -123,7 +123,7 @@ void L (int dist){
 
 void R (int dist){
 	if (machine == 0){		// CNC
-		PORTD |= dirX;       // direction = RIGHT (1)
+		PORTD |= dirX;       // direction = R (1)
 		PORTB |= enX;
 		for(int i = 0; i < dist; i++){
 			PORTD |= clkX;
@@ -184,7 +184,10 @@ void ledOFF(void){
 
 
 
+//////////////////////////////////////////////////////
 
+
+//////////////////////////////////////////////////////
 
 //					Autohome
 //////////////////////////////////////////////////////
@@ -200,22 +203,22 @@ void home(void){
 
 		solU();
 
-		// Step down until lower-limit triggered (assumes active-high)
+		// Step D until lower-limit triggered (assumes active-high)
 		while(!(PINB & limYA)){
-			UP(1);
+			U(1);
 		}
 
 		_delay_ms(500);
 
-		// Step up and count until limit again (measure travel)
+		// Step U and count until limit again (measure travel)
 		while(!(PINB & limYD)){
-			DOWN(1);
+			D(1);
 			d++;
 		}
 
 		_delay_ms(500);
 
-		if (d > 0) UP(d/2);	// go to middle
+		if (d > 0) U(d/2);	// go to middle
 
 		// flash LED end
 		PORTB |= LED; _delay_ms(300);
@@ -233,19 +236,19 @@ void home(void){
 		solU();
 
 		while(!(PIND & limYA) && !(PIND & limYD)){
-			DOWN(1);
+			D(1);
 		}
 
 		_delay_ms(500);
 
 		while(!(PIND & limYA) && !(PIND & limYD)){
-			UP(1);
+			U(1);
 			d++;
 		}
 
 		_delay_ms(500);
 
-		if (d > 0) DOWN(d/2);
+		if (d > 0) D(d/2);
 
 		PORTD |= LED; _delay_ms(300);
 		PORTD &= ~LED; _delay_ms(150);
@@ -269,25 +272,25 @@ void circle(uint8_t radius){
 void cuadrado(uint16_t tam){
 	solD();
 	L(tam/2);
-	UP(tam/2);
+	U(tam/2);
 	R(tam);
-	DOWN(tam);
+	D(tam);
 	L(tam);
-	UP(tam/2);
+	U(tam/2);
 	solU();
 	R(tam/2);
 }
 
 void cruz(uint16_t tam){
 	solD();
-	UP(tam/3);
-	DOWN(tam/3);
+	U(tam/3);
+	D(tam/3);
 	R(tam/3);
 	L(tam/3);
 	L(tam/3);
 	R(tam/3);
-	DOWN(tam*2/3);
-	UP(tam*2/3);
+	D(tam*2/3);
+	U(tam*2/3);
 	solU();
 }
 
@@ -296,11 +299,11 @@ void triangulo(uint16_t tam){
   solD();
   for(int i = 0 ; i < (tam/2) ; i++){
     L(1);
-    UP(2);
+    U(2);
   }
     for(int i = 0 ; i < (tam/2) ; i++){
     L(1);
-    DOWN(2);
+    D(2);
   }
   R(tam);
 }
@@ -316,7 +319,7 @@ int main (void){
 	    // PortB: PB0 en, PB3 solenoid, PB5 LED output; PB1/PB2 inputs for limits
 	    DDRB |= enX | sol | LED;
 	    DDRB &= ~(limYA | limYD); 	// limit switches as INPUT
-	    PORTB |= limYA | limYD; 	// enable pull-ups on switches
+	    PORTB |= limYA | limYD; 	// enable pull-Us on switches
 	} else {	// Plotter lab
 	    DDRD |= clkX | clkY | dirX | dirY;
 	    DDRB |= enX | sol | LED;
@@ -330,26 +333,16 @@ int main (void){
 	PORTB &= ~enX;
 	PORTB &= ~LED;
 
-	// blink startup
+	// blink startU
 	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
 	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
 	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
   	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-  	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-  	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-  	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
-	ledON(); _delay_ms(50); ledOFF(); _delay_ms(50);
+
 
 	// quick motion test (safe)
-	//UP(2000); _delay_ms(2000); 	UP(200); _delay_ms(200); 
-	//DOWN(200); _delay_ms(200); 	DOWN(200); _delay_ms(200);
+	//U(2000); _delay_ms(2000); 	U(200); _delay_ms(200); 
+	//D(200); _delay_ms(200); 	D(200); _delay_ms(200);
 	//L(200);
 	//R(200);
 
@@ -360,7 +353,7 @@ int main (void){
   cuadrado(600);
 
   _delay_ms(500);
-  DOWN(4000);
+  D(4000);
 
   cruz(600);*/
 
