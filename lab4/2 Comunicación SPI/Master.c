@@ -12,7 +12,6 @@
 
 char buf[30];
 
-// SMOOTH JOYSTICK
 uint8_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint8_t out_min, uint8_t out_max) {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
@@ -27,12 +26,10 @@ uint8_t read_joy_y(void) {
     return (raw > 512) ? map(raw, 550, 1023, 128, 255) : map(raw, 0, 480, 0, 128);
 }
 
-// FAKE SENSORS — tomorrow just plug real ones
 uint8_t read_temperature(void) { return 23 + (rand() % 15); }
 uint8_t read_humidity(void)    { return 40 + (rand() % 40); }
 uint8_t read_light(void)       { return ADC_Read(2) >> 2; }
 
-// I2C + LCD + SPI + ADC — FULLY INCLUDED (your exact working version)
 void I2C_Init(void) { TWSR = 0; TWBR = ((F_CPU / 100000UL) - 16) / 2; TWCR = (1 << TWEN); }
 void I2C_Start(void)  { TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN); while (!(TWCR & (1 << TWINT))); }
 void I2C_Stop(void)   { TWCR = (1 << TWINT) | (1 << TWSTO) | (1 << TWEN); _delay_us(100); }
@@ -107,4 +104,5 @@ int main(void) {
         }
         _delay_ms(5);
     }
+
 }
