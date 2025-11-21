@@ -23,6 +23,7 @@ volatile uint32_t tick_ms = 0;
 static void timer0_init(void);
 static uint8_t uart_try_receive(char *c);
 static void procesar_char(char c);
+static void prueba_colores_inicial(void);
 
 // Pequeño parser para comandos "1", "2", "0" y "OFF"
 static char cmd_buf[4] = {0};
@@ -39,7 +40,7 @@ static void timer0_init(void) {
 	TCCR0A = (1 << WGM01);
 	// Prescaler 64
 	TCCR0B = (1 << CS01) | (1 << CS00);
-	// F_CPU = 16 MHz ? 16000000 / (64 * 1000) = 250 ? OCR0A = 249
+	// F_CPU = 16 MHz -> 16000000 / (64 * 1000) = 250 -> OCR0A = 249
 	OCR0A = 249;
 	// Habilitar interrupción de comparación A
 	TIMSK0 = (1 << OCIE0A);
@@ -100,6 +101,34 @@ static void procesar_char(char c) {
 	}
 }
 
+// Prueba de colores básicos al inicio
+static void prueba_colores_inicial(void) {
+	// Rojo
+	animaciones_color_solido(frame_buffer, 255, 0, 0);
+	ws2812_show(frame_buffer);
+	_delay_ms(500);
+
+	// Verde
+	animaciones_color_solido(frame_buffer, 0, 255, 0);
+	ws2812_show(frame_buffer);
+	_delay_ms(500);
+
+	// Azul
+	animaciones_color_solido(frame_buffer, 0, 0, 255);
+	ws2812_show(frame_buffer);
+	_delay_ms(500);
+
+	// Blanco
+	animaciones_color_solido(frame_buffer, 255, 255, 255);
+	ws2812_show(frame_buffer);
+	_delay_ms(500);
+
+	// Apagado
+	animaciones_color_solido(frame_buffer, 0, 0, 0);
+	ws2812_show(frame_buffer);
+	_delay_ms(300);
+}
+
 int main(void) {
 	// Inicializar UART
 	uart_init(UBRR_VAL);
@@ -113,6 +142,9 @@ int main(void) {
 
 	// Inicializar driver de WS2812
 	ws2812_init();
+
+	// Prueba de colores básicos (requisito del lab)
+	prueba_colores_inicial();
 
 	// Habilitar interrupciones globales
 	sei();

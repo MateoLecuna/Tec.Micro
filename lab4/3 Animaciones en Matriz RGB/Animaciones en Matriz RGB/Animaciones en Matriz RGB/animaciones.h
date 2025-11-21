@@ -13,4 +13,6 @@ void animaciones_set_modo(uint8_t modo, uint8_t *fb);
 // Devuelve 1 si el frame_buffer fue modificado (hay que refrescar la matriz)
 uint8_t animaciones_update(uint32_t t_ms, uint8_t *fb);
 
+void animaciones_color_solido(uint8_t *fb, uint8_t r, uint8_t g, uint8_t b);
+
 #endif

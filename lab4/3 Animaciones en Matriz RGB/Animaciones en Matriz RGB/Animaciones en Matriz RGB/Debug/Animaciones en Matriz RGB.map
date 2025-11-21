@@ -422,7 +422,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0xb02
+.text           0x00000000      0xc16
  *(.vectors)
  .vectors       0x00000000       0x68 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -516,79 +516,84 @@ END GROUP
                 0x000000f6       0x2e animaciones.o
  .text.draw_heart
                 0x00000124       0xb4 animaciones.o
+ .text.animaciones_color_solido
+                0x000001d8       0x46 animaciones.o
+                0x000001d8                animaciones_color_solido
  .text.animaciones_init
-                0x000001d8       0x62 animaciones.o
-                0x000001d8                animaciones_init
+                0x0000021e       0x62 animaciones.o
+                0x0000021e                animaciones_init
  .text.animaciones_set_modo
-                0x0000023a       0x84 animaciones.o
-                0x0000023a                animaciones_set_modo
+                0x00000280       0x84 animaciones.o
+                0x00000280                animaciones_set_modo
  .text.animaciones_update
-                0x000002be      0x3d8 animaciones.o
-                0x000002be                animaciones_update
+                0x00000304      0x3d8 animaciones.o
+                0x00000304                animaciones_update
  .text.timer0_init
-                0x00000696       0x12 main.o
+                0x000006dc       0x12 main.o
  .text.uart_try_receive
-                0x000006a8       0x18 main.o
+                0x000006ee       0x18 main.o
+ .text.prueba_colores_inicial
+                0x00000706       0xca main.o
  .text.procesar_char
-                0x000006c0       0xde main.o
+                0x000007d0       0xde main.o
  .text.__vector_14
-                0x0000079e       0x4a main.o
-                0x0000079e                __vector_14
- .text.main     0x000007e8       0x64 main.o
-                0x000007e8                main
+                0x000008ae       0x4a main.o
+                0x000008ae                __vector_14
+ .text.main     0x000008f8       0x68 main.o
+                0x000008f8                main
  .text.uart_init
-                0x0000084c       0x16 UART.o
-                0x0000084c                uart_init
+                0x00000960       0x16 UART.o
+                0x00000960                uart_init
  .text.uart_send
-                0x00000862        0xe UART.o
-                0x00000862                uart_send
+                0x00000976        0xe UART.o
+                0x00000976                uart_send
  .text.uart_print
-                0x00000870       0x1a UART.o
-                0x00000870                uart_print
+                0x00000984       0x1a UART.o
+                0x00000984                uart_print
  .text.ws2812_send_byte
-                0x0000088a       0x54 ws2812.o
+                0x0000099e       0x54 ws2812.o
  .text.ws2812_init
-                0x000008de        0xe ws2812.o
-                0x000008de                ws2812_init
+                0x000009f2        0xe ws2812.o
+                0x000009f2                ws2812_init
  .text.ws2812_show
-                0x000008ec       0x44 ws2812.o
-                0x000008ec                ws2812_show
+                0x00000a00       0x44 ws2812.o
+                0x00000a00                ws2812_show
  .text.libgcc.div
-                0x00000930       0x28 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_divmodhi4.o)
-                0x00000930                _div
-                0x00000930                __divmodhi4
+                0x00000a44       0x28 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_divmodhi4.o)
+                0x00000a44                _div
+                0x00000a44                __divmodhi4
  .text.libgcc.div
-                0x00000958       0x28 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodhi4.o)
-                0x00000958                __udivmodhi4
+                0x00000a6c       0x28 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodhi4.o)
+                0x00000a6c                __udivmodhi4
  .text.avr-libc
-                0x00000980       0xb8 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(rand.o)
-                0x00000a12                rand_r
-                0x00000a18                rand
-                0x00000a22                srand
+                0x00000a94       0xb8 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(rand.o)
+                0x00000b26                rand_r
+                0x00000b2c                rand
+                0x00000b36                srand
  .text.libgcc.div
-                0x00000a38       0x2e d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_divmodsi4.o)
-                0x00000a38                __divmodsi4
+                0x00000b4c       0x2e d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_divmodsi4.o)
+                0x00000b4c                __divmodsi4
  .text.libgcc.div
-                0x00000a66       0x10 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_negsi2.o)
-                0x00000a66                __negsi2
+                0x00000b7a       0x10 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_negsi2.o)
+                0x00000b7a                __negsi2
  .text.libgcc.mul
-                0x00000a76       0x16 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_muluhisi3.o)
-                0x00000a76                __muluhisi3
+                0x00000b8a       0x16 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_muluhisi3.o)
+                0x00000b8a                __muluhisi3
  .text.libgcc.mul
-                0x00000a8c       0x10 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_mulshisi3.o)
-                0x00000a8c                __mulshisi3
-                0x00000a92                __mulohisi3
+                0x00000ba0       0x10 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_mulshisi3.o)
+                0x00000ba0                __mulshisi3
+                0x00000ba6                __mulohisi3
  .text.libgcc.div
-                0x00000a9c       0x44 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
-                0x00000a9c                __udivmodsi4
+                0x00000bb0       0x44 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+                0x00000bb0                __udivmodsi4
  .text.libgcc.mul
-                0x00000ae0       0x1e d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_umulhisi3.o)
-                0x00000ae0                __umulhisi3
-                0x00000afe                . = ALIGN (0x2)
+                0x00000bf4       0x1e d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_umulhisi3.o)
+                0x00000bf4                __umulhisi3
+                0x00000c12                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000afe        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x00000afe                _exit
-                0x00000afe                exit
+ .fini9         0x00000c12        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00000c12                _exit
+                0x00000c12                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -607,11 +612,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000afe        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000c12        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000b02                _etext = .
+                0x00000c16                _etext = .
 
-.data           0x00800100       0x50 load address 0x00000b02
+.data           0x00800100       0x50 load address 0x00000c16
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(rand.o)
@@ -664,8 +669,8 @@ END GROUP
                 0x0080017e       0xc0 main.o
  *(COMMON)
                 0x0080023e                PROVIDE (__bss_end, .)
-                0x00000b02                __data_load_start = LOADADDR (.data)
-                0x00000b52                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000c16                __data_load_start = LOADADDR (.data)
+                0x00000c66                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x0080023e        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
@@ -740,69 +745,69 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x108
+.debug_aranges  0x00000000      0x118
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x50 animaciones.o
+                0x00000000       0x58 animaciones.o
  .debug_aranges
-                0x00000050       0x40 main.o
+                0x00000058       0x48 main.o
  .debug_aranges
-                0x00000090       0x48 UART.o
+                0x000000a0       0x48 UART.o
  .debug_aranges
-                0x000000d8       0x30 ws2812.o
+                0x000000e8       0x30 ws2812.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x1658
+.debug_info     0x00000000     0x19de
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_info    0x000005f4      0x7b5 animaciones.o
- .debug_info    0x00000da9      0x3be main.o
- .debug_info    0x00001167      0x225 UART.o
- .debug_info    0x0000138c      0x2cc ws2812.o
+ .debug_info    0x000005f4      0x849 animaciones.o
+ .debug_info    0x00000e3d      0x6b0 main.o
+ .debug_info    0x000014ed      0x225 UART.o
+ .debug_info    0x00001712      0x2cc ws2812.o
 
-.debug_abbrev   0x00000000      0xb1d
+.debug_abbrev   0x00000000      0xb9f
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_abbrev  0x000005a2      0x180 animaciones.o
- .debug_abbrev  0x00000722      0x173 main.o
- .debug_abbrev  0x00000895      0x133 UART.o
- .debug_abbrev  0x000009c8      0x155 ws2812.o
+ .debug_abbrev  0x000005a2      0x19a animaciones.o
+ .debug_abbrev  0x0000073c      0x1db main.o
+ .debug_abbrev  0x00000917      0x133 UART.o
+ .debug_abbrev  0x00000a4a      0x155 ws2812.o
 
-.debug_line     0x00000000      0xb4c
+.debug_line     0x00000000      0xc68
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x134 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_line    0x00000134      0x46c animaciones.o
- .debug_line    0x000005a0      0x241 main.o
- .debug_line    0x000007e1      0x194 UART.o
- .debug_line    0x00000975      0x1d7 ws2812.o
+ .debug_line    0x00000134      0x4a8 animaciones.o
+ .debug_line    0x000005dc      0x321 main.o
+ .debug_line    0x000008fd      0x194 UART.o
+ .debug_line    0x00000a91      0x1d7 ws2812.o
 
-.debug_frame    0x00000000      0x2d0
+.debug_frame    0x00000000      0x318
  *(.debug_frame)
- .debug_frame   0x00000000      0x12c animaciones.o
- .debug_frame   0x0000012c       0x94 main.o
- .debug_frame   0x000001c0       0xb0 UART.o
- .debug_frame   0x00000270       0x60 ws2812.o
+ .debug_frame   0x00000000      0x164 animaciones.o
+ .debug_frame   0x00000164       0xa4 main.o
+ .debug_frame   0x00000208       0xb0 UART.o
+ .debug_frame   0x000002b8       0x60 ws2812.o
 
-.debug_str      0x00000000      0x6a5
+.debug_str      0x00000000      0x6e4
  *(.debug_str)
  .debug_str     0x00000000      0x208 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x32f animaciones.o
-                                0x375 (size before relaxing)
- .debug_str     0x00000537       0x9c main.o
-                                0x28b (size before relaxing)
- .debug_str     0x000005d3       0x54 UART.o
+ .debug_str     0x00000208      0x348 animaciones.o
+                                0x38e (size before relaxing)
+ .debug_str     0x00000550       0xf5 main.o
+                                0x2fd (size before relaxing)
+ .debug_str     0x00000645       0x54 UART.o
                                 0x216 (size before relaxing)
- .debug_str     0x00000627       0x7e ws2812.o
+ .debug_str     0x00000699       0x4b ws2812.o
                                 0x24e (size before relaxing)
 
-.debug_loc      0x00000000      0xdf4
+.debug_loc      0x00000000     0x10b7
  *(.debug_loc)
- .debug_loc     0x00000000      0x80f animaciones.o
- .debug_loc     0x0000080f      0x17d main.o
- .debug_loc     0x0000098c      0x1fe UART.o
- .debug_loc     0x00000b8a      0x26a ws2812.o
+ .debug_loc     0x00000000      0x96a animaciones.o
+ .debug_loc     0x0000096a      0x2e5 main.o
+ .debug_loc     0x00000c4f      0x1fe UART.o
+ .debug_loc     0x00000e4d      0x26a ws2812.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -822,12 +827,12 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x128
+.debug_ranges   0x00000000      0x138
  *(.debug_ranges)
- .debug_ranges  0x00000000       0xa0 animaciones.o
- .debug_ranges  0x000000a0       0x30 main.o
- .debug_ranges  0x000000d0       0x38 UART.o
- .debug_ranges  0x00000108       0x20 ws2812.o
+ .debug_ranges  0x00000000       0xa8 animaciones.o
+ .debug_ranges  0x000000a8       0x38 main.o
+ .debug_ranges  0x000000e0       0x38 UART.o
+ .debug_ranges  0x00000118       0x20 ws2812.o
 
 .debug_macro
  *(.debug_macro)

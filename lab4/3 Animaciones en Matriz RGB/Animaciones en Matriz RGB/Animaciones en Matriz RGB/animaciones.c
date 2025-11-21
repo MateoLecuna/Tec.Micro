@@ -50,6 +50,13 @@ uint8_t r, uint8_t g, uint8_t b) {
 	fb_set_pixel(fb, index, r, g, b);
 }
 
+// ===== NUEVO: Color sólido para toda la matriz =====
+void animaciones_color_solido(uint8_t *fb, uint8_t r, uint8_t g, uint8_t b) {
+	for (uint16_t i = 0; i < LED_COUNT; i++) {
+		fb_set_pixel(fb, i, r, g, b);
+	}
+}
+
 // ===== Bitmaps del corazón (para anim1) =====
 
 static const uint8_t heart_border[MAT_H] = {
