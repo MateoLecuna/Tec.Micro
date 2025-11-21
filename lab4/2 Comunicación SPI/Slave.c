@@ -4,11 +4,11 @@
 
 int main(void)
 {
-    // Your exact wiring
+
     DDRD |= (1<<PD3)|(1<<PD5)|(1<<PD6);   // D3 down, D5 right, D6 up
     DDRB |= (1<<PB1);                      // D9 left
 
-    // PWM init (same)
+    // PWM init
     TCCR0A = (1<<COM0A1)|(1<<COM0B1)|(1<<WGM00)|(1<<WGM01);
     TCCR0B = (1<<CS01);
     TCCR1A = (1<<COM1A1)|(1<<WGM10);
@@ -39,8 +39,9 @@ int main(void)
     OCR0B = (dx > 0) ? ( dx * 2) : 0;   // D5  RIGHT
     OCR2B = (dy > 0) ? ( dy * 2) : 0;   // D3  DOWN
 
-    // D4 = LASER CANNON
+    // D4 = LED
     if (fire == 0xFF) PORTD |=  (1<<PD4);
     else              PORTD &= ~(1<<PD4);
 }
+
 }
