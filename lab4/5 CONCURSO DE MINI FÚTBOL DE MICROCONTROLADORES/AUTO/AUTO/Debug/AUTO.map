@@ -186,7 +186,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x29c
+.text           0x00000000      0x2fe
  *(.vectors)
  .vectors       0x00000000       0x68 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -277,45 +277,63 @@ END GROUP
  .text.uart_read
                 0x000000b4        0xe main.o
                 0x000000b4                uart_read
+ .text.uart_available
+                0x000000c2        0x8 main.o
+                0x000000c2                uart_available
  .text.pwm_init
-                0x000000c2       0x34 main.o
-                0x000000c2                pwm_init
+                0x000000ca       0x34 main.o
+                0x000000ca                pwm_init
  .text.motor_izq
-                0x000000f6        0xc main.o
-                0x000000f6                motor_izq
+                0x000000fe        0xc main.o
+                0x000000fe                motor_izq
  .text.motor_der
-                0x00000102        0xc main.o
-                0x00000102                motor_der
+                0x0000010a        0xc main.o
+                0x0000010a                motor_der
  .text.servo_init
-                0x0000010e       0x22 main.o
-                0x0000010e                servo_init
+                0x00000116       0x22 main.o
+                0x00000116                servo_init
  .text.servo_write
-                0x00000130       0x2e main.o
-                0x00000130                servo_write
+                0x00000138       0x2e main.o
+                0x00000138                servo_write
  .text.direccion_adelante
-                0x0000015e        0xe main.o
-                0x0000015e                direccion_adelante
+                0x00000166        0xe main.o
+                0x00000166                direccion_adelante
  .text.direccion_atras
-                0x0000016c        0xe main.o
-                0x0000016c                direccion_atras
+                0x00000174        0xe main.o
+                0x00000174                direccion_atras
  .text.direccion_init
-                0x0000017a        0xc main.o
-                0x0000017a                direccion_init
+                0x00000182        0xc main.o
+                0x00000182                direccion_init
+ .text.buzzer_init
+                0x0000018e        0xe main.o
+                0x0000018e                buzzer_init
+ .text.buzzer_on
+                0x0000019c        0x8 main.o
+                0x0000019c                buzzer_on
+ .text.buzzer_off
+                0x000001a4        0x8 main.o
+                0x000001a4                buzzer_off
+ .text.sensores_init
+                0x000001ac        0xe main.o
+                0x000001ac                sensores_init
+ .text.actualizar_sensores_linea
+                0x000001ba       0x1a main.o
+                0x000001ba                actualizar_sensores_linea
  .text.ejecutar_comando
-                0x00000186       0xce main.o
-                0x00000186                ejecutar_comando
- .text.main     0x00000254       0x1a main.o
-                0x00000254                main
- .text.libgcc   0x0000026e        0xc d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
-                0x0000026e                __tablejump2__
+                0x000001d4       0xce main.o
+                0x000001d4                ejecutar_comando
+ .text.main     0x000002a2       0x2e main.o
+                0x000002a2                main
+ .text.libgcc   0x000002d0        0xc d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+                0x000002d0                __tablejump2__
  .text.libgcc.mul
-                0x0000027a       0x1e d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_umulhisi3.o)
-                0x0000027a                __umulhisi3
-                0x00000298                . = ALIGN (0x2)
+                0x000002dc       0x1e d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_umulhisi3.o)
+                0x000002dc                __umulhisi3
+                0x000002fa                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000298        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x00000298                _exit
-                0x00000298                exit
+ .fini9         0x000002fa        0x0 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x000002fa                _exit
+                0x000002fa                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -334,11 +352,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000298        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x000002fa        0x4 d:/microchip studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x0000029c                _etext = .
+                0x000002fe                _etext = .
 
-.data           0x00800100        0x0 load address 0x0000029c
+.data           0x00800100        0x0 load address 0x000002fe
                 [!provide]                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -356,8 +374,8 @@ END GROUP
  *(.bss*)
  *(COMMON)
                 [!provide]                PROVIDE (__bss_end, .)
-                0x0000029c                __data_load_start = LOADADDR (.data)
-                0x0000029c                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x000002fe                __data_load_start = LOADADDR (.data)
+                0x000002fe                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800100        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
@@ -428,42 +446,42 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x78
+.debug_aranges  0x00000000       0xa8
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x78 main.o
+                0x00000000       0xa8 main.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xa23
+.debug_info     0x00000000      0xb13
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_info    0x000005f4      0x42f main.o
+ .debug_info    0x000005f4      0x51f main.o
 
-.debug_abbrev   0x00000000      0x6ba
+.debug_abbrev   0x00000000      0x6c9
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_abbrev  0x000005a2      0x118 main.o
+ .debug_abbrev  0x000005a2      0x127 main.o
 
-.debug_line     0x00000000      0x44f
+.debug_line     0x00000000      0x526
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x134 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_line    0x00000134      0x31b main.o
+ .debug_line    0x00000134      0x3f2 main.o
 
-.debug_frame    0x00000000       0xd4
+.debug_frame    0x00000000      0x134
  *(.debug_frame)
- .debug_frame   0x00000000       0xd4 main.o
+ .debug_frame   0x00000000      0x134 main.o
 
-.debug_str      0x00000000      0x407
+.debug_str      0x00000000      0x47a
  *(.debug_str)
  .debug_str     0x00000000      0x208 D:/Microchip Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x1ff main.o
-                                0x238 (size before relaxing)
+ .debug_str     0x00000208      0x272 main.o
+                                0x2ab (size before relaxing)
 
-.debug_loc      0x00000000      0x165
+.debug_loc      0x00000000      0x1c7
  *(.debug_loc)
- .debug_loc     0x00000000      0x165 main.o
+ .debug_loc     0x00000000      0x1c7 main.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -483,9 +501,9 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x68
+.debug_ranges   0x00000000       0x98
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x68 main.o
+ .debug_ranges  0x00000000       0x98 main.o
 
 .debug_macro
  *(.debug_macro)

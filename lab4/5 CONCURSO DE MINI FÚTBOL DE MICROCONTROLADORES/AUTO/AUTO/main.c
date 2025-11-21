@@ -14,8 +14,15 @@
 #define IN4_PD4  PD4
 
 // Servo en PB3 = OC2A (pin 11 en Arduino UNO)
-#define SERVO_MIN  4   //	1 ms (posición 0°)
-#define SERVO_MAX  64   //	2 ms (posición 180°)
+#define SERVO_MIN  4    // ~1 ms (posición 0°)
+#define SERVO_MAX  64   // ~2 ms (posición 180°)
+
+// Sensores de línea en PC0 y PC1
+#define SENSOR_IZQ_PC0  PC0
+#define SENSOR_DER_PC1  PC1
+
+// Buzzer en PB0
+#define BUZZER_PB0      PB0
 
 // ===================== UART =====================
 void uart_init(void) {
@@ -29,6 +36,10 @@ void uart_init(void) {
 char uart_read(void) {
 	while (!(UCSR0A & (1 << RXC0)));
 	return UDR0;
+}
+
+uint8_t uart_available(void) {
+	return (UCSR0A & (1 << RXC0));
 }
 
 // ===================== PWM – Timer1 OC1A / OC1B (MOTORES) =====================
@@ -67,7 +78,7 @@ void servo_init(void) {
 	// Non-inverting en OC2A
 	TCCR2A |= (1 << COM2A1);
 
-	// Prescaler 1024 -> periodo ~16.3 ms (~61 Hz), aceptable para servo
+	// Prescaler 1024 -> periodo ~16.3 ms (~61 Hz)
 	TCCR2B = (1 << CS22) | (1 << CS21) | (1 << CS20);
 
 	OCR2A = SERVO_MIN;   // arrancamos en 0°
@@ -79,7 +90,6 @@ void servo_write(uint8_t ang) {
 	uint16_t val = SERVO_MIN + (uint16_t)(ang) * (SERVO_MAX - SERVO_MIN) / 180;
 	OCR2A = (uint8_t)val;
 }
-
 
 // ===================== Dirección =====================
 void direccion_adelante(void) {
@@ -102,6 +112,42 @@ void direccion_init(void) {
 
 	// Arrancamos mirando hacia adelante
 	direccion_adelante();
+}
+
+// ===================== Buzzer =====================
+void buzzer_init(void) {
+	DDRB |= (1 << BUZZER_PB0);   // PB0 salida
+	PORTB &= ~(1 << BUZZER_PB0); // buzzer apagado
+}
+
+void buzzer_on(void) {
+	PORTB |= (1 << BUZZER_PB0);
+}
+
+void buzzer_off(void) {
+	PORTB &= ~(1 << BUZZER_PB0);
+}
+
+// ===================== Sensores de línea =====================
+void sensores_init(void) {
+	// PC0 y PC1 como entrada, con pull-up interno
+	DDRC &= ~((1 << SENSOR_IZQ_PC0) | (1 << SENSOR_DER_PC1));
+	PORTC |= (1 << SENSOR_IZQ_PC0) | (1 << SENSOR_DER_PC1);
+}
+
+// Lee sensores y actualiza buzzer
+void actualizar_sensores_linea(void) {
+	uint8_t estado = PINC;
+
+	// En tu caso: cuando ven NEGRO, el pin está en HIGH
+	uint8_t negro_izq = (estado & (1 << SENSOR_IZQ_PC0));
+	uint8_t negro_der = (estado & (1 << SENSOR_DER_PC1));
+
+	if (negro_izq || negro_der) {
+		buzzer_on();
+		} else {
+		buzzer_off();
+	}
 }
 
 // ===================== Acciones según comandos =====================
@@ -129,14 +175,14 @@ void ejecutar_comando(char c) {
 
 		case 'H':   // Giro izquierda adelante
 		direccion_adelante();
-		motor_der(255);
 		motor_izq(255 / 2);
+		motor_der(255);
 		break;
 
 		case 'L':   // Giro izquierda fuerte adelante (solo motor der)
 		direccion_adelante();
-		motor_der(255);
 		motor_izq(0);
+		motor_der(255);
 		break;
 
 		// ===== ATRÁS =====
@@ -154,8 +200,8 @@ void ejecutar_comando(char c) {
 
 		case 'J':   // Giro izquierda hacia atrás
 		direccion_atras();
-		motor_der(255);
 		motor_izq(255 / 2);
+		motor_der(255);
 		break;
 
 		// ===== STOP =====
@@ -172,7 +218,7 @@ void ejecutar_comando(char c) {
 		case 'M':   // Mover servo a 30°
 		servo_write(30);
 		break;
-		
+
 		case 'N':   // Mover servo a 70°
 		servo_write(70);
 		break;
@@ -189,9 +235,17 @@ int main(void) {
 	pwm_init();
 	direccion_init();
 	servo_init();
+	buzzer_init();
+	sensores_init();
 
 	while (1) {
-		char c = uart_read();   // espera un caracter de BT/Serial
-		ejecutar_comando(c);
+		// Si llegó un comando por UART, lo procesamos
+		if (uart_available()) {
+			char c = uart_read();
+			ejecutar_comando(c);
+		}
+
+		// Siempre chequeamos sensores de línea y manejamos buzzer
+		actualizar_sensores_linea();
 	}
 }
